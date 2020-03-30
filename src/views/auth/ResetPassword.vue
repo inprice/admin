@@ -1,0 +1,113 @@
+<template>
+  <v-container class="fill-height" fluid>
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="4" lg="3" xl="2">
+        <div class="headline text-center font-weight-medium mb-5">
+          inprice
+        </div>
+        <v-card>
+          <v-card-title>Reset Password</v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-text>
+
+            <v-form ref="form" v-model="valid">
+              <v-text-field
+                ref="password"
+                label="Password"
+                v-model="form.password"
+                :rules="rules.password"
+                :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPass1 ? 'text' : 'password'"
+                @click:append="showPass1 = !showPass1"
+              />
+
+              <v-text-field
+                label="Repeat Password"
+                v-model="form.repeatPassword"
+                :rules="rules.repeatPassword"
+                :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPass2 ? 'text' : 'password'"
+                @click:append="showPass2 = !showPass2"
+              />
+
+            </v-form>
+
+            <v-card-actions>
+              <v-btn 
+                block
+                color="info"
+                class="mt-2"
+                @click="submit" 
+                :loading="loading" 
+                :disabled="loading">Submit</v-btn>
+            </v-card-actions>
+          </v-card-text>
+        </v-card>
+        
+        <div class="text-center font-weight-light mt-6">
+          Remember your password? <router-link to="/login">Sign In</router-link>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import AuthService from '@/service/auth-service';
+import Utility from '@/helpers/utility';
+
+export default {
+  data() {
+    return {
+      loading: false,
+      valid: false,
+      showPass1: false,
+      showPass2: false,
+      rules: {},
+      form: {
+        password: '',
+        repeatPassword: '',
+        token: ''
+      }
+    };
+  },
+  methods: {
+    async submit() {
+      if (!this.form.token) {
+        Utility.showErrorMessage('Reset Password', 'submit', { reason: 'Invalid token' });
+        return
+      }
+      this.activateRules();
+      await this.$refs.form.validate();
+      if (this.valid) {
+        this.loading = true;
+        const result = await AuthService.resetPassword(this.form);
+        if (result == true) {
+          this.$router.push({ name: 'login' });
+          Utility.showInfoMessage('Reset Password', 'Your password has been successfuly reset')
+          return;
+        }
+        this.loading = false;
+      }
+    },
+    activateRules() {
+      this.rules = {
+        password: [
+          v => !!v || "Password is required",
+          v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+        ],
+        repeatPassword: [
+          v => !!v || "Repeat Password is required",
+          v => v === this.form.password || "Passwords must be the same"
+        ],
+      }
+    }
+  },
+  mounted() {
+    this.form.token = this.$route.query.token;
+    Utility.doubleRaf(() => this.$refs.password.focus());
+  }
+};
+</script>

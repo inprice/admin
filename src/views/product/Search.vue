@@ -1,0 +1,62 @@
+<template>
+  <div>
+
+    <div class="row mb-3">
+      <v-col cols="8">
+        <v-text-field 
+          ref="searchTerm"
+          v-model="term"
+          placeholder="Search for..."
+          prepend-inner-icon="mdi-magnify"
+          append-icon="mdi-close"
+          @click:append="clearTerm"
+          dense
+          rounded
+          solo
+          hide-details
+        />
+      </v-col>
+
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn class="ma-3" small fab dark color="warning" @click="add" v-on="on">
+            <v-icon dark>mdi-plus</v-icon>
+          </v-btn>
+        </template>      
+        <span>Add a new product</span>
+      </v-tooltip>
+    </div>
+
+  </div>
+
+</template>
+
+
+<script>
+export default {
+  data() {
+    return {
+      term: ''
+    }
+  },
+  methods: {
+    add() {
+      this.$emit('added');
+    },
+    search() {
+      this.$emit('searched', this.term);
+    },
+    clearTerm() {
+      this.term = '';
+      this.search();
+      this.$refs.searchTerm.focus();
+    }
+  }
+};
+</script>
+
+<style scoped>
+  .headline {
+    margin-top: -10px;
+  }
+</style>
