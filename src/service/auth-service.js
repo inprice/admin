@@ -91,7 +91,7 @@ export default {
         ApiService.removeHeader();
         ApiService.unmountInterceptor();
         if (expired == false) Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
-        router.push('/login' + (expired == true ? '/?message=1' : ''));
+        router.push('/login' + (expired == true ? '/?m=1' : ''));
     });
   }
 
