@@ -9,7 +9,7 @@
 
     <Search @added="addNew" @searched="search" />
     <List @deleted="deleted" @edited="edited" />
-    <Edit @saved="saved" />
+    <Edit ref="editDialog" @saved="saved" />
   </div>
 </template>
 
@@ -17,7 +17,7 @@
 export default {
   methods: {
     addNew() {
-      console.info('addNew is clicked!');
+      this.$refs.editDialog.open();
     },
     edited(prod) {
       console.info('edit is clicked!', prod);

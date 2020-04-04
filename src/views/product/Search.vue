@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div class="row mb-3">
+    <v-row class="mb-3">
       <v-col cols="8">
         <v-text-field 
           ref="searchTerm"
@@ -25,7 +25,7 @@
         </template>      
         <span>Add a new product</span>
       </v-tooltip>
-    </div>
+    </v-row>
 
   </div>
 

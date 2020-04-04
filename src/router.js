@@ -19,6 +19,7 @@ const Login = import('./views/auth/Login');
 const Register = import("./views/auth/Register.vue");
 const ForgotPassword = import("./views/auth/ForgotPassword.vue");
 const ResetPassword = import("./views/auth/ResetPassword.vue");
+const AcceptInvitation = import("./views/auth/AcceptInvitation.vue");
 
 // with authentication
 const Dashboard = import('./views/Dashboard.vue');
@@ -54,6 +55,11 @@ const router = new VueRouter({
       path: '/reset-password',
       name: 'resetPassword',
       component: () => ResetPassword
+    },
+    {
+      path: '/accept-invitation',
+      name: 'acceptInvitation',
+      component: () => AcceptInvitation
     },
     {
       path: '/app',

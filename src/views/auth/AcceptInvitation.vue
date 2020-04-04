@@ -3,21 +3,29 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4" lg="3" xl="2">
         <div class="headline text-center font-weight-medium mb-5">
-          inprice
+          Welcome to inprice
         </div>
         <v-card>
-          <v-card-title>Reset Password</v-card-title>
+          <v-card-title>Accept Invitation</v-card-title>
 
           <v-divider></v-divider>
 
           <v-card-text>
-
             <v-form 
               ref="form"
               v-model="valid"
               onSubmit="return false"
               @keyup.native.enter="valid && submit($event)"
             >
+              <v-text-field class="mx-5"
+                ref="name"
+                label="Name"
+                v-model="form.name"
+                :rules="rules.name"
+                type="text"
+                maxlenght="70"
+              />
+
               <v-text-field
                 ref="password"
                 label="Password"
@@ -26,6 +34,7 @@
                 :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass1 ? 'text' : 'password'"
                 @click:append="showPass1 = !showPass1"
+                maxlenght="16"
               />
 
               <v-text-field
@@ -35,8 +44,8 @@
                 :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass2 ? 'text' : 'password'"
                 @click:append="showPass2 = !showPass2"
+                maxlenght="16"
               />
-
             </v-form>
 
             <v-card-actions>
@@ -50,9 +59,9 @@
             </v-card-actions>
           </v-card-text>
         </v-card>
-        
+
         <div class="text-center font-weight-light mt-6">
-          Remember your password? <router-link to="/login">Sign In</router-link>
+          By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
         </div>
       </v-col>
     </v-row>
@@ -72,6 +81,7 @@ export default {
       showPass2: false,
       rules: {},
       form: {
+        name: '',
         password: '',
         repeatPassword: '',
         token: ''
@@ -81,17 +91,17 @@ export default {
   methods: {
     async submit() {
       if (!this.form.token) {
-        Utility.showErrorMessage('Reset Password', 'submit', { reason: 'Invalid token' });
+        Utility.showErrorMessage('Accept Invitation', 'submit', { reason: 'Invalid token' });
         return
       }
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await AuthService.resetPassword(this.form);
+        const result = await AuthService.acceptInvitation(this.form);
         if (result == true) {
-          this.$router.push({ name: 'login' });
-          Utility.showInfoMessage('Reset Password', 'Your password has been successfuly reset')
+          this.$router.push({ name: 'dahsboard' });
+          Utility.showInfoMessage('Accept Invitation', 'Your have successfuly activated your membership')
           return;
         }
         this.loading = false;

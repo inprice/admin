@@ -3,18 +3,24 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4" lg="3" xl="2">
 
-        <v-alert dense dismissible type="info" v-if="infoMessage">
-          {{ infoMessage }}
-        </v-alert>
-
-        <v-alert dense dismissible type="success" v-if="successMessage">
+        <v-alert dense dismissible color="cyan lighten-2" border="left" elevation="2" colored-border type="success"
+          v-if="successMessage"
+        >
           {{ successMessage }}
         </v-alert>
 
-        <v-alert dense dismissible type="error" v-if="errorMessage">
+        <v-alert dense dismissible color="purple lighten-2" border="left" elevation="2" colored-border type="info"
+          v-if="infoMessage"
+        >
+          {{ infoMessage }}
+        </v-alert>
+
+        <v-alert dense dismissible color="orange" border="left" elevation="2" colored-border type="warning"
+          v-if="errorMessage"
+        >
           {{ errorMessage }}
         </v-alert>
-        
+
         <div class="headline text-center font-weight-medium mb-5">
           Welcome to inprice
         </div>
@@ -26,13 +32,19 @@
 
           <v-card-text>
 
-            <v-form ref="form" v-model="valid">
+            <v-form 
+              ref="form"
+              v-model="valid"
+              onSubmit="return false"
+              @keyup.native.enter="valid && submit($event)"
+            >
               <v-text-field
                 label="E-mail"
                 v-model="form.email"
                 ref="email"
                 :rules="rules.email"
                 type="email"
+                maxlenght="100"
               />
 
               <v-text-field
@@ -42,6 +54,7 @@
                 :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass ? 'text' : 'password'"
                 @click:append="showPass = !showPass"
+                maxlenght="16"
               />
             </v-form>
 
@@ -123,22 +136,25 @@ export default {
     this.infoMessage = null;
     this.errorMessage= null;
 
-    const message = parseInt(this.$route.query.message || '0');
+    const message = this.$route.query.m;
     switch (message) {
-      case 1:
-        this.infoMessage = "Your session expired.";
+      case '1nqq':
+        this.infoMessage = "Your session expired. Please login again.";
         break;
-      case 2:
-        this.successMessage = "Your registration is successfuly completed.";
+      case 'plfw':
+        this.successMessage = 'We have just sent an activation link to your email address. Please check it.';
         break;
-      case 3:
-        this.errorMessage = "Your registration link is invalid or expired. Please try again";
+      case 'ax37':
+        this.successMessage = "Your registration is successfuly completed. Please login.";
         break;
-      case 4:
-        this.successMessage = "You have successfuly activated your membership.";
+      case 'qb41':
+        this.infoMessage = "Your registration link is invalid or expired. Please try again.";
         break;
-      case 5:
-        this.errorMessage = "Your activation link is invalid or expired. Please ask again";
+      case 'ap17':
+        this.successMessage = "You have successfuly activated your membership. Please login.";
+        break;
+      case 'mqn6':
+        this.errorMessage = "Your activation link is invalid or expired. Please ask again.";
         break;
     }
   }

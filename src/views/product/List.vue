@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="rows && rows.length > 0">
-      <div class="row" v-for="row in rows" :key="row.id">
+      <v-row v-for="row in rows" :key="row.id">
 
         <v-hover v-slot:default="{ hover }">
           <v-card class="col pt-1" :elevation="hover ? 8 : 2">
@@ -19,7 +19,7 @@
               </div>
             </v-card-title>
 
-            <div class="row">
+            <v-row>
               <div class="col pa-1">
                 <div class="text-center">Your</div>
                 <v-divider></v-divider>
@@ -109,11 +109,11 @@
                   </template>
                 </v-simple-table>
               </div>
-            </div>
+            </v-row>
 
             <v-divider></v-divider>
 
-            <div class="row mt-3 ml-2">
+            <v-row class="mt-3 ml-2">
               <div>
                 <span class="caption">{{ row.updatedAt }}</span>
                 <v-icon class="ml-1">mdi-update</v-icon>
@@ -130,20 +130,19 @@
                   <span>Add & Remove links for this product to track prices</span>
                 </v-tooltip>
               </div>
-            </div>
+            </v-row>
           </v-card>
         </v-hover>
-      </div>
+      </v-row>
 
-      <div class="row mt-3">
+      <v-row class="mt-3">
         <v-btn>Load More</v-btn>
-      </div>
+      </v-row>
     </div>
-    <div v-else class="row mt-3">
-      <p>
-        No product was found! You can add a new one or change your criteria.
-      </p>
-    </div>
+  
+    <p v-else class="mt-3">
+      No product was found! You can add a new one or change your criteria.
+    </p>
   </div>
 
 </template>

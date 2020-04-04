@@ -26,7 +26,12 @@
 
         </v-card>
 
-        <v-form ref="form" v-model="valid" @submit.prevent>
+        <v-form 
+          ref="form"
+          v-model="valid"
+          onSubmit="return false"
+          @keyup.native.enter="valid && submit($event)"
+        >
           <v-text-field
             outlined dense
             ref="email"

@@ -7,7 +7,7 @@ export default {
   },
 
   setHeader(accessToken) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    axios.defaults.headers.common['Authorization'] = accessToken;
   },
 
   removeHeader() {
@@ -57,7 +57,6 @@ export default {
         if (error.request.responseURL.includes('/logout')) return;
 
         if (error.request.status == 401) {
-
           if (!error.request.responseURL.includes('/refresh-token')) {
 
           try {

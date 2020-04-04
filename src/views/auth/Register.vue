@@ -10,6 +10,8 @@
             <v-form 
               ref="form"
               v-model="valid"
+              onSubmit="return false"
+              @keyup.native.enter="valid && submit($event)"
             >
               <p class="text-center pt-4 ma-0">In order to register, please give your info below</p>
 
@@ -23,6 +25,7 @@
                   v-model="form.userName"
                   :rules="rules.userName"
                   type="text"
+                  maxlenght="70"
                 />
 
                 <v-text-field class="mx-5"
@@ -89,7 +92,11 @@
                 <router-link to="login">Sign In</router-link>
               </div>
               <v-spacer></v-spacer>
-              <v-btn color="info" @click="submit">Sign Up</v-btn>
+              <v-btn
+                color="info"
+                @click="submit"
+                :loading="loading" 
+                :disabled="loading">Sign Up</v-btn>
             </v-card-actions>
         </v-card>
         <div class="text-center font-weight-light mt-6">
@@ -110,11 +117,12 @@ export default {
   data() {
     return {
       valid:false,
+      loading: false,
+      showPass1: false,
+      showPass2: false,
       rules: {},
       sectors: Consts.sectors,
       countries: Consts.countries,
-      showPass1: false,
-      showPass2: false,
       form: {
         userName: "",
         email: "",

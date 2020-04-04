@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="350">
+    <v-dialog v-model="opened" max-width="500">
       <v-card>
         <v-card-title>Product details</v-card-title>
 
@@ -25,25 +25,35 @@
               type="text"
             />
 
-            <currency-input v-model="price" />
+            <v-text-field
+              label="Price"
+              v-model.lazy="form.price"
+              :rules="rules.price"
+              @blur="formatPrice"
+              maxlength="10"
+            />
 
-            <div class="row">
-              <v-text-field
-                class="col"
-                label="Brand"
-                v-model="form.brand"
-                :rules="rules.brand"
-                type="text"
-              />
+            <v-row>
+              <v-col class="pa-0">
+                <v-text-field
+                  class="col"
+                  label="Brand"
+                  v-model="form.brand"
+                  :rules="rules.brand"
+                  type="text"
+                />
+              </v-col>
 
-              <v-text-field
-                class="col"
-                label="Category"
-                v-model="form.category"
-                :rules="rules.category"
-                type="text"
-              />
-            </div>
+              <v-col class="pa-0">
+                <v-text-field
+                  class="col"
+                  label="Category"
+                  v-model="form.category"
+                  :rules="rules.category"
+                  type="text"
+                />
+              </v-col>
+            </v-row>
           </v-form>
 
         </v-card-text>
@@ -132,6 +142,9 @@ export default {
       this.loading = false;
       this.rules = {};
       this.$refs.form.reset();
+    },
+    formatPrice() {
+      this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);
     }
   }
 };

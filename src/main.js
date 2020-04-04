@@ -6,7 +6,6 @@ import store from './store';
 
 import vuetify from './plugins/vuetify';
 import Notifications from 'vue-notification';
-import VueCurrencyInput from 'vue-currency-input'
 
 import axios from 'axios';
 import dotenv from 'dotenv';
@@ -21,7 +20,6 @@ Vue.config.productionTip = false
 
 Vue.use(VueAxios, axios);
 Vue.use(Notifications);
-Vue.use(VueCurrencyInput);
 
 // Set the base URL of the API
 ApiService.init(process.env.VUE_APP_BASE_URL);
