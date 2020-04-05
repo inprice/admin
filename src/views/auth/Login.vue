@@ -70,7 +70,7 @@
           </v-card-text>
         </v-card>
         <div class="text-center font-weight-light mt-6">
-          Don't have an account yet? <router-link to="register">Sign Up</router-link>
+          Don't have an account yet? <router-link to="request-registration">Sign Up</router-link>
         </div>
       </v-col>
     </v-row>
@@ -144,12 +144,12 @@ export default {
       case 'plfw':
         this.successMessage = 'We have just sent an activation link to your email address. Please check it.';
         break;
-      case 'ax37':
-        this.successMessage = "Your registration is successfuly completed. Please login.";
-        break;
-      case 'qb41':
-        this.infoMessage = "Your registration link is invalid or expired. Please try again.";
-        break;
+      // case 'ax37':
+      //   this.successMessage = "Your registration is successfuly completed. Please login.";
+      //   break;
+      // case 'qb41':
+      //   this.infoMessage = "Your registration link is invalid or expired. Please try again.";
+      //   break;
       case 'ap17':
         this.successMessage = "You have successfuly activated your membership. Please login.";
         break;

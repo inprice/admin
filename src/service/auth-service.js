@@ -34,17 +34,32 @@ export default {
     }
   },
 
-  async register(form) {
+  async requestRegistration(form) {
     try {
-      const apiRes = await ApiService.post('/register-request', form);
-      if (apiRes.data.status == 0) {
-        router.push('/login?m=plfw');
+      const apiRes = await ApiService.post('/request-registration', form);
+      if (apiRes && apiRes.data.status == 0) {
+        router.push('/complete-registration');
         return true;
       } else {
-        Utility.showErrorMessage('Register', 'api', apiRes.data);
+        Utility.showErrorMessage('Registration Request', 'api', apiRes.data);
       }
     } catch (error) {
-      Utility.showErrorMessage('Register', 'network', error);
+      Utility.showErrorMessage('Registration Request', 'network', error);
+    }
+    return false;
+  },
+
+  async completeRegistration(activationCode) {
+    try {
+      const apiRes = await ApiService.post('/complete-registration?token=' + activationCode);
+      if (apiRes && apiRes.data.status == 0) {
+        saveSessionInfo(apiRes.data.data);
+        return true;
+      } else {
+        Utility.showErrorMessage('Registration Complete', 'api', apiRes.data);
+      }
+    } catch (error) {
+      Utility.showErrorMessage('Registration Complete', 'network', error);
     }
     return false;
   },
@@ -92,13 +107,13 @@ export default {
     const apiRes = await ApiService.post('/refresh-token', SessionService.getRefreshToken());
     if (apiRes && apiRes.data.status == 0) {
       saveSessionInfo(apiRes.data.data);
-      return apiRes.data.data.tokens.ACCESS;
+      return true;
     }
-    return null;
+    return false;
   },
-
+  
   logout(expired) {
-    ApiService.post('/logout')
+    ApiService.post('/logout', { email: SessionService.getUserEmail() })
       .then(() => {
         SessionService.removeSessionInfo();
         ApiService.removeHeader();

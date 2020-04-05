@@ -90,7 +90,7 @@ export default {
         this.loading = true;
         const result = await AuthService.resetPassword(this.form);
         if (result == true) {
-          this.$router.push({ name: 'login' });
+          this.$router.push('/login');
           Utility.showInfoMessage('Reset Password', 'Your password has been successfuly reset')
           return;
         }

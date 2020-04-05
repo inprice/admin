@@ -5,7 +5,6 @@ import NProgress from 'nprogress';
 
 import SessionService from './service/session-service';
 
-// import goTo from 'vuetify/es5/services/goto'
 import 'nprogress/nprogress.css';
 
 Vue.use(VueRouter);
@@ -16,7 +15,8 @@ const MainLayout = import('./views/MainLayout.vue');
 
 // without authentication
 const Login = import('./views/auth/Login');
-const Register = import("./views/auth/Register.vue");
+const RequestRegistration = import("./views/auth/RequestRegistration.vue");
+const CompleteRegistration = import("./views/auth/CompleteRegistration.vue");
 const ForgotPassword = import("./views/auth/ForgotPassword.vue");
 const ResetPassword = import("./views/auth/ResetPassword.vue");
 const AcceptInvitation = import("./views/auth/AcceptInvitation.vue");
@@ -30,9 +30,6 @@ const ServerError = import('./views/errors/ServerError');
 const NotFoundPage = import('./views/errors/404NotFound');
 
 const router = new VueRouter({
-  // scrollBehavior: () => {
-  //   return goTo(0)
-  // },  
   base: '/',
   mode: 'history',
   routes: [
@@ -42,9 +39,14 @@ const router = new VueRouter({
       component: () => Login
     },
     {
-      path: '/register',
-      name: 'register',
-      component: () => Register
+      path: '/request-registration',
+      name: 'requestRegistration',
+      component: () => RequestRegistration
+    },
+    {
+      path: '/complete-registration',
+      name: 'completeRegistration',
+      component: () => CompleteRegistration
     },
     {
       path: '/forgot-password',

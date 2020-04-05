@@ -5,9 +5,9 @@
         <div class="headline text-center font-weight-medium mb-5">
           Welcome to inprice
         </div>
+
         <v-card>
           <v-card-title>Accept Invitation</v-card-title>
-
           <v-divider></v-divider>
 
           <v-card-text>
@@ -17,7 +17,7 @@
               onSubmit="return false"
               @keyup.native.enter="valid && submit($event)"
             >
-              <v-text-field class="mx-5"
+              <v-text-field
                 ref="name"
                 label="Name"
                 v-model="form.name"
@@ -27,7 +27,6 @@
               />
 
               <v-text-field
-                ref="password"
                 label="Password"
                 v-model="form.password"
                 :rules="rules.password"
@@ -48,20 +47,26 @@
               />
             </v-form>
 
-            <v-card-actions>
+            <v-card-actions class="pt-0">
+              Already have an account?
+              <router-link class="ml-1" to="login">Sign In</router-link>
+              
+              <v-spacer></v-spacer>
+              
               <v-btn 
-                block
                 color="info"
                 class="mt-2"
                 @click="submit" 
                 :loading="loading" 
-                :disabled="loading">Submit</v-btn>
+                :disabled="loading">Accept</v-btn>
             </v-card-actions>
+
           </v-card-text>
+
         </v-card>
 
         <div class="text-center font-weight-light mt-6">
-          By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
+          By clicking "Accept", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
         </div>
       </v-col>
     </v-row>
@@ -100,7 +105,7 @@ export default {
         this.loading = true;
         const result = await AuthService.acceptInvitation(this.form);
         if (result == true) {
-          this.$router.push({ name: 'dahsboard' });
+          this.$router.push({ name: 'dashboard' });
           Utility.showInfoMessage('Accept Invitation', 'Your have successfuly activated your membership')
           return;
         }
@@ -109,6 +114,10 @@ export default {
     },
     activateRules() {
       this.rules = {
+        name: [
+          v => !!v || "Name is required",
+          v => (v.length >= 2 && v.length <= 70) || "Name must be between 2-70 chars"
+        ],
         password: [
           v => !!v || "Password is required",
           v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
@@ -122,7 +131,7 @@ export default {
   },
   mounted() {
     this.form.token = this.$route.query.token;
-    Utility.doubleRaf(() => this.$refs.password.focus());
+    Utility.doubleRaf(() => this.$refs.name.focus());
   }
 };
 </script>

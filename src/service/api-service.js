@@ -59,27 +59,31 @@ export default {
         if (error.request.status == 401) {
           if (!error.request.responseURL.includes('/refresh-token')) {
 
-          try {
-            const result = await AuthService.refreshToken();
+            try {
+              const result = await AuthService.refreshToken();
 
-            if (result) {
-              const reqAgain = { method: error.config.method, url: error.request.responseURL };
-              if (/p(u|os)t/gi.test(error.config.method)) {
-                reqAgain.data = error.config.data;
-              } else {
-                reqAgain.params = error.config.params;
+              if (result == true) {
+                const reqAgain = { method: error.config.method, url: error.request.responseURL };
+                if (/p(u|os)t/gi.test(error.config.method)) {
+                  reqAgain.data = error.config.data;
+                } else {
+                  reqAgain.params = error.config.params;
+                }
+
+                return this.customRequest(reqAgain);
               }
-              return this.customRequest(reqAgain);
-            }
-              /* eslint-disable  no-empty */
-          } catch (e) { }
-          AuthService.logout(true);
-          return;
+                /* eslint-disable  no-empty */
+            } catch (e) { }
+          } else {
+            AuthService.logout(true);
+            return;
+          }
+        } else {
+          throw error;
         }
-        throw error;
       }
-    }
-  )},
+    )
+  },
 
   unmountInterceptor() {
     if (this.interceptor) {
