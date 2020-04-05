@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import AuthService from '../service/auth-service';
+// import AuthService from '../service/auth-service';
 
 export default {
   showInfoMessage(caller, message) {
@@ -33,7 +33,7 @@ export default {
     }
 
     if (message.includes('code 401')) {
-      AuthService.logout(true);
+      // AuthService.logout(true);
       return;
     }
 

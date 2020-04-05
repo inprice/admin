@@ -119,20 +119,20 @@
 
               <v-alert
                 dense
-                colored-border
-                color="cyan lighten-2"
-                class="pa-0 px-2 mr-2 caption"
+                outlined
+                color="indigo"
+                class="pa-0 px-2 mb-0 mt-2 mr-2 caption"
               >
                 <strong>#</strong>{{ row.code }}
               </v-alert>
 
               <v-alert
                 dense
-                colored-border
-                color="purple lighten-2"
-                class="pa-0 px-2 mr-2 caption"
+                outlined
+                color="indigo"
+                class="pa-0 px-2 mb-0 mt-2 mr-2 caption"
               >
-                <strong>Updated:</strong> {{ row.updatedAt }}
+                <strong>Updated</strong> {{ row.updatedAt }}
               </v-alert>
 
               <v-spacer></v-spacer>
@@ -149,6 +149,7 @@
                 </v-tooltip>
               </div>
             </v-row>
+
           </v-card>
         </v-hover>
       </v-row>

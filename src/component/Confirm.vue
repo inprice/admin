@@ -6,10 +6,13 @@
     @keydown.esc="cancel"
   >
     <v-card>
-      <v-toolbar :color="options.color" dark dense flat>
-        <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
+      <v-toolbar dense flat>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-icon>mdi-alert-circle-outline</v-icon>
       </v-toolbar>
-      <v-card-text v-show="!!message" class="pa-4">{{ message }}</v-card-text>
+      <v-divider></v-divider>
+      <v-card-text v-show="!!message" class="pa-4"><strong>{{ important }} </strong>{{ message }}</v-card-text>
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
         <v-btn @click.native="agree" color="primary darken-1" text>Yes</v-btn>
@@ -20,45 +23,17 @@
 </template>
 
 <script>
-/**
- * Vuetify Confirm Dialog component
- *
- * Insert component where you want to use it:
- * <confirm ref="confirm"></confirm>
- *
- * Call it:
- * this.$refs.confirm.open('Delete', 'Are you sure?', { color: 'red' }).then((confirm) => {})
- * Or use await:
- * if (await this.$refs.confirm.open('Delete', 'Are you sure?', { color: 'red' })) {
- *   // yes
- * }
- * else {
- *   // cancel
- * }
- *
- * Alternatively you can place it in main App component and access it globally via this.$root.$confirm
- * <template>
- *   <v-app>
- *     ...
- *     <confirm ref="confirm"></confirm>
- *   </v-app>
- * </template>
- *
- * mounted() {
- *   this.$root.$confirm = this.$refs.confirm.open
- * }
- */
 export default {
   name: 'confirm',
   data: () => ({
     dialog: false,
     resolve: null,
     reject: null,
+    important: null,
     message: null,
     title: null,
     options: {
-      color: 'primary',
-      width: 290,
+      width: 350,
       zIndex: 200
     }
   }),
@@ -76,9 +51,10 @@ export default {
     }
   },
   methods: {
-    open(title, message, options) {
+    open(title, important, message, options) {
       this.dialog = true
       this.title = title
+      this.important = important
       this.message = message
       this.options = Object.assign(this.options, options)
       return new Promise((resolve, reject) => {
