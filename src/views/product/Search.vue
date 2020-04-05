@@ -39,16 +39,20 @@ export default {
       term: ''
     }
   },
+  watch: {
+    term() {
+      this.search();
+    },
+  },
   methods: {
     add() {
-      this.$emit('added');
+      this.$emit('add');
     },
     search() {
-      this.$emit('searched', this.term);
+      this.$emit('search', this.term);
     },
     clearTerm() {
       this.term = '';
-      this.search();
       this.$refs.searchTerm.focus();
     }
   }

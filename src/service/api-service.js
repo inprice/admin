@@ -74,9 +74,6 @@ export default {
               }
                 /* eslint-disable  no-empty */
             } catch (e) { }
-          } else {
-            AuthService.logout(true);
-            return;
           }
         } else {
           throw error;

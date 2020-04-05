@@ -63,7 +63,7 @@
 
           <v-btn @click="close">Close</v-btn>
           <v-btn
-            @click="submit"
+            @click="save"
             color="primary"
             :loading="loading" 
             :disabled="loading"
@@ -89,7 +89,7 @@ export default {
       valid: false,
       rules: {},
       form: {
-        id: 0,
+        id: null,
         code: '',
         name: '',
         price: 0,
@@ -99,14 +99,32 @@ export default {
     };
   },
   methods: {
-    async submit() {
+    open(data) {
+      this.opened = true;
+      let self = this;
+      Utility.doubleRaf(() => {
+        self.$refs.form.resetValidation();
+        if (data) this.form = data;
+        self.$refs.code.focus();
+      });
+    },
+    async save() {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        this.$emit('saved', this.form)
-        this.loading = false;
+        this.form.price = parseFloat(this.form.price);
+        this.$emit('save', this.form)
       }
+    },
+    stopLoading() {
+      this.loading = false;
+    },
+    close() {
+      this.opened = false;
+      this.loading = false;
+      this.rules = {};
+      this.$refs.form.reset();
     },
     activateRules() {
       this.rules = {
@@ -128,20 +146,6 @@ export default {
           v => (v && parseFloat(v) > 0) || "Price must be greater than 0"
         ],
       }
-    },
-    open() {
-      this.opened = true;
-      let self = this;
-      Utility.doubleRaf(() => {
-        self.$refs.form.resetValidation();
-        self.$refs.code.focus();
-      });
-    },
-    close() {
-      this.opened = false;
-      this.loading = false;
-      this.rules = {};
-      this.$refs.form.reset();
     },
     formatPrice() {
       this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);

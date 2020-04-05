@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="rows && rows.length > 0">
-      <v-row v-for="row in rows" :key="row.id">
+      <v-row v-for="(row, index) in rows" :key="row.id" class="py-2">
 
         <v-hover v-slot:default="{ hover }">
           <v-card class="col pt-1" :elevation="hover ? 8 : 2">
@@ -11,8 +11,10 @@
               <v-spacer></v-spacer>
               <div class="text-right caption">
                 <v-switch
+                  @change="toggle(row.id)"
+                  v-model="row.active"
                   class="ma-0"
-                  color="success"
+                  color="primary"
                   hide-details
                   :label="row.active == true ? 'Active' : 'Passive'"
                 ></v-switch>
@@ -114,18 +116,34 @@
             <v-divider></v-divider>
 
             <v-row class="mt-3 ml-2">
-              <div>
-                <span class="caption">{{ row.updatedAt }}</span>
-                <v-icon class="ml-1">mdi-update</v-icon>
-              </div>
+
+              <v-alert
+                dense
+                colored-border
+                color="cyan lighten-2"
+                class="pa-0 px-2 mr-2 caption"
+              >
+                <strong>#</strong>{{ row.code }}
+              </v-alert>
+
+              <v-alert
+                dense
+                colored-border
+                color="purple lighten-2"
+                class="pa-0 px-2 mr-2 caption"
+              >
+                <strong>Updated:</strong> {{ row.updatedAt }}
+              </v-alert>
+
               <v-spacer></v-spacer>
-              <div>
-                <v-btn class="mx-2" small color="red" dark>Delete</v-btn>
-                <v-btn class="mx-2" width=100 small color="success">Edit</v-btn>
+
+              <div class="mr-2">
+                <v-btn class="mx-1" small color="red" dark @click="remove(row.id, row.name)">Delete</v-btn>
+                <v-btn class="mx-1" width=80 small color="success" @click="edit(index)">Edit</v-btn>
 
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn class="mx-2" small color="primary" v-on="on">Manage Links</v-btn>
+                    <v-btn class="mx-1" small color="primary" v-on="on">Manage Links</v-btn>
                   </template>
                   <span>Add & Remove links for this product to track prices</span>
                 </v-tooltip>
@@ -155,11 +173,11 @@ export default {
     edit(rowNo) {
       this.$emit('edit', rowNo);
     },
-    delete(rowNo, name) {
-      this.$refs.confirm.open('Delete', `${name} will be deleted. Are you sure?`, { color: 'red' }).then((confirm) => {
-        console.info('confirm', confirm)
-        this.$emit('deleted', rowNo);
-      });
+    toggle(id) {
+      this.$emit('toggle', id);
+    },
+    remove(id, name) {
+      this.$emit('remove', { id, name});
     }
   }
 };

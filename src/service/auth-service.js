@@ -6,8 +6,8 @@ import SessionService from './session-service';
 
 const saveSessionInfo = (res) => {
   const info = {
-    access: res.ACCESS,
-    refresh: res.REFRESH,
+    access: res.access,
+    refresh: res.refresh,
     user: res.user
   };
   SessionService.saveSessionInfo(info);
@@ -111,7 +111,7 @@ export default {
     }
     return false;
   },
-  
+
   logout(expired) {
     ApiService.post('/logout', { email: SessionService.getUserEmail() })
       .then(() => {
