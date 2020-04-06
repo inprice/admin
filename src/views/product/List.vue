@@ -117,23 +117,8 @@
 
             <v-row class="mt-3 ml-2">
 
-              <v-alert
-                dense
-                outlined
-                color="indigo"
-                class="pa-0 px-2 mb-0 mt-2 mr-2 caption"
-              >
-                <strong>#</strong>{{ row.code }}
-              </v-alert>
-
-              <v-alert
-                dense
-                outlined
-                color="indigo"
-                class="pa-0 px-2 mb-0 mt-2 mr-2 caption"
-              >
-                <strong>Updated</strong> {{ row.updatedAt }}
-              </v-alert>
+              <semi-tag tag="#" bgColor="indigo" :value="row.code"></semi-tag>
+              <semi-tag tag="Updated" :value="row.updatedAt"></semi-tag>
 
               <v-spacer></v-spacer>
 
@@ -167,7 +152,6 @@
 </template>
 
 <script>
-
 export default {
   props: ['rows'],
   methods: {
@@ -180,6 +164,9 @@ export default {
     remove(id, name) {
       this.$emit('remove', { id, name});
     }
+  },
+  components: {
+    SemiTag: () => import('@/component/SemiTag.vue')
   }
 };
 </script>

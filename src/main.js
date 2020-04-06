@@ -13,7 +13,6 @@ import Filters from './filters';
 dotenv.config();
 
 import ApiService from './service/api';
-import SessionService from './service/session';
 
 Vue.config.productionTip = false
 
@@ -22,11 +21,6 @@ Vue.use(Notifications);
 
 // Set the base URL of the API
 ApiService.init(process.env.VUE_APP_BASE_URL);
-
-// If token exists set header
-if (SessionService.getAccessToken()) {
-  ApiService.setHeader(SessionService.getAccessToken());
-}
 
 Filters(Vue);
 

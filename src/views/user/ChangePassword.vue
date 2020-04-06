@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import SessionService from '@/service/session';
 import UserService from '@/service/user';
 import Utility from '@/helpers/utility';
 
@@ -75,7 +74,6 @@ export default {
       showPass3: false,
       rules: {},
       form: {
-        id: 0,
         oldPassword: '',
         password: '',
         repeatPassword: ''
@@ -118,7 +116,6 @@ export default {
       let self = this;
       Utility.doubleRaf(() => {
         self.$refs.form.resetValidation();
-        self.form.id = SessionService.getUserId();
         self.$refs.oldPassword.focus();
       });
     },

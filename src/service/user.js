@@ -7,7 +7,6 @@ const baseURL = '/user';
 export default {
 
   async changePassword(form) {
-    console.info('form', form);
     const res = await Helper.call('Change Password', { method: 'put', url: baseURL + '/change-password', data: form });
     if (res.status == true) Utility.showInfoMessage('Change Password', 'Your password has been successfuly updated');
     return res.status;

@@ -1,9 +1,16 @@
 import axios from 'axios';
+import AuthService from './auth';
 import SessionService from './session';
 
 export default {
+
   init(baseURL) {
     axios.defaults.baseURL = baseURL;
+    // refresh previous session
+    if (SessionService.getAccessToken()) {
+      this.setHeader(SessionService.getAccessToken());
+      this.mountInterceptor();
+    }
   },
 
   setHeader(accessToken) {
@@ -43,29 +50,32 @@ export default {
         return response;
       },
       async (error) => {
-        if (error.request.responseURL.includes('/logout')) return;
+        if (error.config.url.includes('/logout')) return;
 
         if (error.request.status == 401) {
-          if (!error.request.responseURL.includes('/refresh-token')) {
+
+          if (error.config.url.includes('/refresh-token')) {
+            AuthService.logout(true);
+
+          } else {
 
             try {
               const result = await this.refreshToken();
               if (result == true) {
-                const reqAgain = { method: error.config.method, url: error.request.responseURL };
+                const reqAgain = { method: error.config.method, url: error.config.url };
                 if (/p(u|os)t/gi.test(error.config.method)) {
                   reqAgain.data = error.config.data;
                 } else {
                   reqAgain.params = error.config.params;
                 }
-
                 return this.customRequest(reqAgain);
               }
-                /* eslint-disable  no-empty */
+            /* eslint-disable  no-empty */
             } catch (e) { }
           }
-        } else {
-          throw error;
         }
+        // If error was not 401 just reject as is        
+        throw error;
       }
     )
   },

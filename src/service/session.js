@@ -32,6 +32,13 @@ export default {
     return localStorage.getItem(Consts.keys.token.refresh);
   },
 
+  getTokens() {
+    return {
+      access: this.getAccessToken(),
+      refresh: this.getRefreshToken()
+    };
+  },
+
   getUserId() {
     return localStorage.getItem(Consts.keys.user.id) || 0;
   },
@@ -46,6 +53,15 @@ export default {
   
   getUserEmail() {
     return localStorage.getItem(Consts.keys.user.email) || '';
+  },
+
+  getUser() {
+    return {
+      id: this.getUserId(),
+      email: this.getUserEmail(),
+      name: this.getUserName(),
+      role: this.getUserRole(),
+    };
   }
 
 };
