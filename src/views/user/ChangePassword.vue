@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import SessionService from '@/service/session-service';
-import UserService from '@/service/user-service';
+import SessionService from '@/service/session';
+import UserService from '@/service/user';
 import Utility from '@/helpers/utility';
 
 export default {

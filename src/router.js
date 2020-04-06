@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import Meta from 'vue-meta';
 import NProgress from 'nprogress';
 
-import SessionService from './service/session-service';
+import SessionService from './service/session';
 
 import 'nprogress/nprogress.css';
 

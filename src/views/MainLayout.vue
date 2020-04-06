@@ -107,8 +107,8 @@
 </template>
 
 <script>
-import AuthService from '@/service/auth-service';
-import SessionService from '../service/session-service';
+import AuthService from '@/service/auth';
+import SessionService from '../service/session';
 
 import ChangePasswordDialog from './user/ChangePassword.vue';
 

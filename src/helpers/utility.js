@@ -1,5 +1,5 @@
 import Vue from 'vue';
-// import AuthService from '../service/auth-service';
+// import AuthService from '../service/auth';
 
 export default {
   showInfoMessage(caller, message) {

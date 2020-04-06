@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import AuthService from '@/service/auth-service';
+import AuthService from '@/service/auth';
 import Utility from '@/helpers/utility';
 
 import Consts from '@/helpers/consts';

@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import ProductService from '@/service/product-service';
+import ProductService from '@/service/product';
 import Utility from '@/helpers/utility';
 
 export default {

@@ -13,6 +13,7 @@
       </v-toolbar>
       <v-divider></v-divider>
       <v-card-text v-show="!!message" class="pa-4"><strong>{{ important }} </strong>{{ message }}</v-card-text>
+
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
         <v-btn @click.native="agree" color="primary darken-1" text>Yes</v-btn>

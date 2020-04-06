@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueAxios from 'vue-axios';
 import App from './App.vue'
 import router from './router'
-import store from './store';
 
 import vuetify from './plugins/vuetify';
 import Notifications from 'vue-notification';
@@ -13,8 +12,8 @@ import Filters from './filters';
 
 dotenv.config();
 
-import ApiService from './service/api-service';
-import SessionService from './service/session-service';
+import ApiService from './service/api';
+import SessionService from './service/session';
 
 Vue.config.productionTip = false
 
@@ -33,7 +32,6 @@ Filters(Vue);
 
 new Vue({
   vuetify,
-  store,
   router,
   render: h => h(App)
 }).$mount('#app')
