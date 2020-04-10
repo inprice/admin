@@ -2,8 +2,8 @@
   <v-alert
     dense
     outlined
-    color="indigo"
-    class="pa-0 mb-0 mt-2 mr-2 caption"
+    :color="bgColor"
+    class="pa-0"
   >
     <strong :style="{ color: fgColor, backgroundColor: bgColor }">{{ tag }}</strong><span>{{ value }}</span>
   </v-alert>
@@ -34,11 +34,9 @@ export default {
 <style scoped>
   .v-alert__content > strong {
     display: inline-block;
-    padding-left: 7px;
-    padding-right: 7px;
+    padding: 0 7px;
   }
   .v-alert__content > span {
-    padding-left: 7px;
-    padding-right: 7px;
+    padding: 0 7px;
   }
 </style>

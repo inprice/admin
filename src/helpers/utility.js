@@ -32,10 +32,7 @@ export default {
       message = msg.message;
     }
 
-    if (message.includes('code 401')) {
-      // AuthService.logout(true);
-      return;
-    }
+    if (message.includes('code 401')) return;
 
     Vue.notify({
       type: 'error',

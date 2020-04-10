@@ -41,12 +41,20 @@ export default {
   },
 
   logout(expired) {
-    ApiService.post('/logout', { email: SessionService.getUserEmail() })
-      .then(() => {
-        ApiService.removeSessionInfo();
-        if (expired == false) Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
-        router.push('/login' + (expired == true ? '?m=1nqq' : ''));
-    });
+    if (expired == true) {
+      this.terminateSession(expired);
+    } else {
+      ApiService.post('/logout', { email: SessionService.getUserEmail(), companyId: SessionService.getCompanyId() })
+        .then(() => {
+          this.terminateSession(expired);
+          Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
+      });
+    }
+  },
+
+  terminateSession(expired) {
+    ApiService.removeSessionInfo();
+    router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   }
 
 };

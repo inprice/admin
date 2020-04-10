@@ -33,6 +33,7 @@
                 v-model="form.email"
                 type="email"
                 :rules="rules.email"
+                maxlenght="100"
               />
 
               <v-text-field class="mx-5"
@@ -42,6 +43,7 @@
                 :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass1 ? 'text' : 'password'"
                 @click:append="showPass1 = !showPass1"
+                maxlenght="16"
               />
 
               <v-text-field class="mx-5"
@@ -51,6 +53,7 @@
                 :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass2 ? 'text' : 'password'"
                 @click:append="showPass2 = !showPass2"
+                maxlenght="16"
               />
             </v-card>
 
@@ -62,6 +65,7 @@
                   v-model="form.companyName"
                   :rules="rules.companyName"
                   type="text"
+                  maxlenght="70"
                 />
 
                 <v-text-field class="mx-5"
@@ -69,6 +73,7 @@
                   v-model="form.website"
                   :rules="rules.website"
                   type="url"
+                  maxlenght="100"
                 />
 
                 <v-select class="mx-5"

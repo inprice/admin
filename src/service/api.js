@@ -56,9 +56,7 @@ export default {
 
           if (error.config.url.includes('/refresh-token')) {
             AuthService.logout(true);
-
           } else {
-
             try {
               const result = await this.refreshToken();
               if (result == true) {

@@ -16,6 +16,7 @@
               v-model="form.code"
               :rules="rules.code"
               type="text"
+              maxlenght="120"
             />
 
             <v-text-field
@@ -23,6 +24,7 @@
               v-model="form.name"
               :rules="rules.name"
               type="text"
+              maxlenght="500"
             />
 
             <v-text-field
@@ -41,6 +43,7 @@
                   v-model="form.brand"
                   :rules="rules.brand"
                   type="text"
+                  maxlength="100"
                 />
               </v-col>
 
@@ -51,6 +54,7 @@
                   v-model="form.category"
                   :rules="rules.category"
                   type="text"
+                  maxlength="100"
                 />
               </v-col>
             </v-row>

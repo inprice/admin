@@ -11,6 +11,7 @@ export default {
     localStorage.setItem(Consts.keys.user.role, info.user.role);
     localStorage.setItem(Consts.keys.user.name, info.user.name);
     localStorage.setItem(Consts.keys.user.email, info.user.email);
+    localStorage.setItem(Consts.keys.user.companyId, info.user.companyId);
   },
 
   removeSessionInfo() {
@@ -22,6 +23,7 @@ export default {
     localStorage.removeItem(Consts.keys.user.role);
     localStorage.removeItem(Consts.keys.user.name);
     localStorage.removeItem(Consts.keys.user.email);
+    localStorage.removeItem(Consts.keys.user.companyId);
   },
 
   getAccessToken() {
@@ -55,12 +57,17 @@ export default {
     return localStorage.getItem(Consts.keys.user.email) || '';
   },
 
+  getCompanyId() {
+    return localStorage.getItem(Consts.keys.user.company_id) || 0;
+  },
+
   getUser() {
     return {
       id: this.getUserId(),
       email: this.getUserEmail(),
       name: this.getUserName(),
       role: this.getUserRole(),
+      companyId: this.getCompanyId(),
     };
   }
 

@@ -5,7 +5,8 @@ const keys = {
     id: prefix + '.user.id',
     role: prefix + '.user.role',
     name: prefix + '.user.name',
-    email: prefix + '.user.email'
+    email: prefix + '.user.email',
+    companyId: prefix + '.user.company_id'
   },
   token: {
     access: prefix + '.access.token',

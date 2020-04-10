@@ -4,9 +4,9 @@
       <v-row v-for="(row, index) in rows" :key="row.id" class="py-2">
 
         <v-hover v-slot:default="{ hover }">
-          <v-card class="col pt-1" :elevation="hover ? 8 : 2">
+          <v-card class="col pt-1 pb-1" :elevation="hover ? 8 : 2">
 
-            <v-card-title class="py-1">
+            <v-card-title class="py-1 pb-0 ">
               <div class="font-weight-regular">{{ row.name }}</div>
               <v-spacer></v-spacer>
               <div class="text-right caption">
@@ -115,14 +115,16 @@
 
             <v-divider></v-divider>
 
-            <v-row class="mt-3 ml-2">
+            <v-row class="mt-1 ml-1">
 
-              <semi-tag tag="#" bgColor="indigo" :value="row.code"></semi-tag>
-              <semi-tag tag="Updated" :value="row.updatedAt"></semi-tag>
+              <div class="inline-chips">
+                <semi-chip bgColor="#555" class="caption" tag="Updated" :value="row.updatedAt"></semi-chip>
+                <semi-chip bgColor="#555" class="caption" tag="#" :value="row.code"></semi-chip>
+              </div>
 
               <v-spacer></v-spacer>
 
-              <div class="mr-2">
+              <div class="mt-2 mr-2">
                 <v-btn class="mx-1" small color="red" dark @click="remove(row.id, row.name)">Delete</v-btn>
                 <v-btn class="mx-1" width=80 small color="success" @click="edit(index)">Edit</v-btn>
 
@@ -166,7 +168,16 @@ export default {
     }
   },
   components: {
-    SemiTag: () => import('@/component/SemiTag.vue')
+    SemiChip: () => import('@/component/SemiChip.vue')
   }
 };
 </script>
+
+<style scoped>
+  .inline-chips {
+    display: flex;
+  }
+  .inline-chips > .v-alert {
+    margin: 10px 5px 10px;
+  }
+</style>
