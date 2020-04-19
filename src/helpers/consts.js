@@ -1,17 +1,6 @@
-const prefix = 'inp';
-
 const keys = {
-  user: {
-    id: prefix + '.user.id',
-    role: prefix + '.user.role',
-    name: prefix + '.user.name',
-    email: prefix + '.user.email',
-    companyId: prefix + '.user.company_id'
-  },
-  token: {
-    access: prefix + '.access.token',
-    refresh: prefix + '.refresh.token'
-  }
+  SESSIONS: 'INPRICE_CS',
+  SESSION_NO: 'Session'
 };
 
 const positions = [

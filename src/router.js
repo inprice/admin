@@ -3,8 +3,6 @@ import VueRouter from 'vue-router';
 import Meta from 'vue-meta';
 import NProgress from 'nprogress';
 
-import SessionService from './service/session';
-
 import 'nprogress/nprogress.css';
 
 Vue.use(VueRouter);
@@ -64,7 +62,7 @@ const router = new VueRouter({
       component: () => AcceptInvitation
     },
     {
-      path: '/app',
+      path: '/:sid/app',
       name: 'app',
       component: () => MainLayout,
       meta: {
@@ -94,35 +92,31 @@ const router = new VueRouter({
   ]
 });
 
+import store from './store'
+import Consts from './helpers/consts';
 
 router.beforeEach((to, from, next) => {
   if (to.name) NProgress.start();
 
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const loggedIn = !!SessionService.getAccessToken();
-    if (!loggedIn) {
-      if (from.name != 'login') {
-        next({ name: 'login' });
-      } else {
-        NProgress.done();
-        next();
-      }
+  let sessions = store.getters['session/getSessions'];
+  if (!sessions) {
+    sessions = JSON.parse(localStorage.getItem(Consts.keys.SESSIONS));
+  }
+  const hasSession = (sessions && sessions.length > 0);
+
+  if (to.name == 'login') {
+    if (hasSession == true && (to.query.m && to.query.m == 'addNew')) {
+      next();
     } else {
-      const userRole = SessionService.getUserRole();
-      if (to.matched.some((record) => record.meta.is_admin)) {
-        if (userRole === 'ADMIN' || to.name == 'dashboard') {
-          next();
-        } else {
-          next({ name: 'dashboard' });
-        }
-      } else {
-        next();
-      }
+      next({ name: 'dashboard', params: { sid: 0 } });
     }
-  } else if (to.path === '/' || to.path === '') {
-    next({ name: 'login' });
   } else {
-    next();
+    if (hasSession == false) {
+      next({ name: 'login' });
+    } else {
+      NProgress.done();
+      next();
+    }
   }
 });
 

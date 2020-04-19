@@ -4,6 +4,7 @@
     <v-dialog v-model="opened" max-width="350">
       <v-card>
         <v-card-title>Change password</v-card-title>
+        <v-card-subtitle>{{ title }}</v-card-subtitle>
 
         <v-card-text class="mt-5">
 
@@ -66,6 +67,7 @@ import Utility from '@/helpers/utility';
 export default {
   data() {
     return {
+      title: 'User name',
       opened: false,
       loading: false,
       valid: false,
@@ -111,7 +113,8 @@ export default {
         ],
       }
     },
-    open() {
+    open(title) {
+      this.title = title;
       this.opened = true;
       let self = this;
       Utility.doubleRaf(() => {

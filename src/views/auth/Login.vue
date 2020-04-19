@@ -78,7 +78,6 @@
 </template>
 
 <script>
-import AuthService from '@/service/auth';
 import Utility from '@/helpers/utility';
 
 export default {
@@ -104,9 +103,9 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await AuthService.login(this.form);
-        if (result == true) {
-          this.$router.push({ name: 'dashboard' });
+        const result = await this.$store.dispatch('session/login', this.form);
+        if (result != null) {
+          this.$router.push({ name: 'dashboard', params: { sid: result } });
           return;
         }
         this.loading = false;
