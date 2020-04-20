@@ -12,7 +12,7 @@
         </v-btn>
       </template>
 
-      <v-card class="text-center">
+      <v-card class="text-center" v-if="session">
         <v-icon large class="pt-4">mdi-account-check</v-icon>
         <v-list-item two-line>
           <v-list-item-content>
@@ -48,7 +48,7 @@
 
       <v-card>
         <v-list>
-          <div v-if="sessions.length > 1">
+          <div v-if="sessions && sessions.length > 1">
             <template v-for="({ user, email, company, role }, i) in sessions">
               <v-list-item
                 v-if="email != session.email"
@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
+import { sync } from 'vuex-pathify'
 import ChangePasswordDialog from '../../views/user/ChangePassword.vue';
 
 export default {
@@ -118,6 +118,10 @@ export default {
     return {
       menu: false
     }
+  },
+  computed: {
+    session: sync('session/session'),
+    sessions: sync('session/sessions'),
   },
   methods: {
     openChangePasswordDialog() {
@@ -128,10 +132,6 @@ export default {
     logout() {
       this.$store.dispatch('session/logout', false);
     }
-  },
-  computed: {
-    session: get('session/getSession'),
-    sessions: get('session/sessions'),
   },
   components: {
     ChangePasswordDialog

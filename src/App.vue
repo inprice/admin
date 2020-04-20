@@ -12,7 +12,7 @@ export default {
   watch: {
     '$route.path' () {
       typeof window !== 'undefined' && window.scrollTo(0, 0)
-    },
+    }
   }
 }
 </script>
