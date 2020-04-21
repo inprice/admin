@@ -35,6 +35,13 @@
 
       <v-spacer></v-spacer>
 
+      <div class="mt-2">
+        <div class="text-right">
+          <div class="subtitle yellow--text font-weight-bold">{{ session.company }}</div>
+          <semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip>
+        </div>
+      </div>
+
       <user-menu></user-menu>
     </v-app-bar>
 
@@ -52,7 +59,7 @@
 </template>
 
 <script>
-import UserMenu from '../component/app/UserMenu.vue';
+import { get } from 'vuex-pathify'
 
 export default {
   data() {
@@ -63,8 +70,12 @@ export default {
   created() {
     this.$vuetify.theme.dark = false;
   },
+  computed: {
+    session: get('session/session'),
+  },
   components: {
-    UserMenu
+    SemiChip: () => import('@/component/SemiChip.vue'),
+    UserMenu: () => import('@//component/app/UserMenu.vue')
   }
 };
 </script>

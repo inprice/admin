@@ -39,27 +39,42 @@ const router = new VueRouter({
     {
       path: '/request-registration',
       name: 'requestRegistration',
-      component: () => RequestRegistration
+      component: () => RequestRegistration,
+      meta: {
+        openToPublic: true
+      }
     },
     {
       path: '/complete-registration',
       name: 'completeRegistration',
-      component: () => CompleteRegistration
+      component: () => CompleteRegistration,
+      meta: {
+        openToPublic: true
+      }
     },
     {
       path: '/forgot-password',
       name: 'forgotPassword',
-      component: () => ForgotPassword
+      component: () => ForgotPassword,
+      meta: {
+        openToPublic: true
+      }
     },
     {
       path: '/reset-password',
       name: 'resetPassword',
-      component: () => ResetPassword
+      component: () => ResetPassword,
+      meta: {
+        openToPublic: true
+      }
     },
     {
       path: '/accept-invitation',
       name: 'acceptInvitation',
-      component: () => AcceptInvitation
+      component: () => AcceptInvitation,
+      meta: {
+        openToPublic: true
+      }
     },
     {
       path: '/:sid/app',
@@ -95,24 +110,12 @@ const router = new VueRouter({
 import Consts from './helpers/consts';
 import store from './store';
 
-const frontiers = [
-  'requestRegistration',
-  'completeRegistration',
-  'forgotPassword',
-  'resetPassword',
-  'acceptInvitation'
-];
-
 router.beforeEach((to, from, next) => {
   if (to.name) NProgress.start();
 
-  if (frontiers.includes(to.name)) {
-    return next();
-  }
-
-  if (to.path == '' || to.path == '/') {
-    return next({ name: 'login' });
-  }
+  if (to.path == '' || to.path == '/') return next({ name: 'login' });
+  if (to.name == 'login' && to.query.m == 'addNew') return next();
+  if (to.matched.some(record => record.meta.openToPublic)) return next();
 
   let hasSessions = false;
   let sessions = store.get('session/sessions');
@@ -138,9 +141,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (hasSessions == false && to.name != 'login') {
-    next({ name: 'login'});
-  } else if (hasSessions == true && to.name == 'login' && (!to.query.m || to.query.m != 'addNew')) {
-    next({ name: 'dashboard', params: { sid: 0 } });
+    next({ name: 'login' });
   } else {
     next();
   }

@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import { sync } from 'vuex-pathify'
+import { get } from 'vuex-pathify'
 import ChangePasswordDialog from '../../views/user/ChangePassword.vue';
 
 export default {
@@ -120,8 +120,8 @@ export default {
     }
   },
   computed: {
-    session: sync('session/session'),
-    sessions: sync('session/sessions'),
+    session: get('session/session'),
+    sessions: get('session/sessions'),
   },
   methods: {
     openChangePasswordDialog() {
