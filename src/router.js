@@ -95,47 +95,55 @@ const router = new VueRouter({
 import Consts from './helpers/consts';
 import store from './store';
 
+const frontiers = [
+  'requestRegistration',
+  'completeRegistration',
+  'forgotPassword',
+  'resetPassword',
+  'acceptInvitation'
+];
+
 router.beforeEach((to, from, next) => {
   if (to.name) NProgress.start();
 
-  if (to.path == '' || to.path == '/') {
-    return next({ name: 'login'});
+  if (frontiers.includes(to.name)) {
+    return next();
   }
 
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.path == '' || to.path == '/') {
+    return next({ name: 'login' });
+  }
 
-    let sessions = store.get('session/sessions');
-    if (!sessions) {
-
-      sessions = JSON.parse(localStorage.getItem(Consts.keys.SESSIONS));
-      if (sessions && sessions.length > 0) {
-        store.set('session/sessions', sessions, 0);
-      }
+  let hasSessions = false;
+  let sessions = store.get('session/sessions');
+  if (!sessions) {
+    sessions = JSON.parse(localStorage.getItem(Consts.keys.SESSIONS));
+    if (sessions && sessions.length > 0) {
+      hasSessions = true;
+      store.set('session/sessions', sessions, 0);
     }
+  } else {
+    hasSessions = true;
+  }
 
-    if (!sessions || sessions.length < 1) {
-      return next({ name: 'login'});
-    }
-
+  if (hasSessions == true && to.matched.some(record => record.meta.requiresAuth)) {
     const sid = to.params.sid;
-    if (!sid || sid < 0 || sid >= sessions.length) {
+    if (sid == undefined || sid < 0 || sid >= sessions.length) {
       store.set('session/session', sessions[0]);
+      const newPath = to.path.replace('/'+to.params.sid+'/', '/0/');
+      return next(newPath);
     } else if (! store.get('session/session')) {
       store.set('session/session', sessions[sid]);
     }
-  
   }
-  next();
-/*
-  let sid = to.params.sid;
-  if (!sid || sid < 0 || sid >= sessions.length) {
-    store.set('session/session', sessions[0]);
-    const newPath = to.path.replace('/'+to.params.sid+'/', '/0/');
-    document.location.href = newPath;
+
+  if (hasSessions == false && to.name != 'login') {
+    next({ name: 'login'});
+  } else if (hasSessions == true && to.name == 'login' && (!to.query.m || to.query.m != 'addNew')) {
+    next({ name: 'dashboard', params: { sid: 0 } });
+  } else {
+    next();
   }
-*/
-  //  if (to.params.sid && to.params.sid > sessions.length) {
-//  }
 
 });
 
