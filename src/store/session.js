@@ -14,10 +14,6 @@ const state = {
   sessions: null,
 };
 
-const loginChannel = new BroadcastChannel('login');
-const logoutChannel = new BroadcastChannel('logout');
-
-/* eslint-disable no-empty-pattern */
 const actions = {
 
   async login({ state, commit }, form) {
@@ -32,16 +28,17 @@ const actions = {
     return null;
   },
 
-  logout({ commit }, expired) {
+  async logout({ commit }, expired) {
     if (expired == false) {
-      ApiService.post('/logout')
+      await ApiService.post('/logout')
         .then(() => {
           Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
       });
     }
     localStorage.removeItem(Consts.keys.SESSIONS);
-    commit('CLEAR_SESSION');
     logoutChannel.postMessage();
+    commit('CLEAR_SESSION');
+
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   }
 
@@ -71,13 +68,15 @@ const mutations = {
 
 const getters = make.getters(state);
 
+const loginChannel = new BroadcastChannel('login');
 loginChannel.onmessage = (e) => {
   mutations.REFRESH_SESSION(state, e);
 };
 
+const logoutChannel = new BroadcastChannel('logout');
 logoutChannel.onmessage = () => {
-  router.push('/login');
   mutations.CLEAR_SESSION(state);
+  router.push('/login');
 };
 
 export default {
