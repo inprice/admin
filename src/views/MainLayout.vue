@@ -35,10 +35,11 @@
 
       <v-spacer></v-spacer>
 
-      <div class="mt-2">
+      <div>
         <div class="text-right">
-          <div class="subtitle yellow--text font-weight-bold">{{ session.company }}</div>
-          <semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip>
+          <div class="subtitle font-weight-bold">{{ session.company }}</div>
+          <!-- semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip -->
+          <span class="caption">{{ session.email }} - {{ session.role }}</span>
         </div>
       </div>
 
@@ -74,7 +75,7 @@ export default {
     session: get('session/session'),
   },
   components: {
-    SemiChip: () => import('@/component/SemiChip.vue'),
+    //SemiChip: () => import('@/component/SemiChip.vue'),
     UserMenu: () => import('@//component/app/UserMenu.vue')
   }
 };

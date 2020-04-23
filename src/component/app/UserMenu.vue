@@ -56,7 +56,7 @@
                 :href="`/${i}/app/dashboard`"
                 target="_blank"
               >
-                <v-icon class="mr-3">mdi-account-convert</v-icon>
+                <v-icon class="mr-3">mdi-account-arrow-right-outline</v-icon>
 
                 <v-list-item-content>
                   <v-list-item-title>{{ company }}</v-list-item-title>
@@ -73,7 +73,7 @@
           </div>
 
           <v-list-item :href="`/login?m=addNew`" target="_blank">
-            <v-icon class="mr-3">mdi-account-plus</v-icon>
+            <v-icon class="mr-3">mdi-plus</v-icon>
             <v-list-item-content>
               <v-list-item-subtitle>Add another account</v-list-item-subtitle>
             </v-list-item-content>

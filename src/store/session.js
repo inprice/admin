@@ -6,17 +6,27 @@ import router from '../router';
 import Consts from '../helpers/consts';
 import Utility from '../helpers/utility';
 
+import { BroadcastChannel } from 'broadcast-channel';
+
 const state = {
+  sessionNo: 0,
   session: null,
   sessions: null,
 };
 
+const loginChannel = new BroadcastChannel('login');
+const logoutChannel = new BroadcastChannel('logout');
+
+/* eslint-disable no-empty-pattern */
 const actions = {
 
-  async login({ commit }, form) {
+  async login({ state, commit }, form) {
     const res = await Helper.call('Login', { url: '/login', data: form });
     if (res.status == true) {
-      commit('SET_SESSIONS', res.data.sessions, res.data.sessionNo);
+      localStorage.setItem(Consts.keys.SESSIONS, JSON.stringify(res.data.sessions));
+      state.sessionNo = res.data.sessionNo;
+      commit('REFRESH_SESSION', res.data);
+      loginChannel.postMessage(res.data);
       return res.data.sessionNo;
     }
     return null;
@@ -29,7 +39,9 @@ const actions = {
           Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
       });
     }
-    commit('REMOVE_SESSION');
+    localStorage.removeItem(Consts.keys.SESSIONS);
+    commit('CLEAR_SESSION');
+    logoutChannel.postMessage();
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   }
 
@@ -38,21 +50,35 @@ const actions = {
 const mutations = {
   ...make.mutations(state),
 
-  SET_SESSIONS(state, sessions, sessionNo) {
+  setSessions(state, sessions) {
+    state.sessionNo = 0;
     state.sessions = sessions;
-    state.session = sessions[sessionNo];
-    localStorage.setItem(Consts.keys.SESSIONS, JSON.stringify(sessions));
+    state.session = sessions[0];
   },
 
-  REMOVE_SESSION() {
+  REFRESH_SESSION(state, data) {
+    state.sessions = data.sessions;
+    state.session = data.sessions[state.sessionNo];
+  },
+
+  CLEAR_SESSION(state) {
+    state.sessionNo = 0;
     state.session = null;
     state.sessions = null;
-    localStorage.removeItem(Consts.keys.SESSIONS);
   }
 
-};
+}
 
 const getters = make.getters(state);
+
+loginChannel.onmessage = (e) => {
+  mutations.REFRESH_SESSION(state, e);
+};
+
+logoutChannel.onmessage = () => {
+  router.push('/login');
+  mutations.CLEAR_SESSION(state);
+};
 
 export default {
   namespaced: true,

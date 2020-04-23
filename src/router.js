@@ -123,29 +123,29 @@ router.beforeEach((to, from, next) => {
     sessions = JSON.parse(localStorage.getItem(Consts.keys.SESSIONS));
     if (sessions && sessions.length > 0) {
       hasSessions = true;
-      store.set('session/sessions', sessions, 0);
+      store.set('session/sessions', sessions);
+      return next({ name: 'dashboard', params: { sid: 0 } });
     }
   } else {
     hasSessions = true;
   }
 
-  if (hasSessions == true && to.matched.some(record => record.meta.requiresAuth)) {
-    const sid = to.params.sid;
-    if (sid == undefined || sid < 0 || sid >= sessions.length) {
-      store.set('session/session', sessions[0]);
-      const newPath = to.path.replace('/'+to.params.sid+'/', '/0/');
-      return next(newPath);
-    } else if (! store.get('session/session')) {
-      store.set('session/session', sessions[sid]);
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (hasSessions == true) {
+      const sid = to.params.sid;
+      if (sid == undefined || sid < 0 || sid >= sessions.length) {
+        store.set('session/session', sessions[0]);
+        const newPath = to.path.replace('/'+to.params.sid+'/', '/0/');
+        return next(newPath);
+      } else if (! store.get('session/session')) {
+        store.set('session/session', sessions[sid]);
+      }
+    } else {
+      return next({ name: 'login' });
     }
   }
 
-  if (hasSessions == false && to.name != 'login') {
-    next({ name: 'login' });
-  } else {
-    next();
-  }
-
+  next();
 });
 
 router.afterEach(() => {
