@@ -35,7 +35,7 @@
 
       <v-spacer></v-spacer>
 
-      <div>
+      <div v-if="session">
         <div class="text-right">
           <div class="subtitle font-weight-bold">{{ session.company }}</div>
           <!-- semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip -->

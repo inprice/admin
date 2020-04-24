@@ -47,8 +47,10 @@
       </v-card>
 
       <v-card>
-        <v-list>
+        <v-list subheader>
           <div v-if="sessions && sessions.length > 1">
+            <v-subheader>Other Accounts</v-subheader>
+
             <template v-for="({ user, email, company, role }, i) in sessions">
               <v-list-item
                 v-if="email != session.email"

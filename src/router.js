@@ -110,6 +110,9 @@ const router = new VueRouter({
 import store from './store';
 import Consts from './helpers/consts';
 
+const SESSION = 'session/session';
+const SESSIONS = SESSION+'s';
+
 router.beforeEach((to, from, next) => {
   if (to.name) NProgress.start();
 
@@ -117,35 +120,31 @@ router.beforeEach((to, from, next) => {
   if (to.name == 'login' && to.query.m == 'addNew') return next();
   if (to.matched.some(record => record.meta.openToPublic)) return next();
 
-  let hasSessions = false;
-  let sessions = store.get(Consts.sessionKeys.SESSIONS);
+  let sessions = store.get(SESSIONS);
 
-  if (!sessions) {
+  if (!sessions || !sessions.length) {
     sessions = JSON.parse(localStorage.getItem(Consts.keys.SESSIONS));
     if (sessions && sessions.length > 0) {
-      hasSessions = true;
-      store.set(Consts.sessionKeys.SESSIONS, sessions);
+      store.set(SESSIONS, sessions);
     }
-  } else {
-    hasSessions = true;
   }
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (hasSessions == true) {
+    if (sessions && sessions.length > 0) {
       const sid = to.params.sid;
       if (sid == undefined || sid < 0 || sid >= sessions.length) {
-        store.set(Consts.sessionKeys.SESSION, sessions[0]);
-        const newPath = to.path.replace('/'+to.params.sid+'/', '/0/');
+        store.set(SESSION, sessions[0]);
+        const newPath = to.path.replace(`/${to.params.sid}/`, '/0/');
         return next(newPath);
-      } else if (! store.get(Consts.sessionKeys.SESSION)) {
-        store.set(Consts.sessionKeys.SESSION, sessions[sid]);
+      } else if (! store.get(SESSION)) {
+        store.set(SESSION, sessions[sid]);
       }
     } else {
       return next({ name: 'login' });
     }
   } 
 
-  if (to.name == 'login' && hasSessions == true) {
+  if (to.name == 'login' && (sessions && sessions.length > 0)) {
     return next({ name: 'dashboard', params: { sid: 0 } });
   }
 

@@ -29,12 +29,9 @@ const actions = {
   },
 
   async logout({ commit }, expired) {
-    if (expired == false) {
-      await ApiService.post('/logout')
-        .then(() => {
-          Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
-      });
-    }
+    await ApiService.post('/logout');
+    Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
+
     localStorage.removeItem(Consts.keys.SESSIONS);
     logoutChannel.postMessage();
     commit('CLEAR_SESSION');

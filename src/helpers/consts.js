@@ -3,11 +3,6 @@ const keys = {
   SESSION_NO: 'Session'
 };
 
-const sessionKeys = {
-  SESSION: 'session/session',
-  SESSIONS: 'session/sessions'
-};
-
 const positions = [
   { value: 1, text: 'Lowest' },
   { value: 2, text: 'Lower' },
@@ -321,7 +316,6 @@ const countries = [
 
 export default {
   keys,
-  sessionKeys,
   positions,
   sectors,
   countries
