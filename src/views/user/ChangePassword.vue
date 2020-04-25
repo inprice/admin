@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     async submit() {
-      this.activateRules();
+      if (Object.keys(this.rules).length == 0) this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
@@ -125,8 +125,7 @@ export default {
     close() {
       this.opened = false;
       this.loading = false;
-      this.rules = {};
-      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
     }
   }
 };

@@ -160,7 +160,7 @@ export default {
       this.rules = {
         userName: [
           v => !!v || "Your name is required",
-          v => (v.length >= 2 && v.length <= 70) || "Your name must be between 2-70 chars"
+          v => (v.length >= 3 && v.length <= 70) || "Your name must be between 3-70 chars"
         ],
         email: [
           v => !!v || "E-mail is required",

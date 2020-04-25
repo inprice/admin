@@ -22,6 +22,7 @@ const AcceptInvitation = import("./views/auth/AcceptInvitation.vue");
 // with authentication
 const Dashboard = import('./views/Dashboard.vue');
 const Product = import('./views/product/Index.vue');
+const Settings = import('./views/app/settings/Index.vue');
 
 // error pages
 const ServerError = import('./views/errors/ServerError');
@@ -93,6 +94,11 @@ const router = new VueRouter({
           path: 'products',
           name: 'products',
           component: () => Product
+        },
+        {
+          path: 'settings',
+          name: 'settings',
+          component: () => Settings
         },
       ]
     },

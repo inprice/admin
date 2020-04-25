@@ -116,7 +116,7 @@ export default {
       this.rules = {
         name: [
           v => !!v || "Name is required",
-          v => (v.length >= 2 && v.length <= 70) || "Name must be between 2-70 chars"
+          v => (v.length >= 3 && v.length <= 70) || "Name must be between 3-70 chars"
         ],
         password: [
           v => !!v || "Password is required",

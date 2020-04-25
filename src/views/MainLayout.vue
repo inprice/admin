@@ -18,15 +18,33 @@
             <v-list-item-title>Products</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-settings</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <v-divider />
+
+        <div class="px-3 py-2 d-flex">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on" to="settings">
+                <v-icon fab>mdi-cog-outline</v-icon>
+              </v-btn>
+            </template>
+            <span>Settings</span>
+          </v-tooltip>
+
+          <v-spacer></v-spacer>
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on">
+                <v-icon fab>mdi-bell-outline</v-icon>
+              </v-btn>
+            </template>
+            <span>Notifications</span>
+          </v-tooltip>
+        </div>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar app color="blue-grey" clipped-left dark>
@@ -38,7 +56,6 @@
       <div v-if="session">
         <div class="text-right">
           <div class="subtitle font-weight-bold">{{ session.company }}</div>
-          <!-- semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip -->
           <span class="caption">{{ session.email }} - {{ session.role }}</span>
         </div>
       </div>
@@ -75,8 +92,7 @@ export default {
     session: get('session/session'),
   },
   components: {
-    //SemiChip: () => import('@/component/SemiChip.vue'),
-    UserMenu: () => import('@//component/app/UserMenu.vue')
+    UserMenu: () => import('@/component/app/UserMenu.vue')
   }
 };
 </script>
