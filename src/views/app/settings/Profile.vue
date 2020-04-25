@@ -9,7 +9,7 @@
 
             <v-list-item-content>
               <div class="col-2 caption">NAME</div>
-              <div class="col-8 title">{{ session.user }}</div>
+              <div class="col-8 title font-weight-light" v-if="session">{{ session.user }}</div>
             </v-list-item-content>
             <v-list-item-action>
               <v-btn
@@ -26,7 +26,7 @@
           <v-list-item key="1" @click="1==1">
             <v-list-item-content>
               <div class="col-2 caption">PASSWORD</div>
-              <div class="col-8 title">****</div>
+              <div class="col-8 title font-weight-light">****</div>
             </v-list-item-content>
             <v-list-item-action>
               <v-btn

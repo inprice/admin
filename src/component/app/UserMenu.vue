@@ -3,7 +3,7 @@
     <v-menu
       v-model="menu"
       offset-y
-      :nudge-width="250"
+      :nudge-width="200"
       :close-on-content-click="false"
     >
       <template v-slot:activator="{ on }">
@@ -20,30 +20,6 @@
             <v-list-item-subtitle>{{ session.email }} - {{ session.role }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-
-        <div class="pt-2 pb-5">
-          <div class="text-center">
-            <v-btn
-              text
-              small
-              outlined
-              rounded
-              class="mr-1 text-none"
-            >
-              Account Settings
-            </v-btn>
-            <v-btn
-              text
-              small
-              outlined
-              rounded
-              class="ml-1 text-none"
-              @click="openChangePasswordDialog"
-            >
-              Change Password
-            </v-btn>
-          </div>
-        </div>
       </v-card>
 
       <v-card>
@@ -106,13 +82,11 @@
       </v-card>
 
     </v-menu>
-    <ChangePasswordDialog ref="changePasswordDialog"/>
   </div>
 </template>
 
 <script>
 import { get } from 'vuex-pathify'
-import ChangePasswordDialog from '../../views/user/ChangePassword.vue';
 
 export default {
   name: 'UserMenu',
@@ -134,9 +108,6 @@ export default {
     logout() {
       this.$store.dispatch('session/logout', false);
     }
-  },
-  components: {
-    ChangePasswordDialog
   }
 }
 </script>

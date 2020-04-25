@@ -18,6 +18,22 @@ export default {
     return res.status;
   },
 
+  async acceptInvitation(id) {
+    const res = await Helper.call('Accept Invitation', { method: 'put', url: baseURL + '/accept-invitation', data: { value: id } });
+    return res.status;
+  },
+
+  async rejectInvitation(id) {
+    const res = await Helper.call('Reject Invitation', { method: 'put', url: baseURL + '/reject-invitation', data: { value: id } });
+    return res.status;
+  },
+
+  async getInvitations() {
+    const res = await Helper.call('Getting Invitations', { method: 'get', url: baseURL + '/invitations' });
+    if (res.status == true && res.data) return res.data;
+    return null;
+  },
+
   async getOpenedSessions() {
     const res = await Helper.call('Getting Sessions', { method: 'get', url: baseURL + '/opened-sessions' });
     if (res.status == true && res.data) return res.data;

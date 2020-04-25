@@ -4,11 +4,12 @@
       Settings
     </div>
 
-    <p class="subtitle mt-4 mb-8">
+    <p class="subtitle mt-4 mb-8" v-if="session">
       You are seeing <strong>{{ session.user }}</strong>({{ session.email }}) settings page.
     </p>
 
     <profile />
+    <invitations class="mt-5" />
     <sessions class="mt-5" />
 
   </div>
@@ -23,6 +24,7 @@ export default {
   },
   components: {
     Profile: () => import('./Profile'),
+    Invitations: () => import('./Invitations'),
     Sessions: () => import('./Sessions')
   }
 };

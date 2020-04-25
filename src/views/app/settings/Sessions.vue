@@ -1,9 +1,26 @@
 <template>
   <div>
     <v-card>
-      <v-card-title> <v-icon class="mr-4">mdi-book-open</v-icon> Active Sessions</v-card-title>
+      <v-card-title>
+        <v-icon class="mr-4">mdi-book-open</v-icon>
+        Other Active Sessions
+
+        <v-spacer></v-spacer>
+
+        <v-btn
+          small
+          icon
+          :loading="loading" 
+          :disabled="loading"
+          @click="getOpenedSessions"
+        >
+          <v-icon>mdi-refresh-circle</v-icon>
+        </v-btn>
+      </v-card-title>
+
       <v-divider></v-divider>
-      <div v-if="sessions.lenght > 1">
+
+      <div v-if="sessions.length">
         <v-simple-table>
           <template v-slot:default>
             <thead>
@@ -25,11 +42,15 @@
 
         <v-divider></v-divider>
 
-        <v-card-actions>
+        <v-card-actions class="pt-3">
+          <p class="caption mt-4 font-italic">
+            <v-icon class="mx-2">mdi-alert-circle-outline</v-icon>
+            Please keep in mind: if you click the button, you will terminate this session too.
+          </p>
           <v-spacer></v-spacer>
           <v-btn
             small
-            color="primary"
+            class="mr-3"
             :loading="loading" 
             :disabled="loading"
             @click="closeAllSessions"
