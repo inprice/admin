@@ -102,7 +102,9 @@
               color="info"
               @click="submit"
               :loading="loading" 
-              :disabled="loading">Next</v-btn>
+              :disabled="loading">
+              Next
+            </v-btn>
           </v-card-actions>
         </v-card>
 

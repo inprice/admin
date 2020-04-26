@@ -63,7 +63,7 @@ export default {
       }
     },
     remove(data) {
-      this.$refs.confirm.open('Delete', data.name, 'will be deleted. Are you sure?').then(async (confirm) => {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', data.name).then(async (confirm) => {
         if (confirm == true) {
           const result = await ProductService.remove(data.id);
           if (result == true) {

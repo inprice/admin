@@ -26,22 +26,29 @@
           @keyup.native.enter="valid && submit($event)"
         >
           <v-text-field
-            outlined dense
             ref="code"
+            outlined dense
             v-model="form.code"
             :rules="rules.code"
             label="Activation Code"
-            maxlenght="36"
+            type="text"
+            maxlenght=8
           />
         </v-form>
 
-        <v-btn 
-          block
-          color="info"
-          class="mt-2"
-          @click="submit" 
-          :loading="loading" 
-          :disabled="loading">Sign Up</v-btn>
+        <v-card-actions class="px-0">
+          <v-btn small to="login" class="text-none">
+            Back to Login
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn 
+            color="info"
+            @click="submit" 
+            :loading="loading" 
+            :disabled="loading">
+            Sign Up
+          </v-btn>
+        </v-card-actions>
 
       </v-col>
     </v-row>
@@ -71,7 +78,7 @@ export default {
         this.loading = true;
         const result = await AuthService.completeRegistration(this.form.code);
         if (result == true) {
-          this.$router.push({ name: 'dashboard' });
+          this.$router.push({ name: 'dashboard', params: { sid: 0 } });
           Utility.showInfoMessage('Registration Completion', 'Congrats, you have successfuly registered your company.')
           return;
         }
@@ -81,8 +88,8 @@ export default {
     activateRules() {
       this.rules = {
         code: [
-          v => !!v || "Code is required",
-          v => /^[0-9a-f]{8}-?[0-9a-f]{4}-?[1-5][0-9a-f]{3}-?[89ab][0-9a-f]{3}-?[0-9a-f]{12}$/i.test(v) || "Code must be valid"
+          v => !!v || "Required",
+          v => (v.length == 8) || "Must be 8 chars"
         ],
       }
     }

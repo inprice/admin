@@ -3,19 +3,25 @@
     <v-card>
       <v-card-title>
         <v-icon class="mr-4">mdi-book-open</v-icon>
-        Other Active Sessions
+        Sessions
 
         <v-spacer></v-spacer>
 
-        <v-btn
-          small
-          icon
-          :loading="loading" 
-          :disabled="loading"
-          @click="getOpenedSessions"
-        >
-          <v-icon>mdi-refresh-circle</v-icon>
-        </v-btn>
+        <v-tooltip right>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              small icon
+              v-on="on"
+              elevation="1"
+              :loading="loading.refresh" 
+              :disabled="loading.refresh"
+              @click="getOpenedSessions"
+            >
+              <v-icon>mdi-refresh-circle</v-icon>
+            </v-btn>
+          </template>
+          <span>Refresh the list</span>
+        </v-tooltip>
       </v-card-title>
 
       <v-divider></v-divider>
@@ -43,7 +49,7 @@
         <v-divider></v-divider>
 
         <v-card-actions class="pt-3">
-          <p class="caption mt-4 font-italic">
+          <p class="caption mt-4">
             <v-icon class="mx-2">mdi-alert-circle-outline</v-icon>
             Please keep in mind: if you click the button, you will terminate this session too.
           </p>
@@ -51,8 +57,8 @@
           <v-btn
             small
             class="mr-3"
-            :loading="loading" 
-            :disabled="loading"
+            :loading="loading.closeall" 
+            :disabled="loading.closeall"
             @click="closeAllSessions"
           >
             Close all sessions
@@ -61,7 +67,7 @@
       </div>
       <v-card-text v-else>
         <p>
-          You have no session other than this.
+          You have no active session other than this.
         </p>
       </v-card-text>
 
@@ -76,7 +82,10 @@ import Utility from '@/helpers/utility';
 export default {
   data() {
     return {
-      loading: false,
+      loading: {
+        refresh: false,
+        closeall: false
+      },
       sessions: []
     };
   },
@@ -90,22 +99,17 @@ export default {
       }
     },
     async closeAllSessions() {
-      this.loading = true;
+      this.loading.closeall = true;
       const result = await UserService.closeAllSessions();
-      if (result == true) {
-        this.$store.dispatch('session/logout', false);
-        return;
-      }
-      this.loading = false;
+      if (result == true) this.sessions = [];
+      this.loading.closeall = false;
     }
   },
-
   mounted() {
     Utility.doubleRaf(() => {
       this.getOpenedSessions();
     });
   }
-
 }
 </script>
 

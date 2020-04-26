@@ -10,7 +10,7 @@ export default {
 
   async completeRegistration(code) {
     const res = await Helper.call('Registration Complete', { url: '/complete-registration?token=' + code });
-    if (res.status == true) store.dispatch('session/SET_SESSIONS', res.data);
+    if (res.status == true) store.dispatch('session/createSession', res);
     return res.status;
   },
 

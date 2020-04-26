@@ -137,13 +137,17 @@ router.beforeEach((to, from, next) => {
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (sessions && sessions.length > 0) {
+
       const sid = to.params.sid;
       if (sid == undefined || sid < 0 || sid >= sessions.length) {
         store.set(SESSION, sessions[0]);
         const newPath = to.path.replace(`/${to.params.sid}/`, '/0/');
         return next(newPath);
-      } else if (! store.get(SESSION)) {
-        store.set(SESSION, sessions[sid]);
+      } else {
+        const session = store.get(SESSION);
+        if (Object.keys(session).length == 0) {
+          store.set(SESSION, sessions[sid]);
+        }
       }
     } else {
       return next({ name: 'login' });

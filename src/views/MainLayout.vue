@@ -30,7 +30,7 @@
                 <v-icon fab>mdi-cog-outline</v-icon>
               </v-btn>
             </template>
-            <span>Settings</span>
+            <span>Account Settings</span>
           </v-tooltip>
 
           <v-spacer></v-spacer>
@@ -53,10 +53,11 @@
 
       <v-spacer></v-spacer>
 
-      <div v-if="session">
+      <div class="mt-2">
         <div class="text-right">
           <div class="subtitle font-weight-bold">{{ session.company }}</div>
-          <span class="caption">{{ session.email }} - {{ session.role }}</span>
+          <semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip>
+          <!--span class="caption">{{ session.email }} - {{ session.role }}</span -->
         </div>
       </div>
 
@@ -85,13 +86,11 @@ export default {
       drawer: null
     };
   },
-  created() {
-    this.$vuetify.theme.dark = false;
-  },
   computed: {
     session: get('session/session'),
   },
   components: {
+    SemiChip: () => import('@/component/SemiChip.vue'),
     UserMenu: () => import('@/component/app/UserMenu.vue')
   }
 };

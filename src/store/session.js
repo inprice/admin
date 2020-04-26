@@ -10,22 +10,16 @@ import { BroadcastChannel } from 'broadcast-channel';
 
 const state = {
   sessionNo: 0,
-  session: null,
-  sessions: null,
+  session: {},
+  sessions: [],
 };
 
 const actions = {
 
-  async login({ state, commit }, form) {
+  async login({ dispatch }, form) {
     const res = await Helper.call('Login', { url: '/login', data: form });
-    if (res.status == true) {
-      localStorage.setItem(Consts.keys.SESSIONS, JSON.stringify(res.data.sessions));
-      state.sessionNo = res.data.sessionNo;
-      commit('REFRESH_SESSION', res.data);
-      loginChannel.postMessage(res.data);
-      return res.data.sessionNo;
-    }
-    return null;
+    if (res.status == true) dispatch('createSession', res);
+    return res.data && res.data.sessionNo;
   },
 
   logout({ commit }, expired) {
@@ -35,12 +29,17 @@ const actions = {
           Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
       });
     }
-
     localStorage.removeItem(Consts.keys.SESSIONS);
     logoutChannel.postMessage();
     commit('CLEAR_SESSION');
-
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
+  },
+
+  createSession({ state, commit }, res) {
+    localStorage.setItem(Consts.keys.SESSIONS, JSON.stringify(res.data.sessions));
+    state.sessionNo = res.data.sessionNo;
+    commit('REFRESH_SESSION', res.data);
+    loginChannel.postMessage(res.data);
   }
 
 };
@@ -61,8 +60,8 @@ const mutations = {
 
   CLEAR_SESSION(state) {
     state.sessionNo = 0;
-    state.session = null;
-    state.sessions = null;
+    state.session = {};
+    state.sessions = [];
   }
 
 }

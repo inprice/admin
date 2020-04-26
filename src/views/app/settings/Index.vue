@@ -4,7 +4,7 @@
       Settings
     </div>
 
-    <p class="subtitle mt-4 mb-8" v-if="session">
+    <p class="subtitle mt-4 mb-8">
       You are seeing <strong>{{ session.user }}</strong>({{ session.email }}) settings page.
     </p>
 

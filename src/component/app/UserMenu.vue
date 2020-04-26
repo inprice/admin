@@ -12,7 +12,7 @@
         </v-btn>
       </template>
 
-      <v-card class="text-center" v-if="session">
+      <v-card class="text-center">
         <v-icon large class="pt-4">mdi-account-check</v-icon>
         <v-list-item two-line>
           <v-list-item-content>
@@ -24,21 +24,22 @@
 
       <v-card>
         <v-list subheader>
-          <div v-if="sessions && sessions.length > 1">
-            <v-subheader>Other Accounts</v-subheader>
+          <div v-if="sessions.length">
+            <v-subheader>Others</v-subheader>
 
             <template v-for="({ user, email, company, role }, i) in sessions">
               <v-list-item
-                v-if="email != session.email"
+                v-if="email != session.email || company != session.company"
                 :key="i"
                 :href="`/${i}/app/dashboard`"
                 target="_blank"
+                @click="menu=!menu"
               >
                 <v-icon class="mr-3">mdi-account-arrow-right-outline</v-icon>
 
                 <v-list-item-content>
                   <v-list-item-title>{{ company }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="email != session.email">{{ email }}</v-list-item-subtitle>
                 </v-list-item-content>
 
                 <div class="text-right">

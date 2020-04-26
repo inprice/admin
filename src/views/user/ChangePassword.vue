@@ -14,27 +14,27 @@
               label="Old Password"
               v-model="form.oldPassword"
               :rules="rules.oldPassword"
-              :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPass1 ? 'text' : 'password'"
-              @click:append="showPass1 = !showPass1"
+              :append-icon="showPass.old ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass.old ? 'text' : 'password'"
+              @click:append="showPass.old = !showPass.old"
             />
 
             <v-text-field
               label="New Password"
               v-model="form.password"
               :rules="rules.password"
-              :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPass2 ? 'text' : 'password'"
-              @click:append="showPass2 = !showPass2"
+              :append-icon="showPass.new ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass.new ? 'text' : 'password'"
+              @click:append="showPass.new = !showPass.new"
             />
 
             <v-text-field
               label="Repeat Password"
               v-model="form.repeatPassword"
               :rules="rules.repeatPassword"
-              :append-icon="showPass3 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPass3 ? 'text' : 'password'"
-              @click:append="showPass3 = !showPass3"
+              :append-icon="showPass.repeat ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass.repeat ? 'text' : 'password'"
+              @click:append="showPass.repeat = !showPass.repeat"
             />
           </v-form>
 
@@ -71,9 +71,11 @@ export default {
       opened: false,
       loading: false,
       valid: false,
-      showPass1: false,
-      showPass2: false,
-      showPass3: false,
+      showPass: {
+        old: false,
+        new: false,
+        repeat: false
+      },
       rules: {},
       form: {
         oldPassword: '',

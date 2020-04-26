@@ -45,8 +45,11 @@ export default {
 </script>
 
 <style scoped>
+  .v-alert__content {
+    flex: none;
+  }
   .v-alert__content strong {
-    display: inline-block;
+    display: inline-table;
     padding: 0 7px;
   }
   .v-alert__content span {
