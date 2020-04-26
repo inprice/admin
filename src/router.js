@@ -8,26 +8,6 @@ import 'nprogress/nprogress.css';
 Vue.use(VueRouter);
 Vue.use(Meta);
 
-// main layout
-const MainLayout = import('./views/MainLayout.vue');
-
-// without authentication
-const Login = import('./views/auth/Login');
-const RequestRegistration = import("./views/auth/RequestRegistration.vue");
-const CompleteRegistration = import("./views/auth/CompleteRegistration.vue");
-const ForgotPassword = import("./views/auth/ForgotPassword.vue");
-const ResetPassword = import("./views/auth/ResetPassword.vue");
-const AcceptInvitation = import("./views/auth/AcceptInvitation.vue");
-
-// with authentication
-const Dashboard = import('./views/Dashboard.vue');
-const Product = import('./views/product/Index.vue');
-const Settings = import('./views/app/settings/Index.vue');
-
-// error pages
-const ServerError = import('./views/errors/ServerError');
-const NotFoundPage = import('./views/errors/404NotFound');
-
 const router = new VueRouter({
   base: '/',
   mode: 'history',
@@ -35,12 +15,12 @@ const router = new VueRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => Login
+      component: () => import('./views/auth/Login')
     },
     {
       path: '/request-registration',
       name: 'requestRegistration',
-      component: () => RequestRegistration,
+      component: () => import("./views/auth/RequestRegistration.vue"),
       meta: {
         openToPublic: true
       }
@@ -48,7 +28,7 @@ const router = new VueRouter({
     {
       path: '/complete-registration',
       name: 'completeRegistration',
-      component: () => CompleteRegistration,
+      component: () => import("./views/auth/CompleteRegistration.vue"),
       meta: {
         openToPublic: true
       }
@@ -56,7 +36,7 @@ const router = new VueRouter({
     {
       path: '/forgot-password',
       name: 'forgotPassword',
-      component: () => ForgotPassword,
+      component: () => import("./views/auth/ForgotPassword.vue"),
       meta: {
         openToPublic: true
       }
@@ -64,7 +44,7 @@ const router = new VueRouter({
     {
       path: '/reset-password',
       name: 'resetPassword',
-      component: () => ResetPassword,
+      component: () => import("./views/auth/ResetPassword.vue"),
       meta: {
         openToPublic: true
       }
@@ -72,7 +52,7 @@ const router = new VueRouter({
     {
       path: '/accept-invitation',
       name: 'acceptInvitation',
-      component: () => AcceptInvitation,
+      component: () => import("./views/auth/AcceptInvitation.vue"),
       meta: {
         openToPublic: true
       }
@@ -80,7 +60,7 @@ const router = new VueRouter({
     {
       path: '/:sid/app',
       name: 'app',
-      component: () => MainLayout,
+      component: () => import('./views/MainLayout.vue'),
       meta: {
         requiresAuth: true
       },
@@ -88,27 +68,32 @@ const router = new VueRouter({
         {
           path: 'dashboard',
           name: 'dashboard',
-          component: () => Dashboard
+          component: () => import('./views/Dashboard.vue')
         },
         {
           path: 'products',
           name: 'products',
-          component: () => Product
+          component: () => import('./views/product/Index.vue')
+        },
+        {
+          path: 'members',
+          name: 'members',
+          component: () => import('./views/member/Index.vue')
         },
         {
           path: 'settings',
           name: 'settings',
-          component: () => Settings
+          component: () => import('./views/user/Index.vue')
         },
       ]
     },
     {
       path: '/error',
-      component: () => ServerError
+      component: () => import('./views/errors/ServerError')
     },
     {
       path: '*',
-      component: () => NotFoundPage
+      component: () => import('./views/errors/404NotFound')
     }
   ]
 });

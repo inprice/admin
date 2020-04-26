@@ -9,8 +9,9 @@
     </p>
 
     <profile />
-    <invitations class="mt-5" />
-    <sessions class="mt-5" />
+    <invitations @accept="acceptInvitation"/>
+    <memberships ref="memberships"/>
+    <sessions/>
 
   </div>
 </template>
@@ -22,9 +23,15 @@ export default {
   computed: {
     session: get('session/session'),
   },
+  methods: {
+    acceptInvitation() {
+      this.$refs.memberships.refreshMemberships();
+    }
+  },
   components: {
     Profile: () => import('./Profile'),
     Invitations: () => import('./Invitations'),
+    Memberships: () => import('./Memberships'),
     Sessions: () => import('./Sessions')
   }
 };

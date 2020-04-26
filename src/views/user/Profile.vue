@@ -1,7 +1,13 @@
 <template>
   <div>
     <v-card>
-      <v-card-title> <v-icon class="mr-4">mdi-account-circle-outline</v-icon> Profile</v-card-title>
+      <v-card-title>
+        <v-icon class="mr-4">mdi-account-circle-outline</v-icon>
+        <div>
+          <div>Profile</div>
+          <div class="caption">You can edit your profile info here using actions buttons placed on the right</div>
+        </div>
+       </v-card-title>
 
       <v-divider></v-divider>
 
@@ -53,8 +59,8 @@ export default {
     },
   },
   components: {
-    UpdateUserNameDialog: () => import('../../user/UpdateUserName.vue'),
-    ChangePasswordDialog: () => import('../../user/ChangePassword.vue')
+    UpdateUserNameDialog: () => import('./components/UpdateUserName.vue'),
+    ChangePasswordDialog: () => import('./components/ChangePassword.vue')
   }
 }
 </script>

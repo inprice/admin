@@ -1,9 +1,12 @@
 <template>
-  <div>
+  <div class="mt-5">
     <v-card>
       <v-card-title>
         <v-icon class="mr-4">mdi-book-open</v-icon>
-        Sessions
+        <div>
+          <div>Sessions</div>
+          <div class="caption">Other than the session(s) in this browser, all other opened sessions are listed below.</div>
+        </div>
 
         <v-spacer></v-spacer>
 

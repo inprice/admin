@@ -18,6 +18,14 @@
             <v-list-item-title>Products</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item link to="members">
+          <v-list-item-action>
+            <v-icon>mdi-multiple-check</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Members</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
 
       <template v-slot:append>

@@ -18,6 +18,12 @@ export default {
     return res.status;
   },
 
+  async getInvitations() {
+    const res = await Helper.call('Getting Invitations', { method: 'get', url: baseURL + '/invitations' });
+    if (res.status == true && res.data) return res.data;
+    return null;
+  },
+
   async acceptInvitation(id) {
     const res = await Helper.call('Accept Invitation', { method: 'put', url: baseURL + '/accept-invitation', data: { value: id } });
     return res.status;
@@ -28,10 +34,15 @@ export default {
     return res.status;
   },
 
-  async getInvitations() {
-    const res = await Helper.call('Getting Invitations', { method: 'get', url: baseURL + '/invitations' });
+  async getMemberships() {
+    const res = await Helper.call('Getting Memberships', { method: 'get', url: baseURL + '/memberships' });
     if (res.status == true && res.data) return res.data;
     return null;
+  },
+
+  async leaveMembership(id) {
+    const res = await Helper.call('Leave Membership', { method: 'put', url: baseURL + '/leave-membership', data: { value: id } });
+    return res.status;
   },
 
   async getOpenedSessions() {
