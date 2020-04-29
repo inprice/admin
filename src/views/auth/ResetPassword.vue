@@ -26,7 +26,7 @@
                 :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass1 ? 'text' : 'password'"
                 @click:append="showPass1 = !showPass1"
-                maxlenght="16"
+                maxlength="16"
               />
 
               <v-text-field
@@ -36,7 +36,7 @@
                 :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass2 ? 'text' : 'password'"
                 @click:append="showPass2 = !showPass2"
-                maxlenght="16"
+                maxlength="16"
               />
 
             </v-form>
@@ -93,7 +93,7 @@ export default {
         const result = await AuthService.resetPassword(this.form);
         if (result == true) {
           this.$router.push('/login');
-          Utility.showInfoMessage('Reset Password', 'Your password has been successfuly reset')
+          Utility.showInfoMessage('Reset Password', 'Your password has been successfully reset')
           return;
         }
         this.loading = false;

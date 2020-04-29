@@ -3,24 +3,31 @@
 
     <v-dialog v-model="opened" max-width="350">
       <v-card>
-        <v-card-title>Update name</v-card-title>
+        <v-card-title>Invite a user</v-card-title>
 
         <v-card-text class="mt-5">
           <v-form ref="form" v-model="valid">
             <v-text-field
-              ref="userName"
-              label="Your Name"
-              v-model="form.userName"
-              :rules="rules.userName"
-              type="text"
-              maxlength="70"
+              ref="email"
+              label="E-mail"
+              v-model="form.email"
+              :rules="rules.email"
+              type="email"
+              maxlength="100"
             />
+
+            <v-select
+              label="Role"
+              v-model="form.role"
+              :rules="rules.role"
+              :items="roles"
+            ></v-select>
+
           </v-form>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn @click="close">Close</v-btn>
           <v-btn
             @click="submit"
@@ -28,9 +35,8 @@
             :loading="loading" 
             :disabled="loading"
           >
-            Save
+            Invite
           </v-btn>
-
         </v-card-actions>
 
       </v-card>
@@ -39,7 +45,6 @@
 </template>
 
 <script>
-import UserService from '@/service/user';
 import Utility from '@/helpers/utility';
 
 export default {
@@ -50,41 +55,46 @@ export default {
       valid: false,
       rules: {},
       form: {
-        userName: ''
-      }
+        email: '',
+        role: 'EDITOR'
+      },
+      roles: [
+        'EDITOR',
+        'VIEWER'
+      ]
     };
   },
   methods: {
     async submit() {
-      if (Object.keys(this.rules).length == 0) this.activateRules();
+      this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await UserService.updateUserName(this.form);
-        if (result == true) {
-          this.$store.set('session/session@user', this.form.userName);
-          this.close();
-          return;
-        }
-        this.loading = false;
+        this.$emit('send', this.form);
       }
     },
     activateRules() {
       this.rules = {
-        userName: [
+        email: [
           v => !!v || "Required",
-          v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
+          v => (v.length >= 9 && v.length <= 100) || "Must be between 9-100 chars",
+          v => Utility.verifyEmail(v) || "Must be valid"
         ],
+        role: [
+          v => !!v || "Required"
+        ]
       }
     },
-    open(name) {
-      this.form.userName = name;
+    open() {
       this.opened = true;
       let self = this;
       Utility.doubleRaf(() => {
         self.$refs.form.resetValidation();
-        self.$refs.userName.focus();
+        self.$refs.email.focus();
       });
+    },
+    stopLoading() {
+      this.loading = false;
     },
     close() {
       this.$refs.form.resetValidation();

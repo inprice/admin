@@ -147,7 +147,7 @@
     </div>
   
     <p v-else class="mt-3">
-      No product was found! You can add a new one or change your criteria.
+      No product found! You can add a new one or change your criteria.
     </p>
   </div>
 

@@ -32,7 +32,7 @@
             :rules="rules.code"
             label="Activation Code"
             type="text"
-            maxlenght=8
+            maxlength="32"
           />
         </v-form>
 
@@ -79,7 +79,7 @@ export default {
         const result = await AuthService.completeRegistration(this.form.code);
         if (result == true) {
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
-          Utility.showInfoMessage('Registration Completion', 'Congrats, you have successfuly registered your company.')
+          Utility.showInfoMessage('Registration Completion', 'Congrats, you have successfully registered your company.')
           return;
         }
         this.loading = false;
@@ -89,7 +89,7 @@ export default {
       this.rules = {
         code: [
           v => !!v || "Required",
-          v => (v.length == 8) || "Must be 8 chars"
+          v => (v.length == 32) || "Must be 32 chars"
         ],
       }
     }

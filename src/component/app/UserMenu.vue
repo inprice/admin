@@ -4,6 +4,7 @@
       v-model="menu"
       offset-y
       :nudge-width="200"
+      max-width="350"
       :close-on-content-click="false"
     >
       <template v-slot:activator="{ on }">
@@ -20,13 +21,24 @@
             <v-list-item-subtitle>{{ session.email }} - {{ session.role }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item class="text-center">
+          <v-btn
+            outlined
+            rounded
+            small
+            class="mb-4 text-capitalize mx-auto"
+            to="settings"
+            @click="menu=!menu"
+          >
+            Manage Your Inprice account
+          </v-btn>
+        </v-list-item>
       </v-card>
 
       <v-card>
         <v-list subheader>
           <div v-if="sessions.length">
-            <v-subheader>Others</v-subheader>
-
             <template v-for="({ user, email, company, role }, i) in sessions">
               <v-list-item
                 v-if="email != session.email || company != session.company"

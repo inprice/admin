@@ -8,13 +8,13 @@ export default {
 
   async updateUserName(form) {
     const res = await Helper.call('Update Name', { method: 'put', url: baseURL + '/update-name', data: { value: form.userName } });
-    if (res.status == true) Utility.showInfoMessage('Update Name', 'Your name has been successfuly updated');
+    if (res.status == true) Utility.showInfoMessage('Update Name', 'Your name has been successfully updated');
     return res.status;
   },
 
   async changePassword(form) {
     const res = await Helper.call('Change Password', { method: 'put', url: baseURL + '/change-password', data: form });
-    if (res.status == true) Utility.showInfoMessage('Change Password', 'Your password has been successfuly changed');
+    if (res.status == true) Utility.showInfoMessage('Change Password', 'Your password has been successfully changed');
     return res.status;
   },
 

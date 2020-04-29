@@ -12,7 +12,7 @@ export default {
     }
 
     const res = await Helper.call('Product Save', { method, url: baseURL, data: form });
-    if (res.status == true) Utility.showInfoMessage('Product', form.name + ' has been successfuly ' + opType)
+    if (res.status == true) Utility.showInfoMessage('Product', form.name + ' has been successfully ' + opType)
     return res.status;
   },
 

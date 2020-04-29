@@ -16,7 +16,7 @@
               v-model="form.code"
               :rules="rules.code"
               type="text"
-              maxlenght="120"
+              maxlength="120"
             />
 
             <v-text-field
@@ -24,7 +24,7 @@
               v-model="form.name"
               :rules="rules.name"
               type="text"
-              maxlenght="500"
+              maxlength="500"
             />
 
             <v-text-field

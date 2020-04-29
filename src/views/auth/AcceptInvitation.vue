@@ -23,7 +23,7 @@
                 v-model="form.name"
                 :rules="rules.name"
                 type="text"
-                maxlenght="70"
+                maxlength="70"
               />
 
               <v-text-field
@@ -33,7 +33,7 @@
                 :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass1 ? 'text' : 'password'"
                 @click:append="showPass1 = !showPass1"
-                maxlenght="16"
+                maxlength="16"
               />
 
               <v-text-field
@@ -43,7 +43,7 @@
                 :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass2 ? 'text' : 'password'"
                 @click:append="showPass2 = !showPass2"
-                maxlenght="16"
+                maxlength="16"
               />
             </v-form>
 
@@ -106,7 +106,7 @@ export default {
         const result = await AuthService.acceptInvitation(this.form);
         if (result == true) {
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
-          Utility.showInfoMessage('Accept Invitation', 'Your have successfuly activated your membership')
+          Utility.showInfoMessage('Accept Invitation', 'Your have successfully activated your membership')
           return;
         }
         this.loading = false;

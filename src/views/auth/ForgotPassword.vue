@@ -39,7 +39,7 @@
             :rules="rules.email"
             label="E-mail"
             type="email"
-            maxlenght="100"
+            maxlength="100"
           />
         </v-form>
 

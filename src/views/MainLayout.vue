@@ -27,32 +27,6 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-
-      <template v-slot:append>
-        <v-divider />
-
-        <div class="px-3 py-2 d-flex">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" to="settings">
-                <v-icon fab>mdi-cog-outline</v-icon>
-              </v-btn>
-            </template>
-            <span>Account Settings</span>
-          </v-tooltip>
-
-          <v-spacer></v-spacer>
-
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on">
-                <v-icon fab>mdi-bell-outline</v-icon>
-              </v-btn>
-            </template>
-            <span>Notifications</span>
-          </v-tooltip>
-        </div>
-      </template>
     </v-navigation-drawer>
 
     <v-app-bar app color="blue-grey" clipped-left dark>

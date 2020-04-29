@@ -14,6 +14,12 @@ export default {
     return res.status;
   },
 
+  async acceptInvitation(form) {
+    const res = await Helper.call('Accept Invitation', { url: '/accept-invitation', data: form });
+    if (res.status == true) store.dispatch('session/createSession', res);
+    return res.status;
+  },
+
   async forgotPassword(email) {
     const res = await Helper.call('Forgot Password', { url: '/forgot-password', data: { email } });
     return res.status;
@@ -21,11 +27,6 @@ export default {
 
   async resetPassword(form) {
     const res = await Helper.call('Reset Password', { url: '/reset-password', data: form });
-    return res.status;
-  },
-
-  async acceptInvitation(form) {
-    const res = await Helper.call('Accept Invitation', { url: '/reset-password', data: form });
     return res.status;
   }
 

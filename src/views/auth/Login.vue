@@ -44,7 +44,7 @@
                 ref="email"
                 :rules="rules.email"
                 type="email"
-                maxlenght="100"
+                maxlength="100"
               />
 
               <v-text-field
@@ -54,7 +54,7 @@
                 :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPass ? 'text' : 'password'"
                 @click:append="showPass = !showPass"
-                maxlenght="16"
+                maxlength="16"
               />
             </v-form>
 
@@ -144,13 +144,13 @@ export default {
         this.successMessage = 'We have just sent an activation link to your email address. Please check it.';
         break;
       // case 'ax37':
-      //   this.successMessage = "Your registration is successfuly completed. Please login.";
+      //   this.successMessage = "Your registration is successfully completed. Please login.";
       //   break;
       // case 'qb41':
       //   this.infoMessage = "Your registration link is invalid or expired. Please try again.";
       //   break;
       case 'ap17':
-        this.successMessage = "You have successfuly activated your membership. Please login.";
+        this.successMessage = "You have successfully activated your membership. Please login.";
         break;
       case 'mqn6':
         this.errorMessage = "Your activation link is invalid or expired. Please ask again.";
