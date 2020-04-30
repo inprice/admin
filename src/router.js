@@ -76,11 +76,6 @@ const router = new VueRouter({
           component: () => import('./views/product/Index.vue')
         },
         {
-          path: 'members',
-          name: 'members',
-          component: () => import('./views/member/Index.vue')
-        },
-        {
           path: 'settings',
           name: 'settings',
           component: () => import('./views/user/Index.vue')

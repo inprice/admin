@@ -9,6 +9,7 @@
     </p>
 
     <profile />
+    <members />
 
   </div>
 </template>
@@ -21,7 +22,8 @@ export default {
     session: get('session/session'),
   },
   components: {
-    Profile: () => import('./Profile')
+    Profile: () => import('./Profile'),
+    Members: () => import('./Members')
   }
 };
 </script>
