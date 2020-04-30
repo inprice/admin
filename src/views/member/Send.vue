@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { get } from 'vuex-pathify'
 import Utility from '@/helpers/utility';
 
 export default {
@@ -64,6 +65,9 @@ export default {
       ]
     };
   },
+  computed: {
+    currentEmail: get('session/session@email')
+  },
   methods: {
     async submit() {
       this.activateRules();
@@ -77,7 +81,8 @@ export default {
       this.rules = {
         email: [
           v => !!v || "Required",
-          v => (v.length >= 9 && v.length <= 100) || "Must be between 9-100 chars",
+          v => v.length >= 9 && v.length <= 100 || "Must be between 9-100 chars",
+          v => v.toLowerCase() != this.currentEmail.toLowerCase() || "You cannot add yourself as a member",
           v => Utility.verifyEmail(v) || "Must be valid"
         ],
         role: [

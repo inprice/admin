@@ -10,7 +10,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-tooltip right>
+        <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn
               small icon

@@ -12,14 +12,25 @@
       Please note that you are allowed to add users up to user limit of your plan.
     </p>
 
-    <v-btn dark color="success" class="my-4" @click="openSendDialog">
-      Invite a user
-    </v-btn>
+    <v-row class="mt-4">
+      <v-col>
+        <v-btn @click="list">
+          Refresh
+        </v-btn>
+      </v-col>
+
+      <v-col class="text-right">
+        <v-btn dark color="success" @click="openSendDialog">
+          Invite a user
+        </v-btn>
+      </v-col>
+    </v-row>
 
     <List
       :members="rows"
       @resend="resend"
-      @updateStatus="updateStatus"
+      @pause="pause"
+      @resume="resume"
       @changeRole="changeRole"
     />
     
@@ -73,8 +84,12 @@ export default {
       const result = await MemberService.changeRole(data);
       if (result == true) this.list();
     },
-    async updateStatus(data) {
-      const result = await MemberService.updateStatus(data);
+    async pause(id) {
+      const result = await MemberService.pause(id);
+      if (result == true) this.list();
+    },
+    async resume(id) {
+      const result = await MemberService.resume(id);
       if (result == true) this.list();
     }
   },

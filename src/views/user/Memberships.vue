@@ -10,7 +10,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-tooltip right>
+        <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn
               small icon
@@ -43,8 +43,9 @@
                 <td>{{ mem.company }}</td>
                 <td class="text-center">{{ mem.role }}</td>
                 <td class="text-center">{{ mem.date }}</td>
-                <td class="text-right" v-if="mem.status == 'JOINED'">
+                <td class="text-center" v-if="mem.status == 'JOINED'">
                   <v-btn
+                    v-if="mem.role != 'ADMIN'"
                     small
                     :loading="loading.leave" 
                     :disabled="loading.leave"
@@ -52,6 +53,7 @@
                   >
                     Leave
                   </v-btn>
+                  <div v-else>YOURS</div>
                 </td>
                 <td class="text-center" v-else>LEFT</td>
               </tr>

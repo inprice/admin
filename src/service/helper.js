@@ -9,7 +9,7 @@ export default {
     }).join('&');    
   },
 
-  async call(caller, req) {
+  async call(caller, req, sensitiveFor404 = true) {
     try {
       if (! req.method || req.method === undefined) req.method = 'post';
       const res = await ApiService.customRequest(req);
@@ -17,6 +17,9 @@ export default {
         if (res.data.status == 0) {
           return { data: res.data.data, status: true };
         } else {
+          if (res.data.status == 404 && sensitiveFor404 == false) {
+            return { status: true };
+          }
           Utility.showErrorMessage(caller, 'api', res);
           return { error: res.reason, status: false };
         }

@@ -20,13 +20,33 @@
         </v-list-item>
         <v-list-item link to="members">
           <v-list-item-action>
-            <v-icon>mdi-multiple-check</v-icon>
+            <v-icon>mdi-account-multiple</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Members</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item link to="company-settings">
+          <v-list-item-action>
+            <v-icon>mdi-cog-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Company Settings</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <v-divider />
+
+        <v-list>
+          <v-list-item link @click="openCreateCompany">
+            <v-list-item-content>
+              <v-list-item-title><v-icon left>mdi-plus</v-icon> Create a new Company</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar app color="blue-grey" clipped-left dark>
@@ -38,8 +58,8 @@
       <div class="mt-2">
         <div class="text-right">
           <div class="subtitle font-weight-bold">{{ session.company }}</div>
-          <semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip>
-          <!--span class="caption">{{ session.email }} - {{ session.role }}</span -->
+          <!-- semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip -->
+          <span class="caption">{{ session.email }} - {{ session.role }}</span>
         </div>
       </div>
 
@@ -56,6 +76,8 @@
       </v-responsive>
     </v-content>
 
+    <CompanyInfoDialog ref="companyInfoDialog"/>
+
   </v-app>
 </template>
 
@@ -71,9 +93,15 @@ export default {
   computed: {
     session: get('session/session'),
   },
+  methods: {
+    openCreateCompany() {
+      this.$refs.companyInfoDialog.insert();
+    },
+  },
   components: {
-    SemiChip: () => import('@/component/SemiChip.vue'),
-    UserMenu: () => import('@/component/app/UserMenu.vue')
+    //SemiChip: () => import('@/component/SemiChip.vue'),
+    UserMenu: () => import('@/component/app/UserMenu.vue'),
+    CompanyInfoDialog: () => import('./company/CompanyInfo.vue')
   }
 };
 </script>

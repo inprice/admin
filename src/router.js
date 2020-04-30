@@ -85,6 +85,11 @@ const router = new VueRouter({
           name: 'settings',
           component: () => import('./views/user/Index.vue')
         },
+        {
+          path: 'company-settings',
+          name: 'companySettings',
+          component: () => import('./views/company/Index.vue')
+        },
       ]
     },
     {

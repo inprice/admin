@@ -5,7 +5,7 @@ const baseURL = '/membership';
 export default {
 
   async list() {
-    const res = await Helper.call('Members', { method: 'get', url: baseURL });
+    const res = await Helper.call('Members', { method: 'get', url: baseURL }, false);
     if (res.status == true && res.data) return res.data;
     return null;
   },
@@ -25,8 +25,13 @@ export default {
     return res.status;
   },
 
-  async updateStatus(data) {
-    const res = await Helper.call('Update Status', { method: 'put', url: baseURL + '/update-status', data });
+  async pause(id) {
+    const res = await Helper.call('Pause Member', { method: 'put', url: baseURL + '/pause/' + id });
+    return res.status;
+  },
+
+  async resume(id) {
+    const res = await Helper.call('Resume Member', { method: 'put', url: baseURL + '/resume/' + id });
     return res.status;
   },
 

@@ -51,7 +51,7 @@
 
                 <v-list-item-content>
                   <v-list-item-title>{{ company }}</v-list-item-title>
-                  <v-list-item-subtitle v-if="email != session.email">{{ email }}</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
                 </v-list-item-content>
 
                 <div class="text-right">
@@ -117,7 +117,6 @@ export default {
       this.menu = false;
       this.$refs.changePasswordDialog.open(this.session.email);
     },
-
     logout() {
       this.$store.dispatch('session/logout', false);
     }
