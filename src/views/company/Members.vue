@@ -5,8 +5,8 @@
       <v-card-title>
         <v-icon class="mr-4">mdi-account-multiple</v-icon>
         <div>
-          <div>Members</div>
-          <div class="caption">Your members are listed in this section</div>
+          <div>Users</div>
+          <div class="caption">Your users are listed in this section</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -91,7 +91,7 @@
           <v-icon>mdi-alert-circle-outline</v-icon> Please note that
           <ul>
             <li>You are allowed to add users up to user limit of your plan</li>
-            <li>If you create a new company, you will be able to see it under user menu after signin again.</li>
+            <li>If you create a new company, you will be able to see refreshed user menu after signin again.</li>
           </ul>
         </div>
 

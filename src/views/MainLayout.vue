@@ -32,9 +32,13 @@
         <v-divider />
 
         <v-list>
-          <v-list-item link @click="openCreateCompany">
-            <v-list-item-content>
-              <v-list-item-title><v-icon left>mdi-plus</v-icon> Create a new Company</v-list-item-title>
+          <v-list-item>
+            <v-list-item-action class="mr-2">
+              <v-icon>mdi-copyright</v-icon>
+            </v-list-item-action>
+            <v-list-item-content class="py-0">
+              <v-list-item-title>inprice</v-list-item-title>
+              <v-list-item-subtitle>All right reserved</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -43,17 +47,26 @@
 
     <v-app-bar app color="blue-grey" clipped-left dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>inprice</v-toolbar-title>
+
+      <div>
+        <div class="subtitle font-weight-bold">{{ session.company }}</div>
+        <span class="caption">{{ session.email }} - {{ session.role }}</span>
+      </div>
 
       <v-spacer></v-spacer>
 
-      <div class="mt-2">
-        <div class="text-right">
-          <div class="subtitle font-weight-bold">{{ session.company }}</div>
-          <!-- semi-chip bgColor="white" tagColor="black" dir="rtl" class="caption" :tag="session.role" :value="session.email"></semi-chip -->
-          <span class="caption">{{ session.email }} - {{ session.role }}</span>
-        </div>
-      </div>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            dark icon
+            v-on="on"
+            @click="openCreateCompany"
+          >
+            <v-icon>mdi-plus-thick</v-icon>
+          </v-btn>
+        </template>
+        <span>Create a new company</span>
+      </v-tooltip>
 
       <user-menu></user-menu>
     </v-app-bar>
@@ -91,7 +104,6 @@ export default {
     },
   },
   components: {
-    //SemiChip: () => import('@/component/SemiChip.vue'),
     UserMenu: () => import('@/component/app/UserMenu.vue'),
     CompanyInfoDialog: () => import('./company/CompanyInfo.vue')
   }
