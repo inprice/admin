@@ -3,8 +3,8 @@ import Helper from '../service/helper';
 import { make } from 'vuex-pathify';
 
 import router from '../router';
-import Consts from '../helpers/consts';
-import Utility from '../helpers/utility';
+import Consts from '@/helpers/consts';
+import Utility from '@/helpers/utility';
 
 import { BroadcastChannel } from 'broadcast-channel';
 

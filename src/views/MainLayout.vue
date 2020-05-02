@@ -34,7 +34,7 @@
         <v-list>
           <v-list-item>
             <v-list-item-action class="mr-2">
-              <v-icon>mdi-copyright</v-icon>
+              <v-icon right >mdi-copyright</v-icon>
             </v-list-item-action>
             <v-list-item-content class="py-0">
               <v-list-item-title>inprice</v-list-item-title>

@@ -14,10 +14,12 @@
     />
     
     <List
+      ref="list"
       :rows="rows"
       @edit="edit"
       @toggle="toggle"
       @remove="remove"
+      @loadmore="search(undefined, true)"
     />
     
     <Edit
@@ -33,6 +35,7 @@
 <script>
 import ProductService from '@/service/product';
 import Utility from '@/helpers/utility';
+import Consts from '@/helpers/consts';
 
 export default {
   data() {
@@ -40,8 +43,7 @@ export default {
       rows: [],
       searchForm: {
         term: '',
-        lastRowNo: 0,
-        orderBy: 'name'
+        lastRowNo: 0
       }
     };
   },
@@ -72,15 +74,30 @@ export default {
         }
       });
     },
-    async search(term) {
+    async search(term, loadmore=false) {
       if (term !== undefined) this.searchForm.term = term;
 
+      if (loadmore == true) {
+        this.searchForm.lastRowNo = this.rows.length;
+      } else {
+        this.searchForm.lastRowNo = 0;
+      }
+
+      let isLoadMoreEnabled = false;
       const result = await ProductService.search(this.searchForm);
+
       if (result) {
-        this.rows = result;
+        if (loadmore == true) {
+          this.rows = this.rows.concat(result);
+        } else {
+          this.rows = result;
+        }
+        isLoadMoreEnabled = (result.length == Consts.others.ROW_LIMIT_FOR_LISTS);
       } else {
         this.rows = [];
       }
+
+      this.$refs.list.setLoadMoreActivation(isLoadMoreEnabled);
     },
     toggle(id) {
       ProductService.toggle(id);

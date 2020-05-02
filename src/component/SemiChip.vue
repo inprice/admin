@@ -6,10 +6,10 @@
     class="pa-0"
   >
     <div v-if="dir == 'ltr'">
-      <strong :style="{ color: tagColor, backgroundColor: bgColor }">{{ tag }}</strong><span :style="{ color: fgColor }">{{ value }}</span>
+      <strong :style="{ color: tagColor, backgroundColor: bgColor }">{{ tag }}</strong><span :style="{ color: fgColor || bgColor }">{{ value }}</span>
     </div>
     <div v-else>
-      <span :style="{ color: fgColor }">{{ value }}</span><strong :style="{ color: tagColor, backgroundColor: bgColor }">{{ tag }}</strong>
+      <span :style="{ color: fgColor || bgColor }">{{ value }}</span><strong :style="{ color: tagColor, backgroundColor: bgColor }">{{ tag }}</strong>
     </div>
   </v-alert>
 </template>
@@ -29,8 +29,7 @@ export default {
       default: 'ltr'
     },
     fgColor: {
-      type: String,
-      default: 'white'
+      type: String
     },
     tagColor: {
       type: String,

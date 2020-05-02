@@ -1,3 +1,7 @@
+const others = {
+  ROW_LIMIT_FOR_LISTS: 25
+};
+
 const keys = {
   SESSIONS: 'INPRICE_CS',
   SESSION_NO: 'Session'
@@ -315,6 +319,7 @@ const countries = [
 ];
 
 export default {
+  others,
   keys,
   positions,
   sectors,

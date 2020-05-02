@@ -76,6 +76,11 @@ const router = new VueRouter({
           component: () => import('./views/product/Index.vue')
         },
         {
+          path: 'product/links/:prod_id',
+          name: 'links',
+          component: () => import('./views/product/Links.vue')
+        },
+        {
           path: 'settings',
           name: 'settings',
           component: () => import('./views/user/Index.vue')
@@ -99,7 +104,7 @@ const router = new VueRouter({
 });
 
 import store from './store';
-import Consts from './helpers/consts';
+import Consts from '@/helpers/consts';
 
 const SESSION = 'session/session';
 const SESSIONS = SESSION+'s';

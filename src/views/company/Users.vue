@@ -43,7 +43,7 @@
                 <td class="text-center">{{ mem.status }}</td>
                 <td class="text-center d-none d-sm-table-cell">{{ mem.retry }}/3</td>
                 <td class="text-center hidden-sm-and-down">{{ mem.updatedAt || mem.createdAt }}</td>
-                <td class="text-right" v-if="mem.status != 'LEFT'">
+                <td class="text-right" v-if="mem.status != 'LEFT' && mem.status != 'DELETED'">
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn x-small fab elevation="1"  v-on="on">
@@ -52,17 +52,6 @@
                     </template>
 
                     <v-list dense>
-                      <v-list-item @click="resend(mem.id)" v-if="mem.status == 'PENDING' && mem.retry < 3">
-                        <v-list-item-title>INVITE AGAIN</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="pause(mem.id)" v-if="mem.status == 'PENDING' || mem.status == 'JOINED'">
-                        <v-list-item-title>PAUSE</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="resume(mem.id)" v-if="mem.status == 'PAUSED'">
-                        <v-list-item-title>RESUME</v-list-item-title>
-                      </v-list-item>
-
-                      <v-divider></v-divider>
                       <v-list-item @click="changeRole(mem.id, mem.role, 'EDITOR')">
                         <v-list-item-title>
                           EDITOR
@@ -75,11 +64,31 @@
                           <v-icon right v-if="mem.role == 'VIEWER'">mdi-check</v-icon>
                         </v-list-item-title>
                       </v-list-item>
+
+                      <v-divider></v-divider>
+
+                      <v-list-item @click="pause(mem.id)" v-if="mem.status == 'PENDING' || mem.status == 'JOINED'">
+                        <v-list-item-title>PAUSE</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="resume(mem.id)" v-if="mem.status == 'PAUSED'">
+                        <v-list-item-title>RESUME</v-list-item-title>
+                      </v-list-item>
+
+                      <v-divider></v-divider>
+
+                      <v-list-item @click="remove(mem.id, mem.email)" v-if="mem.status != 'LEFT' && mem.retry < 3">
+                        <v-list-item-title>DELETE</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="resend(mem.id)" v-if="mem.status == 'PENDING' && mem.retry < 3">
+                        <v-list-item-title>INVITE AGAIN</v-list-item-title>
+                      </v-list-item>
                     </v-list>
                   </v-menu>
 
                 </td>
-                <td class="text-center" v-else>LEFT</td>
+                <td class="text-center" v-else>
+                  {{ mem.status }}
+                </td>
               </tr>
             </tbody>
           </template>
@@ -88,10 +97,10 @@
         <v-divider></v-divider>
 
         <div class="caption py-4 flex pl-4">
-          <v-icon>mdi-alert-circle-outline</v-icon> Please note that
+          Please note that
           <ul>
             <li>You are allowed to add users up to user limit of your plan</li>
-            <li>If you create a new company, you will be able to see refreshed user menu after signin again.</li>
+            <li>Deleted users will be permanently deleted within three hours.</li>
           </ul>
         </div>
 
@@ -100,7 +109,7 @@
         <v-divider></v-divider>
         <v-card-text>
           <p>
-            You have no member right now.
+            You have no user right now.
           </p>
         </v-card-text>
       </div>
@@ -108,6 +117,8 @@
     </v-card>
 
     <SendInvitation ref="sendDialog" @send="send"/>
+
+    <confirm ref="confirm"></confirm>
 
   </div>
 </template>
@@ -160,6 +171,17 @@ export default {
       const result = await MemberService.resume(id);
       if (result == true) this.refreshMembers();
     },
+    remove(id, name) {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
+        if (confirm == true) {
+          const result = await MemberService.remove(id);
+          if (result == true) {
+            Utility.showInfoMessage('Delete User', 'User successfully deleted. List will be updated after three hours.');
+            this.refreshMembers();
+          }
+        }
+      });
+    },
     async refreshMembers() {
       const result = await MemberService.list();
       if (result) {
@@ -175,7 +197,8 @@ export default {
     });
   },
   components: {
-    SendInvitation: () => import('./components/SendInvitation.vue')
+    SendInvitation: () => import('./components/SendInvitation.vue'),
+    confirm: () => import('@/component/Confirm.vue')
   }
 }
 </script>

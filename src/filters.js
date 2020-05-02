@@ -38,6 +38,7 @@ export default (Vue) => {
       }
       return numeral(diff).format('0.00%')+` <v-icon color="${color}">mdi-arrow-${dir}</v-icon>`;
     }
+    return 'NA';
   });
 
   Vue.filter('formatDateOnly', (value) => {

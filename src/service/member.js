@@ -25,6 +25,11 @@ export default {
     return res.status;
   },
 
+  async remove(id) {
+    const res = await Helper.call('Delete Member', { method: 'delete', url: baseURL + '/delete/' + id });
+    return res.status;
+  },
+
   async pause(id) {
     const res = await Helper.call('Pause Member', { method: 'put', url: baseURL + '/pause/' + id });
     return res.status;

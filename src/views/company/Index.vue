@@ -9,7 +9,7 @@
     </p>
 
     <profile />
-    <members />
+    <users />
 
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
   },
   components: {
     Profile: () => import('./Profile'),
-    Members: () => import('./Members')
+    Users: () => import('./Users')
   }
 };
 </script>

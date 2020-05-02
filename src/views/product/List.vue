@@ -6,7 +6,7 @@
         <v-hover v-slot:default="{ hover }">
           <v-card class="col pt-1 pb-1" :elevation="hover ? 8 : 2">
 
-            <v-card-title class="py-1 pb-0 ">
+            <v-card-title class="py-1 pb-2 ">
               <div class="font-weight-regular">{{ row.name }}</div>
               <v-spacer></v-spacer>
               <div class="text-right caption">
@@ -21,116 +21,128 @@
               </div>
             </v-card-title>
 
+            <v-container fluid class="pt-0">
+              <v-row>
+                <v-col>
+                  <v-card class="price-cell" >
+                    <div class="price-title">Yours</div>
+                    <v-divider></v-divider>
+                    <div class="headline text-center">{{ row.price | toCurrency }}</div>
+
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <tbody>
+                          <tr>
+                            <td>Position</td> 
+                            <td class="text-right">{{ row.position | toPosition }}</td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-card>
+                </v-col>
+
+                <v-col>
+                  <v-card class="price-cell" >
+                    <div class="price-title">Avg</div>
+                    <v-divider></v-divider>
+                    <div class="headline text-center">{{ row.avgPrice | toCurrency }}</div>
+
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <tbody>
+                          <tr>
+                            <td>Diff</td> 
+                            <td class="text-right">
+                              {{ row.avgPrice | toDifferenceLine(row.price) }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-card>
+                </v-col>
+
+                <v-col>
+                  <v-card class="price-cell" >
+                    <div class="price-title">Min</div>
+                    <v-divider></v-divider>
+                    <div class="headline text-center">{{ row.minPrice | toCurrency }}</div>
+
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <tbody>
+                          <tr>
+                            <td>Diff</td> 
+                            <td class="text-right">
+                              {{ row.minPrice | toDifferenceLine(row.price) }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Platform</td> 
+                            <td class="text-right">{{ row.minPlatform || 'NA' }}</td>
+                          </tr>
+                          <tr>
+                            <td>Seller</td> 
+                            <td class="text-right">{{ row.minSeller || 'NA' }}</td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-card>
+                </v-col>
+
+                <v-col>
+                  <v-card class="price-cell" >
+                    <div class="price-title">Max</div>
+                    <v-divider></v-divider>
+                    <div class="headline text-center">{{ row.maxPrice | toCurrency }}</div>
+
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <tbody>
+                          <tr>
+                            <td>Diff</td> 
+                            <td class="text-right">
+                              {{ row.maxPrice | toDifferenceLine(row.price) }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Platform</td> 
+                            <td class="text-right">{{ row.maxPlatform || 'NA' }}</td>
+                          </tr>
+                          <tr>
+                            <td>Seller</td> 
+                            <td class="text-right">{{ row.maxSeller || 'NA' }}</td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
+
             <v-row>
-              <div class="col pa-1">
-                <div class="text-center">Your</div>
-                <v-divider></v-divider>
-                <div class="headline text-center">{{ row.price | toCurrency }}</div>
 
-                <v-simple-table dense>
-                  <template v-slot:default>
-                    <tbody>
-                      <tr>
-                        <td>Position</td> 
-                        <td class="text-right">{{ row.position | toPosition }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </div>
-
-              <div class="col pa-1">
-                <div class="text-center">Avg</div>
-                <v-divider></v-divider>
-                <div class="headline text-center">{{ row.avgPrice | toCurrency }}</div>
-
-                <v-simple-table dense>
-                  <template v-slot:default>
-                    <tbody>
-                      <tr>
-                        <td>Diff</td> 
-                        <td class="text-right">
-                          {{ row.avgPrice | toDifferenceLine(row.price) }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </div>
-
-              <div class="col pa-1">
-                <div class="text-center">Min</div>
-                <v-divider></v-divider>
-                <div class="headline text-center">{{ row.minPrice | toCurrency }}</div>
-
-                <v-simple-table dense>
-                  <template v-slot:default>
-                    <tbody>
-                      <tr>
-                        <td>Diff</td> 
-                        <td class="text-right">
-                          {{ row.minPrice | toDifferenceLine(row.price) }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Platform</td> 
-                        <td class="text-right">{{ row.minPlatform }}</td>
-                      </tr>
-                      <tr>
-                        <td>Seller</td> 
-                        <td class="text-right">{{ row.minSeller }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </div>
-
-              <div class="col pa-1">
-                <div class="text-center">Max</div>
-                <v-divider></v-divider>
-                <div class="headline text-center">{{ row.maxPrice | toCurrency }}</div>
-
-                <v-simple-table dense>
-                  <template v-slot:default>
-                    <tbody>
-                      <tr>
-                        <td>Diff</td> 
-                        <td class="text-right">
-                          {{ row.maxPrice | toDifferenceLine(row.price) }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Platform</td> 
-                        <td class="text-right">{{ row.maxPlatform }}</td>
-                      </tr>
-                      <tr>
-                        <td>Seller</td> 
-                        <td class="text-right">{{ row.maxSeller }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </div>
-            </v-row>
-
-            <v-divider></v-divider>
-
-            <v-row class="mt-1 ml-1">
-
-              <div class="inline-chips">
-                <semi-chip bgColor="#555" class="caption" tag="Updated" :value="row.updatedAt"></semi-chip>
-                <semi-chip bgColor="#555" class="caption" tag="#" :value="row.code"></semi-chip>
+              <div class="mt-1 ml-3">
+                <span class="col-2 caption"><strong>Code</strong>: {{ row.code }}</span>
+                <span class="caption"><strong>Date</strong>: {{ row.updatedAt || row.createdAt }}</span>
+                <!--
+                <semi-chip bgColor="#888" fgColor="#222" class="caption" tag="#" :value="row.code"></semi-chip>
+                <semi-chip bgColor="#888" fgColor="#222" class="caption" tag="Updated" :value="row.updatedAt || row.createdAt"></semi-chip>
+                -->
               </div>
 
               <v-spacer></v-spacer>
 
-              <div class="mt-2 mr-2">
-                <v-btn class="mx-1" small color="red" dark @click="remove(row.id, row.name)">Delete</v-btn>
-                <v-btn class="mx-1" width=80 small color="success" @click="edit(index)">Edit</v-btn>
+              <div class="my-1 mr-4">
+                <v-btn class="mx-1" small @click="remove(row.id, row.name)">Delete</v-btn>
+                <v-btn class="mx-1" width=80 small @click="edit(index)">Edit</v-btn>
 
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn class="mx-1" small color="primary" v-on="on">Manage Links</v-btn>
+                    <v-btn class="mx-1" small v-on="on" :href="`product/links/${row.id}`" target="_blank">Manage Links</v-btn>
                   </template>
                   <span>Add & Remove links for this product to track prices</span>
                 </v-tooltip>
@@ -142,7 +154,7 @@
       </v-row>
 
       <v-row class="mt-3">
-        <v-btn>Load More</v-btn>
+        <v-btn @click="loadmore" :disabled="!isLoadMoreEnabled">Load More</v-btn>
       </v-row>
     </div>
   
@@ -156,6 +168,11 @@
 <script>
 export default {
   props: ['rows'],
+  data() {
+    return {
+      isLoadMoreEnabled: true,
+    }
+  },
   methods: {
     edit(rowNo) {
       this.$emit('edit', rowNo);
@@ -165,15 +182,34 @@ export default {
     },
     remove(id, name) {
       this.$emit('remove', { id, name});
+    },
+    loadmore() {
+      this.$emit('loadmore');
+    },
+    setLoadMoreActivation(value) {
+      this.isLoadMoreEnabled = value;
     }
   },
-  components: {
-    SemiChip: () => import('@/component/SemiChip.vue')
-  }
+  // components: {
+  //   SemiChip: () => import('@/component/SemiChip.vue')
+  // }
 };
 </script>
 
 <style scoped>
+  .row > .col {
+    padding: 3px;
+  }
+  .price-cell {
+    padding: 0 2px;
+    height: 140px;
+  }
+  .price-title {
+    background-color: #eee;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+  }
   .inline-chips {
     display: flex;
   }
