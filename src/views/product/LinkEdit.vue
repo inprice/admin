@@ -6,7 +6,7 @@
         <v-card-title>Link URL</v-card-title>
 
         <v-card-text class="mt-5">
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent >
             <v-text-field
               ref="url"
               label="URL"
@@ -23,7 +23,7 @@
 
           <v-btn @click="close">Close</v-btn>
           <v-btn
-            @click="submit"
+            @click="save"
             color="primary"
             :loading="loading" 
             :disabled="loading"
@@ -57,7 +57,7 @@ export default {
     };
   },
   methods: {
-    async submit() {
+    async save() {
       if (Object.keys(this.rules).length == 0) this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {

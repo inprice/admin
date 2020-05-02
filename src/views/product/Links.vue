@@ -1,111 +1,104 @@
 <template>
   <div>
 
-    <div class="headline mt-4 mb-2">
-      Product
-    </div>
-
-    <v-card v-if="product">
-      <v-card-title>
-        {{ product.name }} 
+    <div class="mt-4 mb-2" v-if="product">
+      <v-row class="mx-2 mb-2">
+        <div>
+          <div class="headline">
+            {{ product.name }}
+          </div>
+        </div>
         <v-spacer></v-spacer>
-        <span class="font-weight-light"><strong>#</strong>{{ product.code }}</span>
-      </v-card-title>
+        <span class="title text-right font-weight-light"><strong>#</strong>{{ product.code }}</span>
+      </v-row>
 
-      <v-divider />
+      <v-divider></v-divider>
 
-      <v-simple-table dense>
-        <template v-slot:default>
-          <tbody>
-            <tr>
-              <th>Your Price</th>
-              <td>{{ product.price | toCurrency }}</td>
-              <th>Min Price</th>
-              <td>{{ product.minPrice | toCurrency }}</td>
-              <th>Max Price</th>
-              <td>{{ product.maxPrice | toCurrency }}</td>
-            </tr>
-
-            <tr>
-              <th>Your Position</th>
-              <td>{{ product.position | toPosition }}</td>
-              <th>Min Seller</th>
-              <td>{{ product.minSeller }}</td>
-              <th>Max Seller</th>
-              <td>{{ product.maxSeller }}</td>
-            </tr>
-
-            <tr>
-              <th>Avg Price</th>
-              <td>{{ product.avgPrice | toCurrency }}</td>
-              <th>Min Platform</th>
-              <td>{{ product.minPlatform }}</td>
-              <th>Max Platform</th>
-              <td>{{ product.maxPlatform }}</td>
-            </tr>
-
-          </tbody>
-        </template>
-      </v-simple-table>
-
-    </v-card>
-
-    <v-divider></v-divider>
-
-    <v-row class="mt-5">
-      <v-col>
-        <span class="headline">
-          Links
+      <v-row class="mt-8 mb-3 mx-2">
+        <span >
+          Linkleri statulerine gore listelemek icin statu Combobox i gelecek
         </span>
-      </v-col>
-      <v-col class="text-right">
-        <v-btn dark color="success" @click="addNew">Add New Link</v-btn>
-      </v-col>
-    </v-row>
+        <v-spacer></v-spacer>
+        <div class="text-right">
+          <v-btn dark color="success" @click="addNew">Add New Link</v-btn>
+        </div>
+      </v-row>
 
-    <div v-if="rows && rows.length > 0">
+      <div v-if="rows && rows.length > 0">
 
-      <v-card v-for="row in rows" :key="row.id" class="py-0 mb-4">
-        <v-card-title class="py-2">{{ row.name || 'NA' }} </v-card-title>
-        <v-card-subtitle class="py-1">Status: {{ row.status }}</v-card-subtitle>
+        <v-card v-for="row in rows" :key="row.id" class="py-0 mb-4 pb-1">
+          <v-card-title class="pt-2 pb-1">
+            {{ row.name || 'NA' }}
+          
+            <v-spacer></v-spacer>
 
-        <v-simple-table dense class="ma-2 bordered">
-          <template v-slot:default>
-            <tbody>
-              <tr>
-                <th>Price</th>
-                <td>{{ product.price | toCurrency }}</td>
-                <th>Last Check</th>
-                <td>{{ product.lastCheck || 'NA' }}</td>
-              </tr>
-              <tr>
-                <th>Seller</th>
-                <td>{{ row.seller || 'NA' }}</td>
-                <th>Last Update</th>
-                <td>{{ product.lastUpdate || 'NA' }}</td>
-              </tr>
-              <tr>
-                <th>Platform</th>
-                <td>{{ row.platform || 'NA' }}</td>
-                <th>Shipment</th>
-                <td>{{ product.shipment || 'NA' }}</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+            <v-menu offset-y left>
+              <template v-slot:activator="{ on }">
+                <v-btn x-small fab elevation="1" v-on="on">
+                  <v-icon dark>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
 
-        <span class="caption ml-3"><strong>URL</strong>: {{ row.url }}</span>
+              <v-list dense>
+                <v-list-item @click="changeStatus(row.id, 'RENEW')" v-if="isSuitable(row.status, 'RENEWED')">
+                  <v-list-item-title>RENEW</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="changeStatus(row.id, 'PAUSE')" v-if="isSuitable(row.status, 'PAUSED')">
+                  <v-list-item-title>PAUSE</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="changeStatus(row.id, 'RESUME')" v-if="isSuitable(row.status, 'RESUMED')">
+                  <v-list-item-title>RESUME</v-list-item-title>
+                </v-list-item>
 
-      </v-card>
+                <v-divider></v-divider>
+
+                <v-list-item @click="remove(row.id, (row.name || row.url))">
+                  <v-list-item-title>DELETE</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-card-title>
+
+          <span class="caption ml-3"><strong>URL</strong>: {{ row.url }}</span>
+
+          <v-simple-table dense class="ma-2 bordered">
+            <template v-slot:default>
+              <tbody>
+                <tr>
+                  <th>Price</th>
+                  <td>{{ product.price | toCurrency }}</td>
+                  <th>Status</th>
+                  <td>{{ row.status }}</td>
+                </tr>
+                <tr>
+                  <th>Last Check</th>
+                  <td>{{ product.lastCheck || 'NA' }}</td>
+                  <th>Seller</th>
+                  <td>{{ row.seller || 'NA' }}</td>
+                </tr>
+                <tr>
+                  <th>Last Update</th>
+                  <td>{{ product.lastUpdate || 'NA' }}</td>
+                  <th>Platform</th>
+                  <td>{{ row.platform || 'NA' }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card>
+      </div>
+
+      <p v-else class="mt-5">
+        No link found! You can add a new one.
+      </p>
+
+      <LinkEdit ref="editDialog" @saved="refreshLinks" />
+      <confirm ref="confirm"></confirm>
     </div>
 
-    <p v-else class="mt-5">
-      No link found! You can add a new one.
-    </p>
-
-    <LinkEdit ref="editDialog" @saved="refreshLinks" />
-    <confirm ref="confirm"></confirm>
-
+    <div v-else>
+      Invalid product!
+    </div>
   </div>
 
 </template>
@@ -129,8 +122,12 @@ export default {
     edit(id, url) {
       this.$refs.editDialog.open(id, url, this.prod_id);
     },
+    async changeStatus(id, status) {
+      const result = await LinkService.changeStatus(id, status);
+      if (result == true) this.refreshLinks();
+    },
     remove(id, name) {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', (name | 'Link')).then(async (confirm) => {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
         if (confirm == true) {
           const result = await LinkService.remove(id);
           if (result == true) {
@@ -151,6 +148,27 @@ export default {
       this.rows = [];
       this.product = {};
     },
+    isSuitable(current, target) {
+      switch (current) {
+        case 'AVAILABLE':
+          return (target == 'RENEWED' || target == 'PAUSED');
+        case 'PAUSED':
+          return (target == 'RESUMED');
+        case 'NEW':
+        case 'RENEWED':
+        case 'BE_IMPLEMENTED':
+        case 'IMPLEMENTED':
+        case 'NOT_AVAILABLE':
+        case 'READ_ERROR':
+        case 'SOCKET_ERROR':
+        case 'NETWORK_ERROR':
+        case 'CLASS_PROBLEM':
+        case 'INTERNAL_ERROR':
+          return (target == 'PAUSED');
+        default:
+          return false;
+      }
+    }
   },
   mounted() {
     Utility.doubleRaf(() => {
@@ -173,7 +191,7 @@ export default {
 
 <style scoped>
   .bordered {
-    border: 1px solid lightblue;
+    border: 1px solid #ddd;
   }
   th {
     width: 10%;

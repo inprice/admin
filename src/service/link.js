@@ -21,6 +21,11 @@ export default {
   async remove(id) {
     const res = await Helper.call('Link Delete', { method: 'delete', url: baseURL + '/' + id });
     return res.status;
+  },
+
+  async changeStatus(id, status) {
+    const res = await Helper.call('Change Status', { method: 'put', url: baseURL + '/' + status.toLowerCase() + '/' + id });
+    return res.status;
   }
 
 };
