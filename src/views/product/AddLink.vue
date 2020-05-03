@@ -13,7 +13,8 @@
               v-model="form.url"
               :rules="rules.url"
               type="text"
-              maxlength="2000"
+              placeholder="https://www.sample.com/x01"
+              maxlength="1024"
             />
           </v-form>
         </v-card-text>
@@ -50,7 +51,6 @@ export default {
       valid: false,
       rules: {},
       form: {
-        id: 0,
         url: '',
         productId: 0
       }
@@ -62,7 +62,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await LinkService.save(this.form);
+        const result = await LinkService.insert(this.form);
         if (result == true) {
           this.close();
           this.$emit('saved');
@@ -75,14 +75,13 @@ export default {
       this.rules = {
         url: [
           v => !!v || "Required",
-          v => /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/.test(v) || "Must be valid",
-          v => (v && v.length >= 10 && v.length <= 2000) || "Must be longer than 10 chars"
+          v => /^(https?|www):\/\/[^\s$.?#].[^\s]*$/.test(v) || "Must be valid",
+          v => (v && v.length >= 10 && v.length <= 1024) || "Must be between 10-1024 chars"
         ],
       }
     },
-    open(id, url, productId) {
-      this.form.id = id;
-      this.form.url = url;
+    open(productId) {
+      this.form.url = '';
       this.form.productId = productId;
 
       this.opened = true;

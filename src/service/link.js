@@ -4,11 +4,8 @@ const baseURL = '/link';
 
 export default {
 
-  async save(form) {
-    let method = 'post';
-    if (form.id && form.id > 0) method = 'put';
-
-    const res = await Helper.call('Link Save', { method, url: baseURL, data: form });
+  async insert(data) {
+    const res = await Helper.call('Link Save', { method: 'post', url: baseURL, data });
     return res.status;
   },
 

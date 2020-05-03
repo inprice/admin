@@ -40,6 +40,7 @@
               </template>
 
               <v-list dense>
+
                 <v-list-item @click="changeStatus(row.id, 'RENEW')" v-if="isSuitable(row.status, 'RENEWED')">
                   <v-list-item-title>RENEW</v-list-item-title>
                 </v-list-item>
@@ -55,11 +56,19 @@
                 <v-list-item @click="remove(row.id, (row.name || row.url))">
                   <v-list-item-title>DELETE</v-list-item-title>
                 </v-list-item>
+
+                <v-divider></v-divider>
+
+                <v-list-item @click="copyUrl(row.url)">
+                  <v-list-item-title>COPY URL</v-list-item-title>
+                </v-list-item>
+                <v-list-item link :href="row.url" target="_blank">
+                  <v-list-item-title>OPEN URL IN NEW TAB</v-list-item-title>
+                </v-list-item>
               </v-list>
             </v-menu>
           </v-card-title>
 
-          <span class="caption ml-3"><strong>URL</strong>: {{ row.url }}</span>
 
           <v-simple-table dense class="ma-2 bordered">
             <template v-slot:default>
@@ -85,6 +94,7 @@
               </tbody>
             </template>
           </v-simple-table>
+
         </v-card>
       </div>
 
@@ -92,7 +102,7 @@
         No link found! You can add a new one.
       </p>
 
-      <LinkEdit ref="editDialog" @saved="refreshLinks" />
+      <AddLink ref="addLinkDialog" @saved="refreshLinks" />
       <confirm ref="confirm"></confirm>
     </div>
 
@@ -117,10 +127,7 @@ export default {
   },
   methods: {
     addNew() {
-      this.$refs.editDialog.open(0, '', this.prod_id);
-    },
-    edit(id, url) {
-      this.$refs.editDialog.open(id, url, this.prod_id);
+      this.$refs.addLinkDialog.open(this.prod_id);
     },
     async changeStatus(id, status) {
       const result = await LinkService.changeStatus(id, status);
@@ -135,6 +142,14 @@ export default {
           }
         }
       });
+    },
+    copyUrl(text) {
+      var input = document.createElement('textarea');
+      input.innerHTML = text;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
     },
     async refreshLinks() {
       if (this.prod_id) {
@@ -155,7 +170,6 @@ export default {
         case 'PAUSED':
           return (target == 'RESUMED');
         case 'NEW':
-        case 'RENEWED':
         case 'BE_IMPLEMENTED':
         case 'IMPLEMENTED':
         case 'NOT_AVAILABLE':
@@ -183,7 +197,7 @@ export default {
     });
   },
   components: {
-    LinkEdit: () => import('./LinkEdit'),
+    AddLink: () => import('./AddLink'),
     confirm: () => import('@/component/Confirm.vue')
   }
 };

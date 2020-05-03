@@ -21,7 +21,7 @@
               </div>
             </v-card-title>
 
-            <v-container fluid class="pt-0">
+            <v-container fluid class="py-0">
               <v-row>
                 <v-col>
                   <v-card class="price-cell" >
@@ -123,9 +123,9 @@
               </v-row>
             </v-container>
 
-            <v-row>
+            <v-row class="mt-2 mb-1">
 
-              <div class="mt-1 ml-3">
+              <div class="ml-3">
                 <span class="col-2 caption"><strong>Code</strong>: {{ row.code }}</span>
                 <span class="caption"><strong>Date</strong>: {{ row.updatedAt || row.createdAt }}</span>
                 <!--
@@ -136,7 +136,7 @@
 
               <v-spacer></v-spacer>
 
-              <div class="my-1 mr-4">
+              <div class="mr-4">
                 <v-btn class="mx-1" small @click="remove(row.id, row.name)">Delete</v-btn>
                 <v-btn class="mx-1" width=80 small @click="edit(index)">Edit</v-btn>
 
@@ -201,14 +201,17 @@ export default {
     padding: 3px;
   }
   .price-cell {
-    padding: 0 2px;
     height: 140px;
   }
   .price-title {
     background-color: #eee;
-    height: 32px;
+    height: 30px;
+    line-height: 30px;
     text-align: center;
-    line-height: 32px;
+  }
+  .price-cell > .headline {
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 1px;    
   }
   .inline-chips {
     display: flex;

@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer v-model="drawer" app clipped>
       <v-list>
-        <v-list-item link to="dashboard">
+        <v-list-item link :to="{name: 'dashboard'}">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-action>
@@ -10,7 +10,7 @@
             <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="products">
+        <v-list-item link :to="{name: 'products'}">
           <v-list-item-action>
             <v-icon>mdi-package-variant-closed</v-icon>
           </v-list-item-action>
@@ -18,7 +18,7 @@
             <v-list-item-title>Products</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="company-settings">
+        <v-list-item link :to="{name: 'companySettings'}">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-action>

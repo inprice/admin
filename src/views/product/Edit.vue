@@ -5,7 +5,7 @@
       <v-card>
         <v-card-title>Product details</v-card-title>
 
-        <v-card-text class="mt-5">
+        <v-card-text class="pb-0">
 
           <v-form ref="form" v-model="valid">
             <input type="hidden" :value="form.id" >
