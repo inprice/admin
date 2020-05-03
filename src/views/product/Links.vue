@@ -14,19 +14,27 @@
 
       <v-divider></v-divider>
 
-      <v-row class="mt-8 mb-3 mx-2">
-        <span >
-          Linkleri statulerine gore listelemek icin statu Combobox i gelecek
-        </span>
-        <v-spacer></v-spacer>
-        <div class="text-right">
-          <v-btn dark color="success" @click="addNew">Add New Link</v-btn>
-        </div>
+      <v-row class="mt-6 mb-2">
+        <v-col>
+          <v-select
+            label="Select a Status to filter out"
+            dense outlined
+            hide-details
+            v-model="status"
+            :items="statuses"
+            @change="filter"
+          />
+        </v-col>
+        <v-col>
+          <div class="text-right">
+            <v-btn dark color="success" @click="addNew">Add New Link</v-btn>
+          </div>
+        </v-col>
       </v-row>
 
       <div v-if="rows && rows.length > 0">
 
-        <v-card v-for="row in rows" :key="row.id" class="py-0 mb-4 pb-1">
+        <v-card v-for="row in filtered" :key="row.id" class="py-0 mb-4 pb-1">
           <v-card-title class="pt-2 pb-1">
             {{ row.name || 'NA' }}
           
@@ -57,20 +65,11 @@
                   <v-list-item-title>DELETE</v-list-item-title>
                 </v-list-item>
 
-                <v-divider></v-divider>
-
-                <v-list-item @click="copyUrl(row.url)">
-                  <v-list-item-title>COPY URL</v-list-item-title>
-                </v-list-item>
-                <v-list-item link :href="row.url" target="_blank">
-                  <v-list-item-title>OPEN URL IN NEW TAB</v-list-item-title>
-                </v-list-item>
               </v-list>
             </v-menu>
           </v-card-title>
 
-
-          <v-simple-table dense class="ma-2 bordered">
+          <v-simple-table dense class="ma-2 mb-1 bordered">
             <template v-slot:default>
               <tbody>
                 <tr>
@@ -94,6 +93,12 @@
               </tbody>
             </template>
           </v-simple-table>
+
+          <div class="row">
+            <div class="col text-truncate mx-2 caption py-1">
+              <v-icon small>mdi-link-variant</v-icon> <a :href="row.url" target="_blank">{{ row.url }}</a>
+            </div>
+          </div>
 
         </v-card>
       </div>
@@ -120,9 +125,12 @@ import Utility from '@/helpers/utility';
 export default {
   data() {
     return {
-      rows: [],
       product: {},
-      prod_id: 0
+      prod_id: 0,
+      status: null,
+      rows: [],
+      filtered: [],
+      statuses: [],
     }
   },
   methods: {
@@ -155,13 +163,35 @@ export default {
       if (this.prod_id) {
         const result = await LinkService.list(this.prod_id);
         if (result) {
-          this.rows = result.links;
           this.product = result.product;
+          this.rows = result.links;
+          this.filtered = this.rows;
+
+          const map = {};
+          this.rows.forEach((row) => {
+            map[row.status] = (map[row.status] || 0) + 1;
+          });
+
+          this.status = null;
+          this.statuses = [ { value: null, text: 'ALL' } ];
+          Object.keys(map).forEach((key) => {
+            const text = key.replace('_', ' ') + ` (${map[key]})`;
+            this.statuses.push({ value: key, text });
+          });
           return;
         }
       }
       this.rows = [];
       this.product = {};
+    },
+    filter() {
+      if (this.status) {
+        this.filtered = this.rows.filter(row => {
+          return row.status == this.status;
+        });
+      } else {
+        this.filtered = this.rows;
+      }
     },
     isSuitable(current, target) {
       switch (current) {
