@@ -76,6 +76,7 @@
       <v-card class="text-center">
         <v-btn
           outlined
+          rounded
           small
           class="my-4 text-none"
           @click="logout"

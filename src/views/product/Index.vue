@@ -35,7 +35,7 @@
 <script>
 import ProductService from '@/service/product';
 import Utility from '@/helpers/utility';
-import Consts from '@/helpers/consts';
+import SystemConsts from '@/data/system';
 
 export default {
   data() {
@@ -92,7 +92,7 @@ export default {
         } else {
           this.rows = result;
         }
-        isLoadMoreEnabled = (result.length == Consts.others.ROW_LIMIT_FOR_LISTS);
+        isLoadMoreEnabled = (result.length == SystemConsts.system.ROW_LIMIT_FOR_LISTS);
       } else {
         this.rows = [];
       }

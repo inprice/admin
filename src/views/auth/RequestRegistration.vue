@@ -21,7 +21,7 @@
 
               <v-text-field class="mx-5"
                 ref="userName"
-                label="Name"
+                label="User Name"
                 v-model="form.userName"
                 :rules="rules.userName"
                 type="text"
@@ -34,6 +34,20 @@
                 type="email"
                 :rules="rules.email"
                 maxlength="100"
+              />
+
+              <v-text-field class="mx-5"
+                label="Company Name"
+                v-model="form.companyName"
+                :rules="rules.companyName"
+                type="text"
+                maxlength="70"
+              />
+
+              <v-select class="mx-5"
+                label="Timezone"
+                v-model="form.timezone"
+                :items="timezonesectors"
               />
 
               <v-text-field class="mx-5"
@@ -57,39 +71,6 @@
               />
             </v-card>
 
-            <v-card-title class="py-0">Company info</v-card-title>
-            <v-card class="ma-3">
-
-                <v-text-field class="mx-5"
-                  label="Name"
-                  v-model="form.companyName"
-                  :rules="rules.companyName"
-                  type="text"
-                  maxlength="70"
-                />
-
-                <v-text-field class="mx-5"
-                  label="Website"
-                  v-model="form.website"
-                  :rules="rules.website"
-                  type="url"
-                  maxlength="100"
-                />
-
-                <v-select class="mx-5"
-                  label="Sector"
-                  v-model="form.sector"
-                  :items="sectors"
-                />
-
-                <v-select class="mx-5"
-                  label="Country"
-                  v-model="form.country"
-                  :rules="rules.country"
-                  :items="countries"
-                />
-
-            </v-card>
           </v-form>
 
           <v-card-actions>
@@ -117,10 +98,12 @@
 </template>
 
 <script>
+import axios from 'axios';
 import AuthService from '@/service/auth';
 import Utility from '@/helpers/utility';
-
-import Consts from '@/helpers/consts';
+import timezones from '@/data/timezones';
+import SystemConsts from '@/data/system';
+import currencyFormats from '@/data/currency-formats';
 
 export default {
   data() {
@@ -130,17 +113,15 @@ export default {
       showPass1: false,
       showPass2: false,
       rules: {},
-      sectors: Consts.sectors,
-      countries: Consts.countries,
+      timezones: timezones,
       form: {
-        userName: "",
-        email: "",
-        password: "",
-        repeatPassword: "",
-        companyName: "",
-        website: "",
-        sector: "",
-        country: ""
+        userName: '',
+        email: '',
+        companyName: '',
+        timezone: '',
+        currencyFormat: '#,##.00;-#,##.00',
+        password: '',
+        repeatPassword: ''
       }
     };
   },
@@ -161,13 +142,20 @@ export default {
     activateRules() {
       this.rules = {
         userName: [
-          v => !!v || "Your name is required",
-          v => (v.length >= 3 && v.length <= 70) || "Your name must be between 3-70 chars"
+          v => !!v || "User name is required",
+          v => (v.length >= 3 && v.length <= 70) || "User name must be between 3-70 chars"
         ],
         email: [
           v => !!v || "E-mail is required",
           v => (v.length >= 9 && v.length <= 100) || "Email must be between 9-100 chars",
           v => Utility.verifyEmail(v) || "E-mail must be valid"
+        ],
+        companyName: [
+          v => !!v || "Company name is required",
+          v => (v.length >= 3 && v.length <= 70) || "Company name must be between 3-70 chars"
+        ],
+        timezone: [
+          v => !!v || "Timezone is required",
         ],
         password: [
           v => !!v || "Password is required",
@@ -176,32 +164,25 @@ export default {
         repeatPassword: [
           v => !!v || "Repeat Password is required",
           v => v === this.form.password || "Passwords must be the same"
-        ],
-        companyName: [
-          v => !!v || "Company name is required",
-          v => (v.length >= 3 && v.length <= 70) || "Company name must be between 3-70 chars"
-        ],
-        website: [
-          v => (v == '' || (v.length >= 10 && v.length <= 100)) || "If given, website must be between 10-100 chars"
-        ],
-        country: [
-          v => !!v || "Country is required",
         ]
       }
     }
   },
   mounted() {
     Utility.doubleRaf(() => this.$refs.userName.focus());
-    if (process.env.NODE_ENV == 'development') {
-      this.form.userName = "Mahmut Pasha";
-      this.form.email = "mahmut@inprice.io";
-      this.form.password = "1234";
-      this.form.repeatPassword = "1234";
-      this.form.companyName = "Mahmut Pasha Gourment Ltd.";
-      this.form.website = "wwww.mahmutpasa.com";
-      this.form.sector = "Advertising";
-      this.form.country = "United Kingdom";
-    }
+
+    axios.get('https://api.ipgeolocation.io/timezone', {
+        fields: 'currency,time_zone',
+        apiKey: SystemConsts.system.GEO_LOCATION_API_KEY
+      }).then(res => {
+        if (res) {
+          this.form.timezone = res.time_zone.name;
+          this.form.currencyFormat = currencyFormats[res.currency.code];
+          console.info('geo location api response', res);
+        }
+      }).catch(err => {
+        console.error(err);
+      });
   }
 };
 </script>

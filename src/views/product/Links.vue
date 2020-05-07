@@ -2,22 +2,30 @@
   <div>
 
     <div class="mt-4 mb-2" v-if="product">
-      <v-row class="mx-2 mb-2">
+      <v-row class="mx-1 mb-2">
         <div>
+          <div class="caption text-uppercase">
+            PRODUCT
+          </div>
           <div class="headline">
             {{ product.name }}
           </div>
         </div>
         <v-spacer></v-spacer>
-        <span class="title text-right font-weight-light"><strong>#</strong>{{ product.code }}</span>
+        <div>
+        <br>
+        <div class="title text-right font-weight-light"><strong>Price: </strong>{{ product.price | toCurrency }}</div>
+        </div>
       </v-row>
 
       <v-divider></v-divider>
 
-      <v-row class="mt-6 mb-2">
+      <div class="mt-6 caption text-uppercase">
+        LINKS
+      </div>
+      <v-row class="mb-2">
         <v-col>
           <v-select
-            label="Select a Status to filter out"
             dense outlined
             hide-details
             v-model="status"
@@ -42,7 +50,7 @@
 
             <v-menu offset-y left>
               <template v-slot:activator="{ on }">
-                <v-btn x-small fab elevation="1" v-on="on">
+                <v-btn small icon v-on="on">
                   <v-icon dark>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
@@ -172,12 +180,15 @@ export default {
             map[row.status] = (map[row.status] || 0) + 1;
           });
 
-          this.status = null;
-          this.statuses = [ { value: null, text: 'ALL' } ];
+          let count = 0;
+          this.statuses = [];
           Object.keys(map).forEach((key) => {
             const text = key.replace('_', ' ') + ` (${map[key]})`;
             this.statuses.push({ value: key, text });
+            count += map[key];
           });
+          this.status = null;
+          this.statuses.unshift({ value: null, text: `ALL (${count})` });
           return;
         }
       }

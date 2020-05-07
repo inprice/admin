@@ -3,8 +3,8 @@ import Helper from '../service/helper';
 import { make } from 'vuex-pathify';
 
 import router from '../router';
-import Consts from '@/helpers/consts';
 import Utility from '@/helpers/utility';
+import SystemConsts from '@/data/system';
 
 import { BroadcastChannel } from 'broadcast-channel';
 
@@ -29,14 +29,14 @@ const actions = {
           Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
       });
     }
-    localStorage.removeItem(Consts.keys.SESSIONS);
+    localStorage.removeItem(SystemConsts.keys.SESSIONS);
     logoutChannel.postMessage();
     commit('CLEAR_SESSION');
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   },
 
   createSession({ state, commit }, res) {
-    localStorage.setItem(Consts.keys.SESSIONS, JSON.stringify(res.data.sessions));
+    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(res.data.sessions));
     state.sessionNo = res.data.sessionNo;
     commit('REFRESH_SESSION', res.data);
     loginChannel.postMessage(res.data);

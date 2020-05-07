@@ -104,7 +104,7 @@ const router = new VueRouter({
 });
 
 import store from './store';
-import Consts from '@/helpers/consts';
+import SystemConsts from '@/data/system';
 
 const SESSION = 'session/session';
 const SESSIONS = SESSION+'s';
@@ -119,7 +119,7 @@ router.beforeEach((to, from, next) => {
   let sessions = store.get(SESSIONS);
 
   if (!sessions || !sessions.length) {
-    sessions = JSON.parse(localStorage.getItem(Consts.keys.SESSIONS));
+    sessions = JSON.parse(localStorage.getItem(SystemConsts.keys.SESSIONS));
     if (sessions && sessions.length > 0) {
       store.set(SESSIONS, sessions);
     }

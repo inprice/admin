@@ -1,71 +1,4 @@
-const others = {
-  ROW_LIMIT_FOR_LISTS: 25
-};
-
-const keys = {
-  SESSIONS: 'INPRICE_CS',
-  SESSION_NO: 'Session'
-};
-
-const positions = [
-  { value: 1, text: 'Lowest' },
-  { value: 2, text: 'Lower' },
-  { value: 3, text: 'Avarage' },
-  { value: 4, text: 'Higher' },
-  { value: 5, text: 'Highest' }
-];
-
-const sectors = [
-  { value: '', text: 'Please select...', disabled: true },
-  { value: 'Advertising', text: 'Advertising' },
-  { value: 'Agriculture & Agribusiness', text: 'Agriculture & Agribusiness' },
-  { value: 'Apparel & Accessories', text: 'Apparel & Accessories' },
-  { value: 'Auto', text: 'Auto' },
-  { value: 'Beauty & Cosmetics', text: 'Beauty & Cosmetics' },
-  { value: 'Biotechnology', text: 'Biotechnology' },
-  { value: 'Chemical', text: 'Chemical' },
-  { value: 'Communications', text: 'Communications' },
-  { value: 'Computer', text: 'Computer' },
-  { value: 'Construction', text: 'Construction' },
-  { value: 'Consulting', text: 'Consulting' },
-  { value: 'Consumer Products', text: 'Consumer Products' },
-  { value: 'Education', text: 'Education' },
-  { value: 'Electronics', text: 'Electronics' },
-  { value: 'Energy', text: 'Energy' },
-  { value: 'Entertainment', text: 'Entertainment' },
-  { value: 'Fashion', text: 'Fashion' },
-  { value: 'Fine Arts', text: 'Fine Arts' },
-  { value: 'Food & Beverage', text: 'Food & Beverage' },
-  { value: 'Green Technology', text: 'Green Technology' },
-  { value: 'Health', text: 'Health' },
-  { value: 'Industrial Products', text: 'Industrial Products' },
-  { value: 'Information', text: 'Information' },
-  { value: 'Information Technology', text: 'Information Technology' },
-  { value: 'Insurance', text: 'Insurance' },
-  { value: 'Manufacturing', text: 'Manufacturing' },
-  { value: 'Media & Broadcasting', text: 'Media & Broadcasting' },
-  { value: 'Medical Devices & Supplies', text: 'Medical Devices & Supplies' },
-  { value: 'Motion Pictures & Video', text: 'Motion Pictures & Video' },
-  { value: 'Music', text: 'Music' },
-  { value: 'Pharmaceutical', text: 'Pharmaceutical' },
-  { value: 'Publishing', text: 'Publishing' },
-  { value: 'Real Estate', text: 'Real Estate' },
-  { value: 'Retail', text: 'Retail' },
-  { value: 'Service', text: 'Service' },
-  { value: 'Shipping', text: 'Shipping' },
-  { value: 'Sports', text: 'Sports' },
-  { value: 'Technology', text: 'Technology' },
-  { value: 'Telecommunications', text: 'Telecommunications' },
-  { value: 'Tourism', text: 'Tourism' },
-  { value: 'Transportation', text: 'Transportation' },
-  { value: 'Travel', text: 'Travel' },
-  { value: 'Utilities', text: 'Utilities' },
-  { value: 'Video Game', text: 'Video Game' },
-  { value: 'Web Services', text: 'Web Services' },
-  { value: 'Other', text: 'Other' }
-];
-
-const countries = [
+export default [
   { value: '', text: 'Please select...', disabled: true },
   { value: 'United States', text: 'United States' },
   { value: 'United Kingdom', text: 'United Kingdom' },
@@ -317,11 +250,3 @@ const countries = [
   { value: 'Zambia', text: 'Zambia' },
   { value: 'Zimbabwe', text: 'Zimbabwe' }
 ];
-
-export default {
-  others,
-  keys,
-  positions,
-  sectors,
-  countries
-}
