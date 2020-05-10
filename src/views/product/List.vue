@@ -127,11 +127,7 @@
 
               <div class="ml-3">
                 <span class="col-2 caption"><strong>Code</strong>: {{ row.code }}</span>
-                <span class="caption"><strong>Date</strong>: {{ row.updatedAt || row.createdAt }}</span>
-                <!--
-                <semi-chip bgColor="#888" fgColor="#222" class="caption" tag="#" :value="row.code"></semi-chip>
-                <semi-chip bgColor="#888" fgColor="#222" class="caption" tag="Updated" :value="row.updatedAt || row.createdAt"></semi-chip>
-                -->
+                <span class="caption"><strong>Date</strong>: {{ (row.updatedAt || row.createdAt) | formatDate }}</span>
               </div>
 
               <v-spacer></v-spacer>
@@ -189,10 +185,7 @@ export default {
     setLoadMoreActivation(value) {
       this.isLoadMoreEnabled = value;
     }
-  },
-  // components: {
-  //   SemiChip: () => import('@/component/SemiChip.vue')
-  // }
+  }
 };
 </script>
 

@@ -220,7 +220,7 @@ export default [
 	{ value: 'Pacific/Palau', text: '(GMT+09:00) Palau' },
 	{ value: 'Australia/Adelaide', text: '(GMT+10:30) Central Time - Adelaide' },
 	{ value: 'Australia/Darwin', text: '(GMT+09:30) Central Time - Darwin' },
-	{ value: 'Antarctica/DumontDUrville', text: '(GMT+10:00) Dumont D'Urville' },
+	{ value: 'Antarctica/DumontDUrville', text: '(GMT+10:00) Dumont D\'Urville' },
 	{ value: 'Asia/Magadan', text: '(GMT+10:00) Moscow+07 - Magadan' },
 	{ value: 'Asia/Vladivostok', text: '(GMT+10:00) Moscow+07 - Yuzhno-Sakhalinsk' },
 	{ value: 'Australia/Brisbane', text: '(GMT+10:00) Eastern Time - Brisbane' },

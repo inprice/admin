@@ -1,11 +1,10 @@
-import numeral from 'numeral';
-import moment from 'moment';
+import store from './store';
+import numFormatter from 'number-format.js';
+import moment from 'moment-timezone';
+
+const session = 'session/session';
 
 export default (Vue) => {
-  Vue.filter('toCurrency', (value) => {
-    return numeral(value).format('0.00');
-  });
-
   Vue.filter('toPosition', (value) => {
     switch (value) {
       case 1:
@@ -36,14 +35,26 @@ export default (Vue) => {
         color = 'red';
         diff = basePrice / price;
       }
-      return numeral(diff).format('0.00%')+` <v-icon color="${color}">mdi-arrow-${dir}</v-icon>`;
+      return numFormatter('#.00%', diff)+` <v-icon color="${color}">mdi-arrow-${dir}</v-icon>`;
     }
     return 'NA';
   });
 
-  Vue.filter('formatDateOnly', (value) => {
-    if (value) {
-      return moment(String(value)).format('DD MMM, YYYY');
-    }
+  Vue.filter('toCurrency', (value) => {
+    try {
+      return numFormatter(store.get(session+'@currencyFormat'), value);
+      /* eslint-disable no-empty */
+    } catch (error) { }
   });
+
+  Vue.filter('formatDate', (value) => {
+    try {
+      if (value) {
+        return moment(value).tz(store.get(session+'@timezone')).format('YYYY-MM-DD HH:mm');
+      }
+      /* eslint-disable no-empty */
+    } catch (error) { }
+    return 'NA';
+  });
+
 };

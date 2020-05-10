@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     openCreateCompany() {
-      this.$refs.companyInfoDialog.insert();
+      this.$refs.companyInfoDialog.edit(null, true);
     },
   },
   components: {

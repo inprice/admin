@@ -12,9 +12,10 @@
               label="URL"
               v-model="form.url"
               :rules="rules.url"
+              @keyup.enter.native="save"
               type="text"
-              placeholder="https://www.sample.com/x01"
               maxlength="1024"
+              hint="https://www.example.com/p/01A"
             />
           </v-form>
         </v-card-text>
@@ -75,7 +76,7 @@ export default {
       this.rules = {
         url: [
           v => !!v || "Required",
-          v => /^(https?|www):\/\/[^\s$.?#].[^\s]*$/.test(v) || "Must be valid",
+          v => Utility.verifyURL(v) || "Must be valid",
           v => (v && v.length >= 10 && v.length <= 1024) || "Must be between 10-1024 chars"
         ],
       }

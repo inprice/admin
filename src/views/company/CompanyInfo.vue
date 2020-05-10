@@ -3,7 +3,7 @@
 
     <v-dialog v-model="opened" max-width="450">
       <v-card>
-        <v-card-title>{{ isInsert ? 'Create a new' : 'Update' }} Company</v-card-title>
+        <v-card-title>{{ isInsert ? 'Create a new company' : 'Update company info' }}</v-card-title>
 
         <v-card-subtitle class="pb-0" v-if="isInsert">
           You will be able to see new company after sign in again.
@@ -11,33 +11,28 @@
 
         <v-form ref="form" v-model="valid" class="mt-5">
           <v-text-field class="mx-5"
-            ref="companyName"
+            ref="name"
             label="Name"
-            v-model="form.companyName"
-            :rules="rules.companyName"
+            v-model="form.name"
+            :rules="rules.name"
             type="text"
             maxlength="70"
           />
 
+          <v-select class="mx-5"
+            label="Currency"
+            v-model="form.currencyCode"
+            :items="currencyNames"
+            :menu-props="{ auto: true, overflowY: true }"
+            @change="setCurrencyFormat"
+          />
+
           <v-text-field class="mx-5"
-            label="Website"
-            v-model="form.website"
-            :rules="rules.website"
-            type="url"
-            maxlength="100"
-          />
-
-          <v-select class="mx-5"
-            label="Sector"
-            v-model="form.sector"
-            :items="sectors"
-          />
-
-          <v-select class="mx-5"
-            label="Country"
-            v-model="form.country"
-            :rules="rules.country"
-            :items="countries"
+            label="Currency Format"
+            v-model="form.currencyFormat"
+            :rules="rules.currencyFormat"
+            type="text"
+            maxlength="30"
           />
         </v-form>
 
@@ -62,10 +57,12 @@
 </template>
 
 <script>
+import ApiService from '@/service/api';
 import CompanyService from '@/service/company';
 import Utility from '@/helpers/utility';
 
-import Consts from '@/helpers/consts';
+import currencyNames from '@/data/currency-names';
+import currencyFormats from '@/data/currency-formats';
 
 export default {
   data() {
@@ -74,14 +71,12 @@ export default {
       opened: false,
       loading: false,
       valid: false,
+      currencyNames,
       rules: {},
-      sectors: Consts.sectors,
-      countries: Consts.countries,
       form: {
-        companyName: '',
-        website: '',
-        sector: '',
-        country: ''
+        name: '',
+        currencyCode: '',
+        currencyFormat: ''
       }
     };
   },
@@ -95,14 +90,14 @@ export default {
         if (this.isInsert) {
           const result = await CompanyService.create(this.form);
           if (result == true) {
-            Utility.showInfoMessage('Create Company', 'You have been successfully created a new company. You can work with it after sign in again.');
+            Utility.showInfoMessage('Create Company', 'Successfull, you will be able to work with new company after sign in again.');
             this.close();
             return;
           }
         } else {
           const result = await CompanyService.update(this.form);
           if (result == true) {
-            this.$store.set('session/session@company', this.form.companyName);
+            this.$store.set('session/COMPANY_INFO', this.form);
             this.close();
             return;
           }
@@ -110,33 +105,39 @@ export default {
         this.loading = false;
       }
     },
-    activateRules() {
-      this.rules = {
-        companyName: [
-          v => !!v || "Company name is required",
-          v => (v.length >= 3 && v.length <= 70) || "Company name must be between 3-70 chars"
-        ],
-        website: [
-          v => (v == '' || (v.length >= 10 && v.length <= 100)) || "If given, website must be between 10-100 chars"
-        ],
-        country: [
-          v => !!v || "Country is required",
-        ]
+    setCurrencyFormat() {
+      if (this.form.currencyCode) {
+        this.form.currencyFormat = currencyFormats[this.form.currencyCode];
       }
     },
-    update(data) {
-      this.isInsert = false;
-      this.form = data;
-      this.open();
+    activateRules() {
+      this.rules = {
+        name: [
+          v => !!v || "Required",
+          v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
+        ],
+        currencyCode: [
+          v => !!v || "Required",
+        ],
+        currencyFormat: [
+          v => v.length >= 5 && v.length <= 30 || "Must be between 5-30 chars"
+        ],
+      }
     },
-    insert() {
-      this.isInsert = true;
-      this.form = {
-        companyName: '',
-        website: '',
-        sector: '',
-        country: ''
-      };
+    edit(data, isInsert) {
+      this.isInsert = isInsert;
+      if (isInsert == false) {
+        this.form = data;
+      } else {
+        this.form.name = '';
+        if (!this.form.currencyCode) {
+          ApiService.get('/company/geo')
+            .then((res) => {
+              if (!this.form.currencyCode) this.form.currencyCode = res.data.data.currencyCode;
+              if (!this.form.currencyFormat) this.form.currencyFormat = currencyFormats[this.form.currencyCode];
+          });
+        }
+      }
       this.open();
     },
     open() {
@@ -144,7 +145,7 @@ export default {
       let self = this;
       Utility.doubleRaf(() => {
         self.$refs.form.resetValidation();
-        self.$refs.companyName.focus();
+        self.$refs.name.focus();
       });
     },
     close() {

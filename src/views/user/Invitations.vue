@@ -42,7 +42,7 @@
               <tr v-for="inv in invitations" :key="inv.id">
                 <td>{{ inv.company }}</td>
                 <td class="text-center">{{ inv.role }}</td>
-                <td class="text-center">{{ inv.date }}</td>
+                <td class="text-center">{{ inv.date | formatDate }}</td>
                 <td class="text-right">
                   <v-btn
                     small

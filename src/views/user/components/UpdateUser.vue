@@ -1,19 +1,26 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="350">
+    <v-dialog v-model="opened" max-width="450">
       <v-card>
-        <v-card-title>Update name</v-card-title>
+        <v-card-title>Update your info</v-card-title>
 
         <v-card-text class="mt-5">
           <v-form ref="form" v-model="valid">
             <v-text-field
-              ref="userName"
+              ref="name"
               label="Your Name"
-              v-model="form.userName"
-              :rules="rules.userName"
+              v-model="form.name"
+              :rules="rules.name"
               type="text"
               maxlength="70"
+            />
+
+            <v-select
+              label="Time Zone"
+              v-model="form.timezone"
+              :items="timezones"
+              :menu-props="{ auto: true, overflowY: true }"
             />
           </v-form>
         </v-card-text>
@@ -42,15 +49,19 @@
 import UserService from '@/service/user';
 import Utility from '@/helpers/utility';
 
+import timezones from '@/data/timezones';
+
 export default {
   data() {
     return {
       opened: false,
       loading: false,
       valid: false,
+      timezones,
       rules: {},
       form: {
-        userName: ''
+        name: '',
+        timezone: ''
       }
     };
   },
@@ -60,9 +71,9 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await UserService.updateUserName(this.form);
+        const result = await UserService.update(this.form);
         if (result == true) {
-          this.$store.set('session/session@user', this.form.userName);
+          this.$store.set('session/USER_INFO', this.form);
           this.close();
           return;
         }
@@ -71,19 +82,22 @@ export default {
     },
     activateRules() {
       this.rules = {
-        userName: [
+        name: [
           v => !!v || "Required",
           v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
         ],
+        timezone: [
+          v => !!v || "Time zone is required",
+        ],
       }
     },
-    open(name) {
-      this.form.userName = name;
+    open(data) {
       this.opened = true;
       let self = this;
       Utility.doubleRaf(() => {
         self.$refs.form.resetValidation();
-        self.$refs.userName.focus();
+        self.form = data;
+        self.$refs.name.focus();
       });
     },
     close() {

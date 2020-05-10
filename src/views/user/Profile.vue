@@ -16,11 +16,11 @@
 
           <v-list-item @click="1">
             <v-list-item-content>
-              <div class="col-2 body-2">NAME</div>
+              <div class="col-2 body-2">INFO</div>
               <div class="col-8 title">{{ session.user }}</div>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn small @click="openUpdateUserNameDialog">Update</v-btn>
+              <v-btn small @click="openUpdateUserDialog">Update</v-btn>
             </v-list-item-action>
           </v-list-item>
 
@@ -38,7 +38,7 @@
       </v-card-text>
     </v-card>
 
-    <UpdateUserNameDialog ref="updateUserNameDialog"/>
+    <UpdateUserDialog ref="updateUserDialog"/>
     <ChangePasswordDialog ref="changePasswordDialog"/>
   </div>
 </template>
@@ -54,21 +54,25 @@ export default {
     openChangePasswordDialog() {
       this.$refs.changePasswordDialog.open(this.session.email);
     },
-    openUpdateUserNameDialog() {
-      this.$refs.updateUserNameDialog.open(this.session.user);
+    openUpdateUserDialog() {
+      this.$refs.updateUserDialog.open({ name: this.session.user, timezone: this.session.timezone });
     },
   },
   components: {
-    UpdateUserNameDialog: () => import('./components/UpdateUserName.vue'),
+    UpdateUserDialog: () => import('./components/UpdateUser.vue'),
     ChangePasswordDialog: () => import('./components/ChangePassword.vue')
   }
 }
 </script>
 
 <style scoped>
+  .v-list-item {
+    padding: 0 6px;
+  }
   .v-list,
   .v-list-item__content,
   .v-list-item__content div {
     padding: 0;
   }
+
 </style>

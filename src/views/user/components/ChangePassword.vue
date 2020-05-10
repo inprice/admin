@@ -122,6 +122,7 @@ export default {
       Utility.doubleRaf(() => {
         self.$refs.form.resetValidation();
         self.$refs.oldPassword.focus();
+        Utility.removeTabIndexFromIconButtons(self.$el);
       });
     },
     close() {

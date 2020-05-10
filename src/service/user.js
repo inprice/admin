@@ -6,9 +6,9 @@ const baseURL = '/user';
 
 export default {
 
-  async updateUserName(form) {
-    const res = await Helper.call('Update Name', { method: 'put', url: baseURL + '/update-name', data: { value: form.userName } });
-    if (res.status == true) Utility.showInfoMessage('Update Name', 'Your name has been successfully updated');
+  async update(form) {
+    const res = await Helper.call('Update User', { method: 'put', url: baseURL + '/update', data: form });
+    if (res.status == true) Utility.showInfoMessage('Update Name', 'Your info has been successfully updated');
     return res.status;
   },
 

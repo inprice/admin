@@ -62,6 +62,18 @@ const mutations = {
     state.sessionNo = 0;
     state.session = {};
     state.sessions = [];
+  },
+
+  SET_USER_INFO(state, data) {
+    state.session.user = data.name;
+    state.session.timezone = data.timezone;
+    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
+  },
+
+  SET_COMPANY_INFO(state, data) {
+    state.session.company = data.name;
+    state.session.currencyFormat = data.currencyFormat;
+    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   }
 
 }

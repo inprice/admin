@@ -18,15 +18,6 @@
               @keyup.native.enter="valid && submit($event)"
             >
               <v-text-field
-                ref="name"
-                label="Name"
-                v-model="form.name"
-                :rules="rules.name"
-                type="text"
-                maxlength="70"
-              />
-
-              <v-text-field
                 label="Password"
                 v-model="form.password"
                 :rules="rules.password"
@@ -86,10 +77,9 @@ export default {
       showPass2: false,
       rules: {},
       form: {
-        name: '',
+        token: '',
         password: '',
-        repeatPassword: '',
-        token: ''
+        repeatPassword: ''
       }
     };
   },
@@ -114,10 +104,6 @@ export default {
     },
     activateRules() {
       this.rules = {
-        name: [
-          v => !!v || "Name is required",
-          v => (v.length >= 3 && v.length <= 70) || "Name must be between 3-70 chars"
-        ],
         password: [
           v => !!v || "Password is required",
           v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
@@ -131,7 +117,10 @@ export default {
   },
   mounted() {
     this.form.token = this.$route.query.token;
-    Utility.doubleRaf(() => this.$refs.name.focus());
+    Utility.doubleRaf(() => {
+      this.$refs.name.focus();
+      Utility.removeTabIndexFromIconButtons(this.$el);
+    });
   }
 };
 </script>

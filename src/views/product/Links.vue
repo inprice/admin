@@ -30,6 +30,7 @@
             hide-details
             v-model="status"
             :items="statuses"
+            :menu-props="{ auto: true, overflowY: true }"
             @change="filter"
           />
         </v-col>
@@ -82,19 +83,19 @@
               <tbody>
                 <tr>
                   <th>Price</th>
-                  <td>{{ product.price | toCurrency }}</td>
+                  <td>{{ row.price | toCurrency }}</td>
                   <th>Status</th>
                   <td>{{ row.status }}</td>
                 </tr>
                 <tr>
                   <th>Last Check</th>
-                  <td>{{ product.lastCheck || 'NA' }}</td>
+                  <td>{{ row.lastCheck | formatDate }}</td>
                   <th>Seller</th>
                   <td>{{ row.seller || 'NA' }}</td>
                 </tr>
                 <tr>
                   <th>Last Update</th>
-                  <td>{{ product.lastUpdate || 'NA' }}</td>
+                  <td>{{ row.lastUpdate | formatDate }}</td>
                   <th>Platform</th>
                   <td>{{ row.platform || 'NA' }}</td>
                 </tr>

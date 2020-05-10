@@ -43,7 +43,7 @@
               <tr v-for="ses in sessions" :key="ses.date">
                 <td>{{ ses.ip }}</td>
                 <td>{{ ses.browser }} on {{ ses.os }}</td>
-                <td>{{ ses.date }}</td>
+                <td>{{ ses.date | formatDate }}</td>
               </tr>
             </tbody>
           </template>

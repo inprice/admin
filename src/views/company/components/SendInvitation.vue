@@ -21,6 +21,7 @@
               v-model="form.role"
               :rules="rules.role"
               :items="roles"
+              :menu-props="{ auto: true, overflowY: true }"
             ></v-select>
 
           </v-form>

@@ -1,6 +1,5 @@
 const system = {
-  ROW_LIMIT_FOR_LISTS: 25,
-  GEO_LOCATION_API_KEY: '9eac35ec732e43a3a89863fce6cb406a'
+  ROW_LIMIT_FOR_LISTS: 25
 };
 
 const keys = {

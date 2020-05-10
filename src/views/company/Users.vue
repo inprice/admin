@@ -42,7 +42,7 @@
                 <td class="text-center">{{ mem.role }}</td>
                 <td class="text-center">{{ mem.status }}</td>
                 <td class="text-center d-none d-sm-table-cell">{{ mem.retry }}/3</td>
-                <td class="text-center hidden-sm-and-down">{{ mem.updatedAt || mem.createdAt }}</td>
+                <td class="text-center hidden-sm-and-down">{{ (mem.updatedAt || mem.createdAt) | formatDate }}</td>
                 <td class="text-right" v-if="mem.status != 'LEFT' && mem.status != 'DELETED'">
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">

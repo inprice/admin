@@ -31,7 +31,6 @@
           <v-divider></v-divider>
 
           <v-card-text>
-
             <v-form 
               ref="form"
               v-model="valid"
@@ -39,9 +38,9 @@
               @keyup.native.enter="valid && submit($event)"
             >
               <v-text-field
+                ref="email"
                 label="E-mail"
                 v-model="form.email"
-                ref="email"
                 :rules="rules.email"
                 type="email"
                 maxlength="100"
@@ -59,7 +58,7 @@
             </v-form>
 
             <v-card-actions>
-              <router-link class="font-weight-light" to="forgot-password">Forgot Password?</router-link>
+              <router-link class="font-weight-light" to="forgot-password" tabindex="-1">Forgot Password?</router-link>
               <v-spacer></v-spacer>
               <v-btn 
                 color="info" 
@@ -126,7 +125,10 @@ export default {
     }
   },
   mounted() {
-    Utility.doubleRaf(() => this.$refs.email.focus());
+    Utility.doubleRaf(() => {
+      this.$refs.email.focus()
+      Utility.removeTabIndexFromIconButtons(this.$el);
+    });
     if (process.env.NODE_ENV == 'development') {
       this.form.email = 'mustafa@inprice.io';
       this.form.password = '1234';

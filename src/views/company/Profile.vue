@@ -44,8 +44,7 @@ export default {
     async openCompanyInfoDialog() {
       const result = await CompanyService.get();
       if (result) {
-        result.companyName = result.name;
-        this.$refs.companyInfoDialog.update(result);
+        this.$refs.companyInfoDialog.edit(result, false);
       }
     },
   },
@@ -56,6 +55,9 @@ export default {
 </script>
 
 <style scoped>
+  .v-list-item {
+    padding: 0 6px;
+  }
   .v-list,
   .v-list-item__content,
   .v-list-item__content div {
