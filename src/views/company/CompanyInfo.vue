@@ -34,6 +34,44 @@
             type="text"
             maxlength="30"
           />
+
+          <v-simple-table dense class="mb-4">
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th>Sample Values</th>
+                  <th>Formatted</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0.25</td>
+                  <td>{{ formatCurrency(0.25) }}</td>
+                </tr>
+                <tr>
+                  <td>100</td>
+                  <td>{{ formatCurrency(100) }}</td>
+                </tr>
+                <tr>
+                  <td>100.5</td>
+                  <td>{{ formatCurrency(100.5) }}</td>
+                </tr>
+                <tr>
+                  <td>1250.10</td>
+                  <td>{{ formatCurrency(1250.10) }}</td>
+                </tr>
+                <tr>
+                  <td>1250.2557</td>
+                  <td>{{ formatCurrency(1250.2557) }}</td>
+                </tr>
+                <tr>
+                  <td>1263500.34</td>
+                  <td>{{ formatCurrency(1263500.34) }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+          
         </v-form>
 
         <v-card-actions>
@@ -61,6 +99,7 @@ import ApiService from '@/service/api';
 import CompanyService from '@/service/company';
 import Utility from '@/helpers/utility';
 
+import numFormatter from 'number-format.js';
 import currencyNames from '@/data/currency-names';
 import currencyFormats from '@/data/currency-formats';
 
@@ -120,7 +159,7 @@ export default {
           v => !!v || "Required",
         ],
         currencyFormat: [
-          v => v.length >= 5 && v.length <= 30 || "Must be between 5-30 chars"
+          v => v.length >= 3 && v.length <= 16 || "Must be between 3-16 chars"
         ],
       }
     },
@@ -152,6 +191,9 @@ export default {
       this.$refs.form.resetValidation();
       this.opened = false;
       this.loading = false;
+    },
+    formatCurrency(value) {
+      return numFormatter(this.form.currencyFormat, value);
     }
   }
 };

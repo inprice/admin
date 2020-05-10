@@ -12,8 +12,8 @@
             <div class="text-center mb-2">Please check your email account.</div>
             <v-divider></v-divider>
             <p class="ma-4">
-              An email with an activation code has been sent to your email address.
-              Please copy and paste the code in to the input box below to complete your registration.
+              We have just sent an email with activation code to your email address.
+              Please copy and paste in the input below to complete your registration.
             </p>
           </div>
 

@@ -16,7 +16,7 @@ export default [
   { value: 'BHD', text: 'Bahraini Dinar' },
   { value: 'BDT', text: 'Bangladeshi Taka' },
   { value: 'BBD', text: 'Barbadian Dollar' },
-  { value: 'BYN', text: 'Belarusian Ruble' },
+  { value: 'BYR', text: 'Belarusian Ruble' },
   { value: 'BZD', text: 'Belize Dollar' },
   { value: 'BMD', text: 'Bermudan Dollar' },
   { value: 'BTN', text: 'Bhutanese Ngultrum' },

@@ -1,6 +1,6 @@
 import store from './store';
-import numFormatter from 'number-format.js';
 import moment from 'moment-timezone';
+import numFormatter from 'number-format.js';
 
 const session = 'session/session';
 
