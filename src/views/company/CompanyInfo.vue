@@ -32,7 +32,7 @@
             v-model="form.currencyFormat"
             :rules="rules.currencyFormat"
             type="text"
-            maxlength="30"
+            maxlength="16"
           />
 
           <v-simple-table dense class="mb-4">
@@ -159,7 +159,8 @@ export default {
           v => !!v || "Required",
         ],
         currencyFormat: [
-          v => v.length >= 3 && v.length <= 16 || "Must be between 3-16 chars"
+          v => v.length >= 3 && v.length <= 16 || "Must be between 3-16 chars",
+          v => ((v.match(/#/g)||[]).length == 3) || "Invalid format"
         ],
       }
     },

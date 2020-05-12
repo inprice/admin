@@ -121,7 +121,7 @@ export default [
   { value: 'SHP', text: 'Saint Helena Pound' },
   { value: 'SVC', text: 'Salvadoran Colón' },
   { value: 'WST', text: 'Samoan Tala' },
-  { value: 'STD', text: 'São Tomé and Príncipe Dobra (pre-2018)' },
+  { value: 'STD', text: 'São Tomé and Príncipe Dobra' },
   { value: 'SAR', text: 'Saudi Riyal' },
   { value: 'RSD', text: 'Serbian Dinar' },
   { value: 'SCR', text: 'Seychellois Rupee' },
