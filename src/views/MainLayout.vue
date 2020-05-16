@@ -18,6 +18,14 @@
             <v-list-item-title>Products</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item link :to="{name: 'import-csv'}">
+          <v-list-item-action>
+            <v-icon>mdi-package-variant-closed</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Product Import</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item link :to="{name: 'companySettings'}">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>

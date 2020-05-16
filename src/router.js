@@ -13,81 +13,86 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     {
-      path: '/login',
       name: 'login',
+      path: '/login',
       component: () => import('./views/auth/Login')
     },
     {
-      path: '/request-registration',
       name: 'requestRegistration',
+      path: '/request-registration',
       component: () => import("./views/auth/RequestRegistration.vue"),
       meta: {
         openToPublic: true
       }
     },
     {
-      path: '/complete-registration',
       name: 'completeRegistration',
+      path: '/complete-registration',
       component: () => import("./views/auth/CompleteRegistration.vue"),
       meta: {
         openToPublic: true
       }
     },
     {
-      path: '/forgot-password',
       name: 'forgotPassword',
+      path: '/forgot-password',
       component: () => import("./views/auth/ForgotPassword.vue"),
       meta: {
         openToPublic: true
       }
     },
     {
-      path: '/reset-password',
       name: 'resetPassword',
+      path: '/reset-password',
       component: () => import("./views/auth/ResetPassword.vue"),
       meta: {
         openToPublic: true
       }
     },
     {
-      path: '/accept-invitation',
       name: 'acceptInvitation',
+      path: '/accept-invitation',
       component: () => import("./views/auth/AcceptInvitation.vue"),
       meta: {
         openToPublic: true
       }
     },
     {
-      path: '/:sid/app',
       name: 'app',
+      path: '/:sid/app',
       component: () => import('./views/MainLayout.vue'),
       meta: {
         requiresAuth: true
       },
       children: [
         {
-          path: 'dashboard',
           name: 'dashboard',
+          path: 'dashboard',
           component: () => import('./views/Dashboard.vue')
         },
         {
-          path: 'products',
           name: 'products',
+          path: 'products',
           component: () => import('./views/product/Index.vue')
         },
         {
-          path: 'product/links/:prod_id',
+          name: 'import-csv',
+          path: 'import/csv',
+          component: () => import('./views/product_import/CSV.vue')
+        },
+        {
           name: 'links',
+          path: 'product/links/:prod_id',
           component: () => import('./views/product/Links.vue')
         },
         {
-          path: 'settings',
           name: 'settings',
+          path: 'settings',
           component: () => import('./views/user/Index.vue')
         },
         {
-          path: 'company-settings',
           name: 'companySettings',
+          path: 'company-settings',
           component: () => import('./views/company/Index.vue')
         },
       ]
