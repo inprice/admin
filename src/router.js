@@ -81,6 +81,21 @@ const router = new VueRouter({
           component: () => import('./views/product_import/CSV.vue')
         },
         {
+          name: 'import-ebay-sku',
+          path: 'import/ebay-sku',
+          component: () => import('./views/product_import/EbaySKU.vue')
+        },
+        {
+          name: 'import-amazon-asin',
+          path: 'import/amazon-asin',
+          component: () => import('./views/product_import/AmazonASIN.vue')
+        },
+        {
+          name: 'import-report',
+          path: 'import/report',
+          component: () => import('./views/product_import/report/Index.vue')
+        },
+        {
           name: 'links',
           path: 'product/links/:prod_id',
           component: () => import('./views/product/Links.vue')

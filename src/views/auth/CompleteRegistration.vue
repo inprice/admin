@@ -37,9 +37,7 @@
         </v-form>
 
         <v-card-actions class="px-0">
-          <v-btn small to="login" class="text-none">
-            Back to Login
-          </v-btn>
+          <router-link to="login" :disabled="loading">Back to Login</router-link>
           <v-spacer></v-spacer>
           <v-btn 
             color="info"

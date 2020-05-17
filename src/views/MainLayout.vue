@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer" app clipped>
-      <v-list>
+      <v-list dense nav>
         <v-list-item link :to="{name: 'dashboard'}">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -10,22 +10,49 @@
             <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'products'}">
-          <v-list-item-action>
-            <v-icon>mdi-package-variant-closed</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Products</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'import-csv'}">
-          <v-list-item-action>
-            <v-icon>mdi-package-variant-closed</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Product Import</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+
+        <v-list-group
+          no-action
+          prepend-icon="mdi-package-variant-closed"
+          value="true"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>Product</v-list-item-title>
+          </template>
+
+          <v-list-item link :to="{name: 'products'}">
+            <v-list-item-content>
+              <v-list-item-title>Definitions</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-group
+            no-action
+            sub-group
+            value="true"
+          >
+            <template v-slot:activator>
+              <v-list-item-title>Import</v-list-item-title>
+            </template>
+
+            <v-list-item link :to="{name: 'import-csv'}">
+              <v-list-item-content>
+                <v-list-item-title>Import CSV</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link :to="{name: 'import-ebay-sku'}">
+              <v-list-item-content>
+                <v-list-item-title>Ebay's SKU List</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link :to="{name: 'import-amazon-asin'}">
+              <v-list-item-content>
+                <v-list-item-title>Amazon's ASIN List</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-group>
+        </v-list-group>
+
         <v-list-item link :to="{name: 'companySettings'}">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>

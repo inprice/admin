@@ -48,7 +48,7 @@
                 color="info"
                 class="mt-2"
                 @click="submit" 
-                :loading="loading" 
+                :loading="loading"
                 :disabled="loading">Accept</v-btn>
             </v-card-actions>
 
