@@ -99,8 +99,12 @@ export default {
 
       this.$refs.list.setLoadMoreActivation(isLoadMoreEnabled);
     },
-    toggle(id) {
-      ProductService.toggle(id);
+    async toggle(data) {
+      const result = await ProductService.toggle(data.id);
+      if (result == true) {
+        this.rows[data.index].active = !this.rows[data.index].active;
+        console.log('this.rows[data.index].active', this.rows[data.index].active);
+      }
     }
   },
   mounted() {

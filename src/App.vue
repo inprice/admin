@@ -21,4 +21,11 @@ export default {
   a {
     text-decoration: none;
   }
+  pre {
+    font-family: 'Courier New';
+    font-size: 15px;
+  }
+  .v-list-item__action {
+    margin-right: 22px !important;
+  }
 </style>

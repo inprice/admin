@@ -91,9 +91,9 @@ const router = new VueRouter({
           component: () => import('./views/product_import/AmazonASIN.vue')
         },
         {
-          name: 'import-report',
-          path: 'import/report',
-          component: () => import('./views/product_import/report/Index.vue')
+          name: 'imported-prods',
+          path: 'import/products',
+          component: () => import('./views/product_import/ImportedProducts.vue')
         },
         {
           name: 'links',

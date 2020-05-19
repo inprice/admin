@@ -107,11 +107,7 @@ export default {
         formData.append('file', this.file);
 
         const result = await ImportService.uploadAmazonASIN(formData);
-        if (result.status == true) {
-          this.$store.set('system/importReport', { type: 'AMAZON_ASIN', rows: result.data });
-          this.$router.push({ name: 'import-report' });
-          return;
-        }
+        if (result.status == true) this.$router.push({ name: 'imported-prods' });
         this.loading = false;
       }
     }
@@ -121,10 +117,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  pre {
-    font-family: Courier New;
-    font-size: 15px;
-  }
-</style>

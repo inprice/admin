@@ -5,6 +5,12 @@ const baseURL = '/product/import';
 
 export default {
 
+  async search(form) {
+    const res = await Helper.call('Imported Products', { method: 'get', url: baseURL + 's/search' + Helper.toQueryString(form) });
+    if (res.status == true && res.data.rows) return res.data.rows;
+    return null;
+  },
+
   async uploadCSV(formData) {
     const res = await Helper.call('CSV Import', { url: baseURL + '/csv', data: formData });
     if (res.status == true) Utility.showInfoMessage('Product Import', 'CSV file has been successfully uploaded')

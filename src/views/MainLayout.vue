@@ -11,47 +11,54 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-group
-          no-action
-          prepend-icon="mdi-package-variant-closed"
-          value="true"
-        >
-          <template v-slot:activator>
-            <v-list-item-title>Product</v-list-item-title>
-          </template>
+        <v-list-item link :to="{name: 'products'}">
+          <v-list-item-action>
+            <v-icon>mdi-package-variant-closed</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Product Definitions</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
-          <v-list-item link :to="{name: 'products'}">
-            <v-list-item-content>
-              <v-list-item-title>Definitions</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+        <v-divider inset></v-divider>
 
-          <v-list-group
-            no-action
-            sub-group
-            value="true"
-          >
-            <template v-slot:activator>
-              <v-list-item-title>Import</v-list-item-title>
-            </template>
+        <v-subheader>IMPORT</v-subheader>
 
-            <v-list-item link :to="{name: 'import-csv'}">
-              <v-list-item-content>
-                <v-list-item-title>Import CSV</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link :to="{name: 'import-ebay-sku'}">
-              <v-list-item-content>
-                <v-list-item-title>Ebay's SKU List</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link :to="{name: 'import-amazon-asin'}">
-              <v-list-item-content>
-                <v-list-item-title>Amazon's ASIN List</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-group>
-        </v-list-group>
+        <v-list-item link :to="{name: 'import-csv'}">
+          <v-list-item-action>
+            <v-icon>mdi-file-delimited-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>CSV File</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'import-ebay-sku'}">
+          <v-list-item-action>
+            <v-icon>mdi-format-list-bulleted</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Ebay's SKU List</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'import-amazon-asin'}">
+          <v-list-item-action>
+            <v-icon>mdi-amazon</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Amazon's ASIN List</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link :to="{name: 'imported-prods'}">
+          <v-list-item-action>
+            <v-icon>mdi-import</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Imported Products</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider inset></v-divider>
 
         <v-list-item link :to="{name: 'companySettings'}">
           <v-list-item-action>
@@ -144,3 +151,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .v-divider--inset {
+    margin-left: 2px !important;
+    max-width: 100% !important;
+  }
+</style>

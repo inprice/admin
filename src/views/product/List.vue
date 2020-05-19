@@ -6,22 +6,43 @@
         <v-hover v-slot:default="{ hover }">
           <v-card class="col pt-1 pb-1" :elevation="hover ? 8 : 2">
 
-            <v-card-title class="py-1 pb-2 ">
+            <v-card-title class="py-1 ">
               <div class="font-weight-regular">{{ row.name }}</div>
+
               <v-spacer></v-spacer>
-              <div class="text-right caption">
-                <v-switch
-                  @change="toggle(row.id)"
-                  v-model="row.active"
-                  class="ma-0"
-                  color="primary"
-                  hide-details
-                  :label="row.active == true ? 'Active' : 'Passive'"
-                ></v-switch>
-              </div>
+
+              <v-menu offset-y left>
+                <template v-slot:activator="{ on }">
+                  <v-btn small icon v-on="on">
+                    <v-icon dark>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-list dense>
+
+                  <v-list-item @click="edit(index)">
+                    <v-list-item-title>EDIT</v-list-item-title>
+                  </v-list-item>
+
+                  <v-list-item link target="_blank" :href="`product/links/${row.id}`">
+                    <v-list-item-title>LINKS</v-list-item-title>
+                  </v-list-item>
+
+                  <v-list-item @click="toggle(row.id, index)">
+                    <v-list-item-title>{{ row.active ? 'PAUSE' : 'RESUME' }}</v-list-item-title>
+                  </v-list-item>
+
+                  <v-divider></v-divider>
+
+                  <v-list-item @click="remove(row.id, row.name)">
+                    <v-list-item-title>DELETE</v-list-item-title>
+                  </v-list-item>
+
+                </v-list>
+              </v-menu>
             </v-card-title>
 
-            <v-container fluid class="py-0">
+            <v-container fluid class="py-1">
               <v-row>
                 <v-col>
                   <v-card class="price-cell" >
@@ -33,8 +54,16 @@
                       <template v-slot:default>
                         <tbody>
                           <tr>
+                            <td :class="{ 'green--text': row.active, 'font-weight-bold': row.active }">{{ row.active ? 'ACTIVE' : 'PASSIVE' }}</td>
+                            <td class="text-right">{{ row.code }}</td>
+                          </tr>
+                          <tr>
                             <td>Position</td> 
                             <td class="text-right">{{ row.position | toPosition }}</td>
+                          </tr>
+                          <tr>
+                            <td>Updated</td> 
+                            <td class="text-right">{{ (row.updatedAt || row.createdAt) | formatDate }}</td>
                           </tr>
                         </tbody>
                       </template>
@@ -56,6 +85,10 @@
                             <td class="text-right">
                               {{ row.avgPrice | toDifferenceLine(row.price) }}
                             </td>
+                          </tr>
+                          <tr>
+                            <td>Links Count</td> 
+                            <td class="text-right">{{ row.linksCount }}</td>
                           </tr>
                         </tbody>
                       </template>
@@ -123,28 +156,6 @@
               </v-row>
             </v-container>
 
-            <v-row class="mt-2 mb-1">
-
-              <div class="ml-3">
-                <span class="col-2 caption"><strong>Code</strong>: {{ row.code }}</span>
-                <span class="caption"><strong>Date</strong>: {{ (row.updatedAt || row.createdAt) | formatDate }}</span>
-              </div>
-
-              <v-spacer></v-spacer>
-
-              <div class="mr-4">
-                <v-btn class="mx-1" small @click="remove(row.id, row.name)">Delete</v-btn>
-                <v-btn class="mx-1" width=80 small @click="edit(index)">Edit</v-btn>
-
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn class="mx-1" small v-on="on" :href="`product/links/${row.id}`" target="_blank">Manage Links</v-btn>
-                  </template>
-                  <span>Add & Remove links for this product to track prices</span>
-                </v-tooltip>
-              </div>
-            </v-row>
-
           </v-card>
         </v-hover>
       </v-row>
@@ -173,8 +184,8 @@ export default {
     edit(rowNo) {
       this.$emit('edit', rowNo);
     },
-    toggle(id) {
-      this.$emit('toggle', id);
+    toggle(id, index) {
+      this.$emit('toggle', { id, index });
     },
     remove(id, name) {
       this.$emit('remove', { id, name});
