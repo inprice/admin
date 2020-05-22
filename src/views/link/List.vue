@@ -2,31 +2,42 @@
   <div>
 
     <div class="display-1">
-      Import Report
+      Link's Statuses
     </div>
 
     <p class="subtitle">
-      You can see the imported products list below
+      You can search all the statuses of your links here
     </p>
 
-    <div class="mt-6 caption text-uppercase">
-      Statuses
-    </div>
-    <div class="mb-2 px-0 col-6">
-      <v-select
-        dense outlined
-        hide-details
-        v-model="searchForm.term"
-        :items="statuses"
-        :menu-props="{ auto: true, overflowY: true }"
-        @change="search"
-      />
-    </div>
+    <v-row class="mb-2 px-0">
+      <v-col cols="8">
+        <v-text-field 
+          ref="searchTerm"
+          v-model="searchForm.term"
+          placeholder="Platform or Seller name"
+          prepend-inner-icon="mdi-magnify"
+          append-icon="mdi-close"
+          @click:append="clearTerm"
+          dense outlined
+          hide-details
+        />
+      </v-col>
+
+      <v-col cols="4">
+        <v-select
+          dense outlined
+          hide-details
+          v-model="searchForm.status"
+          :items="statuses"
+          :menu-props="{ auto: true, overflowY: true }"
+        />
+      </v-col>
+    </v-row>
 
     <div v-if="rows && rows.length > 0" class="mt-6">
 
       <div class="caption text-uppercase">
-        Imported rows
+        Links
       </div>
 
       <div v-for="row in rows" :key="row.id" class="mb-4">
@@ -39,24 +50,28 @@
 
             <table>
               <tr>
+                <td class="subtitle-2">Name </td>
+                <td class="body-2">{{ row.name || 'NA' }}</td>
+              </tr>
+              <tr>
+                <td class="subtitle-2">Seller </td>
+                <td class="body-2">{{ row.seller || 'NA' }}</td>
+              </tr>
+              <tr>
+                <td class="subtitle-2">Platform </td>
+                <td class="body-2">{{ row.platform  || 'NA' }}</td>
+              </tr>
+              <tr>
+                <td class="subtitle-2">Price </td>
+                <td class="body-2">{{ row.price | toCurrency }}</td>
+              </tr>
+              <tr>
                 <td class="subtitle-2">Status </td>
                 <td class="body-2">{{ row.status }}</td>
               </tr> 
               <tr>
-                <td class="subtitle-2">Added At </td>
-                <td class="body-2">{{ row.createdAt | formatDate }}</td>
-              </tr>
-              <tr>
-                <td class="subtitle-2">Description </td>
-                <td class="body-2">{{ row.description }}</td>
-              </tr>
-              <tr>
-                <td class="subtitle-2">From </td>
-                <td class="body-2">{{ row.importType }}</td>
-              </tr>
-              <tr>
-                <td class="subtitle-2">Data </td>
-                <td class="body-2">{{ row.data }}</td>
+                <td class="subtitle-2">Updated At </td>
+                <td class="body-2">{{ (row.last_update || row.createdAt) | formatDate }}</td>
               </tr>
             </table>
 
@@ -69,16 +84,7 @@
     </div>
 
     <div v-else class="mt-5">
-      No imported product found! You can import new products using the buttons below
-      <div>
-        <v-btn class="mt-3 col-2" small :to="{name: 'import-csv'}">Import Csv File</v-btn>
-      </div>
-      <div>
-        <v-btn class="mt-3 col-2" small :to="{name: 'import-ebay-sku'}">Ebay's SKU List</v-btn>
-      </div>
-      <div>
-        <v-btn class="mt-3 col-2" small :to="{name: 'import-amazon-asin'}">Amazon's ASIN List</v-btn>
-      </div>
+      No link found! You can change your criteria to find something else
     </div>
 
   </div>
@@ -86,7 +92,7 @@
 </template>
 
 <script>
-import ImportService from '@/service/imbort';
+import LinkService from '@/service/link';
 import Utility from '@/helpers/utility';
 import SystemConsts from '@/data/system';
 
@@ -95,20 +101,31 @@ export default {
     return {
       rows: [],
       isLoadMoreEnabled: true,
-      statuses: SystemConsts.IMPORT_STATUSES,
+      statuses: SystemConsts.STATUSES,
       searchForm: {
         term: '',
+        status: null,
         lastRowNo: 0
       }
     }
   },
+  watch: {
+    'searchForm.term'() {
+      this.search();
+    },
+    'searchForm.status'() {
+      this.search();
+    },
+  },
   methods: {
     async remove(id) {
-      const result = await ImportService.remove(id);
+      const result = await LinkService.remove(id);
       if (result == true) this.search();
     },
     async search(loadmore=false) {
       this.isLoadMoreEnabled = false;
+
+      if (!this.searchForm.status || this.searchForm.status == null) delete this.searchForm.status;
 
       if (loadmore == true) {
         this.searchForm.lastRowNo = this.rows.length;
@@ -116,7 +133,7 @@ export default {
         this.searchForm.lastRowNo = 0;
       }
 
-      const result = await ImportService.search(this.searchForm);
+      const result = await LinkService.search(this.searchForm);
 
       if (result) {
         if (loadmore == true) {
@@ -128,6 +145,10 @@ export default {
       } else {
         this.rows = [];
       }
+    },
+    clearTerm() {
+      this.searchForm.term = '';
+      this.$refs.searchTerm.focus();
     }
   },
   mounted() {

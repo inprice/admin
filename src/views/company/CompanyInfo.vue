@@ -35,38 +35,38 @@
             maxlength="16"
           />
 
-          <v-simple-table dense class="mb-4">
+          <v-simple-table dense class="mb-4 col-10 mx-auto">
             <template v-slot:default>
               <thead>
                 <tr>
-                  <th>Sample Values</th>
-                  <th>Formatted</th>
+                  <th class="text-right" width="40%">Sample Values</th>
+                  <th class="text-right">Formatted</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>0.25</td>
-                  <td>{{ formatCurrency(0.25) }}</td>
+                  <td class="text-right">0.25</td>
+                  <td class="text-right">{{ formatCurrency(0.25) }}</td>
                 </tr>
                 <tr>
-                  <td>100</td>
-                  <td>{{ formatCurrency(100) }}</td>
+                  <td class="text-right">100</td>
+                  <td class="text-right">{{ formatCurrency(100) }}</td>
                 </tr>
                 <tr>
-                  <td>100.5</td>
-                  <td>{{ formatCurrency(100.5) }}</td>
+                  <td class="text-right">100.5</td>
+                  <td class="text-right">{{ formatCurrency(100.5) }}</td>
                 </tr>
                 <tr>
-                  <td>1250.10</td>
-                  <td>{{ formatCurrency(1250.10) }}</td>
+                  <td class="text-right">1250.10</td>
+                  <td class="text-right">{{ formatCurrency(1250.10) }}</td>
                 </tr>
                 <tr>
-                  <td>1250.2557</td>
-                  <td>{{ formatCurrency(1250.2557) }}</td>
+                  <td class="text-right">1250.2557</td>
+                  <td class="text-right">{{ formatCurrency(1250.2557) }}</td>
                 </tr>
                 <tr>
-                  <td>1263500.34</td>
-                  <td>{{ formatCurrency(1263500.34) }}</td>
+                  <td class="text-right">1263500.34</td>
+                  <td class="text-right">{{ formatCurrency(1263500.34) }}</td>
                 </tr>
               </tbody>
             </template>

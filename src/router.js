@@ -96,9 +96,14 @@ const router = new VueRouter({
           component: () => import('./views/product_import/ImportedProducts.vue')
         },
         {
-          name: 'links',
+          name: 'prod-links',
           path: 'product/links/:prod_id',
           component: () => import('./views/product/Links.vue')
+        },
+        {
+          name: 'links',
+          path: 'links',
+          component: () => import('./views/link/List.vue')
         },
         {
           name: 'settings',

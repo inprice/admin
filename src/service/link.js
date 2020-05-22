@@ -15,6 +15,12 @@ export default {
     return null;
   },
 
+  async search(form) {
+    const res = await Helper.call('Link Search', { method: 'get', url: baseURL + '/search' + Helper.toQueryString(form) });
+    if (res.status == true && res.data.rows) return res.data.rows;
+    return null;
+  },
+
   async remove(id) {
     const res = await Helper.call('Link Delete', { method: 'delete', url: baseURL + '/' + id });
     return res.status;

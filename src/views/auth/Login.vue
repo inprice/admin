@@ -130,7 +130,7 @@ export default {
       Utility.removeTabIndexFromIconButtons(this.$el);
     });
     if (process.env.NODE_ENV == 'development') {
-      this.form.email = 'mustafa@inprice.io';
+      this.form.email = 'dumlupinar01@gmail.com';
       this.form.password = '1234';
     }
 

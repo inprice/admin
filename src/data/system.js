@@ -16,6 +16,7 @@ const positions = [
 ];
 
 const STATUSES = [
+  { value: null, text: 'ALL' },
   { value: 'NEW', text: 'NEW' },
   { value: 'AVAILABLE', text: 'AVAILABLE' },
   { value: 'RENEWED', text: 'RENEWED' },

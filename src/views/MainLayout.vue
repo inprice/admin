@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer" app clipped>
-      <v-list dense nav>
+      <v-list dense nav class="text-uppercase font-weight-light">
         <v-list-item link :to="{name: 'dashboard'}">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -17,6 +17,15 @@
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Product Definitions</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link :to="{name: 'links'}">
+          <v-list-item-action>
+            <v-icon>mdi-link-variant</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Links' Statuses List</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
