@@ -5,9 +5,17 @@
       Import Report
     </div>
 
-    <p class="subtitle">
-      You can see the imported products list below
-    </p>
+    <v-row>
+      <v-col class="subtitle">
+        You can see the imported products list below
+      </v-col>
+
+      <v-col class="align-right">
+        <v-btn class="mx-1" small :to="{name: 'import-csv'}">Import Csv File</v-btn>
+        <v-btn class="mx-1" small :to="{name: 'import-ebay-sku'}">Ebay's SKU List</v-btn>
+        <v-btn class="mx-1" small :to="{name: 'import-amazon-asin'}">Amazon's ASIN List</v-btn>
+      </v-col>
+    </v-row>
 
     <div class="mt-6 caption text-uppercase">
       Statuses
@@ -33,7 +41,7 @@
         <v-hover v-slot:default="{ hover }">
           <v-card outlined :elevation="hover ? 2 : 0" class="pa-2">
 
-            <v-btn icon @click="remove(row.id)" class="float-right mt-5 mr-2">
+            <v-btn icon @click="remove(row.id)" class="float-right mt-5 mr-2" :disabled="$store.get('session/IS_JUST_VIEWER')">
               <v-icon>mdi-delete-forever-outline</v-icon>
             </v-btn>
 
@@ -69,16 +77,7 @@
     </div>
 
     <div v-else class="mt-5">
-      No imported product found! You can import new products using the buttons below
-      <div>
-        <v-btn class="mt-3 col-2" small :to="{name: 'import-csv'}">Import Csv File</v-btn>
-      </div>
-      <div>
-        <v-btn class="mt-3 col-2" small :to="{name: 'import-ebay-sku'}">Ebay's SKU List</v-btn>
-      </div>
-      <div>
-        <v-btn class="mt-3 col-2" small :to="{name: 'import-amazon-asin'}">Amazon's ASIN List</v-btn>
-      </div>
+      No imported product found! You can import new products using the buttons above
     </div>
 
   </div>

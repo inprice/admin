@@ -111,7 +111,7 @@ const router = new VueRouter({
           component: () => import('./views/user/Index.vue')
         },
         {
-          name: 'companySettings',
+          name: 'company-settings',
           path: 'company-settings',
           component: () => import('./views/company/Index.vue')
         },

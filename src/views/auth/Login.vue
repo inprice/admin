@@ -126,7 +126,7 @@ export default {
   },
   mounted() {
     Utility.doubleRaf(() => {
-      this.$refs.email.focus()
+      this.$refs.email.focus();
       Utility.removeTabIndexFromIconButtons(this.$el);
     });
     if (process.env.NODE_ENV == 'development') {

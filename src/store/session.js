@@ -78,7 +78,26 @@ const mutations = {
 
 }
 
-const getters = make.getters(state);
+const getters = {
+  ...make.getters(state),
+
+  IS_ADMIN: (state) => {
+    return state.session.role === 'ADMIN';
+  },
+
+  IS_EDITOR: (state) => {
+    return state.session.role === 'EDITOR' || getters.IS_ADMIN(state);
+  },
+
+  IS_VIEWER: (state) => {
+    return state.session.role === 'VIEWER' || getters.IS_EDITOR(state);
+  },
+
+  IS_JUST_VIEWER: (state) => {
+    return state.session.role === 'VIEWER';
+  },
+
+};
 
 const loginChannel = new BroadcastChannel('login');
 loginChannel.onmessage = (e) => {

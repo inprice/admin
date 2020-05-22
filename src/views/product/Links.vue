@@ -14,7 +14,7 @@
         <v-spacer></v-spacer>
         <div>
         <br>
-        <div class="title text-right font-weight-light"><strong>Price: </strong>{{ product.price | toCurrency }}</div>
+        <div class="title text-right">{{ product.price | toCurrency }}</div>
         </div>
       </v-row>
 
@@ -36,7 +36,7 @@
         </v-col>
         <v-col>
           <div class="text-right">
-            <v-btn dark color="success" @click="addNew">Add New Link</v-btn>
+            <v-btn dark color="success" @click="addNew" :disabled="$store.get('session/IS_JUST_VIEWER')">Add New Link</v-btn>
           </div>
         </v-col>
       </v-row>
@@ -49,7 +49,7 @@
           
             <v-spacer></v-spacer>
 
-            <v-menu offset-y left>
+            <v-menu offset-y left v-if="$store.get('session/IS_EDITOR')">
               <template v-slot:activator="{ on }">
                 <v-btn small icon v-on="on">
                   <v-icon dark>mdi-dots-vertical</v-icon>

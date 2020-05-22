@@ -44,7 +44,7 @@
         <v-hover v-slot:default="{ hover }">
           <v-card outlined :elevation="hover ? 2 : 0" class="pa-2">
 
-            <v-btn icon @click="remove(row.id)" class="float-right mt-5 mr-2">
+            <v-btn icon @click="remove(row.id)" class="float-right mt-5 mr-2" :disabled="$store.get('session/IS_JUST_VIEWER')">
               <v-icon>mdi-delete-forever-outline</v-icon>
             </v-btn>
 

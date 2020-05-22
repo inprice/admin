@@ -18,6 +18,7 @@
               @keyup.native.enter="valid && submit($event)"
             >
               <v-text-field
+                ref="password"
                 label="Password"
                 v-model="form.password"
                 :rules="rules.password"
@@ -118,7 +119,7 @@ export default {
   mounted() {
     this.form.token = this.$route.query.token;
     Utility.doubleRaf(() => {
-      this.$refs.name.focus();
+      this.$refs.password.focus();
       Utility.removeTabIndexFromIconButtons(this.$el);
     });
   }
