@@ -2,7 +2,7 @@ import store from './store';
 import moment from 'moment-timezone';
 import numFormatter from 'number-format.js';
 
-const session = 'session/session';
+const session = 'auth/session';
 
 export default (Vue) => {
   Vue.filter('toPosition', (value) => {

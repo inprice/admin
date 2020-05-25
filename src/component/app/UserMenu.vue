@@ -110,8 +110,8 @@ export default {
     }
   },
   computed: {
-    session: get('session/session'),
-    sessions: get('session/sessions'),
+    session: get('auth/session'),
+    sessions: get('auth/sessions'),
   },
   methods: {
     openChangePasswordDialog() {
@@ -119,7 +119,7 @@ export default {
       this.$refs.changePasswordDialog.open(this.session.email);
     },
     logout() {
-      this.$store.dispatch('session/logout', false);
+      this.$store.dispatch('auth/logout', false);
     }
   }
 }

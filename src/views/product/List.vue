@@ -20,7 +20,7 @@
 
                 <v-list dense>
 
-                  <v-list-item @click="edit(index)" :disabled="$store.get('session/IS_JUST_VIEWER')">
+                  <v-list-item @click="edit(index)" :disabled="$store.get('auth/IS_JUST_VIEWER')">
                     <v-list-item-title>EDIT</v-list-item-title>
                   </v-list-item>
 
@@ -28,13 +28,13 @@
                     <v-list-item-title>LINKS</v-list-item-title>
                   </v-list-item>
 
-                  <v-list-item @click="toggle(row.id, index)" :disabled="$store.get('session/IS_JUST_VIEWER')">
+                  <v-list-item @click="toggle(row.id, index)" :disabled="$store.get('auth/IS_JUST_VIEWER')">
                     <v-list-item-title>{{ row.active ? 'PAUSE' : 'RESUME' }}</v-list-item-title>
                   </v-list-item>
 
                   <v-divider></v-divider>
 
-                  <v-list-item @click="remove(row.id, row.name)" :disabled="$store.get('session/IS_JUST_VIEWER')">
+                  <v-list-item @click="remove(row.id, row.name)" :disabled="$store.get('auth/IS_JUST_VIEWER')">
                     <v-list-item-title>DELETE</v-list-item-title>
                   </v-list-item>
 

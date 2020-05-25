@@ -67,7 +67,7 @@ export default {
     };
   },
   computed: {
-    currentEmail: get('session/session@email')
+    currentEmail: get('auth/session@email')
   },
   methods: {
     async submit() {

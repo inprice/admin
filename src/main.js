@@ -13,8 +13,11 @@ import Filters from './filters';
 Vue.config.productionTip = false
 
 import Notifications from 'vue-notification';
+import VueApexCharts from 'vue-apexcharts'
 
 Vue.use(Notifications);
+
+Vue.component('apexchart', VueApexCharts)
 
 Filters(Vue);
 

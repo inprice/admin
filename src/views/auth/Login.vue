@@ -102,7 +102,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await this.$store.dispatch('session/login', this.form);
+        const result = await this.$store.dispatch('auth/login', this.form);
         if (result != null) {
           this.$router.push({ name: 'dashboard', params: { sid: result } });
           return;

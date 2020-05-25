@@ -38,7 +38,7 @@ import CompanyService from '@/service/company';
 
 export default {
   computed: {
-    session: get('session/session')
+    session: get('auth/session')
   },
   methods: {
     async openCompanyInfoDialog() {

@@ -10,13 +10,13 @@ export default {
 
   async completeRegistration(code) {
     const res = await Helper.call('Registration Complete', { url: '/complete-registration?token=' + code });
-    if (res.status == true) store.dispatch('session/createSession', res);
+    if (res.status == true) store.dispatch('auth/createSession', res);
     return res.status;
   },
 
   async acceptInvitation(form) {
     const res = await Helper.call('Accept Invitation', { url: '/accept-invitation', data: form });
-    if (res.status == true) store.dispatch('session/createSession', res);
+    if (res.status == true) store.dispatch('auth/createSession', res);
     return res.status;
   },
 

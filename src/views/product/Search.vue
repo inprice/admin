@@ -19,7 +19,7 @@
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <v-btn class="ma-3" small fab dark color="success" @click="add" v-on="on" v-if="$store.get('session/IS_EDITOR')">
+          <v-btn class="ma-3" small fab dark color="success" @click="add" v-on="on" v-if="$store.get('auth/IS_EDITOR')">
             <v-icon dark>mdi-plus</v-icon>
           </v-btn>
         </template>      

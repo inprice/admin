@@ -7,12 +7,12 @@ const keys = {
   SESSION_NO: 'Session'
 };
 
-const positions = [
-  { value: 1, text: 'Lowest' },
-  { value: 2, text: 'Lower' },
-  { value: 3, text: 'Avarage' },
-  { value: 4, text: 'Higher' },
-  { value: 5, text: 'Highest' }
+const POSITIONS = [
+  { value: 1, text: 'LOWEST' },
+  { value: 2, text: 'LOWER' },
+  { value: 3, text: 'AVARAGE' },
+  { value: 4, text: 'HIGHER' },
+  { value: 5, text: 'HIGHEST' }
 ];
 
 const STATUSES = [
@@ -49,7 +49,7 @@ const IMPORT_STATUSES = [
 export default {
   system,
   keys,
-  positions,
+  POSITIONS,
   STATUSES,
   IMPORT_STATUSES,
 }

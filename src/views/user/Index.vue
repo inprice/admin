@@ -21,7 +21,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    session: get('session/session'),
+    session: get('auth/session'),
   },
   methods: {
     acceptInvitation() {

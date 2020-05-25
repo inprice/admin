@@ -33,7 +33,7 @@
 
         <v-subheader>IMPORT</v-subheader>
 
-        <v-list-item link :to="{name: 'import-csv'}" v-if="$store.get('session/IS_EDITOR')">
+        <v-list-item link :to="{name: 'import-csv'}" v-if="$store.get('auth/IS_EDITOR')">
           <v-list-item-action>
             <v-icon>mdi-file-delimited-outline</v-icon>
           </v-list-item-action>
@@ -41,7 +41,7 @@
             <v-list-item-title>CSV File</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'import-ebay-sku'}" v-if="$store.get('session/IS_EDITOR')">
+        <v-list-item link :to="{name: 'import-ebay-sku'}" v-if="$store.get('auth/IS_EDITOR')">
           <v-list-item-action>
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-action>
@@ -49,7 +49,7 @@
             <v-list-item-title>Ebay's SKU List</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'import-amazon-asin'}" v-if="$store.get('session/IS_EDITOR')">
+        <v-list-item link :to="{name: 'import-amazon-asin'}" v-if="$store.get('auth/IS_EDITOR')">
           <v-list-item-action>
             <v-icon>mdi-amazon</v-icon>
           </v-list-item-action>
@@ -69,7 +69,7 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'company-settings'}" v-if="$store.get('session/IS_ADMIN')">
+        <v-list-item link :to="{name: 'company-settings'}" v-if="$store.get('auth/IS_ADMIN')">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-action>
@@ -123,11 +123,13 @@
     </v-app-bar>
 
     <v-content>
+
+      <!-- v-responsive class="mx-auto overflow-visible" :style="this.$route.name != 'dashboard' ? 'max-width: 1024px' : ''">
+        <v-container :fluid="this.$route.name == 'dashboard'" -->
+
       <v-responsive class="mx-auto overflow-visible" max-width="1024">
         <v-container>
-          <v-fade-transition mode="out-in">
-            <router-view></router-view>
-          </v-fade-transition>
+          <router-view></router-view>
         </v-container>
       </v-responsive>
     </v-content>
@@ -147,7 +149,7 @@ export default {
     };
   },
   computed: {
-    session: get('session/session'),
+    session: get('auth/session'),
   },
   methods: {
     openCreateCompany() {

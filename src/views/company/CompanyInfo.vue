@@ -136,7 +136,7 @@ export default {
         } else {
           const result = await CompanyService.update(this.form);
           if (result == true) {
-            this.$store.set('session/COMPANY_INFO', this.form);
+            this.$store.set('auth/COMPANY_INFO', this.form);
             this.close();
             return;
           }

@@ -131,7 +131,7 @@ const router = new VueRouter({
 import store from './store';
 import SystemConsts from '@/data/system';
 
-const SESSION = 'session/session';
+const SESSION = 'auth/session';
 const SESSIONS = SESSION+'s';
 
 router.beforeEach((to, from, next) => {

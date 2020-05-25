@@ -73,7 +73,7 @@ export default {
         this.loading = true;
         const result = await UserService.update(this.form);
         if (result == true) {
-          this.$store.set('session/USER_INFO', this.form);
+          this.$store.set('auth/USER_INFO', this.form);
           this.close();
           return;
         }
