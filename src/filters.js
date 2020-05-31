@@ -21,19 +21,16 @@ export default (Vue) => {
     return 'NOT YET';
   });
 
-  Vue.filter('toDifferenceLine', (price, basePrice) => {
-    if (price > 0 && basePrice > 0) {
+  Vue.filter('toDifferenceLine', (diff) => {
+    if (diff != 0) {
       let dir = 'minus';
       let color = 'primary';
-      let diff = 0;
-      if (price > basePrice) {
+      if (diff > 0) {
         dir = 'up';
         color = 'success';
-        diff = price / basePrice;
       } else {
         dir = 'down';
         color = 'red';
-        diff = basePrice / price;
       }
       return numFormatter('#.00%', diff)+` <v-icon color="${color}">mdi-arrow-${dir}</v-icon>`;
     }

@@ -92,23 +92,23 @@
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Position</th>
+                <th class="text-center">Position</th>
                 <th class="text-right">Price</th>
                 <th class="text-right">Min Price</th>
                 <th class="hidden-sm-and-down text-right">Avg Price</th>
                 <th class="text-right">Max Price</th>
-                <th class="hidden-sm-and-down">Date</th>
+                <!-- th class="hidden-sm-and-down">Date</th -->
               </tr>
             </thead>
             <tbody v-if="report.products">
               <tr v-for="row in report.products.mru10" :key="row.code">
-                <td>{{ row.name }}</td>
-                <td>{{ row.position | toPosition }}</td>
+                <td width="40%">{{ row.name }}</td>
+                <td class="text-center">{{ row.position | toPosition }}</td>
                 <td class="text-right">{{ row.price | toCurrency }}</td>
                 <td class="text-right">{{ row.minPrice | toCurrency }}</td>
                 <td class="hidden-sm-and-down text-right">{{ row.avgPrice | toCurrency }}</td>
                 <td class="text-right">{{ row.maxPrice | toCurrency }}</td>
-                <td class="hidden-sm-and-down">{{ row.lastUpdate | formatDate }}</td>
+                <!-- td class="hidden-sm-and-down">{{ row.lastUpdate | formatDate }}</td -->
               </tr>
             </tbody>
           </template>
@@ -123,22 +123,22 @@
           <template v-slot:default>
             <thead>
               <tr>
-                <th>Product</th>
+                <th width="40%">Product</th>
                 <th class="hidden-sm-and-down">Platform</th>
                 <th>Seller</th>
-                <th class="text-right">Price</th>
                 <th class="hidden-sm-and-down">Status</th>
-                <th class="hidden-sm-and-down">Date</th>
+                <th class="text-right">Price</th>
+                <!-- th class="hidden-sm-and-down">Date</th -->
               </tr>
             </thead>
             <tbody v-if="report.links">
               <tr v-for="row in report.links.mru10" :key="row.sku">
-                <td>{{ row.productName }}</td>
+                <td>{{ row.name }}</td>
                 <td>{{ row.platform }}</td>
                 <td class="hidden-sm-and-down">{{ row.seller }}</td>
-                <td class="text-right">{{ row.price | toCurrency }}</td>
                 <td class="hidden-sm-and-down">{{ row.status }}</td>
-                <td class="hidden-sm-and-down">{{ row.lastUpdate | formatDate }}</td>
+                <td class="text-right">{{ row.price | toCurrency }}</td>
+                <!-- td class="hidden-sm-and-down">{{ row.lastUpdate | formatDate }}</td -->
               </tr>
             </tbody>
           </template>
@@ -229,6 +229,8 @@ export default {
     setReport(report) {
       if (report && report.status == true) {
         this.report = report.data;
+        if (!this.report.products) return;
+
         this.firstRow = [
           { title: 'Active Products', desc: 'Acitvely monitored products', icon:'database', color: 'success', number: this.report.products.count.active },
           { title: 'The cheapest', desc: 'Product count having the cheapest price', icon:'sort-reverse-variant', color: 'purple', number: this.report.products.edgeOfYou.min },
@@ -267,5 +269,11 @@ export default {
   }
   tr > td {
     padding: 0 3px;
+  }
+  td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>

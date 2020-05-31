@@ -24,10 +24,6 @@
                     <v-list-item-title>EDIT</v-list-item-title>
                   </v-list-item>
 
-                  <v-list-item link target="_blank" :href="`product/links/${row.id}`">
-                    <v-list-item-title>LINKS</v-list-item-title>
-                  </v-list-item>
-
                   <v-list-item @click="toggle(row.id, index)" :disabled="$store.get('auth/IS_JUST_VIEWER')">
                     <v-list-item-title>{{ row.active ? 'PAUSE' : 'RESUME' }}</v-list-item-title>
                   </v-list-item>
@@ -36,6 +32,12 @@
 
                   <v-list-item @click="remove(row.id, row.name)" :disabled="$store.get('auth/IS_JUST_VIEWER')">
                     <v-list-item-title>DELETE</v-list-item-title>
+                  </v-list-item>
+
+                  <v-divider></v-divider>
+
+                  <v-list-item link target="_blank" :href="`product/links/${row.id}`">
+                    <v-list-item-title>LINKS</v-list-item-title>
                   </v-list-item>
 
                 </v-list>
@@ -54,12 +56,12 @@
                       <template v-slot:default>
                         <tbody>
                           <tr>
-                            <td :class="{ 'green--text': row.active, 'font-weight-bold': row.active }">{{ row.active ? 'ACTIVE' : 'PASSIVE' }}</td>
+                            <td>Code</td> 
                             <td class="text-right">{{ row.code }}</td>
                           </tr>
                           <tr>
                             <td>Position</td> 
-                            <td class="text-right">{{ row.position | toPosition }}</td>
+                            <td class="text-right">{{ row.priceDetails.position | toPosition }}</td>
                           </tr>
                           <tr>
                             <td>Updated</td> 
@@ -73,22 +75,26 @@
 
                 <v-col>
                   <v-card class="price-cell" >
-                    <div class="price-title">Avg</div>
+                    <div class="price-title">Min</div>
                     <v-divider></v-divider>
-                    <div class="headline text-center">{{ row.avgPrice | toCurrency }}</div>
+                    <div class="headline text-center">{{ row.priceDetails.minPrice | toCurrency }}</div>
 
                     <v-simple-table dense>
                       <template v-slot:default>
                         <tbody>
                           <tr>
-                            <td>Diff</td> 
-                            <td class="text-right">
-                              {{ row.avgPrice | toDifferenceLine(row.price) }}
-                            </td>
+                            <td>Platform</td> 
+                            <td class="text-right">{{ row.priceDetails.minPlatform || 'NA' }}</td>
                           </tr>
                           <tr>
-                            <td>Links Count</td> 
-                            <td class="text-right">{{ row.linksCount }}</td>
+                            <td>Seller</td> 
+                            <td class="text-right">{{ row.priceDetails.minSeller || 'NA' }}</td>
+                          </tr>
+                          <tr>
+                            <td>Diff</td> 
+                            <td class="text-right px-2">
+                              <diff-line :diff="row.priceDetails.minDiff"></diff-line>
+                            </td>
                           </tr>
                         </tbody>
                       </template>
@@ -98,26 +104,26 @@
 
                 <v-col>
                   <v-card class="price-cell" >
-                    <div class="price-title">Min</div>
+                    <div class="price-title">Avg</div>
                     <v-divider></v-divider>
-                    <div class="headline text-center">{{ row.minPrice | toCurrency }}</div>
+                    <div class="headline text-center">{{ row.priceDetails.avgPrice | toCurrency }}</div>
 
                     <v-simple-table dense>
                       <template v-slot:default>
                         <tbody>
                           <tr>
+                            <td>Your Rank</td> 
+                            <td class="text-right">{{ row.priceDetails.ranking }}</td>
+                          </tr>
+                          <tr>
+                            <td>Competitors</td> 
+                            <td class="text-right">{{ row.priceDetails.competitors + 1 }}</td>
+                          </tr>
+                          <tr>
                             <td>Diff</td> 
-                            <td class="text-right">
-                              {{ row.minPrice | toDifferenceLine(row.price) }}
+                            <td class="text-right px-2">
+                              <diff-line :diff="row.priceDetails.avgDiff"></diff-line>
                             </td>
-                          </tr>
-                          <tr>
-                            <td>Platform</td> 
-                            <td class="text-right">{{ row.minPlatform || 'NA' }}</td>
-                          </tr>
-                          <tr>
-                            <td>Seller</td> 
-                            <td class="text-right">{{ row.minSeller || 'NA' }}</td>
                           </tr>
                         </tbody>
                       </template>
@@ -129,24 +135,24 @@
                   <v-card class="price-cell" >
                     <div class="price-title">Max</div>
                     <v-divider></v-divider>
-                    <div class="headline text-center">{{ row.maxPrice | toCurrency }}</div>
+                    <div class="headline text-center">{{ row.priceDetails.maxPrice | toCurrency }}</div>
 
                     <v-simple-table dense>
                       <template v-slot:default>
                         <tbody>
                           <tr>
-                            <td>Diff</td> 
-                            <td class="text-right">
-                              {{ row.maxPrice | toDifferenceLine(row.price) }}
-                            </td>
-                          </tr>
-                          <tr>
                             <td>Platform</td> 
-                            <td class="text-right">{{ row.maxPlatform || 'NA' }}</td>
+                            <td class="text-right">{{ row.priceDetails.maxPlatform || 'NA' }}</td>
                           </tr>
                           <tr>
                             <td>Seller</td> 
-                            <td class="text-right">{{ row.maxSeller || 'NA' }}</td>
+                            <td class="text-right">{{ row.priceDetails.maxSeller || 'NA' }}</td>
+                          </tr>
+                          <tr>
+                            <td>Diff</td> 
+                            <td class="text-right px-2">
+                              <diff-line :diff="row.priceDetails.maxDiff"></diff-line>
+                            </td>
                           </tr>
                         </tbody>
                       </template>
@@ -196,6 +202,9 @@ export default {
     setLoadMoreActivation(value) {
       this.isLoadMoreEnabled = value;
     }
+  },
+  components: {
+    DiffLine: () => import('@/component/utility/DiffLine.vue')
   }
 };
 </script>

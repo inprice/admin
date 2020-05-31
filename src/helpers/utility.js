@@ -35,7 +35,7 @@ export default {
     }
 
     if (message.includes("code 401") || message.includes("be expired")) {
-      store.dispatch("auth/logout", true);
+      store.dispatch('auth/logout', true);
     } else {
       Vue.notify({
         type: "error",
