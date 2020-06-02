@@ -17,10 +17,10 @@ const POSITIONS = [
 
 const STATUSES = [
   { value: null, text: 'ALL' },
-  { value: 'NEW', text: 'NEW' },
   { value: 'AVAILABLE', text: 'AVAILABLE' },
-  { value: 'RENEWED', text: 'RENEWED' },
-  { value: 'BE_IMPLEMENTED', text: 'BE IMPLEMENTED' },
+  { value: 'TOBE_CLASSIFIED', text: 'TOBE CLASSIFIED' },
+  { value: 'TOBE_RENEWED', text: 'TOBE RENEWED' },
+  { value: 'TOBE_IMPLEMENTED', text: 'TOBE IMPLEMENTED' },
   { value: 'IMPLEMENTED', text: 'IMPLEMENTED' },
   { value: 'DUPLICATE', text: 'DUPLICATE' },
   { value: 'WONT_BE_IMPLEMENTED', text: 'WONT BE IMPLEMENTED' },
@@ -39,7 +39,7 @@ const STATUSES = [
 
 const IMPORT_STATUSES = [
   { value: null, text: 'ALL' },
-  { value: 'NEW', text: 'NEW' },
+  { value: 'TOBE_CLASSIFIED', text: 'TOBE CLASSIFIED' },
   { value: 'AVAILABLE', text: 'AVAILABLE' },
   { value: 'DUPLICATE', text: 'DUPLICATE' },
   { value: 'NOT_AVAILABLE', text: 'NOT AVAILABLE' },

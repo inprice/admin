@@ -21,7 +21,7 @@
       <v-divider></v-divider>
 
       <div class="mt-6 caption text-uppercase">
-        LINKS
+        COMPETITORS
       </div>
       <v-row class="mb-2">
         <v-col>
@@ -36,7 +36,7 @@
         </v-col>
         <v-col>
           <div class="text-right">
-            <v-btn dark color="success" @click="addNew" :disabled="$store.get('auth/IS_JUST_VIEWER')">Add New Link</v-btn>
+            <v-btn dark color="success" @click="addNew" :disabled="$store.get('auth/IS_JUST_VIEWER')">Add New Competitor</v-btn>
           </div>
         </v-col>
       </v-row>
@@ -58,7 +58,7 @@
 
               <v-list dense>
 
-                <v-list-item @click="changeStatus(row.id, 'RENEW')" v-if="isSuitable(row.status, 'RENEWED')">
+                <v-list-item @click="changeStatus(row.id, 'RENEW')" v-if="isSuitable(row.status, 'TOBE_RENEWED')">
                   <v-list-item-title>RENEW</v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="changeStatus(row.id, 'PAUSE')" v-if="isSuitable(row.status, 'PAUSED')">
@@ -113,10 +113,10 @@
       </div>
 
       <p v-else class="mt-5">
-        No link found! You can add a new one.
+        No competitor found! You can add a new one.
       </p>
 
-      <AddLink ref="addLinkDialog" @saved="refreshLinks" />
+      <AddCompetitor ref="addCompetitorDialog" @saved="refreshCompetitors" />
       <confirm ref="confirm"></confirm>
     </div>
 
@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import LinkService from '@/service/link';
+import CompetitorService from '@/service/competitor';
 import Utility from '@/helpers/utility';
 
 export default {
@@ -144,18 +144,18 @@ export default {
   },
   methods: {
     addNew() {
-      this.$refs.addLinkDialog.open(this.prod_id);
+      this.$refs.addCompetitorDialog.open(this.prod_id);
     },
     async changeStatus(id, status) {
-      const result = await LinkService.changeStatus(id, status);
-      if (result == true) this.refreshLinks();
+      const result = await CompetitorService.changeStatus(id, status);
+      if (result == true) this.refreshCompetitors();
     },
     remove(id, name) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
         if (confirm == true) {
-          const result = await LinkService.remove(id);
+          const result = await CompetitorService.remove(id);
           if (result == true) {
-            this.refreshLinks();
+            this.refreshCompetitors();
           }
         }
       });
@@ -168,12 +168,12 @@ export default {
       document.execCommand('copy');
       document.body.removeChild(input);
     },
-    async refreshLinks() {
+    async refreshCompetitors() {
       if (this.prod_id) {
-        const result = await LinkService.list(this.prod_id);
+        const result = await CompetitorService.list(this.prod_id);
         if (result) {
           this.product = result.product;
-          this.rows = result.links;
+          this.rows = result.competitors;
           this.filtered = this.rows;
 
           const map = {};
@@ -208,11 +208,11 @@ export default {
     isSuitable(current, target) {
       switch (current) {
         case 'AVAILABLE':
-          return (target == 'RENEWED' || target == 'PAUSED');
+          return (target == 'TOBE_RENEWED' || target == 'PAUSED');
         case 'PAUSED':
           return (target == 'RESUMED');
-        case 'NEW':
-        case 'BE_IMPLEMENTED':
+        case 'TOBE_CLASSIFIED':
+        case 'TOBE_IMPLEMENTED':
         case 'IMPLEMENTED':
         case 'NOT_AVAILABLE':
         case 'READ_ERROR':
@@ -233,13 +233,13 @@ export default {
         const id = urlParts[urlParts.length-1];
         if (!isNaN(+id)) {
           this.prod_id = id;
-          this.refreshLinks();
+          this.refreshCompetitors();
         }
       }
     });
   },
   components: {
-    AddLink: () => import('./AddLink'),
+    AddCompetitor: () => import('./AddCompetitor'),
     confirm: () => import('@/component/Confirm.vue')
   }
 };

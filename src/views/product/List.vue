@@ -36,8 +36,8 @@
 
                   <v-divider></v-divider>
 
-                  <v-list-item link target="_blank" :href="`product/links/${row.id}`">
-                    <v-list-item-title>LINKS</v-list-item-title>
+                  <v-list-item link target="_blank" :href="`product/competitors/${row.id}`">
+                    <v-list-item-title>COMPETITORS</v-list-item-title>
                   </v-list-item>
 
                 </v-list>
@@ -117,7 +117,7 @@
                           </tr>
                           <tr>
                             <td>Competitors</td> 
-                            <td class="text-right">{{ row.priceDetails.competitors + 1 }}</td>
+                            <td class="text-right">{{ row.priceDetails.competitors }}</td>
                           </tr>
                           <tr>
                             <td>Diff</td> 

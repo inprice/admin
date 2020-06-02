@@ -80,7 +80,7 @@
       </v-card>
 
       <v-card class="col">
-        <apexchart ref="linkDistro" type="bar" height="300" :options="chartOptions" :series="series"></apexchart>
+        <apexchart ref="competitorDistro" type="bar" height="300" :options="chartOptions" :series="series"></apexchart>
       </v-card>
     </v-row>
 
@@ -118,7 +118,7 @@
 
     <v-row>
       <v-card class="col">
-        <v-card-title class="pa-0">Most Recently Updated Links</v-card-title>
+        <v-card-title class="pa-0">Most Recently Updating Competitors</v-card-title>
         <v-simple-table>
           <template v-slot:default>
             <thead>
@@ -131,13 +131,13 @@
                 <!-- th class="hidden-sm-and-down">Date</th -->
               </tr>
             </thead>
-            <tbody v-if="report.links">
-              <tr v-for="row in report.links.mru10" :key="row.sku">
+            <tbody v-if="report.competitors">
+              <tr v-for="row in report.competitors.mru10" :key="row.sku">
                 <td>{{ row.name }}</td>
                 <td>{{ row.platform }}</td>
                 <td class="hidden-sm-and-down">{{ row.seller }}</td>
                 <td class="hidden-sm-and-down">{{ row.status }}</td>
-                <td class="text-right">{{ row.price | toCurrency }}</td>
+                <td class="text -right">{{ row.price | toCurrency }}</td>
                 <!-- td class="hidden-sm-and-down">{{ row.lastUpdate | formatDate }}</td -->
               </tr>
             </tbody>
@@ -191,12 +191,12 @@ export default {
           }
         },
         xaxis: {
-          categories: ['NEW', 'AVAILABLE', 'NOT AVAILABLE', 'PAUSED', 
-            'IMPLEMENTED', 'BE IMPLEMENTED', 'WONT BE IMPLEMENTED', 'OTHER'
+          categories: ['TO BE CLASSIFIED', 'AVAILABLE', 'NOT AVAILABLE', 'PAUSED', 
+            'IMPLEMENTED', 'TO BE IMPLEMENTED', 'WONT BE IMPLEMENTED', 'OTHER'
           ]
         },
         title: {
-          text: 'Link Statuses',
+          text: 'Competitor Statuses',
           style: {
             fontSize: '20px'
           },
@@ -238,7 +238,7 @@ export default {
         ];
 
         this.secondRow = [
-          { title: 'Links', desc: 'Total links count of your products', icon:'link-variant', color: 'info', number: this.report.links.count },
+          { title: 'Competitors', desc: 'Competitors of your products', icon:'link-variant', color: 'info', number: this.report.competitors.count },
           { title: 'Passive Products', desc: 'Passviated products', icon:'database', color: 'gray', number: this.report.products.count.passive },
         ];
 
@@ -247,8 +247,8 @@ export default {
           series: this.report.products.distribution.series
         });
 
-        this.$refs.linkDistro.updateSeries([{
-          data: this.report.links.distribution.series
+        this.$refs.competitorDistro.updateSeries([{
+          data: this.report.competitors.distribution.series
         }], false, true);
       }
     }

@@ -3,7 +3,7 @@
 
     <v-dialog v-model="opened" max-width="400">
       <v-card>
-        <v-card-title>Link URL</v-card-title>
+        <v-card-title>Competitor URL</v-card-title>
 
         <v-card-text class="mt-5">
           <v-form ref="form" v-model="valid" @submit.prevent >
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import LinkService from '@/service/link';
+import CompetitorService from '@/service/competitor';
 import Utility from '@/helpers/utility';
 
 export default {
@@ -63,7 +63,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await LinkService.insert(this.form);
+        const result = await CompetitorService.insert(this.form);
         if (result == true) {
           this.close();
           this.$emit('saved');
