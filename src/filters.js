@@ -54,4 +54,14 @@ export default (Vue) => {
     return 'NA';
   });
 
+  Vue.filter('formatShortDate', (value) => {
+    try {
+      if (value) {
+        return moment(value).tz(store.get(session+'@timezone')).format('YYYY-MM-DD');
+      }
+      /* eslint-disable no-empty */
+    } catch (error) { }
+    return 'NA';
+  });
+
 };

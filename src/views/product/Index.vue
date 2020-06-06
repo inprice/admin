@@ -4,30 +4,36 @@
       Products
     </div>
 
-    <p class="subtitle">
-      In this section, you can manage your products whose prices you want to monitor.
-    </p>
+    <div v-if="companyPlan">
+      <p class="subtitle">
+        In this section, you can manage your products whose prices you want to monitor.
+      </p>
 
-    <Search
-      @add="addNew"
-      @search="search"
-    />
-    
-    <List
-      ref="list"
-      :rows="rows"
-      @edit="edit"
-      @toggle="toggle"
-      @remove="remove"
-      @loadmore="search(undefined, true)"
-    />
-    
-    <Edit
-      ref="editDialog"
-      @save="save"
-    />
+      <Search
+        @add="addNew"
+        @search="search"
+      />
+      
+      <List
+        ref="list"
+        :rows="rows"
+        @edit="edit"
+        @toggle="toggle"
+        @remove="remove"
+        @loadmore="search(undefined, true)"
+      />
+      
+      <Edit
+        ref="editDialog"
+        @save="save"
+      />
 
-    <confirm ref="confirm"></confirm>
+      <confirm ref="confirm"></confirm>
+    </div>
+
+    <div v-else>
+      <no-plan @applied="couponApplied"></no-plan>
+    </div>
 
   </div>
 </template>
@@ -44,7 +50,8 @@ export default {
       searchForm: {
         term: '',
         lastRowNo: 0
-      }
+      },
+      companyPlan: '',
     };
   },
   methods: {
@@ -75,6 +82,8 @@ export default {
       });
     },
     async search(term, loadmore=false) {
+      if (!this.companyPlan) return;
+
       if (term !== undefined) this.searchForm.term = term;
 
       if (loadmore == true) {
@@ -103,12 +112,16 @@ export default {
       const result = await ProductService.toggle(data.id);
       if (result == true) {
         this.rows[data.index].active = !this.rows[data.index].active;
-        console.log('this.rows[data.index].active', this.rows[data.index].active);
       }
-    }
+    },
+    couponApplied(data) {
+      this.companyPlan = data.planName;
+    },
   },
   mounted() {
     Utility.doubleRaf(() => {
+      const session = this.$store.get('auth/session');
+      this.companyPlan = session.plan;
       this.search('');
     });
   },
@@ -116,7 +129,8 @@ export default {
     Search: () => import('./Search'),
     Edit: () => import('./Edit'),
     List: () => import('./List'),
-    confirm: () => import('@/component/Confirm.vue')
+    confirm: () => import('@/component/Confirm.vue'),
+    NoPlan: () => import('@/component/app/NoPlan.vue'),
   }
 };
 </script>

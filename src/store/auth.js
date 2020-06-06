@@ -74,6 +74,10 @@ const mutations = {
     state.session.company = data.name;
     state.session.currencyFormat = data.currencyFormat;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
+  },
+
+  SET_PLAN_INFO(state, name) {
+    state.session.plan = name;
   }
 
 }

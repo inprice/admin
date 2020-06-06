@@ -1,3 +1,4 @@
+import store from '../store';
 import Helper from './helper';
 
 const baseURL = '/company';
@@ -8,6 +9,21 @@ export default {
     const res = await Helper.call('Company', { method: 'get', url: baseURL });
     if (res.status == true && res.data) return res.data;
     return null;
+  },
+
+  async getCoupons() {
+    const res = await Helper.call('Company Coupons', { method: 'get', url: baseURL + '/coupons' }, false);
+    if (res.status == true && res.data) return res.data;
+    return null;
+  },
+
+  async applyCoupon(code) {
+    const res = await Helper.call('Apply Coupon', { method: 'put', url: baseURL + '/apply-coupon/' + code });
+
+    if (res && res.status == true) {
+      store.set('auth/PLAN_INFO', res.data.planName);
+    }
+    return res;
   },
 
   async create(form) {

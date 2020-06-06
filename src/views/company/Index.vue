@@ -10,6 +10,7 @@
 
     <profile />
     <users />
+    <coupons />
 
   </div>
 </template>
@@ -23,7 +24,8 @@ export default {
   },
   components: {
     Profile: () => import('./Profile'),
-    Users: () => import('./Users')
+    Users: () => import('./Users'),
+    Coupons: () => import('./Coupons')
   }
 };
 </script>

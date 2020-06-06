@@ -113,7 +113,7 @@
             v-on="on"
             @click="openCreateCompany"
           >
-            <v-icon>mdi-plus-thick</v-icon>
+            <v-icon>mdi-plus</v-icon>
           </v-btn>
         </template>
         <span>Create a new company</span>
@@ -129,7 +129,9 @@
 
       <v-responsive class="mx-auto overflow-visible" max-width="1024">
         <v-container>
-          <router-view></router-view>
+          <transition name="fade">
+            <router-view></router-view>
+          </transition>
         </v-container>
       </v-responsive>
     </v-content>

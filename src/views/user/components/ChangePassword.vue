@@ -17,6 +17,7 @@
               :append-icon="showPass.old ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showPass.old ? 'text' : 'password'"
               @click:append="showPass.old = !showPass.old"
+              maxlength="16"
             />
 
             <v-text-field
@@ -26,6 +27,7 @@
               :append-icon="showPass.new ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showPass.new ? 'text' : 'password'"
               @click:append="showPass.new = !showPass.new"
+              maxlength="16"
             />
 
             <v-text-field
@@ -35,6 +37,7 @@
               :append-icon="showPass.repeat ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showPass.repeat ? 'text' : 'password'"
               @click:append="showPass.repeat = !showPass.repeat"
+              maxlength="16"
             />
           </v-form>
 
