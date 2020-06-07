@@ -65,7 +65,8 @@ export default {
         this.loading = true;
         const result = await CompanyService.applyCoupon(this.form.code);
         if (result && result.status == true) {
-          this.$emit('applied', result.data);
+          this.$store.set('auth/PLAN_ID', result.data.planId);
+          this.$emit('applied');
           this.close();
           return;
         }

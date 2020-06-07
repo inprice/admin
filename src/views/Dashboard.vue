@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="companyPlan">
+    <div v-if="companyPlanId">
       <div class="d-flex">
         <span class="display-1 mb-2">Dashboard</span>
         <v-spacer></v-spacer>
@@ -150,7 +150,7 @@
 
     <div v-else>
       <span class="display-1 mb-2">Dashboard</span>
-      <no-plan @applied="couponApplied"></no-plan>
+      <no-plan @applied="checkPlan"></no-plan>
     </div>
 
   </div>
@@ -170,7 +170,7 @@ export default {
         options: {},
         series: [],
       },
-      companyPlan: '',
+      companyPlanId: 0,
       series: [{
         data: [0, 0, 0, 0, 0, 0, 0, 0]
       }],
@@ -225,12 +225,8 @@ export default {
     };
   },
   methods: {
-    couponApplied(data) {
-      this.companyPlan = data.planName;
-      this.refresh();
-    },
     async refresh() {
-      if (this.companyPlan) {
+      if (this.companyPlanId) {
         const report = await DashboardService.refresh();
         this.setReport(report);
       }
@@ -260,14 +256,15 @@ export default {
           data: this.report.competitors.distribution.series
         }], false, true);
       }
+    },
+    checkPlan() {
+      const session = this.$store.get('auth/session');
+      this.companyPlanId = session.planId;
+      this.refresh();
     }
   },
   mounted() {
-    Utility.doubleRaf(async () => {
-      const session = this.$store.get('auth/session');
-      this.companyPlan = session.plan;
-      this.refresh();
-    });
+    Utility.doubleRaf(async () => this.checkPlan());
   },
   components: {
     NoPlan: () => import('@/component/app/NoPlan.vue'),

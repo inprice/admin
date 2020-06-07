@@ -76,8 +76,9 @@ const mutations = {
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
 
-  SET_PLAN_INFO(state, name) {
-    state.session.plan = name;
+  SET_PLAN_ID(state, id) {
+    state.session.planId = id;
+    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   }
 
 }

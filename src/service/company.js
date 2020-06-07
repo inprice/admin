@@ -1,4 +1,3 @@
-import store from '../store';
 import Helper from './helper';
 
 const baseURL = '/company';
@@ -19,10 +18,6 @@ export default {
 
   async applyCoupon(code) {
     const res = await Helper.call('Apply Coupon', { method: 'put', url: baseURL + '/apply-coupon/' + code });
-
-    if (res && res.status == true) {
-      store.set('auth/PLAN_INFO', res.data.planName);
-    }
     return res;
   },
 

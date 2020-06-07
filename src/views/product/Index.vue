@@ -4,7 +4,7 @@
       Products
     </div>
 
-    <div v-if="companyPlan">
+    <div v-if="companyPlanId">
       <p class="subtitle">
         In this section, you can manage your products whose prices you want to monitor.
       </p>
@@ -32,7 +32,7 @@
     </div>
 
     <div v-else>
-      <no-plan @applied="couponApplied"></no-plan>
+      <no-plan @applied="checkPlan"></no-plan>
     </div>
 
   </div>
@@ -51,7 +51,7 @@ export default {
         term: '',
         lastRowNo: 0
       },
-      companyPlan: '',
+      companyPlanId: 0,
     };
   },
   methods: {
@@ -82,7 +82,7 @@ export default {
       });
     },
     async search(term, loadmore=false) {
-      if (!this.companyPlan) return;
+      if (!this.companyPlanId) return;
 
       if (term !== undefined) this.searchForm.term = term;
 
@@ -114,16 +114,14 @@ export default {
         this.rows[data.index].active = !this.rows[data.index].active;
       }
     },
-    couponApplied(data) {
-      this.companyPlan = data.planName;
-    },
+    checkPlan() {
+      const session = this.$store.get('auth/session');
+      this.companyPlanId = session.planId;
+      this.search('');
+    }
   },
   mounted() {
-    Utility.doubleRaf(() => {
-      const session = this.$store.get('auth/session');
-      this.companyPlan = session.plan;
-      this.search('');
-    });
+    Utility.doubleRaf(() => this.checkPlan());
   },
   components: {
     Search: () => import('./Search'),
