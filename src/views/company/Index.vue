@@ -12,6 +12,8 @@
     <users />
     <coupons />
 
+    <delete-everything />
+
   </div>
 </template>
 
@@ -25,7 +27,8 @@ export default {
   components: {
     Profile: () => import('./Profile'),
     Users: () => import('./Users'),
-    Coupons: () => import('./Coupons')
+    Coupons: () => import('./Coupons'),
+    DeleteEverything: () => import('./DeleteEverything')
   }
 };
 </script>

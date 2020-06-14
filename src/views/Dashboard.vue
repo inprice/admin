@@ -138,7 +138,7 @@
                   <td>{{ row.platform }}</td>
                   <td class="hidden-sm-and-down">{{ row.seller }}</td>
                   <td class="hidden-sm-and-down">{{ row.status }}</td>
-                  <td class="text -right">{{ row.price | toCurrency }}</td>
+                  <td class="text-right">{{ row.price | toCurrency }}</td>
                   <!-- td class="hidden-sm-and-down">{{ row.lastUpdate | formatDate }}</td -->
                 </tr>
               </tbody>

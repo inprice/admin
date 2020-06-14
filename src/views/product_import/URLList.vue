@@ -1,17 +1,16 @@
 <template>
   <div>
     <div class="display-1">
-      Amazon's ASIN code list import
+      URL List import
     </div>
 
     <div v-if="resultSet && resultSet.length">
-      <result-set :data="resultSet" title="ASIN codes" />
+      <result-set :data="resultSet" title="URL list" />
     </div>
 
     <div v-else>
-
       <p class="subtitle">
-        Import your products from a text file containing only Amazon's ASIN codes
+        You can create your products from URLs of well known websites like Amazon and Ebay.
       </p>
 
       <p class="pt-5 mb-0">
@@ -36,7 +35,7 @@
       <v-btn color="success" :dark="valid" :disabled="!valid" :loading="loading" @click="submit">Import</v-btn>
 
       <div class="pt-10">
-        <h3>In order to import a ASIN code list file successfully, please pay attention to the following rules</h3>
+        <h3>In order to import a URL list successfully, please pay attention to the following rules</h3>
 
         <h4 class="mt-7">File rules</h4>
         <ul>
@@ -46,38 +45,23 @@
           <li>Empty lines and description rows starting a hash # symbol are allowed</li>
         </ul>
 
-        <h4 class="mt-5">Code format rules</h4>
+        <h4 class="mt-5">Content format rules</h4>
         <ul>
-          <li>Each row must have a valid ASIN code starting either <strong>B0</strong> or <strong>BT</strong></li>
-          <li>The following characters should consist of 8 alpha numeric chars></li>
+          <li>Each row must have a valid URL which must start with <strong>http or https</strong></li>
+          <li>URLs can be up to 1024 chars</li>
+          <li>Lines can not be duplicate</li>
+          <li>Only well known websites urls are accepted.</li>
         </ul>
-
       </div>
 
       <div class="pt-5">
-        <h3>Here is a valid ASIN code list content</h3>
-  <pre>
-    1. B00LH3DTYA
-    2. B005GIQPCU
-    3. BT0L2OMPNK
-    4. BT0178MP0K
-  </pre>
-      </div>
-
-      <div class="pt-5">
-        <h3>Another valid code list with description lines</h3>
+        <h3>Here is a valid URL list</h3>
 <pre>
-  1. # -----------------------------------------
-  2. # ASIN CODE LIST
-  3. # -----------------------------------------
-  4. B00LH3DTYA
-  5. B005GIQPCU
-  6.
-  7. # -----------------------------------------
-  8. # here is another description line
-  9. # -----------------------------------------
- 10. BT0L2OMPNK
- 11. BT0178MP0K
+  1. https://www.amazon.com/AmazonBasics-High-Speed-HDMI-Cable-1-Pack/dp/B014I8T0YQ
+  2. https://www.ebay.com/itm/Xiaomi10-Pro-5G-12GB-256GB-12GB-512GB-Duel-Sim-Global-version-Google-store/133356161760
+  3. https://www.debenhams.com/webapp/wcs/stores/servlet/prod_10701_10001_123010030399_-1
+  4. https://www.zalando.co.uk/zign-polo-shirt-black-zi122p006-q11.html
+  5. https://www.mediamarkt.de/de/product/_samsung-galaxy-tab-a-10-1-wi-fi-2586325.html
 </pre>
       </div>
     </div>
@@ -111,11 +95,11 @@ export default {
         this.loading = true;
 
         let formData = new FormData();
-        formData.append('type', 'AMAZON_ASIN');
+        formData.append('type', 'URL');
         formData.append('file', this.file);
 
         this.resultSet = [];
-        const result = await ImportService.uploadAmazonASIN(formData);
+        const result = await ImportService.uploadURL(formData);
         if (result.status == true) this.resultSet = result.data;
         this.loading = false;
       }

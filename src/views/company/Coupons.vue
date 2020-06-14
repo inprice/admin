@@ -56,8 +56,6 @@
 
     <apply-coupon ref="applyCouponDialog" @applied="getCoupons"/>
 
-    <confirm ref="confirm"></confirm>
-
   </div>
 </template>
 
@@ -95,8 +93,7 @@ export default {
     });
   },
   components: {
-    ApplyCoupon: () => import('@/component/app/ApplyCoupon.vue'),
-    confirm: () => import('@/component/Confirm.vue')
+    ApplyCoupon: () => import('@/component/app/ApplyCoupon.vue')
   }
 }
 </script>

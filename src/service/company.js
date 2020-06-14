@@ -29,6 +29,11 @@ export default {
   async update(form) {
     const res = await Helper.call('Update Company', { method: 'put', url: baseURL, data: form });
     return res.status;
+  },
+
+  async deleteEverything(password) {
+    const res = await Helper.call('Delete Company', { method: 'put', url: baseURL + '/delete', data: { value: password }});
+    return res.status;
   }
 
 };

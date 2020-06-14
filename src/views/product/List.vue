@@ -75,35 +75,6 @@
 
                 <v-col>
                   <v-card class="price-cell" >
-                    <div class="price-title">Avg</div>
-                    <v-divider></v-divider>
-                    <div class="headline text-center">{{ row.priceDetails.avgPrice | toCurrency }}</div>
-
-                    <v-simple-table dense>
-                      <template v-slot:default>
-                        <tbody>
-                          <tr>
-                            <td>Your Rank</td> 
-                            <td class="text-right">{{ row.priceDetails.ranking }}</td>
-                          </tr>
-                          <tr>
-                            <td>Competitors</td> 
-                            <td class="text-right">{{ row.priceDetails.competitors }}</td>
-                          </tr>
-                          <tr>
-                            <td>Diff</td> 
-                            <td class="text-right px-2">
-                              <diff-line :diff="row.priceDetails.avgDiff"></diff-line>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
-                  </v-card>
-                </v-col>
-
-                <v-col>
-                  <v-card class="price-cell" >
                     <div class="price-title">Min</div>
                     <v-divider></v-divider>
                     <div class="headline text-center">{{ row.priceDetails.minPrice | toCurrency }}</div>
@@ -123,6 +94,35 @@
                             <td>Diff</td> 
                             <td class="text-right px-2">
                               <diff-line :diff="row.priceDetails.minDiff"></diff-line>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-card>
+                </v-col>
+
+                <v-col>
+                  <v-card class="price-cell" >
+                    <div class="price-title">Avg</div>
+                    <v-divider></v-divider>
+                    <div class="headline text-center">{{ row.priceDetails.avgPrice | toCurrency }}</div>
+
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <tbody>
+                          <tr>
+                            <td>Your Rank</td> 
+                            <td class="text-right">{{ row.priceDetails.ranking }}</td>
+                          </tr>
+                          <tr>
+                            <td>Competitors</td> 
+                            <td class="text-right">{{ row.priceDetails.competitors }}</td>
+                          </tr>
+                          <tr>
+                            <td>Diff</td> 
+                            <td class="text-right px-2">
+                              <diff-line :diff="row.priceDetails.avgDiff"></diff-line>
                             </td>
                           </tr>
                         </tbody>

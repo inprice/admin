@@ -41,5 +41,9 @@ export default {
 
   .fade-enter, .fade-leave-active {
     opacity: 0
-  }  
+  }
+  th {
+    background-color: lightgray;
+    height: 30px;
+  }
 </style>
