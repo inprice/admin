@@ -129,10 +129,6 @@ export default {
       this.$refs.email.focus();
       Utility.removeTabIndexFromIconButtons(this.$el);
     });
-    if (process.env.NODE_ENV == 'development') {
-      this.form.email = 'dumlupinar01@gmail.com';
-      this.form.password = '1234';
-    }
 
     this.infoMessage = null;
     this.errorMessage= null;
