@@ -137,9 +137,7 @@
 
       <v-responsive class="mx-auto overflow-visible" max-width="1024">
         <v-container>
-          <transition name="fade">
-            <router-view></router-view>
-          </transition>
+          <router-view></router-view>
         </v-container>
       </v-responsive>
     </v-content>

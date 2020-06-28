@@ -3,9 +3,7 @@
     <notifications group="error" :duration="3000" :width="400" position="top center" />
     <notifications group="info" :duration="4000" :width="400" position="top center" />
     <notifications group="short-info" :duration="1800" :width="400" position="top center" />
-    <transition name="fade">
-      <router-view></router-view>
-    </transition>
+    <router-view></router-view>
   </v-app>
 </template>
 
@@ -29,18 +27,6 @@ export default {
   }
   .v-list-item__action {
     margin-right: 22px !important;
-  }
-  .fade-enter-active, .fade-leave-active {
-    transition-property: opacity;
-    transition-duration: .25s;
-  }
-
-  .fade-enter-active {
-    transition-delay: .25s;
-  }
-
-  .fade-enter, .fade-leave-active {
-    opacity: 0
   }
   th {
     background-color: lightgray;

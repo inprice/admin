@@ -16,7 +16,7 @@
               v-model="form.code"
               :rules="rules.code"
               type="text"
-              maxlength="120"
+              maxlength="50"
             />
 
             <v-text-field
@@ -36,26 +36,11 @@
             />
 
             <v-row>
-              <v-col class="pa-0">
-                <v-text-field
-                  class="col"
-                  label="Brand"
-                  v-model="form.brand"
-                  :rules="rules.brand"
-                  type="text"
-                  maxlength="100"
-                />
+              <v-col>
+                <ext-combo :value.sync="form.brandId" label="Brand" type="BRAND" />
               </v-col>
-
-              <v-col class="pa-0">
-                <v-text-field
-                  class="col"
-                  label="Category"
-                  v-model="form.category"
-                  :rules="rules.category"
-                  type="text"
-                  maxlength="100"
-                />
+              <v-col>
+                <ext-combo :value.sync="form.categoryId" label="Category" type="CATEGORY" />
               </v-col>
             </v-row>
           </v-form>
@@ -97,8 +82,8 @@ export default {
         code: '',
         name: '',
         price: 0,
-        brand: '',
-        category: ''
+        brandId: null,
+        categoryId: null
       }
     };
   },
@@ -130,21 +115,20 @@ export default {
       this.rules = {};
       this.$refs.form.reset();
     },
+    setNewValue(data) {
+      console.log('data-->', data);
+      //if (data.type == 'BRAND') this.form.brandId = data.id;
+      //if (data.type == 'CATEGORY') this.form.categoryId = data.id;
+    },
     activateRules() {
       this.rules = {
         code: [
           v => !!v || "Code is required",
-          v => (v.length >= 3 && v.length <= 120) || "Code must be between 3-120 chars"
+          v => (v.length >= 3 && v.length <= 50) || "Code must be between 3-50 chars"
         ],
         name: [
           v => !!v || "Name is required",
           v => (v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
-        ],
-        brand: [
-          v => (v.length <= 100) || "Brand must be less than 100 chars"
-        ],
-        category: [
-          v => (v.length <= 100) || "Category must be less than 100 chars"
         ],
         price: [
           v => (v && parseFloat(v) > 0) || "Price must be greater than 0"
@@ -154,6 +138,9 @@ export default {
     formatPrice() {
       this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);
     }
+  },
+  components: {
+    ExtCombo: () => import('@/component/input/ExtCombo.vue'),
   }
 };
 </script>

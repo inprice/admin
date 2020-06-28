@@ -19,6 +19,8 @@ Vue.component('apexchart', VueApexCharts);
 
 Filters(Vue);
 
+import './assets/css/main.css';
+
 new Vue({
   vuetify,
   store,
