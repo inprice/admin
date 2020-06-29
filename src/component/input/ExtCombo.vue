@@ -88,11 +88,10 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-
         const result = await LookupService.add({ type: this.type, newValue: this.newValue });
         if (result.status == true) {
-          this.valueModel = result.data.selected;
           this.items = result.data.items;
+          this.valueModel = result.data.selected;
           this.opened = false;
         }
         this.loading = false;
@@ -102,8 +101,7 @@ export default {
       this.rules = {
         newValue: [
           v => !!v || "Required",
-          v => (v.length >= 1 && v.length <= 50) || "Must be between 1-50 chars",
-          v => (this.items && !this.items.includes(v)) || "Already defined"
+          v => (v.length >= 1 && v.length <= 50) || "Must be between 1-50 chars"
         ]
       }
     }
