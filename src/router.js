@@ -95,6 +95,11 @@ const router = new VueRouter({
           path: 'import/amazon-asin',
           component: () => import('./views/product_import/AmazonASIN.vue')
         },
+        {
+          name: 'subscription',
+          path: 'subscription',
+          component: () => import('./views/subscription/Index.vue')
+        },
         /*
         {
           name: 'imported-prods',

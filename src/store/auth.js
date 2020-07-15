@@ -5,20 +5,23 @@ import { make } from 'vuex-pathify';
 import router from '../router';
 import Utility from '@/helpers/utility';
 import SystemConsts from '@/data/system';
+import moment from 'moment';
 
 import { BroadcastChannel } from 'broadcast-channel';
 
 const state = {
   sessionNo: 0,
   session: {},
-  sessions: [],
+  sessions: []
 };
 
 const actions = {
 
   async login({ dispatch }, form) {
     const res = await Helper.call('Login', { url: '/login', data: form });
-    if (res.status == true) dispatch('createSession', res);
+    if (res.status == true) {
+      dispatch('createSession', res);
+    }
     return res.data && res.data.sessionNo;
   },
 
@@ -40,6 +43,10 @@ const actions = {
     state.sessionNo = res.data.sessionNo;
     commit('REFRESH_SESSION', res.data);
     loginChannel.postMessage(res.data);
+  },
+
+  cancelSubscription({ commit }) {
+    commit('SET_SUBSCRIPTION_STATUS', 'CANCEL');
   }
 
 };
@@ -76,8 +83,16 @@ const mutations = {
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
 
-  SET_PLAN_ID(state, id) {
-    state.session.planId = id;
+  SET_SUBSCRIPTION(state, data) {
+    state.session.planId = data.planId;
+    state.session.subsStatus = data.subsStatus;
+    state.session.subsRenewalAt = data.subsRenewalAt;
+    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
+  },
+
+  SET_SUBSCRIPTION_STATUS(state) {
+    state.session.subsStatus = 'CANCELLED';
+    state.session.subsRenewalAt = moment().format("YYYY-MM-DD");
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   }
 

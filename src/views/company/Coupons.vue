@@ -7,17 +7,6 @@
           <div>Coupons</div>
           <div class="caption">The list of coupons you have applied by now</div>
         </div>
-
-        <v-spacer></v-spacer>
-
-        <v-btn 
-          small 
-          class="mx-2"
-          color="success"
-          @click="openApplyCouponDialog">
-            Apply a coupon
-        </v-btn>
-
       </v-card-title>
 
       <div v-if="coupons.length">
@@ -54,8 +43,6 @@
 
     </v-card>
 
-    <apply-coupon ref="applyCouponDialog" @applied="getCoupons"/>
-
   </div>
 </template>
 
@@ -83,17 +70,11 @@ export default {
       }
       this.loading.refresh = false;
     },
-    openApplyCouponDialog() {
-      this.$refs.applyCouponDialog.open();
-    },
   },
   mounted() {
     Utility.doubleRaf(() => {
       this.getCoupons();
     });
-  },
-  components: {
-    ApplyCoupon: () => import('@/component/app/ApplyCoupon.vue')
   }
 }
 </script>

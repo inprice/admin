@@ -10,9 +10,8 @@
       <span class="headline">Or</span>
       
       <p>
-        You can apply a coupon code (if you have any)
-        <v-btn @click="openDialog">Use coupon</v-btn>
-        <apply-coupon ref="dialog" @applied="applied"/>
+        You can subscribe a plan or apply a coupon code (if you have any)
+        <v-btn :to="{name: 'subscription'}">Go Subscription Page</v-btn>
       </p>
     </div>
     <div v-else>
@@ -22,19 +21,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  methods: {
-    openDialog() {
-      this.$refs.dialog.open();
-    },
-    applied() {
-      this.$emit('applied');
-    }
-  },
-  components: {
-    ApplyCoupon: () => import('./ApplyCoupon.vue'),
-  }
-}
-</script>
