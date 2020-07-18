@@ -11,11 +11,8 @@
 
     <div v-if="session.subsStatus != 'ACTIVE'">
       <plans @buy="buy" :rows="plans" :status="session.subsStatus" />
-
-      <div v-if="session.subsStatus != 'COUPONED'">
-        <separator text="OR" />
-        <apply-coupon @applied="couponApplied" />
-      </div>
+      <separator text="OR" />
+      <coupons @applied="couponApplied" @refresh="fetchCoupons" :coupons="coupons" :status="session.subsStatus" />
     </div>
 
     <div v-if="session.subsStatus != 'NOT_SET'">
@@ -26,7 +23,8 @@
 </template>
 
 <script>
-import ApiService from '@/service/api';
+import SubsService from '@/service/subscription';
+
 import moment from 'moment';
 import Utility from '@/helpers/utility';
 import { get } from 'vuex-pathify'
@@ -39,7 +37,8 @@ export default {
   data() {
     return {
       actualPlan: {},
-      trans: []
+      trans: [],
+      coupons: []
     };
   },
   methods: {
@@ -49,22 +48,21 @@ export default {
     cancel() {
       this.$refs.confirm.open('Cancel Subscription', 'will be cancelled. Are you sure?', 'Your actual subscription').then(async (confirm) => {
         if (confirm == true) {
-          ApiService.put('/subs/cancel')
-            .then((res) => {
-              if (res.data.ok == true) {
-                this.$store.dispatch('auth/cancelSubscription');
-                this.refreshActualPlan();
-                Utility.showShortInfoMessage('Status', 'Your subscription has been cancelled.');
-              }
-          });
+          const result = await SubsService.cancel();
+          if (result && result.status == true) {
+            this.$store.dispatch('auth/cancelSubscription');
+            this.refreshActualPlan(false);
+            Utility.showShortInfoMessage('Status', 'Your subscription has been cancelled.');
+          }
         }
       });
     },
-    couponApplied(/* data */) {
-      this.refreshActualPlan();
+    couponApplied(data) {
+      this.$store.set('auth/SUBSCRIPTION', data);
       Utility.showShortInfoMessage('Coupon', 'Your coupon has been successfully applied to your account.');
+      this.refreshActualPlan();
     },
-    refreshActualPlan() {
+    refreshActualPlan(refreshCoupons=true) {
       for (const plan of this.plans) {
         if (plan.id == this.session.planId) {
           const renewal = moment(this.session.subsRenewalAt, "YYYY-MM-DD");
@@ -80,9 +78,20 @@ export default {
           break;
         }
       }
-      ApiService.get('/subs/transactions')
+      SubsService.getTransactions()
         .then((res) => {
-          this.trans = res.data.data;
+          if (res && res.data) {
+            this.trans = res.data.data;
+          }
+      });
+      if (refreshCoupons == true) this.fetchCoupons();
+    },
+    fetchCoupons() {
+      SubsService.getCoupons()
+        .then((coupons) => {
+          if (coupons) {
+            this.coupons = coupons;
+          }
       });
     }
   },
@@ -97,7 +106,7 @@ export default {
   components: {
     Plans: () => import('./Plans'),
     ActualPlan: () => import('./ActualPlan'),
-    ApplyCoupon: () => import('./ApplyCoupon'),
+    Coupons: () => import('./Coupons'),
     Transactions: () => import('./Transactions'),
     confirm: () => import('@/component/Confirm.vue'),
     Separator: () => import('@/component/simple/Separator.vue'),

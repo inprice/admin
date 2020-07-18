@@ -10,17 +10,6 @@ export default {
     return null;
   },
 
-  async getCoupons() {
-    const res = await Helper.call('Company Coupons', { method: 'get', url: baseURL + '/coupons' }, false);
-    if (res.status == true && res.data) return res.data;
-    return null;
-  },
-
-  async applyCoupon(code) {
-    const res = await Helper.call('Apply Coupon', { method: 'put', url: baseURL + '/apply-coupon/' + code });
-    return res;
-  },
-
   async create(form) {
     const res = await Helper.call('Create Company', { method: 'post', url: baseURL, data: form });
     return res.status;
