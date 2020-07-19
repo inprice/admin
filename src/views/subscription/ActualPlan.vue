@@ -10,12 +10,12 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn small color="error" @click="cancel">Cancel</v-btn>
+        <v-btn small color="error" @click="cancel" v-if="status == 'ACTIVE' || status == 'COUPONED'">Cancel</v-btn>
       </v-card-title>
 
       <v-divider></v-divider>
 
-      <v-row>
+      <v-row v-if="status == 'ACTIVE' || status == 'COUPONED'">
 
         <v-col>
           <v-list two-line>
@@ -55,7 +55,10 @@
 
       </v-row>
 
-      <v-divider></v-divider>
+      <div v-else>
+        <v-divider></v-divider>
+        <div class="pa-4">You have <strong>no actual plan</strong> at the moment. You can either subscribe or use a coupon.</div>
+      </div>
 
     </v-card>
   </div>
@@ -64,7 +67,7 @@
 
 <script>
 export default {
-  props: ['data'],
+  props: ['data', 'status'],
   methods: {
     cancel() {
       this.$emit('cancel');

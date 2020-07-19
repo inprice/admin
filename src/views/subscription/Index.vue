@@ -4,15 +4,13 @@
       Subscription
     </div>
 
-    <div v-if="session.subsStatus == 'ACTIVE' || session.subsStatus == 'COUPONED'">
-      <actual-plan @cancel="cancel" :data="actualPlan" />
-      <confirm ref="confirm"></confirm>
-    </div>
+    <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" />
+    <confirm ref="confirm"></confirm>
 
     <div v-if="session.subsStatus != 'ACTIVE'">
       <plans @buy="buy" :rows="plans" :status="session.subsStatus" />
-      <separator text="OR" />
-      <coupons @applied="couponApplied" @refresh="fetchCoupons" :coupons="coupons" :status="session.subsStatus" />
+      <!--separator text="OR" />
+      <coupons @applied="couponApplied" @refresh="fetchCoupons" :coupons="coupons" :status="session.subsStatus" /-->
     </div>
 
     <div v-if="session.subsStatus != 'NOT_SET'">
@@ -38,7 +36,7 @@ export default {
     return {
       actualPlan: {},
       trans: [],
-      coupons: []
+      //coupons: []
     };
   },
   methods: {
@@ -57,12 +55,12 @@ export default {
         }
       });
     },
-    couponApplied(data) {
+/*     couponApplied(data) {
       this.$store.set('auth/SUBSCRIPTION', data);
       Utility.showShortInfoMessage('Coupon', 'Your coupon has been successfully applied to your account.');
       this.refreshActualPlan();
-    },
-    refreshActualPlan(refreshCoupons=true) {
+    }, */
+    refreshActualPlan(/* refreshCoupons=true */) {
       for (const plan of this.plans) {
         if (plan.id == this.session.planId) {
           const renewal = moment(this.session.subsRenewalAt, "YYYY-MM-DD");
@@ -84,9 +82,9 @@ export default {
             this.trans = res.data.data;
           }
       });
-      if (refreshCoupons == true) this.fetchCoupons();
+      // if (refreshCoupons == true) this.fetchCoupons();
     },
-    fetchCoupons() {
+/*     fetchCoupons() {
       SubsService.getCoupons()
         .then((coupons) => {
           if (coupons) {
@@ -94,6 +92,7 @@ export default {
           }
       });
     }
+ */ 
   },
   created() {
     Utility.doubleRaf(async () => {
@@ -106,10 +105,10 @@ export default {
   components: {
     Plans: () => import('./Plans'),
     ActualPlan: () => import('./ActualPlan'),
-    Coupons: () => import('./Coupons'),
+    // Coupons: () => import('./Coupons'),
     Transactions: () => import('./Transactions'),
     confirm: () => import('@/component/Confirm.vue'),
-    Separator: () => import('@/component/simple/Separator.vue'),
+    // Separator: () => import('@/component/simple/Separator.vue'),
   }
 };
 </script>

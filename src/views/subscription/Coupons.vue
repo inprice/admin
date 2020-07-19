@@ -5,7 +5,7 @@
         <v-icon class="mr-4">mdi-ticket-confirmation-outline</v-icon>
         <div>
           <div>Coupons</div>
-          <div class="caption">The mixin list of coupons of can be use and have been applied by now</div>
+          <div class="caption">A combined list of coupons that can be used, and have been applied by now</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -39,7 +39,7 @@
                 <td class="text-center">{{ cpn.description }}</td>
                 <td class="text-center">{{ cpn.issuedAt | formatDate }}</td>
                 <td class="text-center font-weight-bold">{{ cpn.days }}</td>
-                <td class="text-center">
+                <td class="text-center pl-0">
                   <v-btn
                     v-if="!cpn.issuedAt && status != 'ACTIVE' && status != 'COUPONED'"
                     small dark
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import SubsService from '@/service/subscription';
+import CouponService from '@/service/coupon';
 
 export default {
   props: ['coupons', 'status'],
@@ -92,7 +92,7 @@ export default {
   methods: {
     async apply(index, code) {
       this.loading.apply = true;
-      const result = await SubsService.applyCoupon(code);
+      const result = await CouponService.applyCoupon(code);
       if (result && result.status == true) {
         this.$emit('applied', result.data);
       }

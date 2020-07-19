@@ -46,7 +46,7 @@ const actions = {
   },
 
   cancelSubscription({ commit }) {
-    commit('SET_SUBSCRIPTION_STATUS', 'CANCEL');
+    commit('SET_SUBSCRIPTION_STATUS', 'CANCELLED');
   }
 
 };
@@ -74,12 +74,14 @@ const mutations = {
   SET_USER_INFO(state, data) {
     state.session.user = data.name;
     state.session.timezone = data.timezone;
+    state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
 
   SET_COMPANY_INFO(state, data) {
     state.session.company = data.name;
     state.session.currencyFormat = data.currencyFormat;
+    state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
 
@@ -87,12 +89,14 @@ const mutations = {
     state.session.planId = data.planId;
     state.session.subsStatus = data.subsStatus;
     state.session.subsRenewalAt = data.subsRenewalAt;
+    state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
 
-  SET_SUBSCRIPTION_STATUS(state) {
-    state.session.subsStatus = 'CANCELLED';
+  SET_SUBSCRIPTION_STATUS(state, status) {
+    state.session.subsStatus = status;
     state.session.subsRenewalAt = moment().format("YYYY-MM-DD");
+    state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   }
 

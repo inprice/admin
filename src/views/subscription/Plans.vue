@@ -27,11 +27,6 @@
             <th width="5%" class="text-center"></th>
           </tr>
         </thead>
-        <tfoot>
-          <tr>
-            <th colspan="4">* Prices in this table are monthly basis!</th>
-          </tr>
-        </tfoot>
         <tbody>
           <tr v-for="row in rows" :key="row.id">
             <td>{{ row.name }}</td>
@@ -51,6 +46,10 @@
         </tbody>
       </template>
     </v-simple-table>
+
+    <v-divider></v-divider>
+
+    <div class="caption pa-4"><strong>* Please Note that: </strong> Prices in this table are monthly basis!</div>
 
   </v-card>
 

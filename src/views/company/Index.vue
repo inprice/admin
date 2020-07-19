@@ -10,6 +10,7 @@
 
     <profile />
     <users />
+    <coupons :status="session.subsStatus" />
 
     <delete-everything />
 
@@ -18,7 +19,6 @@
 
 <script>
 import { get } from 'vuex-pathify'
-
 export default {
   computed: {
     session: get('auth/session'),
@@ -26,6 +26,7 @@ export default {
   components: {
     Profile: () => import('./Profile'),
     Users: () => import('./Users'),
+    Coupons: () => import('./Coupons'),
     DeleteEverything: () => import('./DeleteEverything')
   }
 };
