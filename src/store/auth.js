@@ -5,20 +5,23 @@ import { make } from 'vuex-pathify';
 import router from '../router';
 import Utility from '@/helpers/utility';
 import SystemConsts from '@/data/system';
+import moment from 'moment';
 
 import { BroadcastChannel } from 'broadcast-channel';
 
 const state = {
   sessionNo: 0,
   session: {},
-  sessions: [],
+  sessions: []
 };
 
 const actions = {
 
   async login({ dispatch }, form) {
     const res = await Helper.call('Login', { url: '/login', data: form });
-    if (res.status == true) dispatch('createSession', res);
+    if (res.status == true) {
+      dispatch('createSession', res);
+    }
     return res.data && res.data.sessionNo;
   },
 
@@ -40,6 +43,10 @@ const actions = {
     state.sessionNo = res.data.sessionNo;
     commit('REFRESH_SESSION', res.data);
     loginChannel.postMessage(res.data);
+  },
+
+  cancelSubscription({ commit }) {
+    commit('SET_SUBSCRIPTION_STATUS', 'CANCELLED');
   }
 
 };
@@ -67,17 +74,29 @@ const mutations = {
   SET_USER_INFO(state, data) {
     state.session.user = data.name;
     state.session.timezone = data.timezone;
+    state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
 
   SET_COMPANY_INFO(state, data) {
     state.session.company = data.name;
     state.session.currencyFormat = data.currencyFormat;
+    state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
 
-  SET_PLAN_ID(state, id) {
-    state.session.planId = id;
+  SET_SUBSCRIPTION(state, data) {
+    state.session.planId = data.planId;
+    state.session.subsStatus = data.subsStatus;
+    state.session.subsRenewalAt = data.subsRenewalAt;
+    state.sessions[state.sessionNo] = state.session;
+    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
+  },
+
+  SET_SUBSCRIPTION_STATUS(state, status) {
+    state.session.subsStatus = status;
+    state.session.subsRenewalAt = moment().format("YYYY-MM-DD");
+    state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   }
 

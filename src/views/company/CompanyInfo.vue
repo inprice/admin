@@ -3,7 +3,7 @@
 
     <v-dialog v-model="opened" max-width="450">
       <v-card>
-        <v-card-title>{{ isInsert ? 'Create a new company' : 'Update company info' }}</v-card-title>
+        <v-card-title>{{ isInsert ? 'New company' : 'Company info' }}</v-card-title>
 
         <v-card-subtitle class="pb-0" v-if="isInsert">
           You will be able to see new company after sign in again.

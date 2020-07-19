@@ -28,8 +28,4 @@ export default {
   .v-list-item__action {
     margin-right: 22px !important;
   }
-  th {
-    background-color: lightgray;
-    height: 30px;
-  }
 </style>

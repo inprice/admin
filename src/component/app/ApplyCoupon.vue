@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import CompanyService from '@/service/company';
+import CouponService from '@/service/coupon';
 import Utility from '@/helpers/utility';
 
 export default {
@@ -63,12 +63,10 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await CompanyService.applyCoupon(this.form.code);
+        const result = await CouponService.applyCoupon(this.form.code);
         if (result && result.status == true) {
-          this.$store.set('auth/PLAN_ID', result.data.planId);
-          this.$emit('applied');
+          this.$emit('applied', result.data);
           this.close();
-          return;
         }
         this.loading = false;
       }
@@ -76,8 +74,8 @@ export default {
     activateRules() {
       this.rules = {
         code: [
-          v => !!v || "Code is required",
-          v => (v.length == 8) || "Coupon code must be 8 chars",
+          v => !!v || "Required",
+          v => (v.length == 8) || "Must be 8 chars",
         ],
       }
     },

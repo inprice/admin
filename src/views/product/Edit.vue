@@ -115,11 +115,6 @@ export default {
       this.rules = {};
       this.$refs.form.reset();
     },
-    setNewValue(data) {
-      console.log('data-->', data);
-      //if (data.type == 'BRAND') this.form.brandId = data.id;
-      //if (data.type == 'CATEGORY') this.form.categoryId = data.id;
-    },
     activateRules() {
       this.rules = {
         code: [
