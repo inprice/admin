@@ -7,25 +7,34 @@
           <div>Profile</div>
           <div class="caption">You can edit your company profile here using actions buttons placed on the right</div>
         </div>
+
+        <v-spacer></v-spacer>
+
+        <v-btn 
+          small 
+          color="warning"
+          @click="openCompanyInfoDialog">
+            Edit
+        </v-btn>
        </v-card-title>
 
       <v-divider></v-divider>
 
-      <v-card-text>
-        <v-list >
+      <v-simple-table class="property-table pt-3 pb-1">
+        <template v-slot:default>
+          <tbody>
+            <tr>
+              <td class="prop-name">Title</td>
+              <td><v-text-field solo dense readonly hide-details="true" v-model="session.company" /></td>
+            </tr>
+            <tr>
+              <td class="prop-name">Currency Format</td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="session.currencyFormat" /></td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
 
-          <v-list-item @click="1">
-            <v-list-item-content>
-              <div class="col-2 body-2">COMPANY</div>
-              <div class="col-8 title">{{ session.company }}</div>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn small @click="openCompanyInfoDialog">Update</v-btn>
-            </v-list-item-action>
-          </v-list-item>
-
-        </v-list>
-      </v-card-text>
     </v-card>
 
     <CompanyInfoDialog ref="companyInfoDialog"/>

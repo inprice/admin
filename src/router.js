@@ -96,6 +96,11 @@ const router = new VueRouter({
           component: () => import('./views/product_import/AmazonASIN.vue')
         },
         {
+          name: 'billing',
+          path: 'billing',
+          component: () => import('./views/billing/Index.vue')
+        },
+        {
           name: 'subscription',
           path: 'subscription',
           component: () => import('./views/subscription/Index.vue')

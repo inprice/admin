@@ -4,13 +4,13 @@
       Subscription
     </div>
 
-    <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" />
+    <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" @applied="couponApplied" />
     <confirm ref="confirm"></confirm>
 
     <div v-if="session.subsStatus != 'ACTIVE'">
+      <separator text="You can subscribe a plan" />
       <plans @buy="buy" :rows="plans" :status="session.subsStatus" />
-      <!--separator text="OR" />
-      <coupons @applied="couponApplied" @refresh="fetchCoupons" :coupons="coupons" :status="session.subsStatus" /-->
+      <!-- coupons @applied="couponApplied" @refresh="fetchCoupons" :coupons="coupons" :status="session.subsStatus" /-->
     </div>
 
     <div v-if="session.subsStatus != 'NOT_SET'">
@@ -55,11 +55,11 @@ export default {
         }
       });
     },
-/*     couponApplied(data) {
+    couponApplied(data) {
       this.$store.set('auth/SUBSCRIPTION', data);
       Utility.showShortInfoMessage('Coupon', 'Your coupon has been successfully applied to your account.');
       this.refreshActualPlan();
-    }, */
+    },
     refreshActualPlan(/* refreshCoupons=true */) {
       for (const plan of this.plans) {
         if (plan.id == this.session.planId) {
@@ -108,7 +108,7 @@ export default {
     // Coupons: () => import('./Coupons'),
     Transactions: () => import('./Transactions'),
     confirm: () => import('@/component/Confirm.vue'),
-    // Separator: () => import('@/component/simple/Separator.vue'),
+    Separator: () => import('@/component/simple/Separator.vue'),
   }
 };
 </script>
