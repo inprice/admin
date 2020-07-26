@@ -6,7 +6,7 @@
         <div>Plans</div>
         <div class="caption">
           <span v-if="status == 'NOT_SET'">
-            You have no active plan in the moment. Please pick one to start monitoring.
+            You have no active plan at the moment. Please pick one to start monitoring.
           </span>
           <span v-if="status == 'COUPONED'">
             You can select a plan from the followings to start monitoring.
@@ -30,16 +30,16 @@
         <tbody>
           <tr v-for="row in rows" :key="row.id">
             <td>{{ row.name }}</td>
-            <td>Up to {{ row.productLimit }} products.</td>
-            <td class="text-right font-weight-bold">{{ '$' + row.price.toFixed(2) }}</td>
+            <td>{{ row.description }}</td>
+            <td class="text-right font-weight-bold">{{ '€' + row.price.toFixed(2) }}</td>
             <td class="text-center">
-              <v-btn
+              <v-btn 
                 small
                 color="success"
                 class="mx-2"
-                @click="buy(row.stripeProdId)"
+                @click="subscribe(row.stripePriceId)"
               >
-                Buy
+                Subscribe
               </v-btn>
             </td>
           </tr>
@@ -49,18 +49,42 @@
 
     <v-divider></v-divider>
 
-    <div class="caption pa-4"><strong>* Please Note that: </strong> Prices in this table are monthly basis!</div>
+    <div class="caption pa-4"><strong>* Please Note that: </strong> Prices in this table are monthly basis and in Euro currency!</div>
 
   </v-card>
 
 </template>
 
 <script>
+import { get } from 'vuex-pathify'
+
+const stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
+
 export default {
   props: ['rows', 'status'],
+  computed: {
+    session: get('auth/session'),
+  },
   methods: {
-    buy(stripeProdId) {
-      this.$emit('buy', stripeProdId);
+    subscribe(priceId) {
+      try {
+        const options = {
+          //clientReferenceId: this.stripeCustomerId,
+          clientReferenceId: 'cus_Hi6wFFgiicY8I4',
+          customerEmail: this.session.email,
+          successUrl: window.location.href,
+          cancelUrl: window.location.href,
+          mode: 'subscription',
+          items: [{ plan: priceId, quantity: 1 }],
+        };
+
+        stripe.redirectToCheckout(options);
+      } catch (e) {
+        console.error(e);
+        this.$emit('error', e);
+      } finally {
+        this.$emit('loading', false);
+      }
     }
   },
 };

@@ -1,3 +1,7 @@
+.theme--light.v-application {
+  background: #e3edee;
+}
+
 .property-table tr:hover {
   background-color: transparent !important;
 }
@@ -30,4 +34,33 @@
 
 .property-table .prop-name::after {
   content: " :" !important;
+}
+
+/**
+* Shows how you can use CSS to style your Element's container.
+*/
+.MyCardElement {
+  height: 40px;
+  padding: 10px 12px;
+  width: 100%;
+  color: #32325d;
+  background-color: white;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.MyCardElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.MyCardElement--invalid {
+  border-color: #fa755a;
+}
+
+.MyCardElement--webkit-autofill {
+  background-color: #fefde5 !important;
 }

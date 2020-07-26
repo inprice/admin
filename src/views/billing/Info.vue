@@ -24,7 +24,7 @@
           <tbody>
             <tr>
               <td class="prop-name">Title</td>
-              <td><v-text-field solo dense readonly hide-details="true" v-model="info.title" /></td>
+              <td><v-text-field solo dense readonly hide-details="true" :value="info.title || 'Not set!'" /></td>
             </tr>
             <tr>
               <td class="prop-name">Address Line 1</td>
