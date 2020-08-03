@@ -28,7 +28,7 @@
               <td><v-text-field solo dense readonly hide-details="true" v-model="session.company" /></td>
             </tr>
             <tr>
-              <td class="prop-name">Currency Format</td>
+              <td class="prop-name">Format</td>
               <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="session.currencyFormat" /></td>
             </tr>
           </tbody>

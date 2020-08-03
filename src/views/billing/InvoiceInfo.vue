@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import BillingService from '@/service/billing';
+import SubsService from '@/service/subscription';
 import Utility from '@/helpers/utility';
 
 import countries from '@/data/countries';
@@ -129,7 +129,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await BillingService.saveInfo(this.form);
+        const result = await SubsService.saveInfo(this.form);
         if (result == true) {
           Utility.showInfoMessage('Invoice Info', 'Your invoice info is successfully saved.');
           this.$emit('saved', this.form);

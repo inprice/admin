@@ -37,7 +37,7 @@
                 small
                 color="success"
                 class="mx-2"
-                @click="subscribe(row.stripePriceId)"
+                @click="subscribe(row.id)"
               >
                 Subscribe
               </v-btn>
@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import SubsService from '@/service/subscription';
+import Utility from '@/helpers/utility';
 import { get } from 'vuex-pathify'
 
 const stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
@@ -66,26 +68,20 @@ export default {
     session: get('auth/session'),
   },
   methods: {
-    subscribe(priceId) {
-      try {
-        const options = {
-          //clientReferenceId: this.stripeCustomerId,
-          clientReferenceId: 'cus_Hi6wFFgiicY8I4',
-          customerEmail: this.session.email,
-          successUrl: window.location.href,
-          cancelUrl: window.location.href,
-          mode: 'subscription',
-          items: [{ plan: priceId, quantity: 1 }],
-        };
-
-        stripe.redirectToCheckout(options);
-      } catch (e) {
-        console.error(e);
-        this.$emit('error', e);
-      } finally {
-        this.$emit('loading', false);
+    async subscribe(planId) {
+      const result = await SubsService.createSession(planId);
+      if (result.status == true) {
+        stripe.redirectToCheckout({
+          sessionId: result.data.sessionId
+        }).then(function (result) {
+          if (result.error && result.error.message) {
+            Utility.showErrorMessage('Subscription', 'payment', { reason: result.error.message });
+          } else {
+            console.log('Calling result of stripes checkout form', result);
+          }
+        });
       }
-    }
+    },
   },
 };
 </script>

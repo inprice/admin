@@ -1,7 +1,6 @@
-.theme--light.v-application {
-  background: #e3edee;
-}
-
+/**
+* Property table
+*/
 .property-table tr:hover {
   background-color: transparent !important;
 }

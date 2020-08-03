@@ -123,8 +123,7 @@ export default {
         });
       }
     },
-    async applyCoupon(data) {
-      this.$store.set('auth/SUBSCRIPTION', data);
+    async applyCoupon(/* data */) {
       this.getCoupons();
       Utility.showShortInfoMessage('Coupon', 'Your coupon has been successfully applied.');
     },

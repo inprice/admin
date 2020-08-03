@@ -5,7 +5,6 @@ import { make } from 'vuex-pathify';
 import router from '../router';
 import Utility from '@/helpers/utility';
 import SystemConsts from '@/data/system';
-import moment from 'moment';
 
 import { BroadcastChannel } from 'broadcast-channel';
 
@@ -43,10 +42,6 @@ const actions = {
     state.sessionNo = res.data.sessionNo;
     commit('REFRESH_SESSION', res.data);
     loginChannel.postMessage(res.data);
-  },
-
-  cancelSubscription({ commit }) {
-    commit('SET_SUBSCRIPTION_STATUS', 'CANCELLED');
   }
 
 };
@@ -84,21 +79,6 @@ const mutations = {
     state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
-
-  SET_SUBSCRIPTION(state, data) {
-    state.session.planId = data.planId;
-    state.session.subsStatus = data.subsStatus;
-    state.session.subsRenewalAt = data.subsRenewalAt;
-    state.sessions[state.sessionNo] = state.session;
-    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
-  },
-
-  SET_SUBSCRIPTION_STATUS(state, status) {
-    state.session.subsStatus = status;
-    state.session.subsRenewalAt = moment().format("YYYY-MM-DD");
-    state.sessions[state.sessionNo] = state.session;
-    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
-  }
 
 }
 

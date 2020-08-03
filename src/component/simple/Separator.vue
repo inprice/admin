@@ -22,7 +22,7 @@ export default {
     margin: 10px 0;
   }
   .inner {
-    background: #e3edee;
+    background: white;
     padding: 0 10px;
   }
 </style>

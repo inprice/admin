@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^1.8.0",
     "apexcharts": "^3.19.2",
     "axios": "^0.19.2",
     "broadcast-channel": "^3.1.0",

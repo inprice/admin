@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import BillingService from '@/service/billing';
+import SubsService from '@/service/subscription';
 import countries from '@/data/countries';
 
 export default {
@@ -86,7 +86,7 @@ export default {
       }
     },
     async fetchData() {
-      const result = await BillingService.getInfo();
+      const result = await SubsService.getInfo();
       if (result) this.invoiceInfoUpdated(result);
     }
   },
