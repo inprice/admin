@@ -4,11 +4,44 @@
       Subscription
     </div>
 
-    <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" @applied="couponApplied" />
+    <v-card class="py-2">
+      <v-card-title class="pb-0">
+        <v-icon class="mr-4">mdi-text-box-check-outline</v-icon>
+        <div class="col pa-0">
+          <div>Plan &amp; Billing Info</div>
+          <div>
+            <div class="caption float-left">Your actual plan and billing info.</div>
+
+            <v-btn-toggle tile v-model="selectedTab" class="float-right">
+              <v-btn @click="selectedTab=0" small>
+                Actual Plan
+              </v-btn>
+
+              <v-btn @click="selectedTab=1" small>
+                Invoice Header
+              </v-btn>
+            </v-btn-toggle>
+          </div>
+
+        </div>
+      </v-card-title>
+
+      <v-divider></v-divider>
+
+      <v-tabs v-model="selectedTab">
+        <v-tab-item>
+          <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" @applied="couponApplied" />
+        </v-tab-item>
+        <v-tab-item>
+          <invoice-info />
+        </v-tab-item>
+      </v-tabs>
+
+    </v-card>
+
     <confirm ref="confirm"></confirm>
 
     <div v-if="session.subsStatus != 'ACTIVE'">
-      <separator text="You can subscribe a plan" />
       <plans :rows="plans" :status="session.subsStatus" />
     </div>
 
@@ -36,6 +69,7 @@ export default {
       actualPlan: {},
       allTrans: [],
       invoiceTrans: [],
+      selectedTab: 0
     };
   },
   methods: {
@@ -91,9 +125,9 @@ export default {
   components: {
     Plans: () => import('./Plans'),
     ActualPlan: () => import('./ActualPlan'),
+    InvoiceInfo: () => import('./InvoiceInfo'),
     Transactions: () => import('./Transactions'),
     confirm: () => import('@/component/Confirm.vue'),
-    Separator: () => import('@/component/simple/Separator.vue'),
   }
 };
 </script>

@@ -63,3 +63,7 @@
 .MyCardElement--webkit-autofill {
   background-color: #fefde5 !important;
 }
+
+.v-tabs-bar {
+  display: none;
+}

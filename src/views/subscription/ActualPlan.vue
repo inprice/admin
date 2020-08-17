@@ -1,55 +1,38 @@
 <template>
-  <div class="mt-5">
-    <v-card>
-      <v-card-title>
-        <v-icon class="mr-4">mdi-bookmark-multiple-outline</v-icon>
-        <div>
-          <div>Actual Plan</div>
-          <div class="caption">The details of your current plan.</div>
-        </div>
+  <div>
+    <v-simple-table class="property-table pt-3 pb-1" v-if="status == 'ACTIVE' || status == 'COUPONED'">
+      <template v-slot:default>
+        <tbody>
+          <tr>
+            <td class="prop-name">Name</td>
+            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.name" /></td>
+          </tr>
+          <tr>
+            <td class="prop-name">Status</td>
+            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.status" /></td>
+          </tr>
+          <tr>
+            <td class="prop-name">Renewal Date</td>
+            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.renewalTime" /></td>
+          </tr>
+          <tr>
+            <td class="prop-name">Description</td>
+            <td><v-text-field solo dense readonly hide-details="true" v-model="data.description" /></td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
 
-        <v-spacer></v-spacer>
-
-        <v-btn small color="error" @click="cancel" v-if="status == 'ACTIVE' || status == 'COUPONED'">Cancel</v-btn>
-      </v-card-title>
-
-      <v-divider></v-divider>
-
-      <v-simple-table class="property-table pt-3 pb-1" v-if="status == 'ACTIVE' || status == 'COUPONED'">
-        <template v-slot:default>
-          <tbody>
-            <tr>
-              <td class="prop-name">Name</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.name" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Status</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.status" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Renewal Date</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.renewalTime" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Description</td>
-              <td><v-text-field solo dense readonly hide-details="true" v-model="data.description" /></td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
-
-      <div class="d-flex pa-4" v-else>
-        <div>You have <strong>no actual plan</strong> at the moment. Please pick a plan from the following table.</div>
-        <v-spacer></v-spacer>
-        <v-btn 
-          small
-          color="success"
-          @click="openApplyCouponDialog">
-            OR Apply a coupon
-        </v-btn>
-      </div>
-
-    </v-card>
+    <div class="d-flex pa-4" v-else>
+      <div>You have <strong>no actual plan</strong> at the moment. Please pick a plan from the following table... or</div>
+      <v-spacer></v-spacer>
+      <v-btn 
+        small
+        color="success"
+        @click="openApplyCouponDialog">
+          Apply a coupon
+      </v-btn>
+    </div>
 
     <apply-coupon ref="applyCouponDialog" @applied="applyCoupon" />
   </div>

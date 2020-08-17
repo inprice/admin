@@ -1,6 +1,10 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" app clipped>
+    <v-navigation-drawer 
+      app clipped
+      v-model="drawerStatus" 
+      :mini-variant="drawerStatus == 1" 
+      :expand-on-hover="drawerStatus == 1">
       <v-list dense nav class="text-uppercase font-weight-light">
         <v-list-item link :to="{name: 'dashboard'}">
           <v-list-item-action>
@@ -30,8 +34,6 @@
         </v-list-item>
 
         <v-divider inset></v-divider>
-
-        <v-subheader>IMPORT</v-subheader>
 
         <v-list-item link :to="{name: 'import-csv'}" v-if="$store.get('auth/IS_EDITOR')">
           <v-list-item-action>
@@ -77,14 +79,6 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'billing'}" v-if="$store.get('auth/IS_ADMIN')">
-          <v-list-item-action>
-            <v-icon>mdi-text-box-check-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Billing</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
         <v-list-item link :to="{name: 'subscription'}" v-if="$store.get('auth/IS_ADMIN')">
           <v-list-item-action>
             <v-icon>mdi-credit-card-check-outline</v-icon>
@@ -101,6 +95,18 @@
             <v-list-item-title>Company Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-divider inset></v-divider>
+
+        <v-list-item @click="openCreateCompany">
+          <v-list-item-action>
+            <v-icon>mdi-plus</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Create a New Company</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
       </v-list>
 
       <template v-slot:append>
@@ -109,7 +115,7 @@
         <v-list>
           <v-list-item>
             <v-list-item-action class="mr-2">
-              <v-icon right >mdi-copyright</v-icon>
+              <v-icon right class="ml-0">mdi-copyright</v-icon>
             </v-list-item-action>
             <v-list-item-content class="py-0">
               <v-list-item-title>inprice</v-list-item-title>
@@ -120,8 +126,8 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar app color="blue-grey" clipped-left dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar app color="blue-grey" dark clipped-left class="pl-0">
+      <v-app-bar-nav-icon @click.stop="changeDrawerPosition"></v-app-bar-nav-icon>
 
       <div>
         <div class="subtitle font-weight-bold">{{ session.company }}</div>
@@ -129,19 +135,6 @@
       </div>
 
       <v-spacer></v-spacer>
-
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            dark icon
-            v-on="on"
-            @click="openCreateCompany"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </template>
-        <span>Create a new company</span>
-      </v-tooltip>
 
       <user-menu></user-menu>
     </v-app-bar>
@@ -169,13 +162,31 @@ import { get } from 'vuex-pathify'
 export default {
   data() {
     return {
-      drawer: null
+      drawerToLeft: true,
+      drawerStatus: 2
     };
   },
   computed: {
-    session: get('auth/session'),
+    session: get('auth/session')
   },
   methods: {
+    changeDrawerPosition() {
+      if (this.drawerToLeft) {
+        if (this.drawerStatus == 0) {
+          this.drawerToLeft = false;
+          this.drawerStatus = 1;
+        } else {
+          this.drawerStatus--;
+        }
+      } else {
+        if (this.drawerStatus == 2) {
+          this.drawerToLeft = true;
+          this.drawerStatus = 1;
+        } else {
+          this.drawerStatus++;
+        }
+      }
+    },
     openCreateCompany() {
       this.$refs.companyInfoDialog.edit(null, true);
     },
