@@ -130,6 +130,14 @@ const router = new VueRouter({
       ]
     },
     {
+      path: '/payment-ok',
+      component: () => import('./views/app/PaymentOK')
+    },
+    {
+      path: '/payment-cancel',
+      component: () => import('./views/app/PaymentCancel')
+    },
+    {
       path: '/error',
       component: () => import('./views/errors/ServerError')
     },

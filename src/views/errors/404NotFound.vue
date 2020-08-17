@@ -11,7 +11,7 @@
         <p>The page you were looking for does not exist</p>
 
         <v-btn
-          to="/app/dashboard"
+          :to="{ name: 'dashboard' }"
           color="primary"
           outlined
         >

@@ -1,0 +1,32 @@
+import { Bar } from 'vue-chartjs'
+
+export default {
+  extends: Bar,
+  props: ['series'],
+  mounted () {
+    this.renderChart({
+      labels: ['Lowest', 'Lower', 'Average', 'Higher', 'Highest'],
+      datasets: [
+        {
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.3)',
+            'rgba(255, 205, 86, 0.3)',
+            'rgba(153, 102, 255, 0.3)',
+            'rgba(54, 162, 235, 0.3)',
+            'rgba(255, 99, 132, 0.3)',
+          ],
+          "borderWidth":1.5,
+          data: this.series
+        }
+      ]
+    }, {
+      responsive: true, 
+      maintainAspectRatio: false,
+      options: {
+        legend: {
+          display: false,
+        }
+      }
+    });
+  }
+}

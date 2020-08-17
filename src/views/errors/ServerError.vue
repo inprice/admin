@@ -11,7 +11,7 @@
         <p class="display-2">{{problem}}</p>
 
         <v-btn
-          to="/login"
+          :to="{ name: 'login' }"
           color="primary"
           outlined
         >

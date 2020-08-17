@@ -1,0 +1,69 @@
+/**
+* Property table
+*/
+.property-table tr:hover {
+  background-color: transparent !important;
+}
+
+.property-table tr td {
+  border-bottom: none !important;
+}
+
+.property-table td {
+  padding-left: 0;
+  height: 32px;
+  min-height: 32px !important;
+}
+
+.property-table input {
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.property-table .v-input__slot {
+  background-color: #f9f9f9 !important;
+  min-height: 30px !important;
+  font-size: 0.9em !important;
+  box-shadow: 0px 1px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 2px 0px rgba(0, 0, 0, 0.12) !important;
+}
+
+.property-table td.prop-name {
+  text-align: right !important;
+  width: 20% !important;
+}
+
+.property-table .prop-name::after {
+  content: " :" !important;
+}
+
+/**
+* Shows how you can use CSS to style your Element's container.
+*/
+.MyCardElement {
+  height: 40px;
+  padding: 10px 12px;
+  width: 100%;
+  color: #32325d;
+  background-color: white;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.MyCardElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.MyCardElement--invalid {
+  border-color: #fa755a;
+}
+
+.MyCardElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+
+.v-tabs-bar {
+  display: none;
+}

@@ -4,6 +4,7 @@ import { make } from 'vuex-pathify';
 const baseURL = '/app';
 
 const state = {
+  cid: 0,
   plans: []
 };
 
@@ -12,7 +13,8 @@ const actions = {
   async fetchPlans({ commit }) {
     const res = await Helper.call('Plans', { method: 'get', url: baseURL + '/plans' });
     if (res.status == true) {
-      commit('SET_PLANS', res.data);
+      commit('SET_CID', res.data.cid);
+      commit('SET_PLANS', res.data.plans);
     }
   },
 
@@ -20,6 +22,10 @@ const actions = {
 
 const mutations = {
   ...make.mutations(state),
+
+  SET_CID(state, cid) {
+    state.cid = cid;
+  },
 
   SET_PLANS(state, plans) {
     state.plans = plans;

@@ -4,17 +4,49 @@
       Subscription
     </div>
 
-    <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" />
+    <v-card class="py-2">
+      <v-card-title class="pb-0">
+        <v-icon class="mr-4">mdi-text-box-check-outline</v-icon>
+        <div class="col pa-0">
+          <div>Plan &amp; Billing Info</div>
+          <div>
+            <div class="caption float-left">Your actual plan and billing info.</div>
+
+            <v-btn-toggle tile v-model="selectedTab" class="float-right">
+              <v-btn @click="selectedTab=0" small>
+                Actual Plan
+              </v-btn>
+
+              <v-btn @click="selectedTab=1" small>
+                Invoice Header
+              </v-btn>
+            </v-btn-toggle>
+          </div>
+
+        </div>
+      </v-card-title>
+
+      <v-divider></v-divider>
+
+      <v-tabs v-model="selectedTab">
+        <v-tab-item>
+          <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" @applied="couponApplied" />
+        </v-tab-item>
+        <v-tab-item>
+          <invoice-info />
+        </v-tab-item>
+      </v-tabs>
+
+    </v-card>
+
     <confirm ref="confirm"></confirm>
 
     <div v-if="session.subsStatus != 'ACTIVE'">
-      <plans @buy="buy" :rows="plans" :status="session.subsStatus" />
-      <!--separator text="OR" />
-      <coupons @applied="couponApplied" @refresh="fetchCoupons" :coupons="coupons" :status="session.subsStatus" /-->
+      <plans :rows="plans" :status="session.subsStatus" />
     </div>
 
     <div v-if="session.subsStatus != 'NOT_SET'">
-      <transactions :rows="trans" />
+      <transactions :all="allTrans" :invoices="invoiceTrans" />
     </div>
 
   </div>
@@ -35,32 +67,29 @@ export default {
   data() {
     return {
       actualPlan: {},
-      trans: [],
-      //coupons: []
+      allTrans: [],
+      invoiceTrans: [],
+      selectedTab: 0
     };
   },
   methods: {
-    buy(stripePlanId) {
-      console.log("Buy is clicked! " + stripePlanId);
-    },
     cancel() {
       this.$refs.confirm.open('Cancel Subscription', 'will be cancelled. Are you sure?', 'Your actual subscription').then(async (confirm) => {
         if (confirm == true) {
           const result = await SubsService.cancel();
           if (result && result.status == true) {
             this.$store.dispatch('auth/cancelSubscription');
-            this.refreshActualPlan(false);
+            this.refreshActualPlan();
             Utility.showShortInfoMessage('Status', 'Your subscription has been cancelled.');
           }
         }
       });
     },
-/*     couponApplied(data) {
-      this.$store.set('auth/SUBSCRIPTION', data);
+    couponApplied(/* data */) {
       Utility.showShortInfoMessage('Coupon', 'Your coupon has been successfully applied to your account.');
       this.refreshActualPlan();
-    }, */
-    refreshActualPlan(/* refreshCoupons=true */) {
+    },
+    refreshActualPlan() {
       for (const plan of this.plans) {
         if (plan.id == this.session.planId) {
           const renewal = moment(this.session.subsRenewalAt, "YYYY-MM-DD");
@@ -78,21 +107,12 @@ export default {
       }
       SubsService.getTransactions()
         .then((res) => {
-          if (res && res.data) {
-            this.trans = res.data.data;
+          if (res) {
+            this.allTrans = res.data.all;
+            this.invoiceTrans = res.data.invoice;
           }
       });
-      // if (refreshCoupons == true) this.fetchCoupons();
     },
-/*     fetchCoupons() {
-      SubsService.getCoupons()
-        .then((coupons) => {
-          if (coupons) {
-            this.coupons = coupons;
-          }
-      });
-    }
- */ 
   },
   created() {
     Utility.doubleRaf(async () => {
@@ -105,10 +125,9 @@ export default {
   components: {
     Plans: () => import('./Plans'),
     ActualPlan: () => import('./ActualPlan'),
-    // Coupons: () => import('./Coupons'),
+    InvoiceInfo: () => import('./InvoiceInfo'),
     Transactions: () => import('./Transactions'),
     confirm: () => import('@/component/Confirm.vue'),
-    // Separator: () => import('@/component/simple/Separator.vue'),
   }
 };
 </script>

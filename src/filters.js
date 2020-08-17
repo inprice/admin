@@ -44,6 +44,13 @@ export default (Vue) => {
     } catch (error) { }
   });
 
+  Vue.filter('toPrice', (value) => {
+    try {
+      return value.toFixed(2);
+      /* eslint-disable no-empty */
+    } catch (error) { }
+  });
+
   Vue.filter('formatDate', (value) => {
     try {
       if (value) {
@@ -58,6 +65,26 @@ export default (Vue) => {
     try {
       if (value) {
         return moment(value).tz(store.get(session+'@timezone')).format('YYYY-MM-DD');
+      }
+      /* eslint-disable no-empty */
+    } catch (error) { }
+    return 'NA';
+  });
+
+  Vue.filter('formatTime', (value) => {
+    try {
+      if (value) {
+        return moment(value).tz(store.get(session+'@timezone')).format('HH:mm');
+      }
+      /* eslint-disable no-empty */
+    } catch (error) { }
+    return 'NA';
+  });
+
+  Vue.filter('formatStatus', (value) => {
+    try {
+      if (value) {
+        return value.replaceAll('_', ' ');
       }
       /* eslint-disable no-empty */
     } catch (error) { }

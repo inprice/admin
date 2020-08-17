@@ -14,12 +14,12 @@ Vue.config.productionTip = false
 import Notifications from 'vue-notification';
 Vue.use(Notifications);
 
-import VueApexCharts from 'vue-apexcharts';
-Vue.component('apexchart', VueApexCharts);
-
 Filters(Vue);
 
 import './assets/css/main.css';
+
+import Chart from 'chart.js'
+Chart.defaults.global.legend.display = false;
 
 new Vue({
   vuetify,

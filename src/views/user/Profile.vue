@@ -7,35 +7,47 @@
           <div>Profile</div>
           <div class="caption">You can edit your profile info here using actions buttons placed on the right</div>
         </div>
+
+        <v-spacer></v-spacer>
+
+        <v-btn 
+          small 
+          class="mx-1"
+          color="warning"
+          @click="openChangePasswordDialog">
+            Change Password
+        </v-btn>
+
+        <v-btn 
+          small 
+          class="mx-1"
+          color="info"
+          @click="openUpdateUserDialog">
+            Edit User
+        </v-btn>
        </v-card-title>
 
       <v-divider></v-divider>
 
-      <v-card-text>
-        <v-list >
+      <v-simple-table class="property-table pt-3 pb-1">
+        <template v-slot:default>
+          <tbody>
+            <tr>
+              <td class="prop-name">Name</td>
+              <td><v-text-field solo dense readonly hide-details="true" v-model="session.user" /></td>
+            </tr>
+            <tr>
+              <td class="prop-name">Time Zone</td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="session.timezone" /></td>
+            </tr>
+            <tr>
+              <td class="prop-name">Password</td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-3" :value="'****'" /></td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
 
-          <v-list-item @click="1">
-            <v-list-item-content>
-              <div class="col-2 body-2">INFO</div>
-              <div class="col-8 title">{{ session.user }}</div>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn small @click="openUpdateUserDialog">Update</v-btn>
-            </v-list-item-action>
-          </v-list-item>
-
-          <v-list-item @click="1">
-            <v-list-item-content>
-              <div class="col-2 body-2">PASSWORD</div>
-              <div class="col-8 title font-weight-light">****</div>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn small @click="openChangePasswordDialog">Change</v-btn>
-            </v-list-item-action>
-          </v-list-item>
-
-        </v-list>
-      </v-card-text>
     </v-card>
 
     <UpdateUserDialog ref="updateUserDialog"/>

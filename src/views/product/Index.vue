@@ -4,38 +4,32 @@
       Products
     </div>
 
-    <div v-if="companyPlanId">
-      <p class="subtitle">
-        In this section, you can manage your products whose prices you want to monitor.
-      </p>
+    <p class="subtitle">
+      In this section, you can manage your products whose prices you want to monitor.
+    </p>
 
-      <Search
-        @add="addNew"
-        @search="search"
-      />
-      
-      <List
-        ref="list"
-        :rows="rows"
-        @edit="edit"
-        @toggle="toggle"
-        @remove="remove"
-        @loadmore="search(undefined, true)"
-      />
-      
-      <Edit
-        ref="editDialog"
-        @save="save"
-      />
+    <Search
+      @add="addNew"
+      @search="search"
+    />
+    
+    <List
+      ref="list"
+      :rows="rows"
+      @edit="edit"
+      @toggle="toggle"
+      @remove="remove"
+      @loadmore="search(undefined, true)"
+    />
+    
+    <Edit
+      ref="editDialog"
+      @save="save"
+    />
 
-      <confirm ref="confirm"></confirm>
-    </div>
-
-    <div v-else>
-      <no-plan @applied="checkPlan"></no-plan>
-    </div>
-
+    <confirm ref="confirm"></confirm>
   </div>
+
 </template>
 
 <script>
@@ -50,8 +44,7 @@ export default {
       searchForm: {
         term: '',
         lastRowNo: 0
-      },
-      companyPlanId: 0,
+      }
     };
   },
   methods: {
@@ -82,8 +75,6 @@ export default {
       });
     },
     async search(term, loadmore=false) {
-      if (!this.companyPlanId) return;
-
       if (term !== undefined) this.searchForm.term = term;
 
       if (loadmore == true) {
@@ -114,21 +105,15 @@ export default {
         this.rows[data.index].active = !this.rows[data.index].active;
       }
     },
-    checkPlan() {
-      const session = this.$store.get('auth/session');
-      this.companyPlanId = session.planId;
-      this.search('');
-    }
   },
   mounted() {
-    Utility.doubleRaf(() => this.checkPlan());
+    Utility.doubleRaf(() => this.search(''));
   },
   components: {
     Search: () => import('./Search'),
     Edit: () => import('./Edit'),
     List: () => import('./List'),
-    confirm: () => import('@/component/Confirm.vue'),
-    NoPlan: () => import('@/component/app/NoPlan.vue'),
+    confirm: () => import('@/component/Confirm.vue')
   }
 };
 </script>
