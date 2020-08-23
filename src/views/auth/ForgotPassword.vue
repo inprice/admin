@@ -2,8 +2,9 @@
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4" lg="3" xl="2">
-        <div class="headline text-center font-weight-medium mb-5">
-          inprice
+
+        <div class="text-center mb-8">
+          <img :src="verticalBrand" :width="140" />
         </div>
 
         <v-card class="pa-3 mb-10 body-2" :color="successful ? 'green lighten-5' : 'yellow lighten-5'">
@@ -72,7 +73,8 @@ export default {
       rules: {},
       form: {
         email: ''
-      }
+      },
+      verticalBrand: require('@/assets/app/brand-verC.svg')
     };
   },
   methods: {

@@ -25,8 +25,26 @@ export default {
       options: {
         legend: {
           display: false,
-        }
-      }
+        },
+      },
+      plugins: {
+        datalabels: {
+          color: 'black',
+          textAlign: 'center',
+          formatter: (value, ctx) => {
+            let sum = 0;
+            let dataArr = ctx.chart.data.datasets[0].data;
+            dataArr.map((data) => {
+              sum += data;
+            });
+            let percentage = '';
+            if (value) {
+              percentage = ((value * 100) / sum).toFixed(0) + "%";
+            }
+            return percentage;
+          },
+        },
+      },
     });
   }
 }

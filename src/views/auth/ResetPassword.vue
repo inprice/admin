@@ -2,9 +2,11 @@
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4" lg="3" xl="2">
-        <div class="headline text-center font-weight-medium mb-5">
-          inprice
+
+        <div class="text-center mb-8">
+          <img :src="verticalBrand" :width="140" />
         </div>
+
         <v-card>
           <v-card-title>Reset Password</v-card-title>
 
@@ -77,7 +79,8 @@ export default {
         password: '',
         repeatPassword: '',
         token: ''
-      }
+      },
+      verticalBrand: require('@/assets/app/brand-verC.svg')
     };
   },
   methods: {

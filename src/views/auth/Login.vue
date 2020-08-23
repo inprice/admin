@@ -3,6 +3,10 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4" lg="3" xl="2">
 
+        <div class="text-center mb-8">
+          <img :src="verticalBrand" :width="140" />
+        </div>
+
         <v-alert dense dismissible color="cyan lighten-2" border="left" elevation="2" colored-border type="success"
           v-if="successMessage"
         >
@@ -20,10 +24,6 @@
         >
           {{ errorMessage }}
         </v-alert>
-
-        <div class="headline text-center font-weight-medium mb-5">
-          Welcome to inprice
-        </div>
 
         <v-card>
           <v-card-title>Login</v-card-title>
@@ -93,7 +93,8 @@ export default {
       form: {
         email: "",
         password: ""
-      }
+      },
+      verticalBrand: require('@/assets/app/brand-verC.svg')
     };
   },
   methods: {

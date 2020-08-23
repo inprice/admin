@@ -60,7 +60,7 @@ const router = new VueRouter({
     {
       name: 'app',
       path: '/:sid/app',
-      component: () => import('./views/MainLayout.vue'),
+      component: () => import('./views/Layout.vue'),
       meta: {
         requiresAuth: true
       },
@@ -68,7 +68,7 @@ const router = new VueRouter({
         {
           name: 'dashboard',
           path: 'dashboard',
-          component: () => import('./views/Dashboard.vue')
+          component: () => import('./views/dashboard/Index.vue')
         },
         {
           name: 'products',

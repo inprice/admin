@@ -95,8 +95,8 @@
               <tr v-for="(row) in report.products.extremePrices.lowest" :key="row.id">
                 <td>{{ row.name }}</td>
                 <td class="text-right">{{ row.price | toCurrency }}</td>
-                <td class="text-right">{{ row.competitors | 0 }}</td>
-                <td class="text-right">{{ row.ranking | 1 }}</td>
+                <td class="text-right">{{ row.competitors || 0 }}</td>
+                <td class="text-right">{{ row.ranking || 1 }}</td>
                 <td class="text-center">{{ row.lastUpdate | formatDate }}</td>
                 <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
               </tr>
@@ -138,8 +138,8 @@
               <tr v-for="(row) in report.products.extremePrices.highest" :key="row.id">
                 <td>{{ row.name }}</td>
                 <td class="text-right">{{ row.price | toCurrency }}</td>
-                <td class="text-right">{{ row.competitors | 0 }}</td>
-                <td class="text-right">{{ row.ranking | 1 }}</td>
+                <td class="text-right">{{ row.competitors || 0 }}</td>
+                <td class="text-right">{{ row.ranking || 1 }}</td>
                 <td class="text-center">{{ row.lastUpdate | formatDate }}</td>
                 <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
               </tr>
@@ -169,9 +169,9 @@
           <template v-slot:default>
             <thead>
               <tr>
-                <th>Product</th>
                 <th width="20%">Competitor</th>
                 <th width="13%">Platform</th>
+                <th>Product</th>
                 <th width="10%" class="text-right">Price</th>
                 <th width="17%">Status</th>
                 <th width="5%">Time</th>
@@ -179,9 +179,9 @@
             </thead>
             <tbody>
               <tr v-for="(row, index) in report.competitors.mru25" :key="index">
-                <td>{{ row.productName }}</td>
                 <td width="20%">{{ row.seller }}</td>
                 <td width="13%">{{ row.platform }}</td>
+                <td>{{ row.productName }}</td>
                 <td width="10%" class="text-right red--text font-weight-bold">{{ row.price | toPrice }}</td>
                 <td width="17%">{{ row.status | formatStatus }}</td>
                 <td width="5%">{{ row.lastUpdate | formatTime }}</td>
@@ -238,8 +238,8 @@ export default {
     this.refresh();
   },
   components: {
-    PositionsBarChart: () => import('./dashboard/PositionsBarChart.js'),
-    StatusesPieChart: () => import('./dashboard/StatusesPieChart.js'),
+    PositionsBarChart: () => import('./PositionsBarChart.js'),
+    StatusesPieChart: () => import('./StatusesPieChart.js'),
   }
 };
 </script>

@@ -112,31 +112,68 @@
       <template v-slot:append>
         <v-divider />
 
-        <v-list>
+        <v-list v-if="drawerStatus == 2">
           <v-list-item>
-            <v-list-item-action class="mr-2">
-              <v-icon right class="ml-0">mdi-copyright</v-icon>
-            </v-list-item-action>
-            <v-list-item-content class="py-0">
-              <v-list-item-title>inprice</v-list-item-title>
-              <v-list-item-subtitle>All right reserved - 2020</v-list-item-subtitle>
+            <v-list-item-content>
+              <div class="subtitle font-weight-bold">{{ session.company }}</div>
+              <span class="caption">{{ session.email }} - {{ session.role }}</span>
             </v-list-item-content>
           </v-list-item>
         </v-list>
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar app color="blue-grey" dark clipped-left class="pl-0">
-      <v-app-bar-nav-icon @click.stop="changeDrawerPosition"></v-app-bar-nav-icon>
+    <!--v-app-bar app color="blue-grey" dark clipped-left -->
+    <v-app-bar app dark clipped-left color="blue-grey">
 
-      <div>
-        <div class="subtitle font-weight-bold">{{ session.company }}</div>
-        <span class="caption">{{ session.email }} - {{ session.role }}</span>
+      <v-app-bar-nav-icon @click.stop="changeDrawerPosition"></v-app-bar-nav-icon>
+      <div class="hidden-sm-and-down ml-4 mt-2">
+        <img :src="brandNameW" :width="150" />
       </div>
 
       <v-spacer></v-spacer>
 
-      <user-menu></user-menu>
+      <v-menu
+        offset-y
+        v-model="searching"
+      >
+        <template v-slot:activator="{ on, attr }">
+          <v-text-field 
+            v-on="on" v-bind="attr"
+            class="searchBox"
+            v-model="searchTerm"
+            placeholder="Search for..."
+            append-icon="mdi-magnify"
+            @click:append="searching = true"
+            dense solo light
+            hide-details
+          />
+        </template>
+
+        <v-simple-table>
+          <template v-slot:default>
+            <tbody v-if="products && products.length">
+              <tr v-for="prod in products" :key="prod.id" class="searchTable">
+                <td>{{ prod.name }}</td>
+                <td class="text-right">{{ prod.code }}</td>
+              </tr>
+            </tbody>
+            <div v-else style="margin:10px; font-size: 0.875rem;">
+              <p v-if="searchTerm && searchTerm.length">
+                No product found!
+              </p>
+              <p v-else>
+                Please enter a few chars to search!
+              </p>
+            </div>
+          </template>
+        </v-simple-table>
+      </v-menu>
+
+      <v-spacer></v-spacer>
+
+      <user-menu />
+
     </v-app-bar>
 
     <v-content>
@@ -158,13 +195,33 @@
 
 <script>
 import { get } from 'vuex-pathify'
+import ProductService from '@/service/product';
 
 export default {
   data() {
     return {
+      searching: false,
+      searchTerm: null,
+      products: [],
       drawerToLeft: true,
-      drawerStatus: 2
+      drawerStatus: 2,
+      brandNameW: require('@/assets/app/brand-horWR.svg')
     };
+  },
+  watch: {
+    async searchTerm(val) {
+      if (!this.searching || this.searching == false) this.searching = true;
+      if (!val) {
+        this.products = [];
+        return;
+      }
+      const result = await ProductService.search(val);
+      if (result) {
+        this.products = result;
+      } else {
+        this.products = [];
+      }
+    }
   },
   computed: {
     session: get('auth/session')
@@ -202,5 +259,13 @@ export default {
   .v-divider--inset {
     margin-left: 2px !important;
     max-width: 100% !important;
+  }
+
+  .searchBox {
+    max-width: 500px;
+  }
+
+  .searchTable {
+    cursor: pointer;
   }
 </style>

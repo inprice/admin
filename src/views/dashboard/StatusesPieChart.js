@@ -1,11 +1,9 @@
 import { Doughnut } from "vue-chartjs";
-// import ChartJSPluginDatalabels from "chartjs-plugin-datalabels";
 
 export default {
   extends: Doughnut,
   props: ["series"],
   mounted() {
-    //this.addPlugin(ChartJSPluginDatalabels);
     this.renderChart(
       {
         labels: [
@@ -51,7 +49,10 @@ export default {
               dataArr.map((data) => {
                 sum += data;
               });
-              let percentage = ((value * 100) / sum).toFixed(0) + "%";
+              let percentage = '';
+              if (value) {
+                percentage = ((value * 100) / sum).toFixed(0) + "%";
+              }
               return percentage;
             },
           },
