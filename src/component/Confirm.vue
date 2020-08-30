@@ -4,6 +4,7 @@
     :max-width="options.width"
     :style="{ zIndex: options.zIndex }"
     @keydown.esc="cancel"
+    overlay-opacity="0.2"
   >
     <v-card>
       <v-toolbar dense flat>

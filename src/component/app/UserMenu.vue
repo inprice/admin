@@ -39,7 +39,7 @@
       <v-card>
         <v-list subheader>
           <div v-if="sessions.length">
-            <template v-for="({ user, email, company, role }, i) in sessions">
+            <template v-for="({ email, company, role }, i) in sessions">
               <v-list-item
                 v-if="email != session.email || company != session.company"
                 :key="i"

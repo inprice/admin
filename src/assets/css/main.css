@@ -30,10 +30,11 @@
   text-align: right !important;
   width: 20% !important;
 }
-
+/*
 .property-table .prop-name::after {
   content: " :" !important;
 }
+*/
 
 /**
 * Shows how you can use CSS to style your Element's container.
@@ -66,4 +67,8 @@
 
 .v-tabs-bar {
   display: none;
+}
+
+.v-expansion-panel-content__wrap {
+  padding: 0 !important;
 }

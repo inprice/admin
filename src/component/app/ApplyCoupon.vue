@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="350">
+    <v-dialog v-model="opened" max-width="350" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Apply a coupon code</v-card-title>
         <v-card-subtitle>Please enter your coupon code below</v-card-subtitle>
@@ -9,7 +9,6 @@
         <v-divider></v-divider>
 
         <v-card-text class="mt-5">
-
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
               ref="code"
@@ -20,14 +19,14 @@
               @keyup.native.enter="valid && submit()"
             />
           </v-form>
-
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn @click="close">Close</v-btn>
+          <v-btn small @click="close">Close</v-btn>
           <v-btn
+            small
             @click="submit"
             color="primary"
             :loading="loading" 

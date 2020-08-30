@@ -15,7 +15,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link :to="{name: 'products'}">
+        <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-package-variant-closed</v-icon>
           </v-list-item-action>
@@ -141,10 +141,11 @@
           <v-text-field 
             v-on="on" v-bind="attr"
             class="searchBox"
+            ref="searchTerm"
             v-model="searchTerm"
             placeholder="Search for..."
-            append-icon="mdi-magnify"
-            @click:append="searching = true"
+            append-icon="mdi-close"
+            @click:append="clearSearchTerm"
             dense solo light
             hide-details
           />
@@ -153,7 +154,7 @@
         <v-simple-table>
           <template v-slot:default>
             <tbody v-if="products && products.length">
-              <tr v-for="prod in products" :key="prod.id" class="searchTable">
+              <tr v-for="prod in products" :key="prod.id" class="searchTable" @click="openProductPage(prod.id, prod.name)">
                 <td>{{ prod.name }}</td>
                 <td class="text-right">{{ prod.code }}</td>
               </tr>
@@ -247,6 +248,19 @@ export default {
     openCreateCompany() {
       this.$refs.companyInfoDialog.edit(null, true);
     },
+    clearSearchTerm() {
+      this.searchTerm = '';
+      this.$refs.searchTerm.focus();
+    },
+    openProductPage(id, name) {
+      this.searchTerm = name;
+      if (this.$route.params.id == id) return;
+      if (window.location.href.indexOf('/product/') > 0) {
+        this.$router.replace({ params: { id } });
+      } else {
+        this.$router.push({ name: 'product', params: { id } });
+      }
+    }
   },
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),

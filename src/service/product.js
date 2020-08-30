@@ -5,6 +5,11 @@ const baseURL = '/product';
 
 export default {
 
+  async get(id) {
+    const res = await Helper.call('Find Product', { method: 'get', url: baseURL + '/' + id });
+    return res;
+  },
+
   async save(form) {
     let method = 'post', opType = 'added';
     if (form.id && form.id > 0) {

@@ -15,7 +15,7 @@ export default {
             'rgba(54, 162, 235, 0.3)',
             'rgba(255, 99, 132, 0.3)',
           ],
-          "borderWidth":1.5,
+          borderWidth:1.5,
           data: this.series
         }
       ]

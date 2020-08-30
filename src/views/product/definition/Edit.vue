@@ -1,9 +1,10 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="500">
+    <v-dialog v-model="opened" max-width="500" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Product details</v-card-title>
+        <v-divider></v-divider>
 
         <v-card-text class="pb-0">
 
@@ -50,8 +51,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn @click="close">Close</v-btn>
+          <v-btn small @click="close">Close</v-btn>
           <v-btn
+            small
             @click="save"
             color="primary"
             :loading="loading" 
@@ -103,7 +105,7 @@ export default {
       if (this.valid) {
         this.loading = true;
         this.form.price = parseFloat(this.form.price);
-        this.$emit('save', this.form)
+        this.$emit('saved', this.form)
       }
     },
     stopLoading() {
