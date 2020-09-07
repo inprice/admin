@@ -2,132 +2,100 @@
 
   <v-container fluid class="px-0">
 
-    <div class="mt-4 subtitle text-uppercase">Prices</div>
+    <v-card>
+      
+      <v-card-title class="pb-1">
+        <v-icon class="mr-4">mdi-finance</v-icon>
+        <div>
+          <div>Prices</div>
+          <div class="caption">Calculated prices of your competitors defined in the following section</div>
+        </div>
+        <v-spacer></v-spacer>
+        <div class="text-right caption">
+          <div>Updated</div>
+          <div class="font-weight-bold">{{ prod.priceDetails.createdAt | formatDate }}</div>
+        </div>
+      </v-card-title>
 
-    <v-row dense>
+      <v-row class="mx-1 py-2">
 
-      <v-col>
-        <v-card>
-          <div class="d-flex justify-space-between">
-            <img :src="dialMin" :width="120" class="mx-2"/>
-            <div class="ma-2">
-              <div class="text-right">Minimum</div>
-              <div class="display-1 text-right">{{ prod.minPrice | toPrice }}</div>
+        <!-- YOURS  -->
+        <v-card class="col pt-3 mx-1">
+          <v-sheet class="pb-1" color="cyan" elevation="4">
+            <div class="text-center text-uppercase white--text">
+              <div class="caption pt-2 font-weight-bold">Yours</div>
+              <div class="title font-weight-bold">{{ prod.priceDetails.price | toPrice }}</div>
             </div>
-          </div>
+          </v-sheet>
 
-          <v-divider></v-divider>
-
-          <v-simple-table dense>
-            <template v-slot:default>
-              <tbody>
-                <tr>
-                  <td>Platform</td> 
-                  <td class="text-right">{{ prod.minPlatform || 'NA' }}</td>
-                </tr>
-                <tr>
-                  <td>Seller</td> 
-                  <td class="text-right">{{ prod.minSeller || 'NA' }}</td>
-                </tr>
-                <tr>
-                  <td>Diff</td> 
-                  <td class="text-right px-2">
-                    <diff-line :diff="prod.minDiff"></diff-line>
-                  </td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
-      </v-col>
-
-      <v-col>
-        <v-card>
-          <div class="d-flex justify-space-between">
-            <img :src="dialAvg" :width="120" class="mx-2"/>
-            <div class="ma-2">
-              <div class="text-right">Average</div>
-              <div class="display-1 text-right">{{ prod.avgPrice | toPrice }}</div>
+          <!-- AVERAGE  -->
+          <v-sheet
+            class="mt-2 pb-2"
+            color="cyan"
+            elevation="10"
+          >
+            <div class="text-center text-uppercase white--text">
+              <div class="caption pt-2 font-weight-bold">Average</div>
+              <span class="display-1 font-weight-bold">{{ prod.priceDetails.avgPrice | toPrice }}</span>
             </div>
-          </div>
-
-          <v-divider></v-divider>
-
-          <v-simple-table dense>
-            <template v-slot:default>
-              <tbody>
-                <tr>
-                  <td>Your Rank</td> 
-                  <td class="text-right">{{ prod.ranking || 'NA' }}</td>
-                </tr>
-                <tr>
-                  <td>Competitors</td> 
-                  <td class="text-right">{{ prod.competitors || 'NA' }}</td>
-                </tr>
-                <tr>
-                  <td>Diff</td> 
-                  <td class="text-right px-2">
-                    <diff-line :diff="prod.avgDiff"></diff-line>
-                  </td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
-      </v-col>
-
-      <v-col>
-        <v-card>
-          <div class="d-flex justify-space-between">
-            <img :src="dialMax" :width="120" class="mx-2"/>
-            <div class="ma-2">
-              <div class="text-right">Maximum</div>
-              <div class="display-1 text-right">{{ prod.maxPrice | toPrice }}</div>
+            <div class="text-center text-uppercase white--text font-weight-bold">
+              <diff-line :diff="prod.priceDetails.avgDiff"></diff-line>
             </div>
-          </div>
-
-          <v-divider></v-divider>
-
-          <v-simple-table dense>
-            <template v-slot:default>
-              <tbody>
-                <tr>
-                  <td>Platform</td> 
-                  <td class="text-right">{{ prod.maxPlatform || 'NA' }}</td>
-                </tr>
-                <tr>
-                  <td>Seller</td> 
-                  <td class="text-right">{{ prod.maxSeller || 'NA' }}</td>
-                </tr>
-                <tr>
-                  <td>Diff</td> 
-                  <td class="text-right px-2">
-                    <diff-line :diff="prod.maxDiff"></diff-line>
-                  </td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
+          </v-sheet>
         </v-card>
-      </v-col>
-    </v-row>
 
-    <!-- v-row dense>
+        <!-- MINIMUM  -->
+        <v-card class="col pt-3 mx-1">
+          <v-sheet class="pb-1" color="green" elevation="4">
+            <div class="text-center white--text font-weight-bold">
+              <div class="caption pt-2 font-weight-bold">{{ prod.priceDetails.minPlatform || 'NA' }}</div>
+              <div class="title">{{ prod.priceDetails.minSeller || 'NA' }}</div>
+            </div>
+          </v-sheet>
 
-      <v-col>
-        <v-card>
-          <prices-line-chart 
-            :height="150" :width="100"
-            :labels="priceLabels"
-            :minData="priceData.min"
-            :avgData="priceData.avg"
-            :maxData="priceData.max"
-            v-if="priceData"
-          />
+          <v-sheet
+            class="mt-2 pb-2"
+            color="green"
+            elevation="10"
+          >
+            <div class="text-center text-uppercase white--text">
+              <div class="pt-2 caption font-weight-bold">Minimum</div>
+              <div class="display-1 font-weight-bold">{{ prod.priceDetails.minPrice | toPrice }}</div>
+            </div>
+            <div class="text-center text-uppercase white--text font-weight-bold">
+              <diff-line :diff="prod.priceDetails.minDiff"></diff-line>
+            </div>
+          </v-sheet>
         </v-card>
-      </v-col>
 
-    </v-row -->
+        <!-- MAXIMUM  -->
+        <v-card class="col pt-3 mx-1">
+          <v-sheet class="pb-1" color="deep-orange darken-1" elevation="4">
+            <div class="text-center white--text">
+              <div class="caption pt-2 font-weight-bold">{{ prod.priceDetails.maxPlatform || 'NA' }}</div>
+              <div class="title">{{ prod.priceDetails.maxSeller || 'NA' }}</div>
+            </div>
+          </v-sheet>
+
+          <v-sheet
+            class="mt-2 pb-2"
+            color="deep-orange darken-1"
+            elevation="10"
+          >
+            <div class="text-center text-uppercase white--text">
+              <div class="pt-2 caption font-weight-bold">Maximum</div>
+              <div class="display-1 font-weight-bold">{{ prod.priceDetails.maxPrice | toPrice }}</div>
+            </div>
+            <div class="text-center text-uppercase white--text font-weight-bold">
+              <diff-line :diff="prod.priceDetails.maxDiff"></diff-line>
+            </div>
+          </v-sheet>
+        </v-card>
+
+      </v-row>
+      <div class="pa-2 pl-4 caption"><strong>Please note that</strong> the difference indicators under the prices are calculated according to your price.</div>          
+    </v-card>
+
   </v-container>
 
 </template>
@@ -135,16 +103,8 @@
 <script>
 export default {
   props: ['prod', 'priceLabels', 'priceData'],
-  data() {
-    return {
-      dialMin: require('@/assets/app/symbols/dial-min.svg'),
-      dialAvg: require('@/assets/app/symbols/dial-avg.svg'),
-      dialMax: require('@/assets/app/symbols/dial-max.svg'),
-    }
-  },
   components: {
     DiffLine: () => import('@/component/utility/DiffLine.vue'),
-    //PricesLineChart: () => import('./PricesLineChart.js'),
   },
 }
 </script>

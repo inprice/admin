@@ -4,7 +4,7 @@
     <v-dialog v-model="opened" max-width="500" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Product details</v-card-title>
-        <v-divider></v-divider>
+        <v-divider class="mb-2"></v-divider>
 
         <v-card-text class="pb-0">
 
@@ -30,7 +30,7 @@
 
             <v-text-field
               label="Price"
-              v-model.lazy="form.price"
+              v-model="form.price"
               :rules="rules.price"
               @blur="formatPrice"
               maxlength="10"
@@ -47,6 +47,8 @@
           </v-form>
 
         </v-card-text>
+
+        <v-divider class="mb-2"></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -70,6 +72,7 @@
 </template>
 
 <script>
+import ProductService from '@/service/product';
 import Utility from '@/helpers/utility';
 
 export default {
@@ -80,12 +83,11 @@ export default {
       valid: false,
       rules: {},
       form: {
-        id: null,
         code: '',
         name: '',
         price: 0,
         brandId: null,
-        categoryId: null
+        categoryId: null,
       }
     };
   },
@@ -95,7 +97,7 @@ export default {
       let self = this;
       Utility.doubleRaf(() => {
         self.$refs.form.resetValidation();
-        if (data) this.form = data;
+        if (data) self.form = data;
         self.$refs.code.focus();
       });
     },
@@ -105,11 +107,14 @@ export default {
       if (this.valid) {
         this.loading = true;
         this.form.price = parseFloat(this.form.price);
-        this.$emit('saved', this.form)
+
+        const result = await ProductService.save(this.form);
+        if (result == true) {
+          this.close();
+          this.$emit('saved')
+        }
+        this.loading = false;
       }
-    },
-    stopLoading() {
-      this.loading = false;
     },
     close() {
       this.opened = false;

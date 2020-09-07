@@ -1,97 +1,135 @@
 <template>
   <div>
 
-    <div v-if="prodId">
+    <v-card>
+      <v-card-title>
+        <v-icon class="mr-4">mdi-account-multiple</v-icon>
+        <div>Competitors</div>
+      </v-card-title>
 
-      <div class="mt-4 subtitle text-uppercase">
-        Comptetitors
-      </div>
-      
-      <v-text-field 
-        v-model="url"
-        append-icon="mdi-plus"
-        @click:append="addUrl"
-        @keyup.enter.native="addUrl"
-        dense solo light
-        class="col-8 my-2"
-        maxlength="1024"
-        hide-details
-        placeholder="Paste here the exact product page URL of your competitor and press Enter"
-      />
-      <span v-if="addProblem" class="caption">{{ addProblem }}</span>
-      
-      <div v-if="rows && rows.length > 0">
+      <div v-if="prodId">
 
-        <v-expansion-panels accordion hover>
-          <v-expansion-panel v-for="row in rows" :key="row.id">
-            <v-expansion-panel-header>
-              <div class="col pa-0">
-                {{ row.seller || 'NA' }}
-              </div>
-              <div class="col pa-0">
-                {{ row.price | toPrice }}
-              </div>
-              <div class="col pa-0">
-                {{ row.status || 'NA' }}
-              </div>
-            </v-expansion-panel-header>
+        <v-btn 
+          dark small
+          v-if="!showAddNewBar"
+          :disabled="$store.get('auth/IS_JUST_VIEWER')"
+          color="success"
+          class="ma-2 mb-9"
+          @click="openAddNewBar">
+            <v-icon>mdi-plus</v-icon>Add new Url
+        </v-btn>
 
-            <v-expansion-panel-content>
-              <v-simple-table dense class="ma-2 mb-1 bordered">
-                <template v-slot:default>
-                  <tbody>
-                    <tr>
-                      <th>Price</th>
-                      <td>{{ row.price | toCurrency }}</td>
-                      <th>Status</th>
-                      <td>{{ row.status }}</td>
-                    </tr>
-                    <tr>
-                      <th>Last Check</th>
-                      <td>{{ row.lastCheck | formatDate }}</td>
-                      <th>Seller</th>
-                      <td>{{ row.seller || 'NA' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Last Update</th>
-                      <td>{{ row.lastUpdate | formatDate }}</td>
-                      <th>Platform</th>
-                      <td>{{ row.platform || 'NA' }}</td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+        <v-form ref="addNewForm" v-model="isUrlValid" @submit.prevent>
+          <v-scroll-x-transition leave-absolute mode="in-out">
+            <v-text-field 
+              ref="addNewBar"
+              v-if="showAddNewBar"
+              v-model="url"
+              :rules="rules.url"
+              @keyup.enter.native="addNew"
+              @keyup.esc.native="clearAddNewBar(true)"
+              dense solo light
+              class="col-10 px-2 pb-2"
+              maxlength="1024"
+              hint="Example: https://www.zalando.co.uk/zign-polo-shirt-black-zi122p006-q11.html"
+              placeholder="Paste the address of the exact page of your competitor and then press Enter. Or Escape">
+                <template slot="append">
+                  <v-icon class="mr-2" @click="addNew">mdi-check</v-icon>
+                  <v-icon  @click="clearAddNewBar(true)">mdi-window-close</v-icon>
+                </template>          
+            </v-text-field>
+          </v-scroll-x-transition>
+        </v-form>
+        
+        <div v-if="rows && rows.length > 0">
 
-              <div class="row">
-                <div class="col text-truncate mx-2 caption py-1">
-                  <v-icon small>mdi-link-variant</v-icon> <a :href="row.url" target="_blank">{{ row.url }}</a>
+          <v-expansion-panels accordion hover focusable>
+            <v-expansion-panel v-for="row in rows" :key="row.id">
+              <v-expansion-panel-header>
+                <div class="col pa-0">
+                  {{ row.seller || 'NA' }}
                 </div>
-              </div>
+                <div class="col pa-0">
+                  {{ row.status || 'NA' }}
+                </div>
+              </v-expansion-panel-header>
 
-              <div class="d-flex pa-2" v-if="$store.get('auth/IS_EDITOR')">
-                <v-spacer></v-spacer>
-                <v-btn class="mx-1" small @click="changeStatus(row.id, 'RENEW')" v-if="isSuitable(row.status, 'TOBE_RENEWED')">Renew</v-btn>
-                <v-btn class="mx-1" small @click="changeStatus(row.id, 'PAUSE')" v-if="isSuitable(row.status, 'PAUSED')">Pause</v-btn>
-                <v-btn class="mx-1" small @click="changeStatus(row.id, 'RESUME')" v-if="isSuitable(row.status, 'RESUME')">Resume</v-btn>
-                <v-btn class="mx-1" small dark color="red" @click="remove(row.id, (row.name || row.url))">Delete</v-btn>
-              </div>
+              <v-expansion-panel-content>
 
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
+                <v-simple-table class="col property-table pa-1" dense>
+                  <template v-slot:default>
+                    <tbody>
+                      <tr>
+                        <td class="prop-name">Seller</td>
+                        <td><v-text-field solo dense readonly hide-details="true" class="col-6" :value="row.seller || 'NA'" /></td>
+                      </tr>
+                      <tr>
+                        <td class="prop-name">Platform</td>
+                        <td><v-text-field solo dense readonly hide-details="true" class="col-6" :value="row.platform || 'NA'" /></td>
+                      </tr>
+                      <tr>
+                        <td class="prop-name">Status</td>
+                        <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="row.status" /></td>
+                      </tr>
+                      <tr>
+                        <td class="prop-name">Price</td>
+                        <td><v-text-field solo dense readonly hide-details="true" class="col-2" :value="row.price | toPrice" /></td>
+                      </tr>
+                      <tr>
+                        <td class="prop-name">Last Updated</td>
+                        <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="row.lastUpdate | formatDate" /></td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
 
+                <div class="d-flex">
+                  <div class="col text-truncate caption pt-1 pb-3">
+                    <v-icon small>mdi-link-variant</v-icon> <a :href="row.url" target="_blank">{{ row.url }}</a>
+                  </div>
+                  <div v-if="$store.get('auth/IS_EDITOR')">
+                    <v-btn class="mx-1" small @click="changeStatus(row.id, 'RENEW')" v-if="isSuitable(row.status, 'TOBE_RENEWED')">Renew</v-btn>
+                    <v-btn class="mx-1" small @click="changeStatus(row.id, 'PAUSE')" v-if="isSuitable(row.status, 'PAUSED')">Pause</v-btn>
+                    <v-btn class="mx-1" small @click="changeStatus(row.id, 'RESUME')" v-if="isSuitable(row.status, 'RESUMED')">Resume</v-btn>
+                    <v-btn class="mx-1" small dark color="red" v-if="$store.get('auth/IS_EDITOR')" @click="remove(row.id, (row.name || row.url))">Delete</v-btn>
+                  </div>
+                </div>
+
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+
+        </div>
+
+        <p v-else class="mt-5">
+          No competitor found! You can add a new one.
+        </p>
+
+        <confirm ref="confirm"></confirm>
       </div>
 
-      <p v-else class="mt-5">
-        No competitor found! You can add a new one.
-      </p>
+      <div v-else>
+        Invalid product!
+      </div>
+    </v-card>
 
-      <confirm ref="confirm"></confirm>
-    </div>
+    <v-snackbar 
+      v-model="snackbar" 
+      :timeout="3000" 
+      color="info"
+      bottom centered>
+      {{ snackbarText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
 
-    <div v-else>
-      Invalid product!
-    </div>
   </div>
 
 </template>
@@ -101,30 +139,45 @@ import CompetitorService from '@/service/competitor';
 import Utility from '@/helpers/utility';
 
 export default {
-  props: ["prodId", "rows"],
+  props: ["prodId", "competitors"],
   data() {
     return {
       url: '',
+      isUrlValid: false,
       loading: false,
-      selecteStatus: null,
-      allStatuses: [],
-      addProblem: null,
+      showAddNewBar: false,
+      rules: {},
+      snackbar: false,
+      snackbarText: '',
+      rows: []
     }
   },
   methods: {
+    openAddNewBar() {
+      this.showAddNewBar = true;
+      Utility.doubleRaf(() => this.$refs.addNewBar.focus());
+    },
+    clearAddNewBar(hide=false) {
+      this.rules = {};
+      this.url = '';
+      if (hide == true) {
+        this.showAddNewBar = false;
+        this.snackbar = false;
+      }
+    },
     async addNew() {
-      this.addProblem = null;
-      if (Utility.verifyURL(this.url)) {
+      if (Object.keys(this.rules).length == 0) this.activateRules();
+      await this.$refs.addNewForm.validate();
+      if (this.isUrlValid) {
         this.loading = true;
         const result = await CompetitorService.insert({ url: this.url, productId: this.prodId });
         if (result == true) {
-          this.close();
-          this.$emit('saved');
-          console.log('Saklandi', result);
+          this.snackbarText = 'URL is successfully added.'
+          this.snackbar = true;
+          this.clearAddNewBar();
+          this.refreshCompetitors();
         }
         this.loading = false;
-      } else {
-        this.addProblem = 'Invalid URL!';
       }
     },
     async changeStatus(id, status) {
@@ -142,35 +195,11 @@ export default {
       });
     },
     async refreshCompetitors() {
-      if (this.prod_id) {
-        const result = await CompetitorService.list(this.prod_id);
-        if (result) {
-          this.product = result.product;
-          this.rows = result.competitors;
-
-          const map = {};
-          this.rows.forEach((row) => {
-            map[row.status] = (map[row.status] || 0) + 1;
-          });
-
-          let count = 0;
-          this.allStatuses = [];
-          Object.keys(map).forEach((key) => {
-            const text = key.replace('_', ' ') + ` (${map[key]})`;
-            this.allStatuses.push({ value: key, text });
-            count += map[key];
-          });
-          this.selectedStatus = null;
-          this.allStatuses.unshift({ value: null, text: `ALL (${count})` });
-          return;
-        }
-      }
-      this.rows = [];
-      this.product = {};
-    },
-    addUrl() {
-      if (this.$store.get('auth/IS_JUST_VIEWER') == false) {
-        console.log('Hakkı var', this.url);
+      const result = await CompetitorService.list(this.prodId);
+      if (result) {
+        this.rows = result;
+      } else {
+        this.rows = [];
       }
     },
     isSuitable(current, target) {
@@ -192,7 +221,19 @@ export default {
         default:
           return false;
       }
-    }
+    },
+    activateRules() {
+      this.rules = {
+        url: [
+          v => !!v || "Required",
+          v => (v.length >= 10 && v.length <= 1024) || "URL must be longer than 10 chars",
+          v => Utility.verifyURL(v) || "Invalid URL! It should be the address of the exact page of your competitor. It should contain at least the Code, Name and Price fields.",
+        ],
+      }
+    },
+  },
+  mounted() {
+    Utility.doubleRaf(() => this.rows = this.competitors);
   },
   components: {
     confirm: () => import('@/component/Confirm.vue')
@@ -214,7 +255,7 @@ export default {
   .v-data-table td, .v-data-table th {
     padding: 0 8px;
   }
-  .v-expansion-panel-header--active {
-    background-color: rgba(200, 200, 200, 0.3);
+  .v-expansion-panel--active > .v-expansion-panel-header {
+    min-height: auto !important;
   }
 </style>

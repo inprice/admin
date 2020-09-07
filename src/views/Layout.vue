@@ -15,7 +15,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link :to="{name: 'products'}">
           <v-list-item-action>
             <v-icon>mdi-package-variant-closed</v-icon>
           </v-list-item-action>
@@ -136,6 +136,7 @@
       <v-menu
         offset-y
         v-model="searching"
+        v-if="$route.path.indexOf('/products') < 1"
       >
         <template v-slot:activator="{ on, attr }">
           <v-text-field 
@@ -222,10 +223,10 @@ export default {
       } else {
         this.products = [];
       }
-    }
+    },
   },
   computed: {
-    session: get('auth/session')
+    session: get('auth/session'),
   },
   methods: {
     changeDrawerPosition() {
@@ -265,7 +266,7 @@ export default {
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),
     CompanyInfoDialog: () => import('./company/CompanyInfo.vue')
-  }
+  },
 };
 </script>
 

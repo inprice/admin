@@ -70,7 +70,7 @@
                 <td class="body-2">{{ row.status }}</td>
               </tr> 
               <tr>
-                <td class="subtitle-2">Updated At </td>
+                <td class="subtitle-2">Updated </td>
                 <td class="body-2">{{ (row.last_update || row.createdAt) | formatDate }}</td>
               </tr>
             </table>

@@ -1,12 +1,12 @@
 <template>
   <div v-if="data.product">
 
-    <info :prod="data.product" @edit="edit" class="mt-4" />
-    <prices :prod="data.product" :priceLabels="data.priceLabels" :priceData="data.priceData" class="mt-2" />
+    <!-- <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" /> -->
+    <!-- <prices :prod="data.product" :priceLabels="data.priceLabels" :priceData="data.priceData" class="mt-2" /> -->
 
-    <competitors :prodId="data.product.id" :rows="data.competitors" />
+    <competitors :prodId="data.product.id" :competitors="data.competitors" />
 
-    <edit ref="editDialog" />
+    <edit ref="editDialog" @saved="findProduct" />
     <confirm ref="confirm" />
 
   </div>
@@ -14,11 +14,11 @@
 
 <script>
 import ProductService from '@/service/product';
+import Utility from '@/helpers/utility';
 
 export default {
   data() {
     return {
-      rows: [],
       data: {}
     };
   },
@@ -26,25 +26,17 @@ export default {
     addNew() {
       this.$refs.editDialog.open();
     },
-    edit(rowNo) {
-      let cloned = JSON.parse(JSON.stringify(this.rows[rowNo]));
+    edit() {
+      let cloned = JSON.parse(JSON.stringify(this.data.product));
       this.$refs.editDialog.open(cloned);
-    },
-    async save(form) {
-      const result = await ProductService.save(form);
-      if (result == true) {
-        this.$refs.editDialog.close();
-        this.search();
-      } else {
-        this.$refs.editDialog.stopLoading();
-      }
     },
     remove() {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.data.product.name).then(async (confirm) => {
         if (confirm == true) {
           const result = await ProductService.remove(this.data.product.id);
           if (result == true) {
-            this.search();
+            Utility.showInfoMessage('Delete Product', 'Product successfully deleted!');
+            this.$router.push({ name: 'products' });
           }
         }
       });
@@ -66,9 +58,9 @@ export default {
     this.findProduct();
   },
   components: {
-    Info: () => import('./Info'),
+    //Info: () => import('./Info'),
     Edit: () => import('./Edit'),
-    Prices: () => import('./Prices'),
+    //Prices: () => import('./Prices'),
     Competitors: () => import('./Competitors'),
     confirm: () => import('@/component/Confirm.vue')
   },

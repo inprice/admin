@@ -1,7 +1,8 @@
 <template>
-  <span>
-    <strong :class="color+'--text'">{{ formatted }}</strong> <v-icon color="orange">mdi-{{dir}}</v-icon>
-  </span>
+  <div class="d-flex justify-center">
+    <div>{{ formatted }}</div>
+    <v-icon class="ml-1" color="white">mdi-{{ dir }}-circle</v-icon>
+  </div>
 </template>
 
 <script>
@@ -17,15 +18,8 @@ export default {
       }
       return 'minus';
     },
-    color() {
-      if (this.diff != 0) {
-        if (this.diff > 0) return 'success';
-        if (this.diff < 0) return 'red';
-      }
-      return 'gray';
-    },
     formatted() {
-      return numFormatter('###0.00%', this.diff);
+      return numFormatter('###0.00%', Math.abs(this.diff));
     }
   }
 }

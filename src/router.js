@@ -76,6 +76,11 @@ const router = new VueRouter({
           component: () => import('./views/product/definition/Index.vue')
         },
         {
+          name: 'products',
+          path: 'products',
+          component: () => import('./views/product/search/Index.vue')
+        },
+        {
           name: 'import-csv',
           path: 'import/csv',
           component: () => import('./views/product/import/CSV.vue')
