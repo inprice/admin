@@ -1,10 +1,10 @@
 <template>
   <div v-if="data.product">
 
-    <!-- <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" /> -->
-    <!-- <prices :prod="data.product" :priceLabels="data.priceLabels" :priceData="data.priceData" class="mt-2" /> -->
+    <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" />
+    <prices :prod="data.product" :priceLabels="data.priceLabels" :priceData="data.priceData" class="mt-2" />
 
-    <competitors :prodId="data.product.id" :competitors="data.competitors" />
+    <competitors :prodId="data.product.id" :competitors="data.competitors" class="mt-2" />
 
     <edit ref="editDialog" @saved="findProduct" />
     <confirm ref="confirm" />
@@ -58,9 +58,9 @@ export default {
     this.findProduct();
   },
   components: {
-    //Info: () => import('./Info'),
+    Info: () => import('./Info'),
     Edit: () => import('./Edit'),
-    //Prices: () => import('./Prices'),
+    Prices: () => import('./Prices'),
     Competitors: () => import('./Competitors'),
     confirm: () => import('@/component/Confirm.vue')
   },

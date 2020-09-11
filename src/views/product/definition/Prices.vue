@@ -12,8 +12,8 @@
         </div>
         <v-spacer></v-spacer>
         <div class="text-right caption">
-          <div>Updated</div>
-          <div class="font-weight-bold">{{ prod.priceDetails.createdAt | formatDate }}</div>
+          <strong>Updated</strong>
+          <div>{{ prod.priceDetails.createdAt | formatDate }}</div>
         </div>
       </v-card-title>
 
@@ -21,24 +21,24 @@
 
         <!-- YOURS  -->
         <v-card class="col pt-3 mx-1">
-          <v-sheet class="pb-1" color="cyan" elevation="4">
-            <div class="text-center text-uppercase white--text">
-              <div class="caption pt-2 font-weight-bold">Yours</div>
-              <div class="title font-weight-bold">{{ prod.priceDetails.price | toPrice }}</div>
+          <v-sheet class="pb-1" color="#fbffdd" elevation="2">
+            <div class="text-center text-uppercase">
+              <div class="caption pt-2">Your Price</div>
+              <div class="title">{{ prod.priceDetails.price | toPrice }}</div>
             </div>
           </v-sheet>
 
           <!-- AVERAGE  -->
           <v-sheet
             class="mt-2 pb-2"
-            color="cyan"
-            elevation="10"
+            color="#fbffdd"
+            elevation="2"
           >
-            <div class="text-center text-uppercase white--text">
-              <div class="caption pt-2 font-weight-bold">Average</div>
-              <span class="display-1 font-weight-bold">{{ prod.priceDetails.avgPrice | toPrice }}</span>
+            <div class="text-center text-uppercase">
+              <div class="caption pt-2">Average Price</div>
+              <span class="display-1">{{ prod.priceDetails.avgPrice | toPrice }}</span>
             </div>
-            <div class="text-center text-uppercase white--text font-weight-bold">
+            <div class="text-center text-uppercase">
               <diff-line :diff="prod.priceDetails.avgDiff"></diff-line>
             </div>
           </v-sheet>
@@ -46,23 +46,25 @@
 
         <!-- MINIMUM  -->
         <v-card class="col pt-3 mx-1">
-          <v-sheet class="pb-1" color="green" elevation="4">
-            <div class="text-center white--text font-weight-bold">
-              <div class="caption pt-2 font-weight-bold">{{ prod.priceDetails.minPlatform || 'NA' }}</div>
-              <div class="title">{{ prod.priceDetails.minSeller || 'NA' }}</div>
+          <v-sheet class="pb-3" color="#d0ffef" elevation="2">
+            <div class="text-center caption pt-2 text-uppercase">
+              <div>Min. Seller & Platform</div>
+              <div class="pt-1">
+                <span class="font-weight-bold blue--text">{{ prod.priceDetails.minSeller || 'NA' }}</span> / {{ prod.priceDetails.minPlatform || 'NA' }}
+              </div>
             </div>
           </v-sheet>
 
           <v-sheet
             class="mt-2 pb-2"
-            color="green"
-            elevation="10"
+            color="#d0ffef"
+            elevation="2"
           >
-            <div class="text-center text-uppercase white--text">
-              <div class="pt-2 caption font-weight-bold">Minimum</div>
-              <div class="display-1 font-weight-bold">{{ prod.priceDetails.minPrice | toPrice }}</div>
+            <div class="text-center text-uppercase">
+              <div class="pt-2 caption">Minimum Price</div>
+              <div class="display-1">{{ prod.priceDetails.minPrice | toPrice }}</div>
             </div>
-            <div class="text-center text-uppercase white--text font-weight-bold">
+            <div class="text-center text-uppercase">
               <diff-line :diff="prod.priceDetails.minDiff"></diff-line>
             </div>
           </v-sheet>
@@ -70,23 +72,25 @@
 
         <!-- MAXIMUM  -->
         <v-card class="col pt-3 mx-1">
-          <v-sheet class="pb-1" color="deep-orange darken-1" elevation="4">
-            <div class="text-center white--text">
-              <div class="caption pt-2 font-weight-bold">{{ prod.priceDetails.maxPlatform || 'NA' }}</div>
-              <div class="title">{{ prod.priceDetails.maxSeller || 'NA' }}</div>
+          <v-sheet class="pb-3" color="#e0ebfd" elevation="2">
+            <div class="text-center caption pt-2 text-uppercase">
+              <div>Max. Seller & Platform</div>
+              <div class="pt-1">
+                <span class="font-weight-bold blue--text">{{ prod.priceDetails.maxSeller || 'NA' }}</span> / {{ prod.priceDetails.maxPlatform || 'NA' }}
+              </div>
             </div>
           </v-sheet>
 
           <v-sheet
             class="mt-2 pb-2"
-            color="deep-orange darken-1"
-            elevation="10"
+            color="#e0ebfd"
+            elevation="2"
           >
-            <div class="text-center text-uppercase white--text">
-              <div class="pt-2 caption font-weight-bold">Maximum</div>
-              <div class="display-1 font-weight-bold">{{ prod.priceDetails.maxPrice | toPrice }}</div>
+            <div class="text-center text-uppercase">
+              <div class="pt-2 caption">Maximum Price</div>
+              <div class="display-1">{{ prod.priceDetails.maxPrice | toPrice }}</div>
             </div>
-            <div class="text-center text-uppercase white--text font-weight-bold">
+            <div class="text-center text-uppercase">
               <diff-line :diff="prod.priceDetails.maxDiff"></diff-line>
             </div>
           </v-sheet>

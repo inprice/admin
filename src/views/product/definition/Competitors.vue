@@ -4,52 +4,82 @@
     <v-card>
       <v-card-title>
         <v-icon class="mr-4">mdi-account-multiple</v-icon>
-        <div>Competitors</div>
+        <div>
+          <div>Competitors</div>
+          <div class="caption">The list of your competitors for the products displayed on this page.</div>
+        </div>
       </v-card-title>
 
-      <div v-if="prodId">
+      <v-divider></v-divider>
 
+      <div v-if="prodId">
         <v-btn 
           dark small
           v-if="!showAddNewBar"
-          :disabled="$store.get('auth/IS_JUST_VIEWER')"
           color="success"
-          class="ma-2 mb-9"
+          class="ma-4"
           @click="openAddNewBar">
             <v-icon>mdi-plus</v-icon>Add new Url
         </v-btn>
 
         <v-form ref="addNewForm" v-model="isUrlValid" @submit.prevent>
-          <v-scroll-x-transition leave-absolute mode="in-out">
-            <v-text-field 
-              ref="addNewBar"
-              v-if="showAddNewBar"
-              v-model="url"
-              :rules="rules.url"
-              @keyup.enter.native="addNew"
-              @keyup.esc.native="clearAddNewBar(true)"
-              dense solo light
-              class="col-10 px-2 pb-2"
-              maxlength="1024"
-              hint="Example: https://www.zalando.co.uk/zign-polo-shirt-black-zi122p006-q11.html"
-              placeholder="Paste the address of the exact page of your competitor and then press Enter. Or Escape">
-                <template slot="append">
-                  <v-icon class="mr-2" @click="addNew">mdi-check</v-icon>
-                  <v-icon  @click="clearAddNewBar(true)">mdi-window-close</v-icon>
-                </template>          
-            </v-text-field>
+          <v-scroll-x-transition leave-absolute>
+            <div class="d-flex" v-if="showAddNewBar">
+              <v-text-field 
+                ref="addNewBar"
+                v-model="url"
+                :rules="rules.url"
+                @keyup.enter.native="addNew"
+                @keyup.esc.native="clearAddNewBar(true)"
+                dense solo light
+                class="col-10 pl-4 pt-4"
+                maxlength="1024"
+                placeholder="Add URL">
+                  <template slot="append">
+                    <v-icon class="mr-2" @click="addNew">mdi-check</v-icon>
+                    <v-icon  @click="clearAddNewBar(true)">mdi-window-close</v-icon>
+                  </template>          
+              </v-text-field>
+
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon style="margin-left: 7px; margin-top: -7px" v-on="on" v-bind="attrs">mdi-help-circle-outline</v-icon>
+                </template>
+                Please keep in mind
+                <ul class="caption">
+                  <li>URL must be the exact address of your competitor's product page.</li>
+                  <li>At least, Code, Name and Price fields should be displayed on it.</li>
+                  <li>It must start with either http:// or https://</li>
+                  <li>It cannot be less than 10 chars.</li>
+                  <li>You can save it by pressing Enter or click Save icon on the right.</li>
+                  <li>Or cancel by pressing Esc or click Cancel icon on the most right.</li>
+                  <li>You can add consecutive URLs without cancelling.</li>
+                  <li>Valid examples
+                    <ul>
+                      <li>https://www.amazon.com/dp/754</li>
+                      <li>https://www.ebay.com/itm/754</li>
+                      <li>https://www.argos.co.uk/product/754</li>
+                    </ul>
+                  </li>
+                </ul>
+              </v-tooltip>
+            </div>
           </v-scroll-x-transition>
+
         </v-form>
         
         <div v-if="rows && rows.length > 0">
 
           <v-expansion-panels accordion hover focusable>
-            <v-expansion-panel v-for="row in rows" :key="row.id">
+            <v-expansion-panel v-for="(row, index) in rows" :key="row.id">
               <v-expansion-panel-header>
-                <div class="col pa-0">
-                  {{ row.seller || 'NA' }}
+                <div class="col pa-0" v-if="row.seller">
+                  <span class="blue--text font-weight-bold">{{ row.seller }}</span> / {{ row.platform }}
                 </div>
-                <div class="col pa-0">
+                <div class="col pa-0 text-truncate " v-else>
+                  {{ row.url }}
+                </div>
+                <div class="col-3 pa-0">
                   {{ row.status || 'NA' }}
                 </div>
               </v-expansion-panel-header>
@@ -83,15 +113,16 @@
                   </template>
                 </v-simple-table>
 
-                <div class="d-flex">
-                  <div class="col text-truncate caption pt-1 pb-3">
+                <div class="d-flex pb-3">
+                  <div class="col text-truncate caption pt-1 pb-0" v-if="row.seller">
                     <v-icon small>mdi-link-variant</v-icon> <a :href="row.url" target="_blank">{{ row.url }}</a>
                   </div>
-                  <div v-if="$store.get('auth/IS_EDITOR')">
-                    <v-btn class="mx-1" small @click="changeStatus(row.id, 'RENEW')" v-if="isSuitable(row.status, 'TOBE_RENEWED')">Renew</v-btn>
-                    <v-btn class="mx-1" small @click="changeStatus(row.id, 'PAUSE')" v-if="isSuitable(row.status, 'PAUSED')">Pause</v-btn>
-                    <v-btn class="mx-1" small @click="changeStatus(row.id, 'RESUME')" v-if="isSuitable(row.status, 'RESUMED')">Resume</v-btn>
-                    <v-btn class="mx-1" small dark color="red" v-if="$store.get('auth/IS_EDITOR')" @click="remove(row.id, (row.name || row.url))">Delete</v-btn>
+                  <v-spacer v-else></v-spacer>
+                  <div v-if="$store.get('auth/IS_EDITOR')" class="mr-2">
+                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'RENEWED')" v-if="isSuitable(row.status, 'TOBE_RENEWED')">Renew</v-btn>
+                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'PAUSED')" v-if="isSuitable(row.status, 'PAUSED')">Pause</v-btn>
+                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'RESUMED')" v-if="isSuitable(row.status, 'RESUMED')">Resume</v-btn>
+                    <v-btn class="mx-1" small dark color="red" v-if="$store.get('auth/IS_EDITOR')" @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
                   </div>
                 </div>
 
@@ -100,10 +131,6 @@
           </v-expansion-panels>
 
         </div>
-
-        <p v-else class="mt-5">
-          No competitor found! You can add a new one.
-        </p>
 
         <confirm ref="confirm"></confirm>
       </div>
@@ -115,13 +142,14 @@
 
     <v-snackbar 
       v-model="snackbar" 
-      :timeout="3000" 
+      :timeout="2500" 
       color="info"
-      bottom centered>
+    >
       {{ snackbarText }}
       <template v-slot:action="{ attrs }">
         <v-btn
           text
+          color="white"
           v-bind="attrs"
           @click="snackbar = false"
         >
@@ -149,7 +177,8 @@ export default {
       rules: {},
       snackbar: false,
       snackbarText: '',
-      rows: []
+      rows: [],
+      rulesPopup: false,
     }
   },
   methods: {
@@ -171,36 +200,32 @@ export default {
       if (this.isUrlValid) {
         this.loading = true;
         const result = await CompetitorService.insert({ url: this.url, productId: this.prodId });
-        if (result == true) {
+        if (result.status == true) {
           this.snackbarText = 'URL is successfully added.'
           this.snackbar = true;
           this.clearAddNewBar();
-          this.refreshCompetitors();
+          this.rows.push(result.data);
         }
         this.loading = false;
       }
     },
-    async changeStatus(id, status) {
+    async changeStatus(index, id, status) {
       const result = await CompetitorService.changeStatus(id, status);
-      if (result == true) this.refreshCompetitors();
+      if (result == true) {
+        this.rows[index].status = status;
+      }
     },
-    remove(id, name) {
+    remove(index, id, name) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
         if (confirm == true) {
           const result = await CompetitorService.remove(id);
           if (result == true) {
-            this.refreshCompetitors();
+            this.rows.splice(index, 1);
+            this.snackbarText = 'URL is successfully deleted.'
+            this.snackbar = true;
           }
         }
       });
-    },
-    async refreshCompetitors() {
-      const result = await CompetitorService.list(this.prodId);
-      if (result) {
-        this.rows = result;
-      } else {
-        this.rows = [];
-      }
     },
     isSuitable(current, target) {
       switch (current) {
@@ -227,16 +252,23 @@ export default {
         url: [
           v => !!v || "Required",
           v => (v.length >= 10 && v.length <= 1024) || "URL must be longer than 10 chars",
-          v => Utility.verifyURL(v) || "Invalid URL! It should be the address of the exact page of your competitor. It should contain at least the Code, Name and Price fields.",
+          v => Utility.verifyURL(v) || "Invalid URL! It must be the exact address of your competitor's product page.",
         ],
       }
     },
   },
-  mounted() {
-    Utility.doubleRaf(() => this.rows = this.competitors);
-  },
   components: {
     confirm: () => import('@/component/Confirm.vue')
+  },
+  mounted() {
+    Utility.doubleRaf(() => {
+      this.rows = this.competitors
+    });
+  },
+  watch: {
+    competitors() {
+      this.rows = this.competitors;
+    }
   }
 };
 </script>
@@ -254,8 +286,5 @@ export default {
   }
   .v-data-table td, .v-data-table th {
     padding: 0 8px;
-  }
-  .v-expansion-panel--active > .v-expansion-panel-header {
-    min-height: auto !important;
   }
 </style>

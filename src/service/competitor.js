@@ -6,7 +6,7 @@ export default {
 
   async insert(data) {
     const res = await Helper.call('Competitor Save', { method: 'post', url: baseURL, data });
-    return res.status;
+    return res;
   },
 
   async list(prodId) {

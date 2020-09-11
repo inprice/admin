@@ -38,3 +38,7 @@
 .v-expansion-panel-content__wrap {
   padding: 0 !important;
 }
+
+.v-expansion-panel--active > .v-expansion-panel-header {
+  min-height: auto !important;
+}

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="report">
     <div class="d-flex">
       <span class="display-1">Dashboard</span>
 
