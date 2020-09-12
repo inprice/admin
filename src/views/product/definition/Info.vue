@@ -33,7 +33,7 @@
               </tr>
               <tr>
                 <td class="prop-name">Price</td>
-                <td><v-text-field solo dense readonly hide-details="true" class="col-md-2 col-sm-3" v-model="prod.price" /></td>
+                <td><v-text-field solo dense readonly hide-details="true" class="col-md-2 col-sm-3" :value="prod.price | toPrice" /></td>
               </tr>
               <tr>
                 <td class="prop-name">Brand</td>

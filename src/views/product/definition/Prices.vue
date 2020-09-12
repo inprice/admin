@@ -50,7 +50,7 @@
             <div class="text-center caption pt-2 text-uppercase">
               <div>Min. Seller & Platform</div>
               <div class="pt-1">
-                <span class="font-weight-bold blue--text">{{ prod.priceDetails.minSeller || 'NA' }}</span> / {{ prod.priceDetails.minPlatform || 'NA' }}
+                <span class="font-weight-bold orange--text">{{ prod.priceDetails.minSeller || 'NA' }}</span> / {{ prod.priceDetails.minPlatform || 'NA' }}
               </div>
             </div>
           </v-sheet>
@@ -76,7 +76,7 @@
             <div class="text-center caption pt-2 text-uppercase">
               <div>Max. Seller & Platform</div>
               <div class="pt-1">
-                <span class="font-weight-bold blue--text">{{ prod.priceDetails.maxSeller || 'NA' }}</span> / {{ prod.priceDetails.maxPlatform || 'NA' }}
+                <span class="font-weight-bold orange--text">{{ prod.priceDetails.maxSeller || 'NA' }}</span> / {{ prod.priceDetails.maxPlatform || 'NA' }}
               </div>
             </div>
           </v-sheet>
@@ -106,7 +106,7 @@
 
 <script>
 export default {
-  props: ['prod', 'priceLabels', 'priceData'],
+  props: ['prod'],
   components: {
     DiffLine: () => import('@/component/utility/DiffLine.vue'),
   },

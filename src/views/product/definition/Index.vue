@@ -2,7 +2,7 @@
   <div v-if="data.product">
 
     <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" />
-    <prices :prod="data.product" :priceLabels="data.priceLabels" :priceData="data.priceData" class="mt-2" />
+    <prices :prod="data.product" class="mt-2" v-if="data.product.priceDetails.price" />
 
     <competitors :prodId="data.product.id" :competitors="data.competitors" class="mt-2" />
 

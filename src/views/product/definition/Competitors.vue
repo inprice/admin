@@ -74,7 +74,7 @@
             <v-expansion-panel v-for="(row, index) in rows" :key="row.id">
               <v-expansion-panel-header>
                 <div class="col pa-0" v-if="row.seller">
-                  <span class="blue--text font-weight-bold">{{ row.seller }}</span> / {{ row.platform }}
+                  <span class="orange--text font-weight-bold">{{ row.seller }}</span> / {{ row.platform }}
                 </div>
                 <div class="col pa-0 text-truncate " v-else>
                   {{ row.url }}
@@ -86,21 +86,9 @@
 
               <v-expansion-panel-content>
 
-                <v-simple-table class="col property-table pa-1" dense>
+                <v-simple-table class="col property-table pa-3 pb-0" dense v-if="row.price > 0">
                   <template v-slot:default>
                     <tbody>
-                      <tr>
-                        <td class="prop-name">Seller</td>
-                        <td><v-text-field solo dense readonly hide-details="true" class="col-6" :value="row.seller || 'NA'" /></td>
-                      </tr>
-                      <tr>
-                        <td class="prop-name">Platform</td>
-                        <td><v-text-field solo dense readonly hide-details="true" class="col-6" :value="row.platform || 'NA'" /></td>
-                      </tr>
-                      <tr>
-                        <td class="prop-name">Status</td>
-                        <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="row.status" /></td>
-                      </tr>
                       <tr>
                         <td class="prop-name">Price</td>
                         <td><v-text-field solo dense readonly hide-details="true" class="col-2" :value="row.price | toPrice" /></td>
@@ -113,8 +101,8 @@
                   </template>
                 </v-simple-table>
 
-                <div class="d-flex pb-3">
-                  <div class="col text-truncate caption pt-1 pb-0" v-if="row.seller">
+                <div class="d-flex py-2">
+                  <div class="col text-truncate caption pt-1" v-if="row.seller">
                     <v-icon small>mdi-link-variant</v-icon> <a :href="row.url" target="_blank">{{ row.url }}</a>
                   </div>
                   <v-spacer v-else></v-spacer>

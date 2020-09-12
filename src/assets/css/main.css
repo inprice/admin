@@ -29,6 +29,8 @@
 .property-table td.prop-name {
   text-align: right !important;
   width: 20% !important;
+  padding-bottom: 12px;
+  padding-right: 10px;
 }
 
 .v-tabs-bar {
