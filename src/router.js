@@ -60,7 +60,7 @@ const router = new VueRouter({
     {
       name: 'app',
       path: '/:sid/app',
-      component: () => import('./views/MainLayout.vue'),
+      component: () => import('./views/Layout.vue'),
       meta: {
         requiresAuth: true
       },
@@ -68,32 +68,37 @@ const router = new VueRouter({
         {
           name: 'dashboard',
           path: 'dashboard',
-          component: () => import('./views/Dashboard.vue')
+          component: () => import('./views/dashboard/Index.vue')
+        },
+        {
+          name: 'product',
+          path: 'product/:id',
+          component: () => import('./views/product/definition/Index.vue')
         },
         {
           name: 'products',
           path: 'products',
-          component: () => import('./views/product/Index.vue')
+          component: () => import('./views/product/search/Index.vue')
         },
         {
           name: 'import-csv',
           path: 'import/csv',
-          component: () => import('./views/product_import/CSV.vue')
+          component: () => import('./views/product/import/CSV.vue')
         },
         {
           name: 'import-url',
           path: 'import/url-list',
-          component: () => import('./views/product_import/URLList.vue')
+          component: () => import('./views/product/import/URLList.vue')
         },
         {
           name: 'import-ebay-sku',
           path: 'import/ebay-sku',
-          component: () => import('./views/product_import/EbaySKU.vue')
+          component: () => import('./views/product/import/EbaySKU.vue')
         },
         {
           name: 'import-amazon-asin',
           path: 'import/amazon-asin',
-          component: () => import('./views/product_import/AmazonASIN.vue')
+          component: () => import('./views/product/import/AmazonASIN.vue')
         },
         {
           name: 'subscription',
@@ -104,15 +109,15 @@ const router = new VueRouter({
         {
           name: 'imported-prods',
           path: 'import/products',
-          component: () => import('./views/product_import/ImportedProducts.vue')
+          component: () => import('./views/product/import/ImportedProducts.vue')
         },
-        */
         {
           name: 'prod-competitors',
           path: 'product/competitors/:prod_id',
           component: () => import('./views/product/Competitors.vue')
         },
-        {
+        */
+       {
           name: 'competitors',
           path: 'competitors',
           component: () => import('./views/competitor/List.vue')

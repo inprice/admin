@@ -29,41 +29,18 @@
 .property-table td.prop-name {
   text-align: right !important;
   width: 20% !important;
-}
-
-.property-table .prop-name::after {
-  content: " :" !important;
-}
-
-/**
-* Shows how you can use CSS to style your Element's container.
-*/
-.MyCardElement {
-  height: 40px;
-  padding: 10px 12px;
-  width: 100%;
-  color: #32325d;
-  background-color: white;
-  border: 1px solid transparent;
-  border-radius: 4px;
-
-  box-shadow: 0 1px 3px 0 #e6ebf1;
-  -webkit-transition: box-shadow 150ms ease;
-  transition: box-shadow 150ms ease;
-}
-
-.MyCardElement--focus {
-  box-shadow: 0 1px 3px 0 #cfd7df;
-}
-
-.MyCardElement--invalid {
-  border-color: #fa755a;
-}
-
-.MyCardElement--webkit-autofill {
-  background-color: #fefde5 !important;
+  padding-bottom: 12px;
+  padding-right: 10px;
 }
 
 .v-tabs-bar {
   display: none;
+}
+
+.v-expansion-panel-content__wrap {
+  padding: 0 !important;
+}
+
+.v-expansion-panel--active > .v-expansion-panel-header {
+  min-height: auto !important;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="report">
     <div class="d-flex">
       <span class="display-1">Dashboard</span>
 
@@ -22,14 +22,14 @@
 
     <v-row>
       <!-- ------------------------------- -->
-      <!-- Products position distributions -->
+      <!-- Products position statuses -->
       <!-- ------------------------------- -->
       <v-card class="col">
         <v-card-title>
           <v-icon class="mr-4">mdi-layers</v-icon>
           <div class="col pa-0">
-            <div>Product distributions</div>
-            <div class="caption float-left">The position distributions of products.</div>
+            <div>Product positions</div>
+            <div class="caption float-left">The positions of your products.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
@@ -50,8 +50,8 @@
         <v-card-title>
           <v-icon class="mr-4">mdi-layers-outline</v-icon>
           <div class="col pa-0">
-            <div>Competitor distributions</div>
-            <div class="caption float-left">The status distributions of competitors.</div>
+            <div>Competitor statuses</div>
+            <div class="caption float-left">The statuses of your competitors.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
@@ -60,92 +60,6 @@
           :series="report.competitors.statusDists" 
           v-if="report && report.competitors && report.competitors.statusDists.length"
         />
-        <div v-else class="ml-2 mt-3">
-          No data
-        </div>
-      </v-card>
-    </v-row>
-
-    <v-row>
-      <!-- ------------------------------------ -->
-      <!-- 10 Products having the lowest prices -->
-      <!-- ------------------------------------ -->
-      <v-card class="col">
-        <v-card-title>
-          <v-icon class="mr-4">mdi-arrow-down-circle-outline</v-icon>
-          <div class="col pa-0">
-            <div>Products with low prices</div>
-            <div class="caption float-left">The list of 10 products having the lowest prices among their competitors.</div>
-          </div>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-simple-table dense v-if="report && report.products && report.products.extremePrices.lowest">
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th width="20%">Name</th>
-                <th class="text-right">Price</th>
-                <th class="text-right">Competitors</th>
-                <th class="text-right">Ranking</th>
-                <th class="text-center">Date</th>
-                <th class="text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row) in report.products.extremePrices.lowest" :key="row.id">
-                <td>{{ row.name }}</td>
-                <td class="text-right">{{ row.price | toCurrency }}</td>
-                <td class="text-right">{{ row.competitors | 0 }}</td>
-                <td class="text-right">{{ row.ranking | 1 }}</td>
-                <td class="text-center">{{ row.lastUpdate | formatDate }}</td>
-                <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-        <div v-else class="ml-2 mt-3">
-          No data
-        </div>
-      </v-card>
-    </v-row>
-
-    <!-- ------------------------------------- -->
-    <!-- 10 Products having the highest prices -->
-    <!-- ------------------------------------- -->
-    <v-row>
-      <v-card class="col">
-        <v-card-title>
-          <v-icon class="mr-4">mdi-arrow-up-circle-outline</v-icon>
-          <div class="col pa-0">
-            <div>Products with high prices</div>
-            <div class="caption float-left">The list of 10 products having the highest prices among their competitors.</div>
-          </div>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-simple-table dense v-if="report && report.products && report.products.extremePrices.highest">
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th width="20%">Name</th>
-                <th class="text-right">Price</th>
-                <th class="text-right">Competitors</th>
-                <th class="text-right">Ranking</th>
-                <th class="text-center">Date</th>
-                <th class="text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row) in report.products.extremePrices.highest" :key="row.id">
-                <td>{{ row.name }}</td>
-                <td class="text-right">{{ row.price | toCurrency }}</td>
-                <td class="text-right">{{ row.competitors | 0 }}</td>
-                <td class="text-right">{{ row.ranking | 1 }}</td>
-                <td class="text-center">{{ row.lastUpdate | formatDate }}</td>
-                <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
         <div v-else class="ml-2 mt-3">
           No data
         </div>
@@ -169,22 +83,20 @@
           <template v-slot:default>
             <thead>
               <tr>
-                <th>Product</th>
                 <th width="20%">Competitor</th>
-                <th width="13%">Platform</th>
+                <th>Product</th>
                 <th width="10%" class="text-right">Price</th>
-                <th width="17%">Status</th>
-                <th width="5%">Time</th>
+                <th width="20%">Status</th>
+                <th width="15%">Time</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(row, index) in report.competitors.mru25" :key="index">
-                <td>{{ row.productName }}</td>
                 <td width="20%">{{ row.seller }}</td>
-                <td width="13%">{{ row.platform }}</td>
-                <td width="10%" class="text-right red--text font-weight-bold">{{ row.price | toPrice }}</td>
-                <td width="17%">{{ row.status | formatStatus }}</td>
-                <td width="5%">{{ row.lastUpdate | formatTime }}</td>
+                <td>{{ row.productName }}</td>
+                <td width="10%" class="text-right font-weight-bold">{{ row.price | toPrice }}</td>
+                <td width="20%">{{ row.status | formatStatus }}</td>
+                <td width="15%">{{ row.lastUpdate | formatDate }}</td>
               </tr>
             </tbody>
           </template>
@@ -194,6 +106,92 @@
         </div>
       </v-card>
 
+    </v-row>
+
+    <v-row>
+      <!-- ------------------------------------ -->
+      <!-- 10 Products having the lowest prices -->
+      <!-- ------------------------------------ -->
+      <v-card class="col">
+        <v-card-title>
+          <v-icon class="mr-4">mdi-arrow-down-circle-outline</v-icon>
+          <div class="col pa-0">
+            <div>10 products with low prices</div>
+            <div class="caption float-left">The list of 10 products having the lowest prices among their competitors.</div>
+          </div>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-simple-table dense v-if="report && report.products && report.products.extremePrices.lowest">
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th width="20%">Name</th>
+                <th class="text-right">Price</th>
+                <th class="text-right">Competitors</th>
+                <th class="text-right">Ranking</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row) in report.products.extremePrices.lowest" :key="row.id">
+                <td>{{ row.name }}</td>
+                <td class="text-right">{{ row.price | toCurrency }}</td>
+                <td class="text-right">{{ row.competitors || 0 }}</td>
+                <td class="text-right">{{ row.ranking || 1 }}</td>
+                <td class="text-center">{{ row.lastUpdate | formatDate }}</td>
+                <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+        <div v-else class="ml-2 mt-3">
+          No data
+        </div>
+      </v-card>
+    </v-row>
+
+    <!-- ------------------------------------- -->
+    <!-- 10 Products having the highest prices -->
+    <!-- ------------------------------------- -->
+    <v-row>
+      <v-card class="col">
+        <v-card-title>
+          <v-icon class="mr-4">mdi-arrow-up-circle-outline</v-icon>
+          <div class="col pa-0">
+            <div>10 Products with high prices</div>
+            <div class="caption float-left">The list of 10 products having the highest prices among their competitors.</div>
+          </div>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-simple-table dense v-if="report && report.products && report.products.extremePrices.highest">
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th width="20%">Name</th>
+                <th class="text-right">Price</th>
+                <th class="text-right">Competitors</th>
+                <th class="text-right">Ranking</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row) in report.products.extremePrices.highest" :key="row.id">
+                <td>{{ row.name }}</td>
+                <td class="text-right">{{ row.price | toCurrency }}</td>
+                <td class="text-right">{{ row.competitors || 0 }}</td>
+                <td class="text-right">{{ row.ranking || 1 }}</td>
+                <td class="text-center">{{ row.lastUpdate | formatDate }}</td>
+                <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+        <div v-else class="ml-2 mt-3">
+          No data
+        </div>
+      </v-card>
     </v-row>
 
   </div>
@@ -238,8 +236,8 @@ export default {
     this.refresh();
   },
   components: {
-    PositionsBarChart: () => import('./dashboard/PositionsBarChart.js'),
-    StatusesPieChart: () => import('./dashboard/StatusesPieChart.js'),
+    PositionsBarChart: () => import('./PositionsBarChart.js'),
+    StatusesPieChart: () => import('./StatusesPieChart.js'),
   }
 };
 </script>

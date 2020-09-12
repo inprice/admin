@@ -19,6 +19,9 @@ Filters(Vue);
 import './assets/css/main.css';
 
 import Chart from 'chart.js'
+/* eslint-disable no-unused-vars */
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
 Chart.defaults.global.legend.display = false;
 
 new Vue({

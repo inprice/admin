@@ -15,7 +15,7 @@ export default {
             'rgba(54, 162, 235, 0.3)',
             'rgba(255, 99, 132, 0.3)',
           ],
-          "borderWidth":1.5,
+          borderWidth:1.5,
           data: this.series
         }
       ]
@@ -25,8 +25,26 @@ export default {
       options: {
         legend: {
           display: false,
-        }
-      }
+        },
+      },
+      plugins: {
+        datalabels: {
+          color: 'black',
+          textAlign: 'center',
+          formatter: (value, ctx) => {
+            let sum = 0;
+            let dataArr = ctx.chart.data.datasets[0].data;
+            dataArr.map((data) => {
+              sum += data;
+            });
+            let percentage = '';
+            if (value) {
+              percentage = ((value * 100) / sum).toFixed(0) + "%";
+            }
+            return percentage;
+          },
+        },
+      },
     });
   }
 }

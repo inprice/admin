@@ -1,13 +1,14 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="450">
+    <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
       <v-card>
         <v-card-title>{{ isInsert ? 'New company' : 'Company info' }}</v-card-title>
 
         <v-card-subtitle class="pb-0" v-if="isInsert">
           You will be able to see new company after sign in again.
         </v-card-subtitle>
+        <v-divider></v-divider>
 
         <v-form ref="form" v-model="valid" class="mt-5">
           <v-text-field class="mx-5"
@@ -77,8 +78,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn @click="close">Close</v-btn>
+          <v-btn small @click="close">Close</v-btn>
           <v-btn
+            small
             @click="submit"
             color="primary"
             :loading="loading" 

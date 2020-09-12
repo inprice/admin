@@ -1,9 +1,10 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="450">
+    <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Update your info</v-card-title>
+        <v-divider></v-divider>
 
         <v-card-text class="mt-5">
           <v-form ref="form" v-model="valid">
@@ -28,8 +29,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn @click="close">Close</v-btn>
+          <v-btn small @click="close">Close</v-btn>
           <v-btn
+            small
             @click="submit"
             color="primary"
             :loading="loading" 

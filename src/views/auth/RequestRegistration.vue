@@ -3,8 +3,8 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4" lg="3" xl="2">
 
-        <div class="headline text-center font-weight-medium mb-5">
-          Welcome to inprice
+        <div class="text-center mb-8">
+          <img :src="verticalBrand" :width="140" />
         </div>
 
         <v-card>
@@ -100,7 +100,8 @@ export default {
         companyName: '',
         password: '',
         repeatPassword: ''
-      }
+      },
+      verticalBrand: require('@/assets/app/brand-verC.svg')
     };
   },
   methods: {

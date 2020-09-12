@@ -5,6 +5,11 @@ const baseURL = '/product';
 
 export default {
 
+  async get(id) {
+    const res = await Helper.call('Find Product', { method: 'get', url: baseURL + '/' + id });
+    return res;
+  },
+
   async save(form) {
     let method = 'post', opType = 'added';
     if (form.id && form.id > 0) {
@@ -16,8 +21,8 @@ export default {
     return res.status;
   },
 
-  async search(form) {
-    const res = await Helper.call('Product Search', { method: 'get', url: baseURL + 's/search' + Helper.toQueryString(form) });
+  async search(term) {
+    const res = await Helper.call('Product Search', { method: 'get', url: baseURL + 's/search/?term=' + term });
     if (res.status == true && res.data.rows) return res.data.rows;
     return null;
   },

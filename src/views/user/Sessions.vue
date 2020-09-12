@@ -30,7 +30,7 @@
       <v-divider></v-divider>
 
       <div v-if="sessions.length">
-        <v-simple-table>
+        <v-simple-table dense>
           <template v-slot:default>
             <thead>
               <tr>

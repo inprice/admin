@@ -8,17 +8,17 @@ export default (Vue) => {
   Vue.filter('toPosition', (value) => {
     switch (value) {
       case 1:
-        return 'LOWEST';
+        return 'Lowest';
       case 2:
-        return 'LOWER';
+        return 'Lower';
       case 3:
-        return 'AVERAGE';
+        return 'Average';
       case 4:
-        return 'HIGHER';
+        return 'Higher';
       case 5:
-        return 'HIGHEST';
+        return 'Highest';
     }
-    return 'NOT YET';
+    return 'Not Yet';
   });
 
   Vue.filter('toDifferenceLine', (diff) => {
@@ -49,32 +49,13 @@ export default (Vue) => {
       return value.toFixed(2);
       /* eslint-disable no-empty */
     } catch (error) { }
+    return 0;
   });
 
   Vue.filter('formatDate', (value) => {
     try {
       if (value) {
-        return moment(value).tz(store.get(session+'@timezone')).format('YYYY-MM-DD HH:mm');
-      }
-      /* eslint-disable no-empty */
-    } catch (error) { }
-    return 'NA';
-  });
-
-  Vue.filter('formatShortDate', (value) => {
-    try {
-      if (value) {
-        return moment(value).tz(store.get(session+'@timezone')).format('YYYY-MM-DD');
-      }
-      /* eslint-disable no-empty */
-    } catch (error) { }
-    return 'NA';
-  });
-
-  Vue.filter('formatTime', (value) => {
-    try {
-      if (value) {
-        return moment(value).tz(store.get(session+'@timezone')).format('HH:mm');
+        return moment(value).tz(store.get(session+'@timezone')).fromNow();
       }
       /* eslint-disable no-empty */
     } catch (error) { }

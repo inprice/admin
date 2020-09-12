@@ -4,6 +4,7 @@
     :max-width="options.width"
     :style="{ zIndex: options.zIndex }"
     @keydown.esc="cancel"
+    overlay-opacity="0.2"
   >
     <v-card>
       <v-toolbar dense flat>
@@ -11,8 +12,12 @@
         <v-spacer></v-spacer>
         <v-icon>mdi-alert-circle-outline</v-icon>
       </v-toolbar>
+
       <v-divider></v-divider>
+
       <v-card-text v-show="!!message" class="pa-4"><strong v-show="!!important">{{ important }} </strong>{{ message }}</v-card-text>
+
+      <v-divider></v-divider>
 
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
