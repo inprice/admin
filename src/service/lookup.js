@@ -9,4 +9,9 @@ export default {
     return res;
   },
 
+  async getAllList() {
+    const res = await Helper.call('Lookup List', { method: 'get', url: baseURL + '/all' });
+    return res;
+  },
+
 };

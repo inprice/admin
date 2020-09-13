@@ -10,14 +10,14 @@
     <v-divider></v-divider>
 
     <div class="positions" >
-      <template v-for="(pos, index) in positions">
-        <div class="d-flex justify-space-between active" v-if="position-1 == index" :key="index">
+      <template v-for="(pos) in positions">
+        <div class="d-flex justify-space-between active" v-if="position == pos.value" :key="pos.value">
           <span class="arrow-right" />
-          {{ pos }}
+          {{ pos.text }}
           <span class="arrow-left" />
         </div>
-        <div class="text-center" v-else :key="index">
-          {{ pos }}
+        <div class="text-center" v-else :key="pos.value">
+          {{ pos.text }}
         </div>
       </template>
     </div>
@@ -25,12 +25,14 @@
 </template>
 
 <script>
+import SystemConsts from '@/data/system';
+
 export default {
   name: "position",
   props: ['position'],
-  data() {
-    return {
-      positions: [ 'Lowest', 'Lower', 'Average', 'Higher', 'Highest' ],
+  computed: {
+    positions() {
+      return SystemConsts.POSITIONS;
     }
   }
 }

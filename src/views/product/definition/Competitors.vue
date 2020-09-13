@@ -24,7 +24,7 @@
 
         <v-form ref="addNewForm" v-model="isUrlValid" @submit.prevent>
           <v-scroll-x-transition leave-absolute>
-            <div class="d-flex" v-if="showAddNewBar">
+            <div v-if="showAddNewBar" class="d-flex">
               <v-text-field 
                 ref="addNewBar"
                 v-model="url"

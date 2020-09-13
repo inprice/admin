@@ -21,8 +21,8 @@ export default {
     return res.status;
   },
 
-  async search(term) {
-    const res = await Helper.call('Product Search', { method: 'get', url: baseURL + 's/search/?term=' + term });
+  async search(form) {
+    const res = await Helper.call('Product Search', { url: baseURL + 's/search', data: form });
     if (res.status == true && res.data.rows) return res.data.rows;
     return null;
   },

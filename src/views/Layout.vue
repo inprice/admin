@@ -144,7 +144,7 @@
             class="searchBox"
             ref="searchTerm"
             v-model="searchTerm"
-            placeholder="Search for..."
+            placeholder="Search for products by name"
             append-icon="mdi-close"
             @click:append="clearSearchTerm"
             dense solo light

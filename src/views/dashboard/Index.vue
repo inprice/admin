@@ -92,7 +92,7 @@
             </thead>
             <tbody>
               <tr v-for="(row, index) in report.competitors.mru25" :key="index">
-                <td width="20%">{{ row.seller }}</td>
+                <td width="20%">{{ row.seller || 'NA' }}</td>
                 <td>{{ row.productName }}</td>
                 <td width="10%" class="text-right font-weight-bold">{{ row.price | toPrice }}</td>
                 <td width="20%">{{ row.status | formatStatus }}</td>
