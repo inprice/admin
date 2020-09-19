@@ -10,6 +10,11 @@ export default {
     return res;
   },
 
+  async getEverything(id) {
+    const res = await Helper.call('Find Product', { method: 'get', url: baseURL + '/everything/' + id });
+    return res;
+  },
+
   async save(form) {
     let method = 'post', opType = 'added';
     if (form.id && form.id > 0) {
@@ -21,8 +26,14 @@ export default {
     return res.status;
   },
 
-  async search(form) {
-    const res = await Helper.call('Product Search', { url: baseURL + 's/search', data: form });
+  async search(data, isFullSearch=false) {
+    const params = { url: baseURL + 's/search' };
+    if (isFullSearch == true) {
+      params.data = data;
+    } else {
+      params.url += '?term=' + data;
+    }
+    const res = await Helper.call('Product Search', params);
     if (res.status == true && res.data.rows) return res.data.rows;
     return null;
   },

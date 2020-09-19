@@ -123,8 +123,8 @@ const router = new VueRouter({
           component: () => import('./views/competitor/List.vue')
         },
         {
-          name: 'settings',
-          path: 'settings',
+          name: 'user-settings',
+          path: 'user-settings',
           component: () => import('./views/user/Index.vue')
         },
         {

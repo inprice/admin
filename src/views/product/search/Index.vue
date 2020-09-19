@@ -9,110 +9,114 @@
     </p>
     <v-divider></v-divider>
 
-    <!-- ------ -->
-    <!-- Search -->
-    <!-- ------ -->
-    <div class="d-flex justify-space-between pt-2">
-      <v-text-field 
-        ref="searchField"
-        v-model="search.term"
-        @keyup.enter.native="search"
-        dense solo light
-        class="col-8"
-        maxlength="100"
-        hide-details
-        placeholder="Search by Name">
-          <template slot="append">
-            <v-icon @click="clear">mdi-window-close</v-icon>
-          </template>
-      </v-text-field>
-
-      <v-spacer></v-spacer>
-
-      <v-btn 
-        dark
-        color="success"
-        @click="addNew">
-          Add Product
-      </v-btn>
-    </div>
-
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex">
-      <div class="col-2 pl-0 pr-1">
+    <div class="d-flex justify-space-between mt-4">
 
-        <!-- Positions -->
-        <v-card>
-          <div class="group-header">POSITION</div>
-          <v-card-text class="pa-2 caption">
-            <v-radio-group
-              v-model="search.position" 
-              dense
-              hide-details
-            >
-              <v-radio label="ALL" :value="-1" />
-              <v-radio v-for="pos in positions" :key="pos.value"
-                :label="pos.text"
-                :value="pos.value"
-                class="mb-0"
-              ></v-radio>
-            </v-radio-group>
-          </v-card-text>
-        </v-card>
+      <div class="col-10 d-flex px-1 py-0">
+        <v-text-field 
+          ref="searchField"
+          v-model="search.term"
+          @keyup.enter.native="search"
+          dense solo light
+          maxlength="100"
+          hide-details
+          placeholder="Search by Name">
+            <template slot="append">
+              <v-icon @click="clear">mdi-window-close</v-icon>
+            </template>
+        </v-text-field>
 
-        <!-- Brands -->
-        <v-card class="mt-4" :style="'max-height:' + findMaxHeight('brand', 1) + 'px;'">
-          <div class="group-header">Brand</div>
-          <v-card-text class="pa-2 my-auto" :style="'max-height:' + findMaxHeight('brand', 2) + 'px; overflow-y: auto;'">
-            <v-radio-group 
-              v-model="search.brand" 
-              dense
-              hide-details
-            >
-              <v-radio label="ALL" :value="-1" />
-              <v-radio v-for="brnd in brands" :key="brnd.key"
-                :label="brnd.value"
-                :value="brnd.key"
-                class="mb-0"
-              ></v-radio>
-            </v-radio-group>
-          </v-card-text>
-        </v-card>
-
-        <!-- Categories -->
-        <v-card class="mt-4" :style="'max-height:' + findMaxHeight('brand', 1) + 'px;'">
-          <div class="group-header">Category</div>
-          <v-card-text class="pa-2 my-auto" :style="'max-height:' + findMaxHeight('category', 2) + 'px; overflow-y: auto;'">
-            <v-radio-group 
-              v-model="search.category" 
-              dense
-              hide-details
-            >
-              <v-radio label="ALL" :value="-1" />
-              <v-radio v-for="cat in categories" :key="cat.key"
-                :label="cat.value"
-                :value="cat.key"
-                class="mb-0"
-              ></v-radio>
-            </v-radio-group>
-          </v-card-text>
-        </v-card>
-
+        <v-btn 
+          dark
+          fab small
+          class="ml-2"
+          color="success"
+          @click="addNew">
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
       </div>
 
-      <div class="col px-1">
-        
-        <list :rows="searchResult" />
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        offset-y
+        bottom left
+        transition="slide-x-transition"
+      >
 
-        <div class="mt-3">
-          <v-btn @click="loadmore" :disabled="!isLoadMoreEnabled">Load More</v-btn>
-      </div>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn 
+            class="col-1" 
+            v-bind="attrs"
+            v-on="on"
+          >
+            Filters
+          </v-btn>
+        </template>        
+
+        <v-card class="altlik-card">
+          <!-- Positions -->
+          <v-card class="ma-2" tile>
+            <v-list dense>  
+              <v-list-item-group v-model="search.position">
+                <v-list-item
+                  v-for="itm in positions"
+                  :key="itm.key"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title :class="'font-weight-' + (itm.key == 0 ? 'bold' : 'regular')" v-text="itm.value"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-card>
+
+          <!-- Brands -->
+          <v-card class="ma-2" tile>
+            <v-list dense>  
+              <v-list-item-group v-model="search.brand">
+                <v-list-item
+                  v-for="itm in brands"
+                  :key="itm.key"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title :class="'font-weight-' + (itm.key == 0 ? 'bold' : 'regular')" v-text="itm.value"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-card>
+
+          <v-card class="ma-2" tile>
+            <v-list dense>  
+              <v-list-item-group v-model="search.category">
+                <v-list-item
+                  v-for="itm in categories"
+                  :key="itm.key"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title :class="'font-weight-' + (itm.key == 0 ? 'bold' : 'regular')" v-text="itm.value"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-card>
+        </v-card>
+
+      </v-menu>
+
+    </div>
+
+    <div class="col px-1">
+      <list :rows="searchResult" @edit="edit" />
+      <div class="mt-3">
+        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>
     </div>
 
-    <edit ref="editDialog" @saved="search" />
+    <edit ref="editDialog" @saved="refreshAll" />
 
   </div>
 
@@ -127,21 +131,20 @@ export default {
   data() {
     return {
       search: {
-        term: null,
-        position: -1,
-        brand: -1,
-        category: -1,
+        term: '',
+        position: 0,
+        brand: 0,
+        category: 0,
+        counter: 0 //used for trigger search mechanism when update or add a new product (look at edit tag above)
       },
+      menu: false,
       searchResult: [],
+      positions: [],
       brands: [],
       categories: [],
-      isLoadMoreEnabled: false,
+      isLoadMoreDisabled: false,
+      isLoadMoreClicked: false,
     };
-  },
-  computed: {
-    positions() {
-      return SystemConsts.POSITIONS;
-    },
   },
   methods: {
     clear() {
@@ -150,36 +153,64 @@ export default {
     addNew() {
       this.$refs.editDialog.open();
     },
-    loadmore() {
-      console.log('Load more pressed');
+    edit(id) {
+      this.$router.push({ name: 'product', params: { id } });
     },
-    findMaxHeight(group, level) {
-      let val = 350;
-      if (group != 'brand') {
-        val = 500;
-      }
-      if (level == 1) return val;
-      if (level == 2) return val-30;
+    loadmore() {
+      this.isLoadMoreClicked = true;
+      this.triggerSearch();
+    },
+    refreshAll() {
+      LookupService.getAllList()
+        .then((res) => {
+          if (res && res.data) {
+            this.positions = [{ key: 0, value: 'ALL POSITIONS' }, ...res.data.POSITIONS];
+            this.brands = [{ key: 0, value: 'ALL BRANDS' }, ...res.data.BRAND];
+            this.categories = [{ key: 0, value: 'ALL CATEGORIES' }, ...res.data.CATEGORY];
+            this.triggerSearch();
+          }
+      });
+    },
+    triggerSearch() {
+      ++this.search.counter; //triggers search call to the server
     }
   },
   watch: {
     'search': {
-      handler: function (val) {
-        ProductService.search(val)
+      handler: function (form) {
+        //we have to clone it since search form is sensitive for changes.
+        //any direct change on search form cause an endless loop for this method!
+        const cloneForm = JSON.parse(JSON.stringify(form));
+        if (form.position && form.position > 1) cloneForm.position = this.positions[form.position].key;
+        if (form.brand && this.brands?.length) cloneForm.brand = this.brands[form.brand].key;
+        if (form.category && this.categories?.length) cloneForm.category = this.categories[form.category].key;
+        //clicking load more is a different case
+        if (this.isLoadMoreClicked == true && this.searchResult.length) {
+          cloneForm.rowCount = this.searchResult.length;
+          cloneForm.loadMore = this.isLoadMoreClicked;
+        }
+
+        const loadMore = this.isLoadMoreClicked;
+        this.isLoadMoreClicked = false;
+
+        ProductService.search(cloneForm, true)
           .then((res) => {
-            this.searchResult = res;
+            this.isLoadMoreDisabled = true;
+            if (res?.length) {
+              if (loadMore == true) {
+                this.searchResult = this.searchResult.concat(res);
+              } else {
+                this.searchResult = res;
+              }
+              this.isLoadMoreDisabled = (res.length < SystemConsts.system.ROW_LIMIT_FOR_LISTS);
+            }
         });
       },
       deep: true
     },
   },
   mounted() {
-    LookupService.getAllList()
-      .then((res) => {
-        this.brands = res.data.BRAND;
-        this.categories = res.data.CATEGORY;
-        this.search.term = ''; //triggers search mechanism
-    });
+    this.refreshAll();
   },
   components: {
     Edit: () => import('../definition/Edit'),
@@ -189,22 +220,16 @@ export default {
 </script>
 
 <style scoped>
-  .group-header {
-    color: white;
-    font-size: 85%;
-    font-weight: bold;
-    background-color: #607D8F;
-    text-transform: uppercase;
-    text-align: center;
+  .v-subheader, .v-list-item {
+    height: 30px;
+    min-height: 30px;
   }
-  .v-input--selection-controls {
-    margin-top: 0;
+  .altlik-card {
+    --wekit-box-shadow: none !important;
+    box-shadow: none !important;
+    background-color: #EBF3FF;
   }
-  .v-radio >>> label {
-    font-size: 90%;
-  }
-  .v-item--active {
-    font-weight: bold;
-    background-color: beige;
+  .v-menu__content {
+    background-color: #EBF3FF;
   }
 </style>

@@ -111,7 +111,7 @@ export default {
         const result = await ProductService.save(this.form);
         if (result == true) {
           this.close();
-          this.$emit('saved')
+          this.$emit('saved');
         }
         this.loading = false;
       }

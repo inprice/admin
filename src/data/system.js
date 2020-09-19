@@ -10,7 +10,7 @@ const keys = {
 const POSITIONS = [
   { value: 1, text: 'Lowest' },
   { value: 2, text: 'Lower' },
-  { value: 3, text: 'Avarage' },
+  { value: 3, text: 'Average' },
   { value: 4, text: 'Higher' },
   { value: 5, text: 'Highest' }
 ];

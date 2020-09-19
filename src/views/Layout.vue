@@ -79,12 +79,12 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'subscription'}" v-if="$store.get('auth/IS_ADMIN')">
+        <v-list-item link :to="{name: 'user-settings'}">
           <v-list-item-action>
-            <v-icon>mdi-credit-card-check-outline</v-icon>
+            <v-icon>mdi-account-circle-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Subscription</v-list-item-title>
+            <v-list-item-title>User Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item link :to="{name: 'company-settings'}" v-if="$store.get('auth/IS_ADMIN')">
@@ -93,6 +93,14 @@
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Company Settings</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'subscription'}" v-if="$store.get('auth/IS_ADMIN')">
+          <v-list-item-action>
+            <v-icon>mdi-credit-card-check-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Subscription</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -178,7 +186,7 @@
 
     </v-app-bar>
 
-    <v-content>
+    <v-main>
 
       <!-- v-responsive class="mx-auto overflow-visible" :style="this.$route.name != 'dashboard' ? 'max-width: 1024px' : ''">
         <v-container :fluid="this.$route.name == 'dashboard'" -->
@@ -188,7 +196,7 @@
           <router-view></router-view>
         </v-container>
       </v-responsive>
-    </v-content>
+    </v-main>
 
     <CompanyInfoDialog ref="companyInfoDialog"/>
 
