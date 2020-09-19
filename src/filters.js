@@ -8,17 +8,17 @@ export default (Vue) => {
   Vue.filter('toPosition', (value) => {
     switch (value) {
       case 1:
-        return 'Lowest';
+        return 'LOWEST';
       case 2:
-        return 'Lower';
+        return 'LOWER';
       case 3:
-        return 'Average';
+        return 'AVERAGE';
       case 4:
-        return 'Higher';
+        return 'HIGHER';
       case 5:
-        return 'Highest';
+        return 'HIGHEST';
     }
-    return 'Not Yet';
+    return 'NOT SET';
   });
 
   Vue.filter('toDifferenceLine', (diff) => {

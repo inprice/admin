@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="display-1">
-      Settings
+      User Settings
     </div>
 
     <p class="subtitle mt-4 mb-8">

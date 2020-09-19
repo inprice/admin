@@ -21,19 +21,6 @@
             <v-list-item-subtitle>{{ session.email }} - {{ session.role }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-
-        <v-list-item class="text-center">
-          <v-btn
-            outlined
-            rounded
-            small
-            class="mb-4 text-capitalize mx-auto"
-            to="settings"
-            @click="menu=!menu"
-          >
-            Manage Your Inprice account
-          </v-btn>
-        </v-list-item>
       </v-card>
 
       <v-card>

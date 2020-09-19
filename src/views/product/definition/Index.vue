@@ -1,6 +1,21 @@
 <template>
   <div v-if="data.product">
 
+    <div class="d-flex justify-space-between mt-2">
+      <v-btn 
+        small
+        @click="$router.push( { name: 'products' })">
+          <v-icon class="mr-2">mdi-arrow-left-circle-outline</v-icon>
+          Back to Products
+      </v-btn>
+      <v-btn 
+        small
+        @click="remove">
+          <v-icon class="mr-2">mdi-close-circle-outline</v-icon>
+          Delete
+      </v-btn>
+    </div>
+
     <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" />
     <prices :prod="data.product" class="mt-2" v-if="data.product.priceDetails.price" />
 
@@ -47,7 +62,7 @@ export default {
       }
     },
     findProduct() {
-      ProductService.get(this.$route.params.id).then(res => {
+      ProductService.getEverything(this.$route.params.id).then(res => {
         if (res && res.status == true) {
           this.data = res.data;
         }

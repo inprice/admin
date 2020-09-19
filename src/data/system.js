@@ -8,11 +8,11 @@ const keys = {
 };
 
 const POSITIONS = [
-  { value: 1, text: 'LOWEST' },
-  { value: 2, text: 'LOWER' },
-  { value: 3, text: 'AVARAGE' },
-  { value: 4, text: 'HIGHER' },
-  { value: 5, text: 'HIGHEST' }
+  { value: 1, text: 'Lowest' },
+  { value: 2, text: 'Lower' },
+  { value: 3, text: 'Average' },
+  { value: 4, text: 'Higher' },
+  { value: 5, text: 'Highest' }
 ];
 
 const STATUSES = [

@@ -9,12 +9,14 @@
 </template>
 
 <script>
+import SystemConsts from '@/data/system';
+
 export default {
   name: "single-position",
   props: ['position'],
-  data() {
-    return {
-      positions: [ 'Lowest', 'Lower', 'Average', 'Higher', 'Highest' ],
+  computed: {
+    positions() {
+      return SystemConsts.POSITIONS;
     }
   }
 }

@@ -7,14 +7,7 @@
         <div>{{ prod.name }}</div>
         <v-spacer></v-spacer>
         <v-btn 
-          small dark
-          color="red"
-          @click="$emit('remove')">
-            Delete
-        </v-btn>
-        <v-btn 
           small 
-          class="mx-2"
           color="info"
           @click="$emit('edit')">
             Edit
