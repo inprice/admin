@@ -21,7 +21,7 @@
         left
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-icon v-on="on" v-bind="attrs">mdi-plus</v-icon>
+          <v-icon v-on="on" v-bind="attrs" tabindex="-1">mdi-plus</v-icon>
         </template>
 
         <v-card>

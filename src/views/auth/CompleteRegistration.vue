@@ -26,14 +26,18 @@
           onSubmit="return false"
           @keyup.native.enter="valid && submit($event)"
         >
+
+          <div class="text-center">Activation Code</div>
           <v-text-field
             ref="code"
-            outlined dense
+            outlined
+            x-large
             v-model="form.code"
             :rules="rules.code"
-            label="Activation Code"
+            v-mask="'###-###'"
             type="text"
-            maxlength="32"
+            class="display-1 centered-input"
+            maxlength="7"
           />
         </v-form>
 
@@ -76,7 +80,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await AuthService.completeRegistration(this.form.code);
+        const result = await AuthService.completeRegistration(this.form.code.replaceAll('-', ''));
         if (result == true) {
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
           Utility.showInfoMessage('Registration Completion', 'Congrats, you have successfully registered your company.')
@@ -89,7 +93,7 @@ export default {
       this.rules = {
         code: [
           v => !!v || "Required",
-          v => (v.length == 32) || "Must be 32 chars"
+          v => (v.length == 7) || "Must be 6 chars"
         ],
       }
     }
@@ -99,3 +103,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .centered-input >>> input {
+    text-align: center
+}
+</style>

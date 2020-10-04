@@ -17,7 +17,7 @@
       class="mt-5 row" 
       v-if="!!report || !!report.company || !!report.company.planId"
       color="red" border="left" elevation="2" colored-border type="warning">
-      The indicators below will be full of data after you have a plan and competitors!
+      The indicators below will be full of data after you have a plan and links!
     </v-alert>
 
     <v-row>
@@ -44,21 +44,21 @@
       </v-card>
 
       <!-- -------------------------------- -->
-      <!-- Competitors status distributions -->
+      <!-- Links status distributions -->
       <!-- -------------------------------- -->
       <v-card class="col">
         <v-card-title>
           <v-icon class="mr-4">mdi-layers-outline</v-icon>
           <div class="col pa-0">
-            <div>Competitor statuses</div>
-            <div class="caption float-left">The statuses of your competitors.</div>
+            <div>Link statuses</div>
+            <div class="caption float-left">The statuses of your links.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
         <statuses-pie-chart
           :width="300" :height="300"
-          :series="report.competitors.statusDists" 
-          v-if="report && report.competitors && report.competitors.statusDists.length"
+          :series="report.links.statusDists" 
+          v-if="report && report.links && report.links.statusDists.length"
         />
         <div v-else class="ml-2 mt-3">
           No data
@@ -68,22 +68,22 @@
 
     <v-row>
       <!-- ------------------ -->
-      <!-- MRU 25 Competitors -->
+      <!-- MRU 25 Links -->
       <!-- ------------------ -->
       <v-card class="col">
         <v-card-title>
           <v-icon class="mr-4">mdi-account-search-outline</v-icon>
           <div class="col pa-0">
-            <div>Competitors</div>
-            <div class="caption float-left">The list of most recently updated 25 competitors.</div>
+            <div>Links</div>
+            <div class="caption float-left">The list of most recently updated 25 links.</div>
           </div>
         </v-card-title>
         <v-divider></v-divider>
-        <v-simple-table dense v-if="report && report.competitors && report.competitors.mru25.length">
+        <v-simple-table dense v-if="report && report.links && report.links.mru25.length">
           <template v-slot:default>
             <thead>
               <tr>
-                <th width="20%">Competitor</th>
+                <th width="20%">Link</th>
                 <th>Product</th>
                 <th width="10%" class="text-right">Price</th>
                 <th width="20%">Status</th>
@@ -91,12 +91,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, index) in report.competitors.mru25" :key="index">
+              <tr v-for="(row, index) in report.links.mru25" :key="index">
                 <td width="20%">{{ row.seller || 'NA' }}</td>
                 <td>{{ row.productName }}</td>
                 <td width="10%" class="text-right font-weight-bold">{{ row.price | toPrice }}</td>
                 <td width="20%">{{ row.status | formatStatus }}</td>
-                <td width="15%">{{ row.lastUpdate | formatDate }}</td>
+                <td width="15%">
+                  <ago :date="row.lastUpdate" />
+                </td>
               </tr>
             </tbody>
           </template>
@@ -117,7 +119,7 @@
           <v-icon class="mr-4">mdi-arrow-down-circle-outline</v-icon>
           <div class="col pa-0">
             <div>10 products with low prices</div>
-            <div class="caption float-left">The list of 10 products having the lowest prices among their competitors.</div>
+            <div class="caption float-left">The list of 10 products having the lowest prices among their links.</div>
           </div>
         </v-card-title>
         <v-divider></v-divider>
@@ -127,7 +129,7 @@
               <tr>
                 <th width="20%">Name</th>
                 <th class="text-right">Price</th>
-                <th class="text-right">Competitors</th>
+                <th class="text-right">Links</th>
                 <th class="text-right">Ranking</th>
                 <th class="text-center">Date</th>
                 <th class="text-center">Action</th>
@@ -137,9 +139,11 @@
               <tr v-for="(row) in report.products.extremePrices.lowest" :key="row.id">
                 <td>{{ row.name }}</td>
                 <td class="text-right">{{ row.price | toCurrency }}</td>
-                <td class="text-right">{{ row.competitors || 0 }}</td>
+                <td class="text-right">{{ row.links || 0 }}</td>
                 <td class="text-right">{{ row.ranking || 1 }}</td>
-                <td class="text-center">{{ row.lastUpdate | formatDate }}</td>
+                <td class="text-center">
+                  <ago :date="row.lastUpdate" />
+                </td>
                 <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
               </tr>
             </tbody>
@@ -160,7 +164,7 @@
           <v-icon class="mr-4">mdi-arrow-up-circle-outline</v-icon>
           <div class="col pa-0">
             <div>10 Products with high prices</div>
-            <div class="caption float-left">The list of 10 products having the highest prices among their competitors.</div>
+            <div class="caption float-left">The list of 10 products having the highest prices among their links.</div>
           </div>
         </v-card-title>
         <v-divider></v-divider>
@@ -170,7 +174,7 @@
               <tr>
                 <th width="20%">Name</th>
                 <th class="text-right">Price</th>
-                <th class="text-right">Competitors</th>
+                <th class="text-right">Links</th>
                 <th class="text-right">Ranking</th>
                 <th class="text-center">Date</th>
                 <th class="text-center">Action</th>
@@ -180,9 +184,11 @@
               <tr v-for="(row) in report.products.extremePrices.highest" :key="row.id">
                 <td>{{ row.name }}</td>
                 <td class="text-right">{{ row.price | toCurrency }}</td>
-                <td class="text-right">{{ row.competitors || 0 }}</td>
+                <td class="text-right">{{ row.links || 0 }}</td>
                 <td class="text-right">{{ row.ranking || 1 }}</td>
-                <td class="text-center">{{ row.lastUpdate | formatDate }}</td>
+                <td class="text-center">
+                  <ago :date="row.lastUpdate" />
+                </td>
                 <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
               </tr>
             </tbody>
@@ -206,7 +212,7 @@ export default {
       report: {},
       total: {
         product: 0,
-        competitor: 0
+        link: 0
       }
     };
   },
@@ -224,11 +230,11 @@ export default {
         this.total.product = prodCount;
 
         let compCount = 0;
-        for (var j = 0; j < this.report.competitors.statusDists.length; j++) {
-          const comp = this.report.competitors.statusDists[j];
+        for (var j = 0; j < this.report.links.statusDists.length; j++) {
+          const comp = this.report.links.statusDists[j];
           compCount += comp.count;
         }
-        this.total.competitor = compCount;
+        this.total.link = compCount;
       }
     },  
   },

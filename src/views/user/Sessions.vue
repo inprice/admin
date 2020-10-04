@@ -43,7 +43,9 @@
               <tr v-for="ses in sessions" :key="ses.date">
                 <td>{{ ses.ip }}</td>
                 <td>{{ ses.browser }} on {{ ses.os }}</td>
-                <td>{{ ses.date | formatDate }}</td>
+                <td>
+                  <ago :date="ses.date" />
+                </td>
               </tr>
             </tbody>
           </template>

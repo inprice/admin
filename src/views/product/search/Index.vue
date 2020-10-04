@@ -164,9 +164,14 @@ export default {
       LookupService.getAllList()
         .then((res) => {
           if (res && res.data) {
-            this.positions = [{ key: 0, value: 'ALL POSITIONS' }, ...res.data.POSITIONS];
-            this.brands = [{ key: 0, value: 'ALL BRANDS' }, ...res.data.BRAND];
-            this.categories = [{ key: 0, value: 'ALL CATEGORIES' }, ...res.data.CATEGORY];
+            this.brands = [{ key: 0, value: 'ALL BRANDS' }];
+            this.categories = [{ key: 0, value: 'ALL CATEGORIES' }];
+            this.positions = [{ key: 0, value: 'ALL POSITIONS' }];
+
+            if (res.data.BRAND) this.brands.push(...res.data.BRAND);
+            if (res.data.CATEGORY) this.categories.push(...res.data.CATEGORY);
+            if (res.data.POSITIONS) this.positions.push(...res.data.POSITIONS);
+
             this.triggerSearch();
           }
       });
@@ -178,6 +183,7 @@ export default {
   watch: {
     'search': {
       handler: function (form) {
+        console.log("a----------------a--------------------a--------------a");
         //we have to clone it since search form is sensitive for changes.
         //any direct change on search form cause an endless loop for this method!
         const cloneForm = JSON.parse(JSON.stringify(form));

@@ -37,7 +37,9 @@
               <tr v-for="(cpn, index) in coupons" :key="cpn.id">
                 <td class="text-center font-weight-bold">{{ cpn.code }}</td>
                 <td class="text-center">{{ cpn.description }}</td>
-                <td class="text-center">{{ cpn.issuedAt | formatDate }}</td>
+                <td class="text-center">
+                  <ago :date="cpn.issuedAt" />
+                </td>
                 <td class="text-center font-weight-bold">{{ cpn.days }}</td>
                 <td class="text-center pl-0">
                   <v-btn

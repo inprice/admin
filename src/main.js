@@ -22,6 +22,11 @@ import Chart from 'chart.js'
 /* eslint-disable no-unused-vars */
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+import VueMask from 'v-mask'
+Vue.use(VueMask);
+
+Vue.component('ago', () => import('./component/simple/Ago.vue'));
+
 Chart.defaults.global.legend.display = false;
 
 new Vue({

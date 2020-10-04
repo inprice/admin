@@ -24,12 +24,12 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link :to="{name: 'competitors'}">
+        <v-list-item link :to="{name: 'links'}">
           <v-list-item-action>
             <v-icon>mdi-link-variant</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Competitors' Statuses</v-list-item-title>
+            <v-list-item-title>Links' Statuses</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

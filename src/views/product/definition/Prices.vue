@@ -8,12 +8,14 @@
         <v-icon class="mr-4">mdi-finance</v-icon>
         <div>
           <div>Prices</div>
-          <div class="caption">Calculated prices of your competitors defined in the following section</div>
+          <div class="caption">Calculated prices of your links defined in the following section</div>
         </div>
         <v-spacer></v-spacer>
         <div class="text-right caption">
           <strong>Updated</strong>
-          <div>{{ prod.priceDetails.createdAt | formatDate }}</div>
+          <div>
+            <ago :date="prod.priceDetails.createdAt" />
+          </div>
         </div>
       </v-card-title>
 

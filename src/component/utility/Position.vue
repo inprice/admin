@@ -4,7 +4,7 @@
       <template v-slot:activator="{ on }">
         <div class="text-center caption grey lighten-2" v-on="on"><v-icon>mdi-help-circle-outline</v-icon> Position</div>
       </template>
-      <span>Indicates your level among your competitors</span>
+      <span>Indicates your level among your links</span>
     </v-tooltip>
 
     <v-divider></v-divider>

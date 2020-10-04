@@ -39,7 +39,7 @@
             </div>
 
             <div class="caption px-3 pt-1">
-              {{ (row.updatedAt || row.createdAt) | formatDate }}
+              <ago :date="row.updatedAt || row.createdAt" />
             </div>
           </div>
 

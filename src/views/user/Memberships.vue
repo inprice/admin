@@ -42,7 +42,9 @@
               <tr v-for="mem in memberships" :key="mem.id">
                 <td>{{ mem.company }}</td>
                 <td class="text-center">{{ mem.role }}</td>
-                <td class="text-center">{{ mem.date | formatDate }}</td>
+                <td class="text-center">
+                  <ago :date="mem.date" />
+                </td>
                 <td class="text-center" v-if="mem.status == 'JOINED'">
                   <v-btn
                     v-if="mem.role != 'ADMIN'"
