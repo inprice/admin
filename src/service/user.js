@@ -35,13 +35,13 @@ export default {
   },
 
   async getMemberships() {
-    const res = await Helper.call('Getting Memberships', { method: 'get', url: baseURL + '/memberships' });
+    const res = await Helper.call('Memberships', { method: 'get', url: baseURL + '/memberships' });
     if (res.status == true && res.data) return res.data;
     return null;
   },
 
-  async leaveMembership(id) {
-    const res = await Helper.call('Leave Membership', { method: 'put', url: baseURL + '/leave-membership', data: { value: id } });
+  async leaveMember(id) {
+    const res = await Helper.call('Leave Member', { method: 'put', url: baseURL + '/leave-member', data: { value: id } });
     return res.status;
   },
 

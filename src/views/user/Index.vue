@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     acceptInvitation() {
-      this.$refs.memberships.refreshMemberships();
+      this.$refs.memberships.refreshMembers();
     }
   },
   components: {

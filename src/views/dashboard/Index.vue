@@ -5,9 +5,9 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-right mt-4">
+      <div class="text-right mt-4" v-if="hasAPlan">
         <span class="caption mr-2">{{ report.date }}</span>
-        <v-btn small @click="refresh">
+        <v-btn small color="success" @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
         </v-btn>
       </div>
@@ -15,16 +15,22 @@
 
     <v-alert
       class="mt-5 row" 
-      v-if="!!report || !!report.company || !!report.company.planId"
+      v-if="! hasAPlan"
       color="red" border="left" elevation="2" colored-border type="warning">
-      The indicators below will be full of data after you have a plan and links!
+      You have no active plan yet!
+      <v-btn 
+        small
+        class="ml-10"
+        @click="$router.push( { name: 'subscription' })">
+          Please click here
+      </v-btn>
     </v-alert>
 
     <v-row>
       <!-- ------------------------------- -->
       <!-- Products position statuses -->
       <!-- ------------------------------- -->
-      <v-card class="col">
+      <v-card class="col" v-if="report && report.products && report.products.positionDists">
         <v-card-title>
           <v-icon class="mr-4">mdi-layers</v-icon>
           <div class="col pa-0">
@@ -36,17 +42,13 @@
         <positions-bar-chart 
           :width="300" :height="300"
           :series="report.products.positionDists" 
-          v-if="report && report.products && report.products.positionDists.length"
         />
-        <div v-else class="ml-2 mt-3">
-          No data
-        </div>
       </v-card>
 
       <!-- -------------------------------- -->
       <!-- Links status distributions -->
       <!-- -------------------------------- -->
-      <v-card class="col">
+      <v-card class="col" v-if="report && report.links && report.links.statusDists">
         <v-card-title>
           <v-icon class="mr-4">mdi-layers-outline</v-icon>
           <div class="col pa-0">
@@ -58,11 +60,7 @@
         <statuses-pie-chart
           :width="300" :height="300"
           :series="report.links.statusDists" 
-          v-if="report && report.links && report.links.statusDists.length"
         />
-        <div v-else class="ml-2 mt-3">
-          No data
-        </div>
       </v-card>
     </v-row>
 
@@ -75,7 +73,7 @@
           <v-icon class="mr-4">mdi-account-search-outline</v-icon>
           <div class="col pa-0">
             <div>Links</div>
-            <div class="caption float-left">The list of most recently updated 25 links.</div>
+            <div class="caption float-left">The list of Most Recently Updated 25 links.</div>
           </div>
         </v-card-title>
         <v-divider></v-divider>
@@ -215,6 +213,11 @@ export default {
         link: 0
       }
     };
+  },
+  computed: {
+    hasAPlan() {
+      return this.report && this.report.company && this.report.company.planId;
+    }
   },
   methods: {
     async refresh() {

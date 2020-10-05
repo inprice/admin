@@ -99,7 +99,7 @@ export default {
         const result = await AuthService.acceptInvitation(this.form);
         if (result == true) {
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
-          Utility.showInfoMessage('Accept Invitation', 'Your have successfully activated your membership')
+          Utility.showInfoMessage('Accept Invitation', 'Your have successfully activated your member')
           return;
         }
         this.loading = false;

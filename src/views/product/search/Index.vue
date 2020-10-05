@@ -142,7 +142,7 @@ export default {
       positions: [],
       brands: [],
       categories: [],
-      isLoadMoreDisabled: false,
+      isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
     };
   },
@@ -183,7 +183,6 @@ export default {
   watch: {
     'search': {
       handler: function (form) {
-        console.log("a----------------a--------------------a--------------a");
         //we have to clone it since search form is sensitive for changes.
         //any direct change on search form cause an endless loop for this method!
         const cloneForm = JSON.parse(JSON.stringify(form));

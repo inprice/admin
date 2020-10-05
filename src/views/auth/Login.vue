@@ -149,7 +149,7 @@ export default {
       //   this.infoMessage = "Your registration link is invalid or expired. Please try again.";
       //   break;
       case 'ap17':
-        this.successMessage = "You have successfully activated your membership. Please login.";
+        this.successMessage = "You have successfully activated your member. Please login.";
         break;
       case 'mqn6':
         this.errorMessage = "Your activation link is invalid or expired. Please ask again.";

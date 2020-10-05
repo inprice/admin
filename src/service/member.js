@@ -1,6 +1,6 @@
 import Helper from './helper';
 
-const baseURL = '/membership';
+const baseURL = '/member';
 
 export default {
 
