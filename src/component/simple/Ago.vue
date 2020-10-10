@@ -1,5 +1,5 @@
 <template>
-  <div :title="date" class="clickable" v-if="date">
+  <div :title="date" v-if="date">
     {{ date | formatDate }}
   </div>
 </template>
@@ -9,9 +9,3 @@ export default {
   props: ['date']
 }
 </script>
-
-<style scoped>
-  .clickable {
-    cursor: pointer !important;
-  }
-</style>

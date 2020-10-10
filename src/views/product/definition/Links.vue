@@ -6,7 +6,7 @@
         <v-icon class="mr-4">mdi-account-multiple</v-icon>
         <div>
           <div>Links</div>
-          <div class="caption">The list of your links for the products displayed on this page.</div>
+          <div class="caption">The url list of your competitors' product pages.</div>
         </div>
       </v-card-title>
 
@@ -153,6 +153,7 @@
 <script>
 import LinkService from '@/service/link';
 import Utility from '@/helpers/utility';
+import normalizeUrl from 'normalize-url';
 
 export default {
   props: ["prodId", "links"],
@@ -183,6 +184,7 @@ export default {
       }
     },
     async addNew() {
+      this.url = normalizeUrl(this.url, { defaultProtocol: 'https:', removeQueryParameters: ['ref'] });
       if (Object.keys(this.rules).length == 0) this.activateRules();
       await this.$refs.addNewForm.validate();
       if (this.isUrlValid) {

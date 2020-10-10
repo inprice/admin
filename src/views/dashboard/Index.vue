@@ -73,7 +73,7 @@
           <v-icon class="mr-4">mdi-account-search-outline</v-icon>
           <div class="col pa-0">
             <div>Links</div>
-            <div class="caption float-left">The list of Most Recently Updated 25 links.</div>
+            <div class="caption float-left">The list of Most Recently Updated 25 competitors.</div>
           </div>
         </v-card-title>
         <v-divider></v-divider>
@@ -117,7 +117,7 @@
           <v-icon class="mr-4">mdi-arrow-down-circle-outline</v-icon>
           <div class="col pa-0">
             <div>10 products with low prices</div>
-            <div class="caption float-left">The list of 10 products having the lowest prices among their links.</div>
+            <div class="caption float-left">The list of 10 products having the lowest prices among their competitors.</div>
           </div>
         </v-card-title>
         <v-divider></v-divider>
@@ -162,7 +162,7 @@
           <v-icon class="mr-4">mdi-arrow-up-circle-outline</v-icon>
           <div class="col pa-0">
             <div>10 Products with high prices</div>
-            <div class="caption float-left">The list of 10 products having the highest prices among their links.</div>
+            <div class="caption float-left">The list of 10 products having the highest prices among their competitors.</div>
           </div>
         </v-card-title>
         <v-divider></v-divider>

@@ -19,6 +19,7 @@
     "dotenv": "^8.2.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.28",
+    "normalize-url": "^5.2.1",
     "nprogress": "^0.2.0",
     "number-format.js": "^2.0.9",
     "v-mask": "^2.2.3",

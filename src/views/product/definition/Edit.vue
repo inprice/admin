@@ -36,23 +36,33 @@
               maxlength="10"
             />
 
-            <v-row>
-              <v-col>
-                <ext-combo :value.sync="form.brandId" label="Brand" type="BRAND" />
-              </v-col>
-              <v-col>
-                <ext-combo :value.sync="form.categoryId" label="Category" type="CATEGORY" />
-              </v-col>
-            </v-row>
+            <v-combobox
+              v-model="form.tags"
+              :items="tagData.items"
+              :search-input.sync="tagData.search"
+              hide-selected
+              hint="Maximum of 5 tags"
+              label="Tags"
+              multiple
+              persistent-hint
+              small-chips
+            >
+              <template v-slot:no-data>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      To create "<strong>{{ tagData.search }}</strong>". Press <kbd>enter</kbd>
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+            </v-combobox>
+
           </v-form>
-
         </v-card-text>
-
-        <v-divider class="mb-2"></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn small @click="close">Close</v-btn>
           <v-btn
             small
@@ -65,7 +75,6 @@
           </v-btn>
 
         </v-card-actions>
-
       </v-card>
     </v-dialog>
   </v-row>
@@ -73,6 +82,7 @@
 
 <script>
 import ProductService from '@/service/product';
+import TagService from '@/service/tag';
 import Utility from '@/helpers/utility';
 
 export default {
@@ -86,19 +96,45 @@ export default {
         code: '',
         name: '',
         price: 0,
-        brandId: null,
-        categoryId: null,
-      }
+        tags: [],
+      },
+      tagData: {
+        items: [],
+        search: null,
+      },
+      oldTags: [],
     };
   },
   methods: {
     open(data) {
       this.opened = true;
+
+      if (data) {
+        this.form.id = data.id;
+        this.form.code = data.code;
+        this.form.name = data.name;
+        this.form.price = data.price;
+        if (data.tags?.length) this.form.tags = data.tags;
+        this.oldTags = this.form.tags;
+      }
+
       let self = this;
       Utility.doubleRaf(() => {
         self.$refs.form.resetValidation();
-        if (data) self.form = data;
         self.$refs.code.focus();
+
+        TagService.getAll()
+          .then((res) => {
+            this.tagData.items = [];
+            if (res && res.data) {
+              if (res.data) {
+                for (let i=0; i<res.data.length; i++) {
+                  this.tagData.items.push(res.data[i].name);
+                }
+              }
+            }
+        });
+
       });
     },
     async save() {
@@ -107,6 +143,7 @@ export default {
       if (this.valid) {
         this.loading = true;
         this.form.price = parseFloat(this.form.price);
+        this.form.tagsChanged = !Utility.arraysEqual(this.oldTags, this.form.tags);
 
         const result = await ProductService.save(this.form);
         if (result == true) {
@@ -141,8 +178,12 @@ export default {
       this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);
     }
   },
-  components: {
-    ExtCombo: () => import('@/component/input/ExtCombo.vue'),
-  }
+  watch: {
+    'form.tags' (val) {
+      if (val.length > 5) {
+        this.$nextTick(() => this.form.tags.pop())
+      }
+    },
+  },
 };
 </script>

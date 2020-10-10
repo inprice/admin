@@ -43,6 +43,7 @@
         :close-on-content-click="false"
         offset-y
         bottom left
+        :nudge-width="100"
         transition="slide-x-transition"
       >
 
@@ -60,49 +61,42 @@
           <!-- Positions -->
           <v-card class="ma-2" tile>
             <v-list dense>  
-              <v-list-item-group v-model="search.position">
-                <v-list-item
-                  v-for="itm in positions"
-                  :key="itm.key"
-                >
-                  <v-list-item-content>
-                    <v-list-item-title :class="'font-weight-' + (itm.key == 0 ? 'bold' : 'regular')" v-text="itm.value"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title class=" font-weight-bold">POSITIONS</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-radio-group v-model="search.position" hide-details>
+                <v-radio
+                  dense
+                  v-for="(pos, index) in positions" :key="index"
+                  :label="`${positions[index]}`"
+                  :value="index"
+                ></v-radio>
+              </v-radio-group>
             </v-list>
           </v-card>
 
-          <!-- Brands -->
+          <!-- Tags -->
           <v-card class="ma-2" tile>
             <v-list dense>  
-              <v-list-item-group v-model="search.brand">
-                <v-list-item
-                  v-for="itm in brands"
-                  :key="itm.key"
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title class=" font-weight-bold">TAGS</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item v-for="(tag, index) in tags" :key="index">
+                <v-checkbox 
+                  dense
+                  v-model="search.selectedTags"
+                  :label="tag"
+                  :value="tag"
                 >
-                  <v-list-item-content>
-                    <v-list-item-title :class="'font-weight-' + (itm.key == 0 ? 'bold' : 'regular')" v-text="itm.value"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
+                </v-checkbox>
+              </v-list-item>
             </v-list>
           </v-card>
 
-          <v-card class="ma-2" tile>
-            <v-list dense>  
-              <v-list-item-group v-model="search.category">
-                <v-list-item
-                  v-for="itm in categories"
-                  :key="itm.key"
-                >
-                  <v-list-item-content>
-                    <v-list-item-title :class="'font-weight-' + (itm.key == 0 ? 'bold' : 'regular')" v-text="itm.value"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </v-card>
         </v-card>
 
       </v-menu>
@@ -124,7 +118,7 @@
 
 <script>
 import ProductService from '@/service/product';
-import LookupService from '@/service/lookup';
+import TagService from '@/service/tag';
 import SystemConsts from '@/data/system';
 
 export default {
@@ -133,15 +127,20 @@ export default {
       search: {
         term: '',
         position: 0,
-        brand: 0,
-        category: 0,
+        selectedTags: [],
         counter: 0 //used for trigger search mechanism when update or add a new product (look at edit tag above)
       },
       menu: false,
       searchResult: [],
-      positions: [],
-      brands: [],
-      categories: [],
+      tags: [],
+      positions: [
+        'ALL',
+        'Lowest',
+        'Lower',
+        'Average',
+        'Higher',
+        'Highest'
+      ],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
     };
@@ -161,17 +160,15 @@ export default {
       this.triggerSearch();
     },
     refreshAll() {
-      LookupService.getAllList()
+      TagService.getAll()
         .then((res) => {
           if (res && res.data) {
-            this.brands = [{ key: 0, value: 'ALL BRANDS' }];
-            this.categories = [{ key: 0, value: 'ALL CATEGORIES' }];
-            this.positions = [{ key: 0, value: 'ALL POSITIONS' }];
-
-            if (res.data.BRAND) this.brands.push(...res.data.BRAND);
-            if (res.data.CATEGORY) this.categories.push(...res.data.CATEGORY);
-            if (res.data.POSITIONS) this.positions.push(...res.data.POSITIONS);
-
+            this.tags = [];
+            if (res.data) {
+              for (let i=0; i<res.data.length; i++) {
+                this.tags.push(res.data[i].name);
+              }
+            }
             this.triggerSearch();
           }
       });
@@ -186,9 +183,6 @@ export default {
         //we have to clone it since search form is sensitive for changes.
         //any direct change on search form cause an endless loop for this method!
         const cloneForm = JSON.parse(JSON.stringify(form));
-        if (form.position && form.position > 1) cloneForm.position = this.positions[form.position].key;
-        if (form.brand && this.brands?.length) cloneForm.brand = this.brands[form.brand].key;
-        if (form.category && this.categories?.length) cloneForm.category = this.categories[form.category].key;
         //clicking load more is a different case
         if (this.isLoadMoreClicked == true && this.searchResult.length) {
           cloneForm.rowCount = this.searchResult.length;
@@ -207,6 +201,10 @@ export default {
               } else {
                 this.searchResult = res;
               }
+            } else {
+              this.searchResult = [];
+            }
+            if (res) {
               this.isLoadMoreDisabled = (res.length < SystemConsts.system.ROW_LIMIT_FOR_LISTS);
             }
         });
@@ -218,8 +216,8 @@ export default {
     this.refreshAll();
   },
   components: {
-    Edit: () => import('../definition/Edit'),
     List: () => import('./List'),
+    Edit: () => import('../definition/Edit'),
   },
 }
 </script>
@@ -232,9 +230,21 @@ export default {
   .altlik-card {
     --wekit-box-shadow: none !important;
     box-shadow: none !important;
-    background-color: #EBF3FF;
+    background-color: #EBF3FF;    
+  }
+  .v-radio {
+    padding: 0 16px;
+  }
+  .v-input--selection-controls {
+    margin-top: 0;
   }
   .v-menu__content {
     background-color: #EBF3FF;
+  }
+  .v-radio >>> label,
+  .v-input--checkbox >>> label {
+    font-size: 14px;
+    font-weight: 400 !important;
+    color: rgba(0, 0, 0, 0.87) !important;
   }
 </style>
