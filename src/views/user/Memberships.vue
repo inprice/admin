@@ -1,7 +1,7 @@
 <template>
   <div class="mt-5">
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-0">
         <v-icon class="mr-4">mdi-account-supervisor</v-icon>
         <div>
           <div>Memberships</div>
@@ -18,7 +18,7 @@
               elevation="1"
               :loading="loading.refresh" 
               :disabled="loading.refresh"
-              @click="refreshMemberships"
+              @click="refreshMembers"
             >
               <v-icon>mdi-refresh-circle</v-icon>
             </v-btn>
@@ -27,7 +27,7 @@
         </v-tooltip>
       </v-card-title>
 
-      <div v-if="memberships.length">
+      <div v-if="members.length">
         <v-simple-table>
           <template v-slot:default>
             <thead>
@@ -39,10 +39,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="mem in memberships" :key="mem.id">
-                <td>{{ mem.company }}</td>
+              <tr v-for="mem in members" :key="mem.id">
+                <td>{{ mem.name }}</td>
                 <td class="text-center">{{ mem.role }}</td>
-                <td class="text-center">{{ mem.date | formatDate }}</td>
+                <td class="text-center">
+                  <ago :date="mem.date" />
+                </td>
                 <td class="text-center" v-if="mem.status == 'JOINED'">
                   <v-btn
                     v-if="mem.role != 'ADMIN'"
@@ -55,7 +57,7 @@
                   </v-btn>
                   <div v-else>YOURS</div>
                 </td>
-                <td class="text-center" v-else>LEFT</td>
+                <td class="text-center" v-else>{{ mem.status }}</td>
               </tr>
             </tbody>
           </template>
@@ -65,7 +67,7 @@
 
         <p class="caption py-4">
           <v-icon class="mx-2">mdi-alert-circle-outline</v-icon>
-          Please note: If you leave from any company, you will be able to see refreshed user menu after login again.
+          Please note: If you leave from any company, you will be able to see the refreshed menu after login again.
         </p>
 
       </div>
@@ -73,7 +75,7 @@
         <v-divider></v-divider>
         <v-card-text>
           <p>
-            You have no membership right now.
+            You have no member right now.
           </p>
         </v-card-text>
       </div>
@@ -97,17 +99,17 @@ export default {
         accept: false,
         leave: false,
       },
-      memberships: []
+      members: []
     };
   },
   methods: {
-    async refreshMemberships() {
+    async refreshMembers() {
       this.loading.refresh = true;
       const result = await UserService.getMemberships();
       if (result) {
-        this.memberships = result;
+        this.members = result;
       } else {
-        this.memberships = [];
+        this.members = [];
       }
       this.loading.refresh = false;
     },
@@ -115,8 +117,8 @@ export default {
       this.$refs.confirm.open('Leave', 'You are about to leave from ' + company + '. Are you sure?').then(async (confirm) => {
         if (confirm == true) {
           this.loading.leave = true;
-          const result = await UserService.leaveMembership(id);
-          if (result == true) await this.refreshMemberships();
+          const result = await UserService.leaveMember(id);
+          if (result == true) await this.refreshMembers();
           this.loading.leave = false;
         }
       });
@@ -124,7 +126,7 @@ export default {
   },
   mounted() {
     Utility.doubleRaf(() => {
-      this.refreshMemberships();
+      this.refreshMembers();
     });
   },
   components: {

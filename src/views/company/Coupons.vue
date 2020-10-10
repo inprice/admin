@@ -41,9 +41,7 @@
                   <v-chip small label outlined dark v-else color="orange">AVAILABLE</v-chip>
                 </td>
                 <td class="text-center">
-                  <span v-if="cpn.issuedAt">
-                    {{ cpn.issuedAt | formatDate }}
-                  </span>
+                  <ago :date="cpn.issuedAt" v-if="cpn.issuedAt" />
                   <v-btn
                     v-else
                     small

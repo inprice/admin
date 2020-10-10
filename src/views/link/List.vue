@@ -2,11 +2,11 @@
   <div>
 
     <div class="display-1">
-      Competitors' Statuses
+      Links' Statuses
     </div>
 
     <p class="subtitle">
-      You can search all the statuses of your competitors here
+      You can search all the statuses of your links here
     </p>
 
     <v-row class="mb-2 px-0">
@@ -37,7 +37,7 @@
     <div v-if="rows && rows.length > 0" class="mt-6">
 
       <div class="caption text-uppercase">
-        Competitors
+        Links
       </div>
 
       <div v-for="row in rows" :key="row.id" class="mb-4">
@@ -71,7 +71,9 @@
               </tr> 
               <tr>
                 <td class="subtitle-2">Updated </td>
-                <td class="body-2">{{ (row.last_update || row.createdAt) | formatDate }}</td>
+                <td class="body-2">
+                  <ago :date="row.last_update || row.createdAt" />
+                </td>
               </tr>
             </table>
 
@@ -84,7 +86,7 @@
     </div>
 
     <div v-else class="mt-5">
-      No competitors found! You can change your criteria to find something else
+      No links found! You can change your criteria to find something else
     </div>
 
   </div>
@@ -92,7 +94,7 @@
 </template>
 
 <script>
-import CompetitorService from '@/service/competitor';
+import LinkService from '@/service/link';
 import Utility from '@/helpers/utility';
 import SystemConsts from '@/data/system';
 
@@ -119,7 +121,7 @@ export default {
   },
   methods: {
     async remove(id) {
-      const result = await CompetitorService.remove(id);
+      const result = await LinkService.remove(id);
       if (result == true) this.search();
     },
     async search(loadmore=false) {
@@ -133,7 +135,7 @@ export default {
         this.searchForm.lastRowNo = 0;
       }
 
-      const result = await CompetitorService.search(this.searchForm);
+      const result = await LinkService.search(this.searchForm);
 
       if (result) {
         if (loadmore == true) {

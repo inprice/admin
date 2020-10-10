@@ -112,15 +112,15 @@ const router = new VueRouter({
           component: () => import('./views/product/import/ImportedProducts.vue')
         },
         {
-          name: 'prod-competitors',
-          path: 'product/competitors/:prod_id',
-          component: () => import('./views/product/Competitors.vue')
+          name: 'prod-links',
+          path: 'product/links/:prod_id',
+          component: () => import('./views/product/Links.vue')
         },
         */
        {
-          name: 'competitors',
-          path: 'competitors',
-          component: () => import('./views/competitor/List.vue')
+          name: 'links',
+          path: 'links',
+          component: () => import('./views/link/List.vue')
         },
         {
           name: 'user-settings',

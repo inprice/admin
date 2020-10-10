@@ -21,25 +21,17 @@
           <div class="d-flex justify-space-between">
             <div class="ml-2">
               <v-chip
-                v-if="row.brand"
                 class="ma-1 font-weight-bold"
-                color="cyan darken"
-                dark label small
+                outlined small dark
+                v-for="(tag, index) in row.tags" :key="index"
+                :color="`${tagcolors[index]} darken-1`"
               >
-                {{ row.brand }}
-              </v-chip>
-              <v-chip
-                v-if="row.category"
-                class="ma-1 font-weight-bold"
-                color="blue lighten"
-                dark label small
-              >
-                {{ row.category }}
+                {{ tag }}
               </v-chip>
             </div>
 
             <div class="caption px-3 pt-1">
-              {{ (row.updatedAt || row.createdAt) | formatDate }}
+              <ago :date="row.updatedAt || row.createdAt" />
             </div>
           </div>
 
@@ -52,8 +44,15 @@
 </template>
 
 <script>
+import Consts from "@/data/system";
+
 export default {
   props: ['rows'],
+  computed: {
+    tagcolors() {
+      return Consts.system.TAG_COLORS;
+    }
+  },
   methods: {
     edit(id) {
       this.$emit('edit', id);

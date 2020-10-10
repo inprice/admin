@@ -58,7 +58,9 @@ export default (Vue) => {
         return moment(value).tz(store.get(session+'@timezone')).fromNow();
       }
       /* eslint-disable no-empty */
-    } catch (error) { }
+    } catch (error) {
+      console.error('Failed to format date', value, store.get(session), error);
+     }
     return 'NA';
   });
 

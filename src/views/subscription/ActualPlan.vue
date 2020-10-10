@@ -24,13 +24,13 @@
     </v-simple-table>
 
     <div class="d-flex pa-4" v-else>
-      <div>You have <strong>no actual plan</strong> at the moment. Please pick a plan from the following table... or</div>
+      <div>You have <strong>no actual plan</strong> at the moment. Please pick a plan from the following table</div>
       <v-spacer></v-spacer>
       <v-btn 
         small
         color="success"
         @click="openApplyCouponDialog">
-          Apply a coupon
+          or Apply a coupon
       </v-btn>
     </div>
 

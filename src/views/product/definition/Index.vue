@@ -19,7 +19,7 @@
     <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" />
     <prices :prod="data.product" class="mt-2" v-if="data.product.priceDetails.price" />
 
-    <competitors :prodId="data.product.id" :competitors="data.competitors" class="mt-2" />
+    <links :prodId="data.product.id" :links="data.links" class="mt-2" />
 
     <edit ref="editDialog" @saved="findProduct" />
     <confirm ref="confirm" />
@@ -76,7 +76,7 @@ export default {
     Info: () => import('./Info'),
     Edit: () => import('./Edit'),
     Prices: () => import('./Prices'),
-    Competitors: () => import('./Competitors'),
+    Links: () => import('./Links'),
     confirm: () => import('@/component/Confirm.vue')
   },
   watch: {

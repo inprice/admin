@@ -5,8 +5,8 @@
       <v-card-title>
         <v-icon class="mr-4">mdi-account-multiple</v-icon>
         <div>
-          <div>Competitors</div>
-          <div class="caption">The list of your competitors for the products displayed on this page.</div>
+          <div>Links</div>
+          <div class="caption">The url list of your competitors' product pages.</div>
         </div>
       </v-card-title>
 
@@ -47,7 +47,7 @@
                 </template>
                 Please keep in mind
                 <ul class="caption">
-                  <li>URL must be the exact address of your competitor's product page.</li>
+                  <li>URL must be the exact address of your link's product page.</li>
                   <li>At least, Code, Name and Price fields should be displayed on it.</li>
                   <li>It must start with either http:// or https://</li>
                   <li>It cannot be less than 10 chars.</li>
@@ -151,11 +151,12 @@
 </template>
 
 <script>
-import CompetitorService from '@/service/competitor';
+import LinkService from '@/service/link';
 import Utility from '@/helpers/utility';
+import normalizeUrl from 'normalize-url';
 
 export default {
-  props: ["prodId", "competitors"],
+  props: ["prodId", "links"],
   data() {
     return {
       url: '',
@@ -183,11 +184,12 @@ export default {
       }
     },
     async addNew() {
+      this.url = normalizeUrl(this.url, { defaultProtocol: 'https:', removeQueryParameters: ['ref'] });
       if (Object.keys(this.rules).length == 0) this.activateRules();
       await this.$refs.addNewForm.validate();
       if (this.isUrlValid) {
         this.loading = true;
-        const result = await CompetitorService.insert({ url: this.url, productId: this.prodId });
+        const result = await LinkService.insert({ url: this.url, productId: this.prodId });
         if (result.status == true) {
           this.snackbarText = 'URL is successfully added.'
           this.snackbar = true;
@@ -198,7 +200,7 @@ export default {
       }
     },
     async changeStatus(index, id, status) {
-      const result = await CompetitorService.changeStatus(id, status);
+      const result = await LinkService.changeStatus(id, status);
       if (result == true) {
         this.rows[index].status = status;
       }
@@ -206,7 +208,7 @@ export default {
     remove(index, id, name) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
         if (confirm == true) {
-          const result = await CompetitorService.remove(id);
+          const result = await LinkService.remove(id);
           if (result == true) {
             this.rows.splice(index, 1);
             this.snackbarText = 'URL is successfully deleted.'
@@ -240,7 +242,7 @@ export default {
         url: [
           v => !!v || "Required",
           v => (v.length >= 10 && v.length <= 1024) || "URL must be longer than 10 chars",
-          v => Utility.verifyURL(v) || "Invalid URL! It must be the exact address of your competitor's product page.",
+          v => Utility.verifyURL(v) || "Invalid URL! It must be the exact address of your link's product page.",
         ],
       }
     },
@@ -250,12 +252,12 @@ export default {
   },
   mounted() {
     Utility.doubleRaf(() => {
-      this.rows = this.competitors
+      this.rows = this.links
     });
   },
   watch: {
-    competitors() {
-      this.rows = this.competitors;
+    links() {
+      this.rows = this.links;
     }
   }
 };

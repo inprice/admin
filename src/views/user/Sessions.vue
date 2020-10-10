@@ -40,10 +40,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="ses in sessions" :key="ses.date">
+              <tr v-for="(ses, index) in sessions" :key="index">
                 <td>{{ ses.ip }}</td>
                 <td>{{ ses.browser }} on {{ ses.os }}</td>
-                <td>{{ ses.date | formatDate }}</td>
+                <td>
+                  <ago :date="ses.accessedAt" />
+                </td>
               </tr>
             </tbody>
           </template>

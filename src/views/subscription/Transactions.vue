@@ -37,7 +37,7 @@
             </thead>
             <tbody>
               <tr v-for="row in all" :key="row.id">
-                <td>{{ row.createdAt | formatDate }}</td>
+                <td><ago :date="row.createdAt"/></td>
                 <td>{{ row.event }}</td>
                 <td>{{ row.reason }}</td>
                 <td>{{ row.description }}</td>
@@ -59,7 +59,9 @@
             </thead>
             <tbody>
               <tr v-for="row in invoices" :key="row.id">
-                <td>{{ row.createdAt | formatDate }}</td>
+                <td>
+                  <ago :date="row.createdAt" />
+                </td>
                 <td>{{ row.event }}</td>
                 <td><v-btn :href="row.fileUrl" target="_blank" small class="ma-1">Open a new tab <v-icon right>mdi-arrow-right-circle-outline</v-icon></v-btn></td>
               </tr>
