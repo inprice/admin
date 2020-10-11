@@ -1,94 +1,98 @@
 <template>
   <div>
 
-    <div class="display-1">
-      Links' Statuses
-    </div>
-
-    <p class="subtitle">
-      You can search all the statuses of your links here
+    <p class="mt-3" v-if="!rows || rows.length < 1">
+      No link found! Please change your criteria or add new competitors to your products.
     </p>
 
-    <v-row class="mb-2 px-0">
-      <v-col cols="8">
-        <v-text-field 
-          ref="searchTerm"
-          v-model="searchForm.term"
-          placeholder="Platform or Seller name"
-          prepend-inner-icon="mdi-magnify"
-          append-icon="mdi-close"
-          @click:append="clearTerm"
-          dense outlined
-          hide-details
-        />
-      </v-col>
+    <v-hover v-else v-for="row in rows" :key="row.id">
+      <template v-slot="{ hover }">
 
-      <v-col cols="4">
-        <v-select
-          dense outlined
-          hide-details
-          v-model="searchForm.status"
-          :items="statuses"
-          :menu-props="{ auto: true, overflowY: true }"
-        />
-      </v-col>
-    </v-row>
+        <v-card class="mb-1 transition-swing" :class="`elevation-${hover ? 3 : 1}`">
 
-    <div v-if="rows && rows.length > 0" class="mt-6">
+          <div v-if="!row.lastUpdate">
 
-      <div class="caption text-uppercase">
-        Links
-      </div>
+            <div class="pa-3 d-flex justify-space-between">
+              <div class="text-truncate caption">
+                <div>{{ row.status }}</div>
+                <a :href="row.url" target="_blank">{{ row.url }}</a>
+              </div>
 
-      <div v-for="row in rows" :key="row.id" class="mb-4">
-        <v-hover v-slot:default="{ hover }">
-          <v-card outlined :elevation="hover ? 2 : 0" class="pa-2">
+              <div class="my-auto">
 
-            <v-btn icon @click="remove(row.id)" class="float-right mt-5 mr-2" :disabled="$store.get('auth/IS_JUST_VIEWER')">
-              <v-icon>mdi-delete-forever-outline</v-icon>
-            </v-btn>
+                <v-btn outlined small text class="mr-2 mt-1">
+                  Details
+                </v-btn>
 
-            <table>
-              <tr>
-                <td class="subtitle-2">Name </td>
-                <td class="body-2">{{ row.name || 'NA' }}</td>
-              </tr>
-              <tr>
-                <td class="subtitle-2">Seller </td>
-                <td class="body-2">{{ row.seller || 'NA' }}</td>
-              </tr>
-              <tr>
-                <td class="subtitle-2">Platform </td>
-                <td class="body-2">{{ row.platform  || 'NA' }}</td>
-              </tr>
-              <tr>
-                <td class="subtitle-2">Price </td>
-                <td class="body-2">{{ row.price | toCurrency }}</td>
-              </tr>
-              <tr>
-                <td class="subtitle-2">Status </td>
-                <td class="body-2">{{ row.status }}</td>
-              </tr> 
-              <tr>
-                <td class="subtitle-2">Updated </td>
-                <td class="body-2">
-                  <ago :date="row.last_update || row.createdAt" />
-                </td>
-              </tr>
-            </table>
+                <v-menu offset-y left>
+                  <template v-slot:activator="{ on }">
+                    <v-btn x-small fab  elevation="1" v-on="on">
+                      <v-icon dark>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
 
-          </v-card>
-        </v-hover>
-      </div>
+                  <v-list dense>
+                    <v-list-item :to="{name: 'product', params: { id: row.productId }}">
+                      <v-list-item-title>
+                        GO TO PRODUCT PAGE
+                      </v-list-item-title>
+                    </v-list-item>
 
-      <v-btn  class="mt-2" @click="search(true)" :disabled="!isLoadMoreEnabled">Load More</v-btn>
+                    <v-divider></v-divider>
 
-    </div>
+                    <v-list-item @click="remove(row.id, (row.name || row.url))">
+                      <v-list-item-title>DELETE</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
 
-    <div v-else class="mt-5">
-      No links found! You can change your criteria to find something else
-    </div>
+              </div>
+            </div>
+          </div>
 
+          <div v-else>
+            <div class="d-flex justify-space-between caption px-3 pt-1">
+              <div>#{{ row.sku }}</div>
+              <div>{{ row.status }}</div>
+            </div>
+
+            <div class="d-flex justify-space-between subtitle px-3 pt-1">
+              <div class="">{{ row.name }}</div>
+              <div>{{ row.price | toPrice }}</div>
+            </div>
+
+            <div class="row px-3">
+              <div class="col text-truncate pt-1">
+                <a :href="row.url" target="_blank">{{ row.url }}</a>
+              </div>
+            </div>
+
+            <div class="row px-3">
+              <div class="col">
+                <div class="caption">Seller</div>
+                <ago :date="row.seller" />
+              </div>
+              <div class="col">
+                <div class="caption">Platform</div>
+                <ago :date="row.platform" />
+              </div>
+              <div class="col">
+                <div class="caption">Last Checked</div>
+                <ago :date="row.lastChecked" />
+              </div>
+              <div class="col">
+                <div class="caption">Last Updated</div>
+                <ago :date="row.lastUpdated" />
+              </div>
+            </div>
+          </div>
+
+        </v-card>
+
+      </template>
+    </v-hover>
+
+    <confirm ref="confirm"></confirm>
   </div>
 
 </template>
@@ -96,81 +100,35 @@
 <script>
 import LinkService from '@/service/link';
 import Utility from '@/helpers/utility';
-import SystemConsts from '@/data/system';
 
 export default {
-  data() {
-    return {
-      rows: [],
-      isLoadMoreEnabled: true,
-      statuses: SystemConsts.STATUSES,
-      searchForm: {
-        term: '',
-        status: null,
-        lastRowNo: 0
-      }
-    }
-  },
-  watch: {
-    'searchForm.term'() {
-      this.search();
-    },
-    'searchForm.status'() {
-      this.search();
-    },
-  },
+  props: ['rows'],
   methods: {
-    async remove(id) {
-      const result = await LinkService.remove(id);
-      if (result == true) this.search();
-    },
-    async search(loadmore=false) {
-      this.isLoadMoreEnabled = false;
-
-      if (!this.searchForm.status || this.searchForm.status == null) delete this.searchForm.status;
-
-      if (loadmore == true) {
-        this.searchForm.lastRowNo = this.rows.length;
-      } else {
-        this.searchForm.lastRowNo = 0;
-      }
-
-      const result = await LinkService.search(this.searchForm);
-
-      if (result) {
-        if (loadmore == true) {
-          this.rows = this.rows.concat(result);
-        } else {
-          this.rows = result;
+    remove(id, name) {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
+        if (confirm == true) {
+          const result = await LinkService.remove(id);
+          if (result == true) {
+            Utility.showInfoMessage('Delete Link', 'Link successfully deleted.');
+            this.refreshMembers();
+          }
         }
-        this.isLoadMoreEnabled = (result.length == SystemConsts.system.ROW_LIMIT_FOR_LISTS);
-      } else {
-        this.rows = [];
-      }
-    },
-    clearTerm() {
-      this.searchForm.term = '';
-      this.$refs.searchTerm.focus();
+      });
     }
   },
-  mounted() {
-    Utility.doubleRaf(() => {
-      this.search();
-    });
+  components: {
+    confirm: () => import('@/component/Confirm.vue'),
   }
 };
 </script>
 
 <style scoped>
-  .truncate {
-    max-width: 1px;
-    white-space: nowrap;
+  tr {
+    cursor: pointer;
+  }
+  td {
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .subtitle-2 {
-    background-color: #eee;
-    padding: 0 12px;
-    min-width: 100px;
+    white-space: nowrap;
   }
 </style>

@@ -4,9 +4,9 @@
     <div class="d-flex justify-space-between mt-2">
       <v-btn 
         small
-        @click="$router.push( { name: 'products' })">
+        @click="$router.go(-1)">
           <v-icon class="mr-2">mdi-arrow-left-circle-outline</v-icon>
-          Back to Products
+          Go Back
       </v-btn>
       <v-btn 
         small

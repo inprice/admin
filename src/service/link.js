@@ -16,7 +16,7 @@ export default {
   },
 
   async search(form) {
-    const res = await Helper.call('Link Search', { method: 'get', url: baseURL + '/search' + Helper.toQueryString(form) });
+    const res = await Helper.call('Link Search', { url: baseURL + 's/search', data: form });
     if (res.status == true && res.data.rows) return res.data.rows;
     return null;
   },

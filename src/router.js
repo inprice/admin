@@ -120,7 +120,7 @@ const router = new VueRouter({
        {
           name: 'links',
           path: 'links',
-          component: () => import('./views/link/List.vue')
+          component: () => import('./views/link/Index.vue')
         },
         {
           name: 'user-settings',
