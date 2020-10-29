@@ -19,7 +19,7 @@
               @keyup.native.enter="valid && submit($event)"
             >
               <v-text-field
-                ref="password"
+                autofocus
                 label="Password"
                 v-model="form.password"
                 :rules="rules.password"
@@ -89,7 +89,7 @@ export default {
   methods: {
     async submit() {
       if (!this.form.token) {
-        Utility.showErrorMessage('Accept Invitation', 'submit', { reason: 'Invalid token' });
+        this.$store.commit('snackbar/setMessage', { text: 'Invalid token!' });
         return
       }
       this.activateRules();
@@ -99,7 +99,7 @@ export default {
         const result = await AuthService.acceptInvitation(this.form);
         if (result == true) {
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
-          Utility.showInfoMessage('Accept Invitation', 'Your have successfully activated your member')
+          this.$store.commit('snackbar/setMessage', { text: 'Your have successfully activated your member' });
           return;
         }
         this.loading = false;
@@ -120,10 +120,7 @@ export default {
   },
   mounted() {
     this.form.token = this.$route.query.token;
-    Utility.doubleRaf(() => {
-      this.$refs.password.focus();
-      Utility.removeTabIndexFromIconButtons(this.$el);
-    });
+    this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
   }
 };
 </script>

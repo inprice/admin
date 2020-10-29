@@ -16,7 +16,7 @@
       <p class="pt-5 mb-0">
         <v-form ref="form" v-model="valid">
           <v-file-input
-            ref="fileInput"
+            autofocus
             v-model="file"
             large 
             outlined 
@@ -95,7 +95,6 @@
 
 <script>
 import ImportService from '@/service/imbort';
-import Utility from '@/helpers/utility';
 
 export default {
   data() {
@@ -128,9 +127,6 @@ export default {
         this.loading = false;
       }
     }
-  },
-  mounted() {
-    Utility.doubleRaf(() => this.$refs.fileInput.focus());
   },
   components: {
     ResultSet: () => import('./ResultSet'),

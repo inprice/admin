@@ -26,7 +26,7 @@
           <v-scroll-x-transition leave-absolute>
             <div v-if="showAddNewBar" class="d-flex">
               <v-text-field 
-                ref="addNewBar"
+                autofocus
                 v-model="url"
                 :rules="rules.url"
                 @keyup.enter.native="addNew"
@@ -70,44 +70,129 @@
         
         <div v-if="rows && rows.length > 0">
 
-          <v-expansion-panels accordion hover focusable>
+          <v-expansion-panels hover focusable>
             <v-expansion-panel v-for="(row, index) in rows" :key="row.id">
               <v-expansion-panel-header>
                 <div class="col pa-0" v-if="row.seller">
-                  <span class="orange--text font-weight-bold">{{ row.seller }}</span> / {{ row.platform }}
+                  <span class="blue--text font-weight-bold">{{ row.seller }}</span>
+                  <span class="ml-1">({{ row.platform }})</span>
                 </div>
-                <div class="col pa-0 text-truncate " v-else>
+                <div class="col pa-0 text-right" v-if="row.price > 0">
+                  <span class="font-weight-bold">{{ row.price | toPrice }}</span>
+                </div>
+                <div class="col pa-0 text-truncate" v-if="row.problem" :title="row.problem">
                   {{ row.url }}
                 </div>
-                <div class="col-3 pa-0">
-                  {{ row.status || 'NA' }}
+                <div class="col pa-0 text-truncate" v-if="row.problem" :title="row.problem">
+                  <span class="red--text"> {{ row.problem }}</span>
+                </div>
+                <div class="col pa-0 text-truncate text-center" v-else>
+                  <span>{{ row.status }}</span>
                 </div>
               </v-expansion-panel-header>
 
-              <v-expansion-panel-content>
+              <v-expansion-panel-content class="px-2">
 
-                <v-simple-table class="col property-table pa-3 pb-0" dense v-if="row.price > 0">
-                  <template v-slot:default>
-                    <tbody>
-                      <tr>
-                        <td class="prop-name">Price</td>
-                        <td><v-text-field solo dense readonly hide-details="true" class="col-2" :value="row.price | toPrice" /></td>
-                      </tr>
-                      <tr>
-                        <td class="prop-name">Last Updated</td>
-                        <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="row.lastUpdate | formatDate" /></td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
+                <div v-if="row.price > 0" class="mt-3">
+                  <v-btn-toggle tile v-model="selectedTab">
+                    <v-btn @click="selectedTab=0" small>Info</v-btn>
+                    <v-btn @click="selectedTab=1" small>History</v-btn>
+                    <v-btn @click="selectedTab=2" small>Prices</v-btn>
+                    <v-btn @click="selectedTab=3" small>Specs</v-btn>
+                  </v-btn-toggle>
+                </div>
+
+                <v-tabs v-model="selectedTab" v-if="row.price > 0" class="v-card v-sheet theme--light mb-2">
+                  <!-- INFO -->
+                  <v-tab-item class="py-2">
+                    <v-simple-table class="col property-table" dense>
+                      <template v-slot:default>
+                        <tbody>
+                          <tr>
+                            <td class="prop-name">Price</td>
+                            <td><v-text-field solo dense readonly hide-details="true" class="col-2" :value="row.price | toPrice" /></td>
+                          </tr>
+                          <tr>
+                            <td class="prop-name">Last Updated</td>
+                            <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="row.lastUpdate | formatDate" /></td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-tab-item>
+                  <!-- HISTORY -->
+                  <v-tab-item class="pb-2">
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th class="text-center">Status</th>
+                            <th width="20%">Problem</th>
+                            <th class="text-center">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(line) in row.historyList" :key="line.id">
+                            <td class="text-center">{{ line.status }}</td>
+                            <td>{{ line.problem }}</td>
+                            <td class="text-center">
+                              <ago :date="line.createdAt" />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-tab-item>
+                  <!-- PRICES -->
+                  <v-tab-item class="pb-2">
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Position</th>
+                            <th class="text-center">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(line) in row.priceList" :key="line.id">
+                            <td class="text-center">{{ line.price | toPrice }}</td>
+                            <td class="text-center">{{ line.position | toPosition }}</td>
+                            <td class="text-center">
+                              <ago :date="line.createdAt" />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-tab-item>
+                  <!-- SPECS -->
+                  <v-tab-item class="pb-2">
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th class="text-center">Key</th>
+                            <th class="text-center">Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(line) in row.specList" :key="line.id">
+                            <td class="text-center">{{ line.key }}</td>
+                            <td class="text-center">{{ line.value }}</td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-tab-item>
+                </v-tabs>
 
                 <div class="d-flex py-2">
-                  <div class="col text-truncate caption pt-1" v-if="row.seller">
+                  <div class="col text-truncate caption pt-1">
                     <v-icon small>mdi-link-variant</v-icon> <a :href="row.url" target="_blank">{{ row.url }}</a>
                   </div>
-                  <v-spacer v-else></v-spacer>
+
                   <div v-if="$store.get('auth/IS_EDITOR')" class="mr-2">
-                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'RENEWED')" v-if="isSuitable(row.status, 'TOBE_RENEWED')">Renew</v-btn>
                     <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'PAUSED')" v-if="isSuitable(row.status, 'PAUSED')">Pause</v-btn>
                     <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'RESUMED')" v-if="isSuitable(row.status, 'RESUMED')">Resume</v-btn>
                     <v-btn class="mx-1" small dark color="red" v-if="$store.get('auth/IS_EDITOR')" @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
@@ -128,24 +213,6 @@
       </div>
     </v-card>
 
-    <v-snackbar 
-      v-model="snackbar" 
-      :timeout="2500" 
-      color="info"
-    >
-      {{ snackbarText }}
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          text
-          color="white"
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-
   </div>
 
 </template>
@@ -164,23 +231,20 @@ export default {
       loading: false,
       showAddNewBar: false,
       rules: {},
-      snackbar: false,
-      snackbarText: '',
       rows: [],
       rulesPopup: false,
+      selectedTab: 0,
     }
   },
   methods: {
     openAddNewBar() {
       this.showAddNewBar = true;
-      Utility.doubleRaf(() => this.$refs.addNewBar.focus());
     },
     clearAddNewBar(hide=false) {
       this.rules = {};
       this.url = '';
       if (hide == true) {
         this.showAddNewBar = false;
-        this.snackbar = false;
       }
     },
     async addNew() {
@@ -191,8 +255,7 @@ export default {
         this.loading = true;
         const result = await LinkService.insert({ url: this.url, productId: this.prodId });
         if (result.status == true) {
-          this.snackbarText = 'URL is successfully added.'
-          this.snackbar = true;
+          this.$store.commit('snackbar/setMessage', { text: 'URL is successfully added.' });
           this.clearAddNewBar();
           this.rows.push(result.data);
         }
@@ -211,8 +274,7 @@ export default {
           const result = await LinkService.remove(id);
           if (result == true) {
             this.rows.splice(index, 1);
-            this.snackbarText = 'URL is successfully deleted.'
-            this.snackbar = true;
+            this.$store.commit('snackbar/setMessage', { text: 'URL is successfully deleted.' });
           }
         }
       });
@@ -220,7 +282,7 @@ export default {
     isSuitable(current, target) {
       switch (current) {
         case 'AVAILABLE':
-          return (target == 'TOBE_RENEWED' || target == 'PAUSED');
+          return (target == 'PAUSED');
         case 'PAUSED':
           return (target == 'RESUMED');
         case 'TOBE_CLASSIFIED':
@@ -248,10 +310,10 @@ export default {
     },
   },
   components: {
-    confirm: () => import('@/component/Confirm.vue')
+    confirm: () => import('@/component/Confirm.vue'),
   },
   mounted() {
-    Utility.doubleRaf(() => {
+    this.$nextTick(() => {
       this.rows = this.links
     });
   },

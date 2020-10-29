@@ -17,7 +17,7 @@
     </div>
 
     <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" />
-    <prices :prod="data.product" class="mt-2" v-if="data.product.priceDetails.price" />
+    <prices :prod="data.product" class="mt-2" v-if="data.product.avgPrice > 0" />
 
     <links :prodId="data.product.id" :links="data.links" class="mt-2" />
 
@@ -29,7 +29,6 @@
 
 <script>
 import ProductService from '@/service/product';
-import Utility from '@/helpers/utility';
 
 export default {
   data() {
@@ -50,7 +49,7 @@ export default {
         if (confirm == true) {
           const result = await ProductService.remove(this.data.product.id);
           if (result == true) {
-            Utility.showInfoMessage('Delete Product', 'Product successfully deleted!');
+            this.$store.commit('snackbar/setMessage', { text: 'Product successfully deleted!' });
             this.$router.push({ name: 'products' });
           }
         }

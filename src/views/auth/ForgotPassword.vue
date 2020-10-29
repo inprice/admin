@@ -34,8 +34,8 @@
           @keyup.native.enter="valid && submit($event)"
         >
           <v-text-field
+            autofocus
             outlined dense
-            ref="email"
             v-model="form.email"
             :rules="rules.email"
             label="E-mail"
@@ -97,9 +97,6 @@ export default {
       }
     }
   },
-  mounted() {
-    Utility.doubleRaf(() => this.$refs.email.focus());
-  }
 };
 </script>
 

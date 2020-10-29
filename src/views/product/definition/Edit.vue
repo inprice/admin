@@ -12,7 +12,7 @@
             <input type="hidden" :value="form.id" >
 
             <v-text-field
-              ref="code"
+              autofocus
               label="Code"
               v-model="form.code"
               :rules="rules.code"
@@ -119,9 +119,8 @@ export default {
       }
 
       let self = this;
-      Utility.doubleRaf(() => {
+      this.$nextTick(() => {
         self.$refs.form.resetValidation();
-        self.$refs.code.focus();
 
         TagService.getAll()
           .then((res) => {

@@ -3,7 +3,6 @@ import Helper from '../service/helper';
 import { make } from 'vuex-pathify';
 
 import router from '../router';
-import Utility from '@/helpers/utility';
 import SystemConsts from '@/data/system';
 
 import { BroadcastChannel } from 'broadcast-channel';
@@ -28,7 +27,7 @@ const actions = {
     if (expired == false) {
       ApiService.post('/logout')
         .then(() => {
-          Utility.showShortInfoMessage('Logout', 'You have been successfully logged out!');
+          commit('snackbar/setMessage', { text: 'You have been successfully logged out!' }, { root: true });
       });
     }
     localStorage.removeItem(SystemConsts.keys.SESSIONS);

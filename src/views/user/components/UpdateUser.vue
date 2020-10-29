@@ -9,7 +9,7 @@
         <v-card-text class="mt-5">
           <v-form ref="form" v-model="valid">
             <v-text-field
-              ref="name"
+              autofocus
               label="Your Name"
               v-model="form.name"
               :rules="rules.name"
@@ -49,8 +49,6 @@
 
 <script>
 import UserService from '@/service/user';
-import Utility from '@/helpers/utility';
-
 import timezones from '@/data/timezones';
 
 export default {
@@ -96,10 +94,9 @@ export default {
     open(data) {
       this.opened = true;
       let self = this;
-      Utility.doubleRaf(() => {
+      this.$nextTick(() => {
         self.$refs.form.resetValidation();
         self.form = data;
-        self.$refs.name.focus();
       });
     },
     close() {

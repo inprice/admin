@@ -50,7 +50,6 @@
 
 <script>
 import SubsService from '@/service/subscription';
-import Utility from '@/helpers/utility';
 import { get } from 'vuex-pathify'
 
 const stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
@@ -68,7 +67,7 @@ export default {
           sessionId: result.data.sessionId
         }).then(function (result) {
           if (result.error && result.error.message) {
-            Utility.showErrorMessage('Subscription', 'payment', { reason: result.error.message });
+            this.$store.commit('snackbar/setMessage', { text: result.error.message, color: 'error' });
           } else {
             console.log('Calling result of stripes checkout form', result);
           }

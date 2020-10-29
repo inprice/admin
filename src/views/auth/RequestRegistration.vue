@@ -20,7 +20,7 @@
               @keyup.native.enter="valid && submit($event)"
             >
               <v-text-field
-                ref="companyName"
+                autofocus
                 label="Company Name"
                 v-model="form.companyName"
                 :rules="rules.companyName"
@@ -141,10 +141,7 @@ export default {
     }
   },
   mounted() {
-    Utility.doubleRaf(() => {
-      this.$refs.companyName.focus();
-      Utility.removeTabIndexFromIconButtons(this.$el);
-    });
+    this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
   }
 };
 </script>

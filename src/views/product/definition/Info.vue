@@ -83,7 +83,6 @@
             </tbody>
           </template>
         </v-simple-table>
-        <!-- <position class="hidden-sm-and-down ma-2" :position="prod.priceDetails.position" /> -->
       </div>
 
       <p v-else>

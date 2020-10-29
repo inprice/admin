@@ -8,7 +8,7 @@
 
         <v-form ref="form" v-model="valid" class="mt-5">
           <v-text-field class="mx-5"
-            ref="title"
+            autofocus
             label="Title"
             v-model="form.title"
             :rules="rules.title"
@@ -99,8 +99,6 @@
 
 <script>
 import SubsService from '@/service/subscription';
-import Utility from '@/helpers/utility';
-
 import countries from '@/data/countries';
 
 export default {
@@ -131,7 +129,7 @@ export default {
         this.loading = true;
         const result = await SubsService.saveInfo(this.form);
         if (result == true) {
-          Utility.showInfoMessage('Invoice Info', 'Your invoice info is successfully saved.');
+          this.$store.commit('snackbar/setMessage', { text: 'Your invoice info is successfully saved.' });
           this.$emit('saved', this.form);
           this.close();
         }
@@ -186,11 +184,7 @@ export default {
     },
     open() {
       this.opened = true;
-      let self = this;
-      Utility.doubleRaf(() => {
-        self.$refs.form.resetValidation();
-        self.$refs.title.focus();
-      });
+      this.$nextTick(() => this.$refs.form.resetValidation());
     },
     close() {
       this.$refs.form.resetValidation();

@@ -12,7 +12,7 @@
 
         <v-form ref="form" v-model="valid" class="mt-5">
           <v-text-field class="mx-5"
-            ref="name"
+            autofocus
             label="Name"
             v-model="form.name"
             :rules="rules.name"
@@ -99,7 +99,6 @@
 <script>
 import ApiService from '@/service/api';
 import CompanyService from '@/service/company';
-import Utility from '@/helpers/utility';
 
 import numFormatter from 'number-format.js';
 import currencyNames from '@/data/currency-names';
@@ -131,7 +130,7 @@ export default {
         if (this.isInsert) {
           const result = await CompanyService.create(this.form);
           if (result == true) {
-            Utility.showInfoMessage('Create Company', 'Successfull, you will be able to work with new company after sign in again.');
+            this.$store.commit('snackbar/setMessage', { text: 'Successfull, you will be able to work with new company after sign in again.' });
             this.close();
             return;
           }
@@ -184,11 +183,7 @@ export default {
     },
     open() {
       this.opened = true;
-      let self = this;
-      Utility.doubleRaf(() => {
-        self.$refs.form.resetValidation();
-        self.$refs.name.focus();
-      });
+      this.$nextTick(() => this.$refs.form.resetValidation());
     },
     close() {
       this.$refs.form.resetValidation();

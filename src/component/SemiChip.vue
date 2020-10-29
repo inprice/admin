@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: 'semi-tag',
+  name: 'semi-chip',
   props: {
     tag: {
       type: String

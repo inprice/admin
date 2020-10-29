@@ -21,7 +21,7 @@
               @keyup.native.enter="valid && submit($event)"
             >
               <v-text-field
-                ref="password"
+                autofocus
                 label="Password"
                 v-model="form.password"
                 :rules="rules.password"
@@ -65,7 +65,6 @@
 
 <script>
 import AuthService from '@/service/auth';
-import Utility from '@/helpers/utility';
 
 export default {
   data() {
@@ -86,7 +85,7 @@ export default {
   methods: {
     async submit() {
       if (!this.form.token) {
-        Utility.showErrorMessage('Reset Password', 'submit', { reason: 'Invalid token' });
+        this.$store.commit('snackbar/setMessage', { text: 'Invalid token!' });
         return
       }
       this.activateRules();
@@ -96,7 +95,7 @@ export default {
         const result = await AuthService.resetPassword(this.form);
         if (result == true) {
           this.$router.push('/login');
-          Utility.showInfoMessage('Reset Password', 'Your password has been successfully reset')
+          this.$store.commit('snackbar/setMessage', { text: 'Your password has been successfully reset' });
           return;
         }
         this.loading = false;
@@ -117,7 +116,6 @@ export default {
   },
   mounted() {
     this.form.token = this.$route.query.token;
-    Utility.doubleRaf(() => this.$refs.password.focus());
   }
 };
 </script>

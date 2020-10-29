@@ -81,7 +81,6 @@
 
 <script>
 import CouponService from '@/service/coupon';
-import Utility from '@/helpers/utility';
 
 export default {
   props: ['status'],
@@ -123,14 +122,14 @@ export default {
     },
     async applyCoupon(/* data */) {
       this.getCoupons();
-      Utility.showShortInfoMessage('Coupon', 'Your coupon has been successfully applied.');
+      this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been successfully applied.' });
     },
     openApplyCouponDialog() {
       this.$refs.applyCouponDialog.open();
     },
   },
   mounted() {
-    Utility.doubleRaf(() => {
+    this.$nextTick(() => {
       this.getCoupons();
     });
   },

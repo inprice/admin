@@ -99,7 +99,6 @@
 
 <script>
 import LinkService from '@/service/link';
-import Utility from '@/helpers/utility';
 
 export default {
   props: ['rows'],
@@ -109,7 +108,7 @@ export default {
         if (confirm == true) {
           const result = await LinkService.remove(id);
           if (result == true) {
-            Utility.showInfoMessage('Delete Link', 'Link successfully deleted.');
+            this.$store.commit('snackbar/setMessage', { text: 'Link successfully deleted.' });
             this.refreshMembers();
           }
         }
