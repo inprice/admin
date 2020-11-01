@@ -25,12 +25,12 @@
         <div class="col pa-0">
 
           <v-card class="mx-1 text-center text-uppercase">
-            <div class="caption pt-1 blue--text">Your Price</div>
+            <div class="caption pt-1 teal--text">Your Price</div>
             <div class="font-weight-bold">{{ prod.price | toPrice }}</div>
           </v-card>
 
           <v-card class="mt-2 pb-2 mx-1 text-center text-uppercase">
-            <div class="caption py-2 cyan--text">Average Price</div>
+            <div class="caption py-2 teal--text">Average Price</div>
 
             <v-divider></v-divider>
 
@@ -42,7 +42,7 @@
 
         <!-- MINIMUM  -->
         <v-card class="col mx-1 pa-0 pb-2 text-center text-uppercase">
-          <div class="caption py-3 green--text">Minimum Price</div>
+          <div class="caption py-3 teal--text">Minimum Price</div>
 
           <v-divider></v-divider>
 
@@ -55,7 +55,7 @@
 
         <!-- MAXIMUM  -->
         <v-card class="col mx-1 pa-0 pb-2 text-center text-uppercase">
-          <div class="caption py-3 red--text">Maximum Price</div>
+          <div class="caption py-3 teal--text">Maximum Price</div>
 
           <v-divider></v-divider>
 

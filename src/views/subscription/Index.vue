@@ -12,7 +12,7 @@
           <div>
             <div class="caption float-left">Your actual plan and billing info.</div>
 
-            <v-btn-toggle tile v-model="selectedTab" class="float-right">
+            <v-btn-toggle tile class="float-right">
               <v-btn @click="selectedTab=0" small>
                 Actual Plan
               </v-btn>

@@ -74,130 +74,49 @@
             <v-expansion-panel v-for="(row, index) in rows" :key="row.id">
               <v-expansion-panel-header>
                 <div class="col pa-0" v-if="row.seller">
-                  <span class="blue--text font-weight-bold">{{ row.seller }}</span>
+                  <span>{{ row.seller }}</span>
                   <span class="ml-1">({{ row.platform }})</span>
                 </div>
                 <div class="col pa-0 text-right" v-if="row.price > 0">
                   <span class="font-weight-bold">{{ row.price | toPrice }}</span>
                 </div>
-                <div class="col pa-0 text-truncate" v-if="row.problem" :title="row.problem">
+                <div class="col pa-0 text-truncate caption font-italic" v-if="!row.name" :title="row.problem">
                   {{ row.url }}
                 </div>
-                <div class="col pa-0 text-truncate" v-if="row.problem" :title="row.problem">
-                  <span class="red--text"> {{ row.problem }}</span>
-                </div>
-                <div class="col pa-0 text-truncate text-center" v-else>
-                  <span>{{ row.status }}</span>
+                <div class="col-4 pa-0 mx-2 text-truncate" :title="row.problem">
+                  {{ row.problem || row.status }}
                 </div>
               </v-expansion-panel-header>
 
               <v-expansion-panel-content class="px-2">
 
-                <div v-if="row.price > 0" class="mt-3">
-                  <v-btn-toggle tile v-model="selectedTab">
-                    <v-btn @click="selectedTab=0" small>Info</v-btn>
-                    <v-btn @click="selectedTab=1" small>History</v-btn>
-                    <v-btn @click="selectedTab=2" small>Prices</v-btn>
-                    <v-btn @click="selectedTab=3" small>Specs</v-btn>
-                  </v-btn-toggle>
-                </div>
-
-                <v-tabs v-model="selectedTab" v-if="row.price > 0" class="v-card v-sheet theme--light mb-2">
-                  <!-- INFO -->
-                  <v-tab-item class="py-2">
-                    <v-simple-table class="col property-table" dense>
-                      <template v-slot:default>
-                        <tbody>
-                          <tr>
-                            <td class="prop-name">Price</td>
-                            <td><v-text-field solo dense readonly hide-details="true" class="col-2" :value="row.price | toPrice" /></td>
-                          </tr>
-                          <tr>
-                            <td class="prop-name">Last Updated</td>
-                            <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="row.lastUpdate | formatDate" /></td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
-                  </v-tab-item>
-                  <!-- HISTORY -->
-                  <v-tab-item class="pb-2">
-                    <v-simple-table dense>
-                      <template v-slot:default>
-                        <thead>
-                          <tr>
-                            <th class="text-center">Status</th>
-                            <th width="20%">Problem</th>
-                            <th class="text-center">Date</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(line) in row.historyList" :key="line.id">
-                            <td class="text-center">{{ line.status }}</td>
-                            <td>{{ line.problem }}</td>
-                            <td class="text-center">
-                              <ago :date="line.createdAt" />
-                            </td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
-                  </v-tab-item>
-                  <!-- PRICES -->
-                  <v-tab-item class="pb-2">
-                    <v-simple-table dense>
-                      <template v-slot:default>
-                        <thead>
-                          <tr>
-                            <th class="text-center">Price</th>
-                            <th class="text-center">Position</th>
-                            <th class="text-center">Date</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(line) in row.priceList" :key="line.id">
-                            <td class="text-center">{{ line.price | toPrice }}</td>
-                            <td class="text-center">{{ line.position | toPosition }}</td>
-                            <td class="text-center">
-                              <ago :date="line.createdAt" />
-                            </td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
-                  </v-tab-item>
-                  <!-- SPECS -->
-                  <v-tab-item class="pb-2">
-                    <v-simple-table dense>
-                      <template v-slot:default>
-                        <thead>
-                          <tr>
-                            <th class="text-center">Key</th>
-                            <th class="text-center">Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(line) in row.specList" :key="line.id">
-                            <td class="text-center">{{ line.key }}</td>
-                            <td class="text-center">{{ line.value }}</td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
-                  </v-tab-item>
-                </v-tabs>
-
-                <div class="d-flex py-2">
-                  <div class="col text-truncate caption pt-1">
-                    <v-icon small>mdi-link-variant</v-icon> <a :href="row.url" target="_blank">{{ row.url }}</a>
+                <div class="d-flex justify-space-between pt-2">
+                  <div>
+                    <div class="caption">#{{ row.sku || 'PROBLEM' }} ({{ row.position | toPosition }})</div>
+                    <div>{{ row.name || row.problem }}</div>
+                    <div class="text-truncate caption font-italic">
+                      <a :href="row.url" target="_blank">{{ row.url }}</a>
+                    </div>
                   </div>
 
-                  <div v-if="$store.get('auth/IS_EDITOR')" class="mr-2">
-                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'PAUSED')" v-if="isSuitable(row.status, 'PAUSED')">Pause</v-btn>
-                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'RESUMED')" v-if="isSuitable(row.status, 'RESUMED')">Resume</v-btn>
-                    <v-btn class="mx-1" small dark color="red" v-if="$store.get('auth/IS_EDITOR')" @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
+                  <div class="pt-2">
+                    <v-btn class="d-block mb-2" small @click="toggleStatus(index, row.id)">
+                      <span v-if="row.status=='PAUSED'">Resume</span>
+                      <span v-else>Pause</span>
+                    </v-btn>
+                    <v-btn class="d-block" small @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
                   </div>
                 </div>
+
+                <link-details
+                  :key="detailsRefreshCount"
+                  :showInfoTab="true"
+                  :price="row.price"
+                  :lastUpdate="row.lastUpdate"
+                  :historyList="row.historyList"
+                  :priceList="row.priceList"
+                  :specList="row.specList"
+                />
 
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -221,6 +140,7 @@
 import LinkService from '@/service/link';
 import Utility from '@/helpers/utility';
 import normalizeUrl from 'normalize-url';
+import moment from 'moment-timezone';
 
 export default {
   props: ["prodId", "links"],
@@ -234,6 +154,7 @@ export default {
       rows: [],
       rulesPopup: false,
       selectedTab: 0,
+      detailsRefreshCount: 0,
     }
   },
   methods: {
@@ -262,11 +183,38 @@ export default {
         this.loading = false;
       }
     },
-    async changeStatus(index, id, status) {
-      const result = await LinkService.changeStatus(id, status);
-      if (result == true) {
-        this.rows[index].status = status;
+    toggleStatus(index, id) {
+      let status = 'PAUSED';
+      if (this.rows[index].historyList[0].status == status) {
+        status = this.rows[index].historyList[1].status;
       }
+
+      if (this.rows[index].historyList.length > 2) {
+        const row0 = this.rows[index].historyList[0];
+        const row2 = this.rows[index].historyList[2];
+        if (row0.status == row2.status) {
+          const now = moment();
+          const diff0 = now.diff(row0.createdAt, 'days');
+          const diff2 = now.diff(row2.createdAt, 'days');
+          if (diff0 == 0 && diff2 == 0) {
+            this.$store.commit('snackbar/setMessage', { text: 'You are not allowed to Pause/Resume a link more than twice in the same day!' });
+            return;
+          }
+        }
+      }
+
+      LinkService.toggleStatus(id);
+
+      const select = (status == 'PAUSED' ? 0 : 1);
+      const newOne = JSON.parse(JSON.stringify(this.rows[index].historyList[select]));
+      newOne.status = status;
+      if (select == 0) {
+        newOne.problem = null;
+        newOne.httpStatus = 0;
+      }
+      this.rows[index].historyList.unshift(newOne);
+      this.detailsRefreshCount++;
+      this.$emit("statusToggled");
     },
     remove(index, id, name) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
@@ -275,29 +223,10 @@ export default {
           if (result == true) {
             this.rows.splice(index, 1);
             this.$store.commit('snackbar/setMessage', { text: 'URL is successfully deleted.' });
+            this.$emit("deleted");
           }
         }
       });
-    },
-    isSuitable(current, target) {
-      switch (current) {
-        case 'AVAILABLE':
-          return (target == 'PAUSED');
-        case 'PAUSED':
-          return (target == 'RESUMED');
-        case 'TOBE_CLASSIFIED':
-        case 'TOBE_IMPLEMENTED':
-        case 'IMPLEMENTED':
-        case 'NOT_AVAILABLE':
-        case 'READ_ERROR':
-        case 'SOCKET_ERROR':
-        case 'NETWORK_ERROR':
-        case 'CLASS_PROBLEM':
-        case 'INTERNAL_ERROR':
-          return (target == 'PAUSED');
-        default:
-          return false;
-      }
     },
     activateRules() {
       this.rules = {
@@ -311,6 +240,7 @@ export default {
   },
   components: {
     confirm: () => import('@/component/Confirm.vue'),
+    LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
   },
   mounted() {
     this.$nextTick(() => {

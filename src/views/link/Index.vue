@@ -76,7 +76,13 @@
     </div>
 
     <div class="col px-1">
-      <list :rows="searchResult" />
+      <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
+
+      <div class="caption mt-3">
+        <span class="font-italic font-weight-bold">Please note:</span>
+        Click the card to show/hide details panel!
+      </div>
+
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>
@@ -105,6 +111,7 @@ export default {
       },
       menu: false,
       searchResult: [],
+      isListLoading: true,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
     };
@@ -119,6 +126,16 @@ export default {
     },
     triggerSearch() {
       ++this.search.counter; //triggers search call to the server
+    },
+    rowDeleted(index) {
+      if (index < this.searchResult.length) {
+        this.searchResult.splice(index, 1);
+      }
+    },
+    statusToggled(data) {
+      if (data && data.index < this.searchResult.length) {
+        this.searchResult[data.index].status = data.status;
+      }
     }
   },
   mounted() {
@@ -137,10 +154,12 @@ export default {
         }
 
         const loadMore = this.isLoadMoreClicked;
+        this.isListLoading = true;
         this.isLoadMoreClicked = false;
 
         LinkService.search(cloneForm, true)
           .then((res) => {
+            this.isListLoading = false;
             this.isLoadMoreDisabled = true;
             if (res?.length) {
               if (loadMore == true) {

@@ -1,96 +1,66 @@
 <template>
   <div>
 
-    <p class="mt-3" v-if="!rows || rows.length < 1">
+    <div v-if="rows && rows.length">
+
+      <v-hover v-for="(row, index) in rows" :key="row.id">
+        <template v-slot="{ hover }">
+
+          <v-card class="mb-5 pa-2 transition-swing" :class="`elevation-${hover ? 4 : 2}`">
+
+            <div @click="toggleDetails(row.id)" style="cursor: pointer">
+              <div class="d-flex justify-space-between caption">
+                <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
+                <div v-else>#{{ row.sku || 'PROBLEM' }}</div>
+                <div>{{ row.status.replaceAll('_', ' ') }}</div>
+              </div>
+
+              <div class="d-flex justify-space-between subtitle">
+                <div>{{ row.name || row.problem }}</div>
+                <div>{{ row.price | toPrice }}</div>
+              </div>
+
+              <div class="d-flex justify-space-between caption">
+                <div class="text-truncate font-italic">
+                  <a :href="row.url" target="_blank">{{ row.url }}</a>
+                </div>
+                <div>{{ row.position | toPosition }}</div>
+              </div>
+            </div>
+
+            <v-divider class="my-2" />
+
+            <div class="row mr-0">
+              <v-spacer></v-spacer>
+              <div v-if="$store.get('auth/IS_EDITOR')">
+                <v-btn class="mx-1" small @click="toggleStatus(index, row.id)">
+                  <span v-if="row.status=='PAUSED'">Resume</span>
+                  <span v-else>Pause</span>
+                </v-btn>
+                <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
+              </div>
+            </div>
+
+            <link-details
+              :key="detailsRefreshCount"
+              style="margin-top: -20px"
+              v-if="showDetails==true && openedDetail && openedDetail.id==row.id"
+              :showInfoTab="false"
+              :historyList="openedDetail.historyList"
+              :priceList="openedDetail.priceList"
+              :specList="openedDetail.specList"
+            />
+
+          </v-card>
+
+        </template>
+      </v-hover>
+
+    </div>
+
+    <p class="mt-3" v-if="isLoading==false">
       No link found! Please change your criteria or add new competitors to your products.
     </p>
-
-    <v-hover v-else v-for="row in rows" :key="row.id">
-      <template v-slot="{ hover }">
-
-        <v-card class="mb-1 transition-swing" :class="`elevation-${hover ? 3 : 1}`">
-
-          <div v-if="!row.lastUpdate">
-
-            <div class="pa-3 d-flex justify-space-between">
-              <div class="text-truncate caption">
-                <div>{{ row.status }}</div>
-                <a :href="row.url" target="_blank">{{ row.url }}</a>
-              </div>
-
-              <div class="my-auto">
-
-                <v-btn outlined small text class="mr-2 mt-1">
-                  Details
-                </v-btn>
-
-                <v-menu offset-y left>
-                  <template v-slot:activator="{ on }">
-                    <v-btn x-small fab  elevation="1" v-on="on">
-                      <v-icon dark>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                  </template>
-
-                  <v-list dense>
-                    <v-list-item :to="{name: 'product', params: { id: row.productId }}">
-                      <v-list-item-title>
-                        GO TO PRODUCT PAGE
-                      </v-list-item-title>
-                    </v-list-item>
-
-                    <v-divider></v-divider>
-
-                    <v-list-item @click="remove(row.id, (row.name || row.url))">
-                      <v-list-item-title>DELETE</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-
-              </div>
-            </div>
-          </div>
-
-          <div v-else>
-            <div class="d-flex justify-space-between caption px-3 pt-1">
-              <div>#{{ row.sku }}</div>
-              <div>{{ row.status }}</div>
-            </div>
-
-            <div class="d-flex justify-space-between subtitle px-3 pt-1">
-              <div class="">{{ row.name }}</div>
-              <div>{{ row.price | toPrice }}</div>
-            </div>
-
-            <div class="row px-3">
-              <div class="col text-truncate pt-1">
-                <a :href="row.url" target="_blank">{{ row.url }}</a>
-              </div>
-            </div>
-
-            <div class="row px-3">
-              <div class="col">
-                <div class="caption">Seller</div>
-                <ago :date="row.seller" />
-              </div>
-              <div class="col">
-                <div class="caption">Platform</div>
-                <ago :date="row.platform" />
-              </div>
-              <div class="col">
-                <div class="caption">Last Checked</div>
-                <ago :date="row.lastChecked" />
-              </div>
-              <div class="col">
-                <div class="caption">Last Updated</div>
-                <ago :date="row.lastUpdated" />
-              </div>
-            </div>
-          </div>
-
-        </v-card>
-
-      </template>
-    </v-hover>
 
     <confirm ref="confirm"></confirm>
   </div>
@@ -99,24 +69,91 @@
 
 <script>
 import LinkService from '@/service/link';
+import moment from 'moment-timezone';
 
 export default {
-  props: ['rows'],
+  props: ['rows', 'isLoading'],
+  data() {
+    return {
+      detailsRefreshCount: 0,
+      showDetails: false,
+      openedDetail: null,
+    }
+  },
   methods: {
-    remove(id, name) {
+    remove(index, id, name) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
         if (confirm == true) {
           const result = await LinkService.remove(id);
           if (result == true) {
             this.$store.commit('snackbar/setMessage', { text: 'Link successfully deleted.' });
-            this.refreshMembers();
+            this.$emit('deleted', index);
           }
         }
       });
-    }
+    },
+    toggleStatus(index, id) {
+      let status = 'PAUSED';
+      if (this.openedDetail.historyList[0].status == status) {
+        status = this.openedDetail.historyList[1].status;
+      }
+
+      if (this.openedDetail.historyList.length > 2) {
+        const row0 = this.openedDetail.historyList[0];
+        const row2 = this.openedDetail.historyList[2];
+        if (row0.status == row2.status) {
+          const now = moment();
+          const diff0 = now.diff(row0.createdAt, 'days');
+          const diff2 = now.diff(row2.createdAt, 'days');
+          if (diff0 == 0 && diff2 == 0) {
+            this.$store.commit('snackbar/setMessage', { text: 'You are not allowed to Pause/Resume a link more than twice in the same day!' });
+            return;
+          }
+        }
+      }
+
+      LinkService.toggleStatus(id);
+
+      this.$emit('statusToggled', { index, status });
+      if (this.openedDetail && this.openedDetail.id == id) {
+        const select = (status == 'PAUSED' ? 0 : 1);
+        const newOne = JSON.parse(JSON.stringify(this.openedDetail.historyList[select]));
+        newOne.status = status;
+        if (select == 0) {
+          newOne.problem = null;
+          newOne.httpStatus = 0;
+        }
+        newOne.createdAt = moment().format('YYYY-MM-DD HH:mm:ss');
+        this.openedDetail.historyList.unshift(newOne);
+        this.detailsRefreshCount++;
+      } else {
+        this.detailsRefreshCount = 0;
+      }
+    },
+    toggleDetails(id) {
+      if (this.openedDetail && this.openedDetail.id == id) {
+        this.showDetails = !this.showDetails;
+        return;
+      }
+      LinkService.getDetails(id)
+        .then((res) => {
+          if (res && res.data) {
+            this.openedDetail = {};
+            this.openedDetail.id = id;
+            this.openedDetail.historyList = res.data.historyList;
+            this.openedDetail.priceList = res.data.priceList;
+            this.openedDetail.specList = res.data.specList;
+            this.showDetails = true;
+          } else {
+            this.showDetails = false;
+            this.openedDetail = null;
+          }
+      });
+    },
   },
   components: {
     confirm: () => import('@/component/Confirm.vue'),
+    LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
   }
 };
 </script>

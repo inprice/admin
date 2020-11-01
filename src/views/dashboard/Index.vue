@@ -53,7 +53,7 @@
           <v-icon class="mr-4">mdi-layers-outline</v-icon>
           <div class="col pa-0">
             <div>Link statuses</div>
-            <div class="caption float-left">The statuses of your links.</div>
+            <div class="caption float-left">The statuses of your competitors.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
@@ -81,17 +81,16 @@
           <template v-slot:default>
             <thead>
               <tr>
-                <th width="20%">Link</th>
-                <th>Product</th>
+                <th>Seller & Platform | URL</th>
                 <th width="10%" class="text-right">Price</th>
                 <th width="20%">Status</th>
                 <th width="15%">Time</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, index) in report.links.mru25" :key="index">
-                <td width="20%">{{ row.seller || 'NA' }}</td>
-                <td>{{ row.productName }}</td>
+              <tr v-for="(row, index) in report.links.mru25" :key="index" :title="row.productName">
+                <td v-if="row.seller">{{ (row.seller || 'NA') + (' ('+row.platform+')' || '') }}</td>
+                <td v-else class="caption font-italic">{{ row.url }}</td>
                 <td width="10%" class="text-right font-weight-bold">{{ row.price | toPrice }}</td>
                 <td width="20%">{{ row.status | formatStatus }}</td>
                 <td width="15%">
@@ -121,7 +120,7 @@
           </div>
         </v-card-title>
         <v-divider></v-divider>
-        <v-simple-table dense v-if="report && report.products && report.products.extremePrices.lowest">
+        <v-simple-table dense v-if="report && report.products && report.products.extremePrices.lowest && report.products.extremePrices.lowest.length">
           <template v-slot:default>
             <thead>
               <tr>
@@ -166,7 +165,7 @@
           </div>
         </v-card-title>
         <v-divider></v-divider>
-        <v-simple-table dense v-if="report && report.products && report.products.extremePrices.highest">
+        <v-simple-table dense v-if="report && report.products && report.products.extremePrices.highest && report.products.extremePrices.highest.length">
           <template v-slot:default>
             <thead>
               <tr>

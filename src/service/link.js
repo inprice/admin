@@ -26,8 +26,12 @@ export default {
     return res.status;
   },
 
-  async changeStatus(id, status) {
-    const res = await Helper.call('Change Status', { method: 'put', url: baseURL + '/' + status.toLowerCase() + '/' + id });
+  getDetails(id) {
+    return Helper.call('Get Details', { method: 'get', url: baseURL + '/details/' + id });
+  },
+
+  async toggleStatus(id) {
+    const res = await Helper.call('Toggle Status', { method: 'put', url: baseURL + '/toggle/' + id });
     return res.status;
   }
 

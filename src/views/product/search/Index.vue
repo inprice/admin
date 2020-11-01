@@ -104,7 +104,7 @@
     </div>
 
     <div class="col px-1">
-      <list :rows="searchResult" @edit="edit" />
+      <list :rows="searchResult" @edit="edit" :isLoading="isListLoading" />
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>
@@ -141,6 +141,7 @@ export default {
         'Higher',
         'Highest'
       ],
+      isListLoading: true,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
     };
@@ -190,10 +191,12 @@ export default {
         }
 
         const loadMore = this.isLoadMoreClicked;
+        this.isListLoading = true;
         this.isLoadMoreClicked = false;
 
         ProductService.search(cloneForm, true)
           .then((res) => {
+            this.isListLoading = false;
             this.isLoadMoreDisabled = true;
             if (res?.length) {
               if (loadMore == true) {

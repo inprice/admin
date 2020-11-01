@@ -126,10 +126,8 @@ export default {
           .then((res) => {
             this.tagData.items = [];
             if (res && res.data) {
-              if (res.data) {
-                for (let i=0; i<res.data.length; i++) {
-                  this.tagData.items.push(res.data[i].name);
-                }
+              for (let i=0; i<res.data.length; i++) {
+                this.tagData.items.push(res.data[i].name);
               }
             }
         });
