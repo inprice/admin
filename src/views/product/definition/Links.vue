@@ -1,49 +1,48 @@
 <template>
   <div>
 
-    <v-card>
+    <v-card class="pb-2">
       <v-card-title>
-        <v-icon class="mr-4">mdi-account-multiple</v-icon>
+        <v-icon class="mr-4">mdi-vector-link</v-icon>
         <div>
           <div>Links</div>
           <div class="caption">The url list of your competitors' product pages.</div>
         </div>
-      </v-card-title>
-
-      <v-divider></v-divider>
-
-      <div v-if="prodId">
+        <v-spacer></v-spacer>
         <v-btn 
           dark small
           v-if="!showAddNewBar"
-          color="success"
-          class="ma-4"
+          color="info"
+          class="ml-4"
           @click="openAddNewBar">
-            <v-icon>mdi-plus</v-icon>Add new Url
+            <v-icon>mdi-plus</v-icon>Add a new Url
         </v-btn>
+      </v-card-title>
 
+      <div v-if="prodId">
         <v-form ref="addNewForm" v-model="isUrlValid" @submit.prevent>
           <v-scroll-x-transition leave-absolute>
             <div v-if="showAddNewBar" class="d-flex">
               <v-text-field 
-                ref="addNewBar"
+                autofocus
                 v-model="url"
                 :rules="rules.url"
+                label="URL of competitor's product page"
                 @keyup.enter.native="addNew"
                 @keyup.esc.native="clearAddNewBar(true)"
-                dense solo light
-                class="col-10 pl-4 pt-4"
+                dense outlined light
+                class="col pl-3 pt-2"
                 maxlength="1024"
-                placeholder="Add URL">
+                placeholder="https://www.amazon.com/dp/754">
                   <template slot="append">
                     <v-icon class="mr-2" @click="addNew">mdi-check</v-icon>
-                    <v-icon  @click="clearAddNewBar(true)">mdi-window-close</v-icon>
+                    <v-icon @click="clearAddNewBar(true)">mdi-window-close</v-icon>
                   </template>          
               </v-text-field>
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon style="margin-left: 7px; margin-top: -7px" v-on="on" v-bind="attrs">mdi-help-circle-outline</v-icon>
+                  <v-icon class="pl-1 pr-3 pb-4" v-on="on" v-bind="attrs">mdi-help-circle-outline</v-icon>
                 </template>
                 Please keep in mind
                 <ul class="caption">
@@ -67,84 +66,70 @@
           </v-scroll-x-transition>
 
         </v-form>
-        
-        <div v-if="rows && rows.length > 0">
-
-          <v-expansion-panels accordion hover focusable>
-            <v-expansion-panel v-for="(row, index) in rows" :key="row.id">
-              <v-expansion-panel-header>
-                <div class="col pa-0" v-if="row.seller">
-                  <span class="orange--text font-weight-bold">{{ row.seller }}</span> / {{ row.platform }}
-                </div>
-                <div class="col pa-0 text-truncate " v-else>
-                  {{ row.url }}
-                </div>
-                <div class="col-3 pa-0">
-                  {{ row.status || 'NA' }}
-                </div>
-              </v-expansion-panel-header>
-
-              <v-expansion-panel-content>
-
-                <v-simple-table class="col property-table pa-3 pb-0" dense v-if="row.price > 0">
-                  <template v-slot:default>
-                    <tbody>
-                      <tr>
-                        <td class="prop-name">Price</td>
-                        <td><v-text-field solo dense readonly hide-details="true" class="col-2" :value="row.price | toPrice" /></td>
-                      </tr>
-                      <tr>
-                        <td class="prop-name">Last Updated</td>
-                        <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="row.lastUpdate | formatDate" /></td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-
-                <div class="d-flex py-2">
-                  <div class="col text-truncate caption pt-1" v-if="row.seller">
-                    <v-icon small>mdi-link-variant</v-icon> <a :href="row.url" target="_blank">{{ row.url }}</a>
-                  </div>
-                  <v-spacer v-else></v-spacer>
-                  <div v-if="$store.get('auth/IS_EDITOR')" class="mr-2">
-                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'RENEWED')" v-if="isSuitable(row.status, 'TOBE_RENEWED')">Renew</v-btn>
-                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'PAUSED')" v-if="isSuitable(row.status, 'PAUSED')">Pause</v-btn>
-                    <v-btn class="mx-1" small @click="changeStatus(index, row.id, 'RESUMED')" v-if="isSuitable(row.status, 'RESUMED')">Resume</v-btn>
-                    <v-btn class="mx-1" small dark color="red" v-if="$store.get('auth/IS_EDITOR')" @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
-                  </div>
-                </div>
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
-        </div>
-
-        <confirm ref="confirm"></confirm>
       </div>
-
       <div v-else>
         Invalid product!
       </div>
     </v-card>
 
-    <v-snackbar 
-      v-model="snackbar" 
-      :timeout="2500" 
-      color="info"
-    >
-      {{ snackbarText }}
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          text
-          color="white"
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <div v-if="rows && rows.length" class="mt-2">
+
+      <v-hover v-for="(row, index) in rows" :key="row.id">
+        <template v-slot="{ hover }">
+
+          <v-card class="my-3 pa-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+            <div @click="toggleDetails(index)" style="cursor: pointer">
+              <div class="d-flex justify-space-between subtitle">
+                <div>{{ row.name || (row.status == 'TOBE_CLASSIFIED' ? 'WILL BE SET SOON' : row.problem) }}</div>
+                <div>{{ row.price | toPrice }}</div>
+              </div>
+
+              <div class="d-flex justify-space-between caption">
+                <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
+                <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
+                <div>{{ row.position | toPosition }}</div>
+              </div>
+
+              <div class="d-flex justify-space-between caption">
+                <div class="text-truncate font-italic">
+                  <a :href="row.url" target="_blank">{{ row.url }}</a>
+                </div>
+                <div>{{ row.status.replaceAll('_', ' ') }}</div>
+              </div>
+            </div>
+
+            <v-divider class="my-2" />
+
+            <div class="row mr-0">
+              <v-spacer></v-spacer>
+              <div>
+                <v-btn class="mx-1" small @click="toggleStatus(index, row.id)">
+                  <span v-if="row.status=='PAUSED'">Resume</span>
+                  <span v-else>Pause</span>
+                </v-btn>
+                <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
+              </div>
+            </div>
+
+            <link-details
+              :key="row.detailsRefreshCount"
+              style="margin-top: -20px"
+              v-if="showingIndex==index && showDetails==true"
+              :showInfoTab="true"
+              :price="row.price"
+              :lastUpdate="row.lastUpdate"
+              :historyList="row.historyList"
+              :priceList="row.priceList"
+              :specList="row.specList"
+            />
+
+          </v-card>
+
+        </template>
+      </v-hover>
+
+    </div>
+    <confirm ref="confirm"></confirm>
 
   </div>
 
@@ -154,6 +139,7 @@
 import LinkService from '@/service/link';
 import Utility from '@/helpers/utility';
 import normalizeUrl from 'normalize-url';
+import moment from 'moment-timezone';
 
 export default {
   props: ["prodId", "links"],
@@ -164,46 +150,91 @@ export default {
       loading: false,
       showAddNewBar: false,
       rules: {},
-      snackbar: false,
-      snackbarText: '',
       rows: [],
       rulesPopup: false,
+      selectedTab: 0,
+      showingIndex: -1,
+      showDetails: false,
     }
   },
   methods: {
     openAddNewBar() {
       this.showAddNewBar = true;
-      Utility.doubleRaf(() => this.$refs.addNewBar.focus());
     },
     clearAddNewBar(hide=false) {
       this.rules = {};
       this.url = '';
       if (hide == true) {
         this.showAddNewBar = false;
-        this.snackbar = false;
       }
     },
     async addNew() {
+      if (!this.url) return;
       this.url = normalizeUrl(this.url, { defaultProtocol: 'https:', removeQueryParameters: ['ref'] });
       if (Object.keys(this.rules).length == 0) this.activateRules();
       await this.$refs.addNewForm.validate();
       if (this.isUrlValid) {
+
+        const alreadyAdded = this.rows.some(link => link.url === this.url);
+        if (alreadyAdded) {
+          this.$store.commit('snackbar/setMessage', { text: 'This url is already added!' });
+          return;
+        }
+
         this.loading = true;
         const result = await LinkService.insert({ url: this.url, productId: this.prodId });
         if (result.status == true) {
-          this.snackbarText = 'URL is successfully added.'
-          this.snackbar = true;
           this.clearAddNewBar();
+          const createdAt = moment();
+          result.data.historyList = [{ status: 'TOBE_CLASSIFIED', createdAt }];
           this.rows.push(result.data);
+          this.$store.commit('snackbar/setMessage', { text: 'URL is successfully added.' });
         }
         this.loading = false;
       }
     },
-    async changeStatus(index, id, status) {
-      const result = await LinkService.changeStatus(id, status);
-      if (result == true) {
-        this.rows[index].status = status;
+    toggleDetails(index) {
+      if (this.showingIndex == index) {
+        this.showDetails = !this.showDetails;
+      } else {
+        this.showingIndex = index;
+        this.showDetails=true;
       }
+    },
+    async toggleStatus(index, id) {
+      let status = 'PAUSED';
+      if (this.rows[index].historyList[0].status == status) {
+        status = this.rows[index].historyList[1].status;
+      }
+
+      if (this.rows[index].historyList.length > 2) {
+        const row0 = this.rows[index].historyList[0];
+        const row2 = this.rows[index].historyList[2];
+        if (row0.status == row2.status) {
+          const now = moment();
+          const diff0 = now.diff(row0.createdAt, 'days');
+          const diff2 = now.diff(row2.createdAt, 'days');
+          if (diff0 == 0 && diff2 == 0) {
+            this.$store.commit('snackbar/setMessage', { text: 'You are not allowed to Pause/Resume a link more than twice in the same day!' });
+            return;
+          }
+        }
+      }
+
+      await LinkService.toggleStatus(id);
+
+      const select = (status == 'PAUSED' ? 0 : 1);
+      const newOne = JSON.parse(JSON.stringify(this.rows[index].historyList[select]));
+      newOne.status = status;
+      if (select == 0) {
+        newOne.problem = null;
+        newOne.httpStatus = 0;
+      }
+      this.rows[index].historyList.unshift(newOne);
+      this.$emit("statusToggled");
+      this.showingIndex = index;
+      this.showDetails = true;
+      console.log("index", index, "showDetails", this.rows[index].showDetails, "showingIndex", this.showingIndex);
     },
     remove(index, id, name) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
@@ -211,31 +242,11 @@ export default {
           const result = await LinkService.remove(id);
           if (result == true) {
             this.rows.splice(index, 1);
-            this.snackbarText = 'URL is successfully deleted.'
-            this.snackbar = true;
+            this.$store.commit('snackbar/setMessage', { text: 'URL is successfully deleted.' });
+            this.$emit("deleted");
           }
         }
       });
-    },
-    isSuitable(current, target) {
-      switch (current) {
-        case 'AVAILABLE':
-          return (target == 'TOBE_RENEWED' || target == 'PAUSED');
-        case 'PAUSED':
-          return (target == 'RESUMED');
-        case 'TOBE_CLASSIFIED':
-        case 'TOBE_IMPLEMENTED':
-        case 'IMPLEMENTED':
-        case 'NOT_AVAILABLE':
-        case 'READ_ERROR':
-        case 'SOCKET_ERROR':
-        case 'NETWORK_ERROR':
-        case 'CLASS_PROBLEM':
-        case 'INTERNAL_ERROR':
-          return (target == 'PAUSED');
-        default:
-          return false;
-      }
     },
     activateRules() {
       this.rules = {
@@ -248,10 +259,11 @@ export default {
     },
   },
   components: {
-    confirm: () => import('@/component/Confirm.vue')
+    confirm: () => import('@/component/Confirm.vue'),
+    LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
   },
   mounted() {
-    Utility.doubleRaf(() => {
+    this.$nextTick(() => {
       this.rows = this.links
     });
   },

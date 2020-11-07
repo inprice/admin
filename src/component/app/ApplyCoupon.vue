@@ -11,7 +11,7 @@
         <v-card-text class="mt-5">
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
-              ref="code"
+              autofocus
               label="Coupon Code"
               v-model="form.code"
               :rules="rules.code"
@@ -29,7 +29,7 @@
             small
             @click="submit"
             color="primary"
-            :loading="loading" 
+            :loading="loading"
             :disabled="loading"
           >
             Apply
@@ -44,7 +44,6 @@
 
 <script>
 import CouponService from '@/service/coupon';
-import Utility from '@/helpers/utility';
 
 export default {
   data() {
@@ -82,11 +81,7 @@ export default {
     },
     open() {
       this.opened = true;
-      let self = this;
-      Utility.doubleRaf(() => {
-        self.$refs.form.resetValidation();
-        self.$refs.code.focus();
-      });
+      this.$nextTick(() => this.$refs.form.resetValidation());
     },
     close() {
       this.opened = false;

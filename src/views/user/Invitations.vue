@@ -97,7 +97,6 @@
 
 <script>
 import UserService from '@/service/user';
-import Utility from '@/helpers/utility';
 
 export default {
   data() {
@@ -142,7 +141,7 @@ export default {
     }
   },
   mounted() {
-    Utility.doubleRaf(() => {
+    this.$nextTick(() => {
       this.getInvitations();
     });
   },

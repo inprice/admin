@@ -38,7 +38,7 @@
               @keyup.native.enter="valid && submit($event)"
             >
               <v-text-field
-                ref="email"
+                autofocus
                 label="E-mail"
                 v-model="form.email"
                 :rules="rules.email"
@@ -126,10 +126,7 @@ export default {
     }
   },
   mounted() {
-    Utility.doubleRaf(() => {
-      this.$refs.email.focus();
-      Utility.removeTabIndexFromIconButtons(this.$el);
-    });
+    this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
 
     this.infoMessage = null;
     this.errorMessage= null;

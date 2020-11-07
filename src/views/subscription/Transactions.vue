@@ -7,7 +7,7 @@
         <div>
           <div class="caption float-left">The list of operations in this company.</div>
 
-          <v-btn-toggle tile v-model="selectedTab" class="float-right">
+          <v-btn-toggle class="float-right">
             <v-btn @click="selectedTab=0" small>
               All
             </v-btn>

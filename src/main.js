@@ -11,9 +11,6 @@ import Filters from './filters';
 
 Vue.config.productionTip = false
 
-import Notifications from 'vue-notification';
-Vue.use(Notifications);
-
 Filters(Vue);
 
 import './assets/css/main.css';

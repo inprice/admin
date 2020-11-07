@@ -1,5 +1,13 @@
 import ApiService from './api';
-import Utility from '../helpers/utility';
+import store from '../store'
+
+function logoutCheck(reason) {
+  if (reason.includes("code 401") || reason.includes("be expired")) {
+    store.dispatch('auth/logout', true);
+  } else {
+    store.commit('snackbar/setMessage', { text: reason, color: 'error' });
+  }
+}
 
 export default {
 
@@ -20,14 +28,15 @@ export default {
           if (res.data.status == 404 && sensitiveFor404 == false) {
             return { status: true };
           }
-          Utility.showErrorMessage(caller, 'api', res);
-          return { error: res.reason, status: false };
+
+          logoutCheck(res.data.reason);
+          return { error: res.data.reason, status: false };
         }
       } else {
         return { error: 'Network Error', status: false };
       }
     } catch (err) {
-      Utility.showErrorMessage(caller, 'network', err);
+      logoutCheck(err.message);
       return { error: err.message, status: false };
     }
   }

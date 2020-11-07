@@ -12,7 +12,7 @@
           <div>
             <div class="caption float-left">Your actual plan and billing info.</div>
 
-            <v-btn-toggle tile v-model="selectedTab" class="float-right">
+            <v-btn-toggle tile class="float-right">
               <v-btn @click="selectedTab=0" small>
                 Actual Plan
               </v-btn>
@@ -56,7 +56,6 @@
 import SubsService from '@/service/subscription';
 
 import moment from 'moment';
-import Utility from '@/helpers/utility';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -80,13 +79,13 @@ export default {
           if (result && result.status == true) {
             this.$store.dispatch('auth/cancelSubscription');
             this.refreshActualPlan();
-            Utility.showShortInfoMessage('Status', 'Your subscription has been cancelled.');
+            this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
         }
       });
     },
     couponApplied(/* data */) {
-      Utility.showShortInfoMessage('Coupon', 'Your coupon has been successfully applied to your account.');
+      this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been successfully applied to your account.' });
       this.refreshActualPlan();
     },
     refreshActualPlan() {
@@ -115,7 +114,7 @@ export default {
     },
   },
   created() {
-    Utility.doubleRaf(async () => {
+    this.$nextTick(async () => {
       if (! this.plans || this.plans.length < 1) {
         await this.$store.dispatch('system/fetchPlans');
       }

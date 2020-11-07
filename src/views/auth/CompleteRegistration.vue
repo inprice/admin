@@ -29,7 +29,7 @@
 
           <div class="text-center">Activation Code</div>
           <v-text-field
-            ref="code"
+            autofocus
             outlined
             x-large
             v-model="form.code"
@@ -60,7 +60,6 @@
 
 <script>
 import AuthService from '@/service/auth';
-import Utility from '@/helpers/utility';
 
 export default {
   data() {
@@ -83,7 +82,7 @@ export default {
         const result = await AuthService.completeRegistration(this.form.code.replaceAll('-', ''));
         if (result == true) {
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
-          Utility.showInfoMessage('Registration Completion', 'Congrats, you have successfully registered your company.')
+          this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your company.' });
           return;
         }
         this.loading = false;
@@ -98,9 +97,6 @@ export default {
       }
     }
   },
-  mounted() {
-    Utility.doubleRaf(() => this.$refs.code.focus());
-  }
 };
 </script>
 

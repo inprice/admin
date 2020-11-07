@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars */
 import Helper from './helper';
-import Utility from '@/helpers/utility';
+import store from '../store';
 
 const baseURL = '/user';
 
@@ -8,13 +8,13 @@ export default {
 
   async update(form) {
     const res = await Helper.call('Update User', { method: 'put', url: baseURL + '/update', data: form });
-    if (res.status == true) Utility.showInfoMessage('Update Name', 'Your info has been successfully updated');
+    if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your info has been successfully updated' });
     return res.status;
   },
 
   async changePassword(form) {
     const res = await Helper.call('Change Password', { method: 'put', url: baseURL + '/change-password', data: form });
-    if (res.status == true) Utility.showInfoMessage('Change Password', 'Your password has been successfully changed');
+    if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your password has been successfully changed' });
     return res.status;
   },
 

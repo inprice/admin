@@ -1,5 +1,5 @@
 import Helper from './helper';
-import Utility from '@/helpers/utility';
+import store from '../store';
 
 const baseURL = '/product';
 
@@ -22,7 +22,7 @@ export default {
     }
 
     const res = await Helper.call('Product Save', { method, url: baseURL, data: form });
-    if (res.status == true) Utility.showInfoMessage('Product', form.name + ' has been successfully ' + opType)
+    if (res.status == true) store.commit('snackbar/setMessage', { text: `${form.name} has been successfully ${opType}` });
     return res.status;
   },
 

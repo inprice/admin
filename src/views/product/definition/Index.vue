@@ -4,9 +4,9 @@
     <div class="d-flex justify-space-between mt-2">
       <v-btn 
         small
-        @click="$router.push( { name: 'products' })">
+        @click="$router.go(-1)">
           <v-icon class="mr-2">mdi-arrow-left-circle-outline</v-icon>
-          Back to Products
+          Go Back
       </v-btn>
       <v-btn 
         small
@@ -17,9 +17,9 @@
     </div>
 
     <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" />
-    <prices :prod="data.product" class="mt-2" v-if="data.product.priceDetails.price" />
+    <prices :prod="data.product" v-if="data.product.avgPrice > 0" />
 
-    <links :prodId="data.product.id" :links="data.links" class="mt-2" />
+    <links :prodId="data.product.id" :links="data.links" class="mt-2" @deleted="findProduct" @statusToggled="findProduct" />
 
     <edit ref="editDialog" @saved="findProduct" />
     <confirm ref="confirm" />
@@ -29,7 +29,6 @@
 
 <script>
 import ProductService from '@/service/product';
-import Utility from '@/helpers/utility';
 
 export default {
   data() {
@@ -50,7 +49,7 @@ export default {
         if (confirm == true) {
           const result = await ProductService.remove(this.data.product.id);
           if (result == true) {
-            Utility.showInfoMessage('Delete Product', 'Product successfully deleted!');
+            this.$store.commit('snackbar/setMessage', { text: 'Product successfully deleted!' });
             this.$router.push({ name: 'products' });
           }
         }

@@ -2,10 +2,10 @@
 
   <div>
     <div class="display-1">
-      Products
+      Links
     </div>
     <p class="subtitle">
-      In this section, you can manage your products you want to monitor.
+      Links of your competitors' product pages.
     </p>
     <v-divider></v-divider>
 
@@ -27,15 +27,6 @@
               <v-icon @click="clear">mdi-window-close</v-icon>
             </template>
         </v-text-field>
-
-        <v-btn 
-          dark
-          fab small
-          class="ml-2"
-          color="success"
-          @click="addNew">
-            <v-icon>mdi-plus</v-icon>
-        </v-btn>
       </div>
 
       <v-menu
@@ -49,7 +40,7 @@
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
-            class="col-1 mr-1" 
+            class="col-1" 
             v-bind="attrs"
             v-on="on"
           >
@@ -58,39 +49,20 @@
         </template>        
 
         <v-card class="altlik-card">
-          <!-- Positions -->
+          <!-- Statuses -->
           <v-card class="ma-2" tile>
             <v-list dense>  
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title class=" font-weight-bold">POSITIONS</v-list-item-title>
+                  <v-list-item-title class=" font-weight-bold">STATUSES</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-              <v-radio-group v-model="search.position" hide-details>
-                <v-radio
-                  dense
-                  v-for="(pos, index) in positions" :key="index"
-                  :label="`${positions[index]}`"
-                  :value="index"
-                ></v-radio>
-              </v-radio-group>
-            </v-list>
-          </v-card>
-
-          <!-- Tags -->
-          <v-card class="ma-2" tile>
-            <v-list dense>  
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title class=" font-weight-bold">TAGS</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item v-for="(tag, index) in tags" :key="index">
+              <v-list-item v-for="(status, index) in statuses" :key="index">
                 <v-checkbox 
                   dense
-                  v-model="search.selectedTags"
-                  :label="tag"
-                  :value="tag"
+                  v-model="search.statuses"
+                  :label="status.text"
+                  :value="status.value"
                 >
                 </v-checkbox>
               </v-list-item>
@@ -104,43 +76,41 @@
     </div>
 
     <div class="col px-1">
-      <list :rows="searchResult" @edit="edit" :isLoading="isListLoading" />
+      <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
+
+      <div class="caption mt-3">
+        <span class="font-italic font-weight-bold">Please note:</span>
+        Click the card to show/hide details panel!
+      </div>
+
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>
     </div>
-
-    <edit ref="editDialog" @saved="refreshAll" />
 
   </div>
 
 </template>
 
 <script>
-import ProductService from '@/service/product';
-import TagService from '@/service/tag';
+import LinkService from '@/service/link';
 import SystemConsts from '@/data/system';
 
 export default {
+  computed: {
+    statuses() {
+      return SystemConsts.STATUSES;
+    }
+  },
   data() {
     return {
       search: {
         term: '',
-        position: 0,
-        selectedTags: [],
+        statuses: [],
         counter: 0 //used for trigger search mechanism when update or add a new product (look at edit tag above)
       },
       menu: false,
       searchResult: [],
-      tags: [],
-      positions: [
-        'ALL',
-        'Lowest',
-        'Lower',
-        'Average',
-        'Higher',
-        'Highest'
-      ],
       isListLoading: true,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
@@ -150,33 +120,26 @@ export default {
     clear() {
       this.search.term = '';
     },
-    addNew() {
-      this.$refs.editDialog.open();
-    },
-    edit(id) {
-      this.$router.push({ name: 'product', params: { id } });
-    },
     loadmore() {
       this.isLoadMoreClicked = true;
       this.triggerSearch();
     },
-    refreshAll() {
-      TagService.getAll()
-        .then((res) => {
-          if (res && res.data) {
-            this.tags = [];
-            if (res.data) {
-              for (let i=0; i<res.data.length; i++) {
-                this.tags.push(res.data[i].name);
-              }
-            }
-            this.triggerSearch();
-          }
-      });
-    },
     triggerSearch() {
       ++this.search.counter; //triggers search call to the server
+    },
+    rowDeleted(index) {
+      if (index < this.searchResult.length) {
+        this.searchResult.splice(index, 1);
+      }
+    },
+    statusToggled(data) {
+      if (data && data.index < this.searchResult.length) {
+        this.searchResult[data.index].status = data.status;
+      }
     }
+  },
+  mounted() {
+    this.triggerSearch();
   },
   watch: {
     'search': {
@@ -194,7 +157,7 @@ export default {
         this.isListLoading = true;
         this.isLoadMoreClicked = false;
 
-        ProductService.search(cloneForm, true)
+        LinkService.search(cloneForm, true)
           .then((res) => {
             this.isListLoading = false;
             this.isLoadMoreDisabled = true;
@@ -215,12 +178,8 @@ export default {
       deep: true
     },
   },
-  mounted() {
-    this.refreshAll();
-  },
   components: {
     List: () => import('./List'),
-    Edit: () => import('../definition/Edit'),
   },
 }
 </script>

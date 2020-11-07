@@ -1,14 +1,52 @@
 <template>
   <v-app>
-    <notifications group="error" :duration="3000" :width="400" position="top center" />
-    <notifications group="info" :duration="4000" :width="400" position="top center" />
-    <notifications group="short-info" :duration="1800" :width="400" position="top center" />
+
+    <v-snackbar 
+      v-model="snackbar.show" 
+      :timeout="2500" 
+      :color="snackbar.color"
+      top
+    >
+      <v-icon left>mdi-alert-circle-outline</v-icon>
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          text
+          color="white"
+          v-bind="attrs"
+          @click="snackbar.show = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <router-view></router-view>
+
   </v-app>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      snackbar: {
+        show: false,
+        color: 'info',
+        message: ''
+      }
+    }
+  },
+  created() {
+    this.$store.watch(state => state.snackbar.text, () => {
+      if (this.$store.state.snackbar.text !== '') {
+        this.snackbar.show = true;
+        this.snackbar.message = this.$store.state.snackbar.text;
+        this.snackbar.color = this.$store.state.snackbar.color;
+        this.$store.commit('snackbar/setMessage', { text: '' });
+      }
+    });
+  },
   watch: {
     '$route.path' () {
       typeof window !== 'undefined' && window.scrollTo(0, 0)

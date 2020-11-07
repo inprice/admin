@@ -34,7 +34,7 @@
                       <v-icon v-on="on" class="ml-1">mdi-help-circle-outline</v-icon>
                     </template>
                     <span>
-                      Indicates your rank in your competitors. <br>
+                      Indicates your rank among your competitors. <br>
                     </span>
                   </v-tooltip>
                 </td>
@@ -83,7 +83,6 @@
             </tbody>
           </template>
         </v-simple-table>
-        <!-- <position class="hidden-sm-and-down ma-2" :position="prod.priceDetails.position" /> -->
       </div>
 
       <p v-else>

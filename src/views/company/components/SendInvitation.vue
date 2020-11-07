@@ -9,7 +9,7 @@
         <v-card-text class="mt-5">
           <v-form ref="form" v-model="valid">
             <v-text-field
-              ref="email"
+              autofocus
               label="E-mail"
               v-model="form.email"
               :rules="rules.email"
@@ -95,11 +95,7 @@ export default {
     },
     open() {
       this.opened = true;
-      let self = this;
-      Utility.doubleRaf(() => {
-        self.$refs.form.resetValidation();
-        self.$refs.email.focus();
-      });
+      this.$nextTick(() => this.$refs.form.resetValidation());
     },
     stopLoading() {
       this.loading = false;

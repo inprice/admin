@@ -16,7 +16,7 @@ export default {
   },
 
   async search(form) {
-    const res = await Helper.call('Link Search', { method: 'get', url: baseURL + '/search' + Helper.toQueryString(form) });
+    const res = await Helper.call('Link Search', { url: baseURL + 's/search', data: form });
     if (res.status == true && res.data.rows) return res.data.rows;
     return null;
   },
@@ -26,8 +26,14 @@ export default {
     return res.status;
   },
 
-  async changeStatus(id, status) {
-    const res = await Helper.call('Change Status', { method: 'put', url: baseURL + '/' + status.toLowerCase() + '/' + id });
+  async getDetails(id) {
+    const res = await Helper.call('Get Details', { method: 'get', url: baseURL + '/details/' + id });
+    if (res.status == true) return res;
+    return null;
+  },
+
+  async toggleStatus(id) {
+    const res = await Helper.call('Toggle Status', { method: 'put', url: baseURL + '/toggle/' + id });
     return res.status;
   }
 

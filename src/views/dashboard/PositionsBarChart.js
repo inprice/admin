@@ -1,12 +1,12 @@
-import { Bar } from 'vue-chartjs'
+import { HorizontalBar } from 'vue-chartjs'
 import SystemConsts from '@/data/system';
 
 export default {
-  extends: Bar,
+  extends: HorizontalBar,
   props: ['series'],
   mounted () {
     this.renderChart({
-      labels: SystemConsts.POSITIONS,
+      labels: SystemConsts.POSITION_NAMES,
       datasets: [
         {
           backgroundColor: [
@@ -27,8 +27,8 @@ export default {
         legend: {
           display: false,
         },
-      },
-      plugins: {
+        },
+        plugins: {
         datalabels: {
           color: 'black',
           textAlign: 'center',

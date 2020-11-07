@@ -9,7 +9,7 @@
         <v-card-text class="mt-5">
           <v-form ref="form" v-model="valid">
             <v-text-field
-              ref="password"
+              autofocus
               label="Password"
               v-model="form.password"
               :rules="rules.password"
@@ -41,8 +41,6 @@
 </template>
 
 <script>
-import Utility from '@/helpers/utility';
-
 export default {
   data() {
     return {
@@ -75,11 +73,7 @@ export default {
     },
     open() {
       this.opened = true;
-      let self = this;
-      Utility.doubleRaf(() => {
-        self.$refs.form.resetValidation();
-        self.$refs.password.focus();
-      });
+      this.$nextTick(() => this.$refs.form.resetValidation());
     },
     stopLoading() {
       this.loading = false;

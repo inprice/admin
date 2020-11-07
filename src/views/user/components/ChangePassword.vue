@@ -12,7 +12,7 @@
 
           <v-form ref="form" v-model="valid">
             <v-text-field
-              ref="oldPassword"
+              autofocus
               label="Old Password"
               v-model="form.oldPassword"
               :rules="rules.oldPassword"
@@ -125,9 +125,8 @@ export default {
       this.title = title;
       this.opened = true;
       let self = this;
-      Utility.doubleRaf(() => {
+      this.$nextTick(() => {
         self.$refs.form.resetValidation();
-        self.$refs.oldPassword.focus();
         Utility.removeTabIndexFromIconButtons(self.$el);
       });
     },

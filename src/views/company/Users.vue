@@ -127,7 +127,6 @@
 
 <script>
 import MemberService from '@/service/member';
-import Utility from '@/helpers/utility';
 
 export default {
   data() {
@@ -156,7 +155,7 @@ export default {
     async resend(id) {
       const result = await MemberService.resend(id);
       if (result == true) {
-        Utility.showShortInfoMessage('Invite Again', 'A new invitation mail is successfully sent to the member');
+        this.$store.commit('snackbar/setMessage', { text: 'A new invitation mail is successfully sent to the member' });
         this.refreshMembers();
       }
     },
@@ -178,7 +177,7 @@ export default {
         if (confirm == true) {
           const result = await MemberService.remove(id);
           if (result == true) {
-            Utility.showInfoMessage('Delete User', 'User successfully deleted. List will be updated after three hours.');
+            this.$store.commit('snackbar/setMessage', { text: 'User successfully deleted. List will be updated after three hours.' });
             this.refreshMembers();
           }
         }
@@ -194,7 +193,7 @@ export default {
     }
   },
   mounted() {
-    Utility.doubleRaf(() => {
+    this.$nextTick(() => {
       this.refreshMembers();
     });
   },
