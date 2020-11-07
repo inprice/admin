@@ -8,7 +8,7 @@
         <v-icon class="mr-4">mdi-finance</v-icon>
         <div>
           <div>Prices</div>
-          <div class="caption">Calculated prices of your links defined in the following section</div>
+          <div class="caption">The difference indicators under the prices are calculated according to your price</div>
         </div>
         <v-spacer></v-spacer>
         <div class="text-right caption">
@@ -67,7 +67,6 @@
         </v-card>
 
       </v-row>
-      <div class="pa-2 pl-4 caption"><strong>Please note that</strong> the difference indicators under the prices are calculated according to your price.</div>          
     </v-card>
 
   </v-container>

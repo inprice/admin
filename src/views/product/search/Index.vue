@@ -49,7 +49,7 @@
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
-            class="col-1" 
+            class="col-1 mr-1" 
             v-bind="attrs"
             v-on="on"
           >

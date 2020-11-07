@@ -26,8 +26,10 @@ export default {
     return res.status;
   },
 
-  getDetails(id) {
-    return Helper.call('Get Details', { method: 'get', url: baseURL + '/details/' + id });
+  async getDetails(id) {
+    const res = await Helper.call('Get Details', { method: 'get', url: baseURL + '/details/' + id });
+    if (res.status == true) return res;
+    return null;
   },
 
   async toggleStatus(id) {

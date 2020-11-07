@@ -1,27 +1,25 @@
 <template>
   <div>
 
-    <v-card>
+    <v-card class="pb-2">
       <v-card-title>
-        <v-icon class="mr-4">mdi-account-multiple</v-icon>
+        <v-icon class="mr-4">mdi-vector-link</v-icon>
         <div>
           <div>Links</div>
           <div class="caption">The url list of your competitors' product pages.</div>
         </div>
-      </v-card-title>
-
-      <v-divider></v-divider>
-
-      <div v-if="prodId">
+        <v-spacer></v-spacer>
         <v-btn 
           dark small
           v-if="!showAddNewBar"
-          color="success"
-          class="ma-4"
+          color="info"
+          class="ml-4"
           @click="openAddNewBar">
-            <v-icon>mdi-plus</v-icon>Add new Url
+            <v-icon>mdi-plus</v-icon>Add a new Url
         </v-btn>
+      </v-card-title>
 
+      <div v-if="prodId">
         <v-form ref="addNewForm" v-model="isUrlValid" @submit.prevent>
           <v-scroll-x-transition leave-absolute>
             <div v-if="showAddNewBar" class="d-flex">
@@ -29,21 +27,22 @@
                 autofocus
                 v-model="url"
                 :rules="rules.url"
+                label="URL of competitor's product page"
                 @keyup.enter.native="addNew"
                 @keyup.esc.native="clearAddNewBar(true)"
-                dense solo light
-                class="col-10 pl-4 pt-4"
+                dense outlined light
+                class="col pl-3 pt-2"
                 maxlength="1024"
-                placeholder="Add URL">
+                placeholder="https://www.amazon.com/dp/754">
                   <template slot="append">
                     <v-icon class="mr-2" @click="addNew">mdi-check</v-icon>
-                    <v-icon  @click="clearAddNewBar(true)">mdi-window-close</v-icon>
+                    <v-icon @click="clearAddNewBar(true)">mdi-window-close</v-icon>
                   </template>          
               </v-text-field>
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon style="margin-left: 7px; margin-top: -7px" v-on="on" v-bind="attrs">mdi-help-circle-outline</v-icon>
+                  <v-icon class="pl-1 pr-3 pb-4" v-on="on" v-bind="attrs">mdi-help-circle-outline</v-icon>
                 </template>
                 Please keep in mind
                 <ul class="caption">
@@ -67,70 +66,70 @@
           </v-scroll-x-transition>
 
         </v-form>
-        
-        <div v-if="rows && rows.length > 0">
-
-          <v-expansion-panels hover focusable>
-            <v-expansion-panel v-for="(row, index) in rows" :key="row.id">
-              <v-expansion-panel-header>
-                <div class="col pa-0" v-if="row.seller">
-                  <span>{{ row.seller }}</span>
-                  <span class="ml-1">({{ row.platform }})</span>
-                </div>
-                <div class="col pa-0 text-right" v-if="row.price > 0">
-                  <span class="font-weight-bold">{{ row.price | toPrice }}</span>
-                </div>
-                <div class="col pa-0 text-truncate caption font-italic" v-if="!row.name" :title="row.problem">
-                  {{ row.url }}
-                </div>
-                <div class="col-4 pa-0 mx-2 text-truncate" :title="row.problem">
-                  {{ row.problem || row.status }}
-                </div>
-              </v-expansion-panel-header>
-
-              <v-expansion-panel-content class="px-2">
-
-                <div class="d-flex justify-space-between pt-2">
-                  <div>
-                    <div class="caption">#{{ row.sku || 'PROBLEM' }} ({{ row.position | toPosition }})</div>
-                    <div>{{ row.name || row.problem }}</div>
-                    <div class="text-truncate caption font-italic">
-                      <a :href="row.url" target="_blank">{{ row.url }}</a>
-                    </div>
-                  </div>
-
-                  <div class="pt-2">
-                    <v-btn class="d-block mb-2" small @click="toggleStatus(index, row.id)">
-                      <span v-if="row.status=='PAUSED'">Resume</span>
-                      <span v-else>Pause</span>
-                    </v-btn>
-                    <v-btn class="d-block" small @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
-                  </div>
-                </div>
-
-                <link-details
-                  :key="detailsRefreshCount"
-                  :showInfoTab="true"
-                  :price="row.price"
-                  :lastUpdate="row.lastUpdate"
-                  :historyList="row.historyList"
-                  :priceList="row.priceList"
-                  :specList="row.specList"
-                />
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
-        </div>
-
-        <confirm ref="confirm"></confirm>
       </div>
-
       <div v-else>
         Invalid product!
       </div>
     </v-card>
+
+    <div v-if="rows && rows.length" class="mt-2">
+
+      <v-hover v-for="(row, index) in rows" :key="row.id">
+        <template v-slot="{ hover }">
+
+          <v-card class="my-3 pa-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+            <div @click="toggleDetails(index)" style="cursor: pointer">
+              <div class="d-flex justify-space-between subtitle">
+                <div>{{ row.name || (row.status == 'TOBE_CLASSIFIED' ? 'WILL BE SET SOON' : row.problem) }}</div>
+                <div>{{ row.price | toPrice }}</div>
+              </div>
+
+              <div class="d-flex justify-space-between caption">
+                <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
+                <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
+                <div>{{ row.position | toPosition }}</div>
+              </div>
+
+              <div class="d-flex justify-space-between caption">
+                <div class="text-truncate font-italic">
+                  <a :href="row.url" target="_blank">{{ row.url }}</a>
+                </div>
+                <div>{{ row.status.replaceAll('_', ' ') }}</div>
+              </div>
+            </div>
+
+            <v-divider class="my-2" />
+
+            <div class="row mr-0">
+              <v-spacer></v-spacer>
+              <div>
+                <v-btn class="mx-1" small @click="toggleStatus(index, row.id)">
+                  <span v-if="row.status=='PAUSED'">Resume</span>
+                  <span v-else>Pause</span>
+                </v-btn>
+                <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
+              </div>
+            </div>
+
+            <link-details
+              :key="row.detailsRefreshCount"
+              style="margin-top: -20px"
+              v-if="showingIndex==index && showDetails==true"
+              :showInfoTab="true"
+              :price="row.price"
+              :lastUpdate="row.lastUpdate"
+              :historyList="row.historyList"
+              :priceList="row.priceList"
+              :specList="row.specList"
+            />
+
+          </v-card>
+
+        </template>
+      </v-hover>
+
+    </div>
+    <confirm ref="confirm"></confirm>
 
   </div>
 
@@ -154,7 +153,8 @@ export default {
       rows: [],
       rulesPopup: false,
       selectedTab: 0,
-      detailsRefreshCount: 0,
+      showingIndex: -1,
+      showDetails: false,
     }
   },
   methods: {
@@ -169,21 +169,39 @@ export default {
       }
     },
     async addNew() {
+      if (!this.url) return;
       this.url = normalizeUrl(this.url, { defaultProtocol: 'https:', removeQueryParameters: ['ref'] });
       if (Object.keys(this.rules).length == 0) this.activateRules();
       await this.$refs.addNewForm.validate();
       if (this.isUrlValid) {
+
+        const alreadyAdded = this.rows.some(link => link.url === this.url);
+        if (alreadyAdded) {
+          this.$store.commit('snackbar/setMessage', { text: 'This url is already added!' });
+          return;
+        }
+
         this.loading = true;
         const result = await LinkService.insert({ url: this.url, productId: this.prodId });
         if (result.status == true) {
-          this.$store.commit('snackbar/setMessage', { text: 'URL is successfully added.' });
           this.clearAddNewBar();
+          const createdAt = moment();
+          result.data.historyList = [{ status: 'TOBE_CLASSIFIED', createdAt }];
           this.rows.push(result.data);
+          this.$store.commit('snackbar/setMessage', { text: 'URL is successfully added.' });
         }
         this.loading = false;
       }
     },
-    toggleStatus(index, id) {
+    toggleDetails(index) {
+      if (this.showingIndex == index) {
+        this.showDetails = !this.showDetails;
+      } else {
+        this.showingIndex = index;
+        this.showDetails=true;
+      }
+    },
+    async toggleStatus(index, id) {
       let status = 'PAUSED';
       if (this.rows[index].historyList[0].status == status) {
         status = this.rows[index].historyList[1].status;
@@ -203,7 +221,7 @@ export default {
         }
       }
 
-      LinkService.toggleStatus(id);
+      await LinkService.toggleStatus(id);
 
       const select = (status == 'PAUSED' ? 0 : 1);
       const newOne = JSON.parse(JSON.stringify(this.rows[index].historyList[select]));
@@ -213,8 +231,10 @@ export default {
         newOne.httpStatus = 0;
       }
       this.rows[index].historyList.unshift(newOne);
-      this.detailsRefreshCount++;
       this.$emit("statusToggled");
+      this.showingIndex = index;
+      this.showDetails = true;
+      console.log("index", index, "showDetails", this.rows[index].showDetails, "showingIndex", this.showingIndex);
     },
     remove(index, id, name) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {

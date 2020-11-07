@@ -17,7 +17,7 @@
     </div>
 
     <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" />
-    <prices :prod="data.product" class="mt-2" v-if="data.product.avgPrice > 0" />
+    <prices :prod="data.product" v-if="data.product.avgPrice > 0" />
 
     <links :prodId="data.product.id" :links="data.links" class="mt-2" @deleted="findProduct" @statusToggled="findProduct" />
 

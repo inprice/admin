@@ -6,25 +6,25 @@
       <v-hover v-for="(row, index) in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card class="mb-5 pa-2 transition-swing" :class="`elevation-${hover ? 4 : 2}`">
+          <v-card class="mb-3 pa-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
 
             <div @click="toggleDetails(row.id)" style="cursor: pointer">
-              <div class="d-flex justify-space-between caption">
-                <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
-                <div v-else>#{{ row.sku || 'PROBLEM' }}</div>
-                <div>{{ row.status.replaceAll('_', ' ') }}</div>
-              </div>
-
               <div class="d-flex justify-space-between subtitle">
                 <div>{{ row.name || row.problem }}</div>
                 <div>{{ row.price | toPrice }}</div>
               </div>
 
               <div class="d-flex justify-space-between caption">
+                <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
+                <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
+                <div>{{ row.position | toPosition }}</div>
+              </div>
+
+              <div class="d-flex justify-space-between caption">
                 <div class="text-truncate font-italic">
                   <a :href="row.url" target="_blank">{{ row.url }}</a>
                 </div>
-                <div>{{ row.position | toPosition }}</div>
+                <div>{{ row.status.replaceAll('_', ' ') }}</div>
               </div>
             </div>
 
@@ -32,12 +32,13 @@
 
             <div class="row mr-0">
               <v-spacer></v-spacer>
-              <div v-if="$store.get('auth/IS_EDITOR')">
+              <div>
                 <v-btn class="mx-1" small @click="toggleStatus(index, row.id)">
                   <span v-if="row.status=='PAUSED'">Resume</span>
                   <span v-else>Pause</span>
                 </v-btn>
                 <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
+                <v-btn class="mx-1" small @click="openProductPage(row.productId)">Product Page</v-btn>
               </div>
             </div>
 
@@ -78,6 +79,7 @@ export default {
       detailsRefreshCount: 0,
       showDetails: false,
       openedDetail: null,
+      lastToggledLinkId: null,
     }
   },
   methods: {
@@ -92,7 +94,11 @@ export default {
         }
       });
     },
-    toggleStatus(index, id) {
+    async toggleStatus(index, id) {
+      if (id != this.lastToggledLinkId) {
+        await this.toggleDetails(id);
+      }
+
       let status = 'PAUSED';
       if (this.openedDetail.historyList[0].status == status) {
         status = this.openedDetail.historyList[1].status;
@@ -112,7 +118,7 @@ export default {
         }
       }
 
-      LinkService.toggleStatus(id);
+      await LinkService.toggleStatus(id);
 
       this.$emit('statusToggled', { index, status });
       if (this.openedDetail && this.openedDetail.id == id) {
@@ -130,26 +136,28 @@ export default {
         this.detailsRefreshCount = 0;
       }
     },
-    toggleDetails(id) {
+    async toggleDetails(id) {
       if (this.openedDetail && this.openedDetail.id == id) {
         this.showDetails = !this.showDetails;
         return;
       }
-      LinkService.getDetails(id)
-        .then((res) => {
-          if (res && res.data) {
-            this.openedDetail = {};
-            this.openedDetail.id = id;
-            this.openedDetail.historyList = res.data.historyList;
-            this.openedDetail.priceList = res.data.priceList;
-            this.openedDetail.specList = res.data.specList;
-            this.showDetails = true;
-          } else {
-            this.showDetails = false;
-            this.openedDetail = null;
-          }
-      });
+      const res = await LinkService.getDetails(id);
+      if (res && res.data) {
+        this.openedDetail = {};
+        this.openedDetail.id = id;
+        this.openedDetail.historyList = res.data.historyList;
+        this.openedDetail.priceList = res.data.priceList;
+        this.openedDetail.specList = res.data.specList;
+        this.showDetails = true;
+      } else {
+        this.showDetails = false;
+        this.openedDetail = null;
+      }
+      this.lastToggledLinkId = id;
     },
+    openProductPage(productId) {
+      this.$router.push({ name: 'product', params: { id: productId } });
+    }
   },
   components: {
     confirm: () => import('@/component/Confirm.vue'),

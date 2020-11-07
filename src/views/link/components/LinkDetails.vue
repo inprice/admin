@@ -4,7 +4,7 @@
       <v-btn v-for="(name, index) in tabs" @click="selectedTab=index" :key="index" small>{{ name }}</v-btn>
     </v-btn-toggle>
 
-    <v-tabs v-model="selectedTab" class="v-card v-sheet theme--light mb-2">
+    <v-tabs v-model="selectedTab" class="v-card v-sheet theme--light">
 
       <!-- HISTORY -->
       <v-tab-item class="pb-2">

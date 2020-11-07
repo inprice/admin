@@ -34,7 +34,7 @@
                       <v-icon v-on="on" class="ml-1">mdi-help-circle-outline</v-icon>
                     </template>
                     <span>
-                      Indicates your rank in your competitors. <br>
+                      Indicates your rank among your competitors. <br>
                     </span>
                   </v-tooltip>
                 </td>
