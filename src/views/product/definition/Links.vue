@@ -46,7 +46,7 @@
                 </template>
                 Please keep in mind
                 <ul class="caption">
-                  <li>URL must be the exact address of your link's product page.</li>
+                  <li>URL must be the exact address of your competitor's product page.</li>
                   <li>At least, Code, Name and Price fields should be displayed on it.</li>
                   <li>It must start with either http:// or https://</li>
                   <li>It cannot be less than 10 chars.</li>

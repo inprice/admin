@@ -57,9 +57,14 @@
         </template>
       </v-hover>
 
+      <div class="caption mt-3">
+        <span class="font-italic font-weight-bold">Please note:</span>
+        Click the card to show/hide details panel!
+      </div>
+
     </div>
 
-    <p class="mt-3" v-if="isLoading==false">
+    <p class="mt-3" v-else>
       No link found! Please change your criteria or add new competitors to your products.
     </p>
 

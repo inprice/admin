@@ -105,12 +105,12 @@ const router = new VueRouter({
           path: 'subscription',
           component: () => import('./views/subscription/Index.vue')
         },
-        /*
         {
-          name: 'imported-prods',
-          path: 'import/products',
-          component: () => import('./views/product/import/ImportedProducts.vue')
+          name: 'import',
+          path: 'import/product',
+          component: () => import('./views/product/import/Index.vue')
         },
+        /*
         {
           name: 'prod-links',
           path: 'product/links/:prod_id',

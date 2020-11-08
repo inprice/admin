@@ -78,11 +78,6 @@
     <div class="col px-1">
       <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
 
-      <div class="caption mt-3">
-        <span class="font-italic font-weight-bold">Please note:</span>
-        Click the card to show/hide details panel!
-      </div>
-
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>
