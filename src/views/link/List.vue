@@ -10,7 +10,7 @@
 
             <div @click="toggleDetails(row.id)" style="cursor: pointer">
               <div class="d-flex justify-space-between subtitle">
-                <div>{{ row.name || row.problem }}</div>
+                <div>{{ row.name || row.problem || 'NOT YET' }}</div>
                 <div>{{ row.price | toPrice }}</div>
               </div>
 

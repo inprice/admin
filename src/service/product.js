@@ -10,8 +10,8 @@ export default {
     return res;
   },
 
-  async getEverything(id) {
-    const res = await Helper.call('Find Product', { method: 'get', url: baseURL + '/everything/' + id });
+  async getLinks(id) {
+    const res = await Helper.call('Find Product', { method: 'get', url: baseURL + '/links/' + id });
     return res;
   },
 

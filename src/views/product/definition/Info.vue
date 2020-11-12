@@ -112,8 +112,5 @@ export default {
         return '';
     },
   },
-  components: {
-    /* Position: () => import('@/component/utility/Position.vue'), */
-  },
 }
 </script>
