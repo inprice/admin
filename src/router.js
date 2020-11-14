@@ -96,9 +96,19 @@ const router = new VueRouter({
           component: () => import('./views/product/import/CSVFile.vue')
         },
         {
+          name: 'import-csv-list',
+          path: 'import/csv-list',
+          component: () => import('./views/product/import/CSVList.vue')
+        },
+        {
           name: 'import-url-file',
           path: 'import/url-file',
           component: () => import('./views/product/import/URLFile.vue')
+        },
+        {
+          name: 'import-url-list',
+          path: 'import/url-list',
+          component: () => import('./views/product/import/URLList.vue')
         },
         {
           name: 'import-ebay-file',
@@ -106,9 +116,19 @@ const router = new VueRouter({
           component: () => import('./views/product/import/EbayFile.vue')
         },
         {
+          name: 'import-ebay-list',
+          path: 'import/ebay-list',
+          component: () => import('./views/product/import/EbayList.vue')
+        },
+        {
           name: 'import-amazon-file',
           path: 'import/amazon-file',
           component: () => import('./views/product/import/AmazonFile.vue')
+        },
+        {
+          name: 'import-amazon-list',
+          path: 'import/amazon-list',
+          component: () => import('./views/product/import/AmazonList.vue')
         },
         {
           name: 'subscription',

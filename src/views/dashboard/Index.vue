@@ -1,11 +1,11 @@
 <template>
   <div v-if="report">
-    <div class="d-flex">
-      <span class="display-1">Dashboard</span>
+    <div class="d-flex mt-2 pl-1">
+      <span class="title">Dashboard</span>
 
       <v-spacer></v-spacer>
 
-      <div class="text-right mt-4" v-if="hasAPlan">
+      <div class="text-right" v-if="hasAPlan">
         <span class="caption mr-2">{{ report.date }}</span>
         <v-btn small color="success" @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
@@ -26,7 +26,7 @@
       </v-btn>
     </v-alert>
 
-    <v-row>
+    <v-row class="mt-2">
       <!-- ------------------------------- -->
       <!-- Products position statuses -->
       <!-- ------------------------------- -->

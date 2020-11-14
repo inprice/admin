@@ -6,9 +6,35 @@
 
     <v-tabs v-model="selectedTab" class="v-card v-sheet theme--light">
 
+      <!-- PROPERTIES -->
+      <v-tab-item class="pb-2">
+        <v-simple-table class="property-table pt-3 pb-1" dense v-if="data">
+          <template v-slot:default>
+            <tbody>
+              <tr>
+                <td class="prop-name">Brand</td>
+                <td><v-text-field solo dense readonly hide-details="true" class="col-5" :value="data.brand || 'NA'" /></td>
+              </tr>
+              <tr>
+                <td class="prop-name">Shipment</td>
+                <td><v-text-field solo dense readonly hide-details="true" class="col-5" :value="data.shipment || 'NA'" /></td>
+              </tr>
+              <tr>
+                <td class="prop-name">Last Check</td>
+                <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="data.lastCheck | formatDate" /></td>
+              </tr>
+              <tr>
+                <td class="prop-name">Last Update</td>
+                <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="data.lastUpdate | formatDate" /></td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-tab-item>
+
       <!-- HISTORY -->
       <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="historyList && historyList.length">
+        <v-simple-table dense v-if="data && data.historyList && data.historyList.length">
           <template v-slot:default>
             <thead>
               <tr>
@@ -18,7 +44,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, index) in historyList" :key="index">
+              <tr v-for="(row, index) in data.historyList" :key="index">
                 <td class="text-center" width="20%">
                   <ago :date="row.createdAt" />
                 </td>
@@ -35,7 +61,7 @@
 
       <!-- PRICES -->
       <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="priceList && priceList.length">
+        <v-simple-table dense v-if="data && data.priceList && data.priceList.length">
           <template v-slot:default>
             <thead>
               <tr>
@@ -45,7 +71,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="row in priceList" :key="row.id">
+              <tr v-for="row in data.priceList" :key="row.id">
                 <td class="text-center" width="20%">
                   <ago :date="row.createdAt" />
                 </td>
@@ -62,7 +88,7 @@
 
       <!-- SPECS -->
       <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="specList && specList.length">
+        <v-simple-table dense v-if="data && data.specList && data.specList.length">
           <template v-slot:default>
             <thead>
               <tr>
@@ -71,7 +97,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="row in specList" :key="row.id">
+              <tr v-for="row in data.specList" :key="row.id">
                 <td class="text-center">{{ row.key }}</td>
                 <td class="text-center">{{ row.value }}</td>
               </tr>
@@ -89,27 +115,12 @@
 
 <script>
 export default {
-  props: ["showInfoTab", "historyList", "priceList", "specList"],
-  computed: {
-    tabs() {
-      let names = [ 'History' ];
-      if (this.priceList && this.priceList.length) {
-        names.push('Prices');
-        if (this.specList && this.specList.length) {
-          names.push('Specs');
-        }
-      }
-      return names;
-    }
-  },
+  props: ["data"],
   data() {
     return {
+      tabs: ['Properties', 'History', 'Prices', 'Specs'],
       selectedTab: 0,
     }
   },
 }
 </script>
-
-<style>
-
-</style>

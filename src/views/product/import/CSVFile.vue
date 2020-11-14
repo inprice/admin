@@ -8,7 +8,6 @@
     </v-btn>
 
     <v-card class="mt-1">
-
       <v-card-title>
         <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
         <div>
@@ -27,7 +26,6 @@
         >
           Import
         </v-btn>
-
       </v-card-title>
 
       <v-card-text>
@@ -49,7 +47,6 @@
           </v-file-input>
         </v-form>
       </v-card-text>
-
     </v-card>
 
     <v-card>
@@ -64,82 +61,13 @@
         <ol>
           <li>Only plain csv format is acceptable</li>
           <li>Maximum file size is 1024kb or 1mb</li>
-          <li>You can add a new products up to the limit specified in your plan</li>
+          <li>You can import new products up to the limit specified in your plan</li>
           <li>Empty lines and description rows starting with a hash # symbol are allowed</li>
         </ol>
       </v-card-text>
     </v-card>
 
-    <v-card>
-      <v-card-title>
-        <v-icon class="mr-2">mdi-format-columns</v-icon>
-        <div>Content format rules</div>
-      </v-card-title>
-
-      <v-divider/>
-
-      <v-card-text>
-        <ol>
-          <li>Do not use thousand separator for price column</li>
-          <li>Decimal point in price column must be a dot but not comma</li>
-          <li>Code column can not be empty or duplicate</li>
-          <li>Price column must be greater than zero</li>
-        </ol>
-      </v-card-text>
-    </v-card>
-
-    <v-card>
-      <v-card-title>
-        <v-icon class="mr-2">mdi-table-column</v-icon>
-        <div>Column rules</div>
-      </v-card-title>
-
-      <v-divider/>
-
-      <v-card-text>
-        <ol>
-          <li>The column count must be 3 and ordered as follows
-            <div class="font-italic ml-4">Code, Name, Price</div>
-          </li>
-        </ol>
-      </v-card-text>
-    </v-card>
-
-    <v-card>
-      <v-card-title>
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>A valid CSV content</div>
-      </v-card-title>
-
-      <v-divider/>
-
-      <v-card-text>
-<pre>
-0001,12-PIECE STAMPED STAINLESS-STEEL CUTLERY SET,19.99
-0002,FISH KNIFE AND FORK 12 PIECES,30.50
-0003,MASTERCHIEF GOURMET ROBOT,1199.99
-</pre>
-      </v-card-text>
-    </v-card>
-
-    <v-card>
-      <v-card-title>
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>Another valid CSV content with description and empty lines</div>
-      </v-card-title>
-
-      <v-divider/>
-
-      <v-card-text>
-<pre>
-# CODE, NAME, PRICE
-0001,12-PIECE STAMPED STAINLESS-STEEL CUTLERY SET,19.99
-
-0002,FISH KNIFE AND FORK 12 PIECES,30.50
-0003,MASTERCHIEF GOURMET ROBOT,1199.99
-</pre>
-      </v-card-text>
-    </v-card>
+    <CSVRules />
   </div>
 
 </template>
@@ -171,11 +99,20 @@ export default {
         formData.append('type', 'CSV');
         formData.append('file', this.file);
 
-        const result = await ImportService.uploadCSV(formData);
-        if (result.status == true) this.$router.push({ name: 'import-details', params: { id: result.data } });
+        const result = await ImportService.uploadCSVFile(formData);
+        if (result.status == true) {
+          if (result.data.successes) {
+            this.$router.push({ name: 'products' });
+          } else {
+            this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
+          }
+        }
         this.loading = false;
       }
     }
+  },
+  components: {
+    CSVRules: () => import('./CSVRules'),
   },
 };
 </script>
@@ -194,11 +131,5 @@ export default {
   }
   .v-card {
     margin-top: 20px;
-  }
-  .v-card__title {
-    padding-bottom: 10px;
-  }
-  .v-card__text {
-    padding-left: 10px;
   }
 </style>

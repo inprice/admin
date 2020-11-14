@@ -31,7 +31,7 @@
           <tbody>
             <tr>
               <td class="prop-name">Type</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-2" v-model="data.import.type" /></td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-3" :value="data.import.type + (data.import.is_file ? ' File' : ' List')" /></td>
             </tr>
             <tr>
               <td class="prop-name">Date</td>
@@ -57,22 +57,35 @@
             <thead>
               <tr>
                 <th>Data</th>
-                <th>Problem</th>
-                <th class="text-center">Eligible?</th>
+                <th>Status</th>
+                <!--
+                <th class="text-center">Status</th>
+                 -->
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in data.list" :key="row.id">
-                <td>{{ row.data }}</td>
-                <td>{{ row.problem }}</td>
-                <td class="text-center">{{ row.eligible ? 'YES' : 'NO' }}</td>
+                <td width="80%">{{ row.data }}</td>
+                <td width="20%">{{ row.problem || (data.import.type != 'CSV' ? 'Looks ' : '') + 'Fine' }}</td>
+                <!--
+                <td class="text-center">
+                  <div class="d-inline-flex">
+                    <div title="Eligible?">
+                      <v-checkbox hide-details="true" class="mt-1" :input-value="row.eligible" disabled value/>
+                    </div>
+                    <div title="Imported?">
+                      <v-checkbox hide-details="true" class="mt-1" :input-value="row.imported" disabled value/>
+                    </div>
+                  </div>
+                </td>
+                 -->
               </tr>
             </tbody>
           </template>
         </v-simple-table>
       </div>
 
-      <div v-else class="ml-2 py-3">
+      <div v-else class="ma-2 pa-2">
         Wrong import identifier!
       </div>
 
@@ -97,7 +110,7 @@ export default {
         if (confirm == true) {
           const result = await ImportService.remove(this.$route.params.id);
           if (result == true) {
-            this.$store.commit('snackbar/setMessage', { text: 'Link successfully deleted.' });
+            this.$store.commit('snackbar/setMessage', { text: 'Import successfully deleted.' });
             this.$router.push({ name: 'import' });
           }
         }
@@ -132,6 +145,5 @@ export default {
   td {
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
 </style>

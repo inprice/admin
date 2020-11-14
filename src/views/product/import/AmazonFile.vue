@@ -1,79 +1,73 @@
 <template>
   <div>
-    <div class="display-1">
-      Amazon's ASIN code list import
-    </div>
+    <v-btn 
+      small
+      @click="$router.go(-1)">
+        <v-icon class="mr-2">mdi-arrow-left-circle-outline</v-icon>
+        Go Back
+    </v-btn>
 
-    <p class="subtitle">
-      Import your products from a text file containing only Amazon's ASIN codes
-    </p>
+    <v-card class="mt-1">
+      <v-card-title>
+        <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
+        <div>
+          <div>Amazon ASIN File Import</div>
+          <div class="caption">Please upload your Amazon ASIN file considering the rules in the following sections</div>
+        </div>
 
-    <p class="pt-5 mb-0">
-      <v-form ref="form" v-model="valid">
-        <v-file-input
-          autofocus
-          v-model="file"
-          large 
-          outlined 
-          counter
-          :show-size="1000"
-          :rules="rules"
-          :loading="loading"
-          accept=".txt" 
-          label="Please click here to select a text file"
-          prepend-icon=""
-          append-icon="">
-        </v-file-input>
-      </v-form>
-    </p>
+        <v-spacer></v-spacer>
 
-    <v-btn color="success" :dark="valid" :disabled="!valid" :loading="loading" @click="submit">Import</v-btn>
+        <v-btn 
+          color="success" 
+          :dark="valid" 
+          :disabled="!valid" 
+          :loading="loading" 
+          @click="submit"
+        >
+          Import
+        </v-btn>
+      </v-card-title>
 
-    <div class="pt-10">
-      <h3>In order to import a ASIN code list file successfully, please pay attention to the following rules</h3>
+      <v-card-text>
+        <v-form ref="form" v-model="valid">
+          <v-file-input
+            autofocus
+            ref="fileInput"
+            v-model="file"
+            large 
+            outlined 
+            counter
+            :show-size="1000"
+            :rules="rules"
+            :loading="loading"
+            accept=".txt" 
+            label="Please click here to select a Amazon ASIN file"
+            prepend-icon=""
+            append-icon="">
+          </v-file-input>
+        </v-form>
+      </v-card-text>
+    </v-card>
 
-      <h4 class="mt-7">File rules</h4>
-      <ul>
-        <li>Only plain text format is acceptable</li>
-        <li>Maximum allowed file size is 1024kb</li>
-        <li>You can add a new products up to the limit in your plan</li>
-        <li>Empty lines and description rows starting a hash # symbol are allowed</li>
-      </ul>
+    <v-card>
+      <v-card-title>
+        <v-icon class="mr-2">mdi-playlist-check</v-icon>
+        <div>File Rules</div>
+      </v-card-title>
 
-      <h4 class="mt-5">Code format rules</h4>
-      <ul>
-        <li>Each row must have a valid ASIN code starting either <strong>B0</strong> or <strong>BT</strong></li>
-        <li>The following characters should consist of 8 alpha numeric chars></li>
-      </ul>
+      <v-divider/>
 
-    </div>
+      <v-card-text>
+        <ol>
+          <li>Only plain text format is acceptable</li>
+          <li>Maximum file size is 1024kb or 1mb</li>
+          <li>You can import new products up to the limit specified in your plan</li>
+          <li>Empty lines and description rows starting with a hash # symbol are allowed</li>
+        </ol>
+      </v-card-text>
+    </v-card>
 
-    <div class="pt-5">
-      <h3>Here is a valid ASIN code list content</h3>
-<pre>
-  1. B00LH3DTYA
-  2. B005GIQPCU
-  3. BT0L2OMPNK
-  4. BT0178MP0K
-</pre>
-    </div>
-
-    <div class="pt-5">
-      <h3>Another valid code list with description lines</h3>
-<pre>
-1. # -----------------------------------------
-2. # ASIN CODE LIST
-3. # -----------------------------------------
-4. B00LH3DTYA
-5. B005GIQPCU
-6.
-7. # -----------------------------------------
-8. # here is another description line
-9. # -----------------------------------------
-10. BT0L2OMPNK
-11. BT0178MP0K
-</pre>
-    </div>
+    <AmazonRules />
   </div>
 
 </template>
@@ -105,11 +99,37 @@ export default {
         formData.append('type', 'AMAZON_ASIN');
         formData.append('file', this.file);
 
-        const result = await ImportService.uploadAmazonASIN(formData);
-        if (result.status == true) this.$route.push({ name: 'import-details', params: { id: result.data.id } });
+        const result = await ImportService.uploadAmazonASINFile(formData);
+        if (result.status == true) {
+          if (result.data.successes) {
+            this.$router.push({ name: 'products' });
+          } else {
+            this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
+          }
+        }
         this.loading = false;
       }
     }
   },
+  components: {
+    AmazonRules: () => import('./AmazonRules'),
+  },
 };
 </script>
+
+<style scoped>
+  ol {
+    counter-reset: list;
+  }
+  ol > li {
+    list-style: none;
+  }
+  ol > li:before {
+    content: counter(list) ") ";
+    counter-increment: list;
+    font-weight: bold;
+  }
+  .v-card {
+    margin-top: 20px;
+  }
+</style>

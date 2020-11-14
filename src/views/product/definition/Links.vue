@@ -47,7 +47,7 @@
                 Please keep in mind
                 <ul class="caption">
                   <li>URL must be the exact address of your competitor's product page.</li>
-                  <li>At least, Code, Name and Price fields should be displayed on it.</li>
+                  <li>At least, Code, Name and Price fields should be displayed on the page it refers.</li>
                   <li>It must start with either http:// or https://</li>
                   <li>It cannot be less than 10 chars.</li>
                   <li>You can save it by pressing Enter or click Save icon on the right.</li>
@@ -112,15 +112,10 @@
             </div>
 
             <link-details
+              :data="row"
               :key="row.detailsRefreshCount"
               style="margin-top: -20px"
               v-if="showingIndex==index && showDetails==true"
-              :showInfoTab="true"
-              :price="row.price"
-              :lastUpdate="row.lastUpdate"
-              :historyList="row.historyList"
-              :priceList="row.priceList"
-              :specList="row.specList"
             />
 
           </v-card>
@@ -234,7 +229,6 @@ export default {
       this.$emit("statusToggled");
       this.showingIndex = index;
       this.showDetails = true;
-      console.log("index", index, "showDetails", this.rows[index].showDetails, "showingIndex", this.showingIndex);
     },
     remove(index, id, name) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {

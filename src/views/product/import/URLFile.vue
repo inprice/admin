@@ -1,64 +1,73 @@
 <template>
   <div>
-    <div class="display-1">
-      URL List import
-    </div>
+    <v-btn 
+      small
+      @click="$router.go(-1)">
+        <v-icon class="mr-2">mdi-arrow-left-circle-outline</v-icon>
+        Go Back
+    </v-btn>
 
-    <p class="subtitle">
-      You can create your products from URLs of well known websites like Amazon and Ebay.
-    </p>
+    <v-card class="mt-1">
+      <v-card-title>
+        <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
+        <div>
+          <div>URL File Import</div>
+          <div class="caption">Please upload your URL file considering the rules in the following sections</div>
+        </div>
 
-    <p class="pt-5 mb-0">
-      <v-form ref="form" v-model="valid">
-        <v-file-input
-          autofocus
-          v-model="file"
-          large 
-          outlined 
-          counter
-          :show-size="1000"
-          :rules="rules"
-          :loading="loading"
-          accept=".txt" 
-          label="Please click here to select a text file"
-          prepend-icon=""
-          append-icon="">
-        </v-file-input>
-      </v-form>
-    </p>
+        <v-spacer></v-spacer>
 
-    <v-btn color="success" :dark="valid" :disabled="!valid" :loading="loading" @click="submit">Import</v-btn>
+        <v-btn 
+          color="success" 
+          :dark="valid" 
+          :disabled="!valid" 
+          :loading="loading" 
+          @click="submit"
+        >
+          Import
+        </v-btn>
+      </v-card-title>
 
-    <div class="pt-10">
-      <h3>In order to import a URL list successfully, please pay attention to the following rules</h3>
+      <v-card-text>
+        <v-form ref="form" v-model="valid">
+          <v-file-input
+            autofocus
+            ref="fileInput"
+            v-model="file"
+            large 
+            outlined 
+            counter
+            :show-size="1000"
+            :rules="rules"
+            :loading="loading"
+            accept=".txt" 
+            label="Please click here to select a URL file"
+            prepend-icon=""
+            append-icon="">
+          </v-file-input>
+        </v-form>
+      </v-card-text>
+    </v-card>
 
-      <h4 class="mt-7">File rules</h4>
-      <ul>
-        <li>Only plain text format is acceptable</li>
-        <li>Maximum allowed file size is 1024kb</li>
-        <li>You can add a new products up to the limit in your plan</li>
-        <li>Empty lines and description rows starting a hash # symbol are allowed</li>
-      </ul>
+    <v-card>
+      <v-card-title>
+        <v-icon class="mr-2">mdi-playlist-check</v-icon>
+        <div>File Rules</div>
+      </v-card-title>
 
-      <h4 class="mt-5">Content format rules</h4>
-      <ul>
-        <li>Each row must have a valid URL which must start with <strong>http or https</strong></li>
-        <li>URLs can be up to 1024 chars</li>
-        <li>Lines can not be duplicate</li>
-        <li>Only well known websites urls are accepted.</li>
-      </ul>
-    </div>
+      <v-divider/>
 
-    <div class="pt-5">
-      <h3>Here is a valid URL list</h3>
-<pre>
-1. https://www.amazon.com/AmazonBasics-High-Speed-HDMI-Cable-1-Pack/dp/B014I8T0YQ
-2. https://www.ebay.com/itm/Xiaomi10-Pro-5G-12GB-256GB-12GB-512GB-Duel-Sim-Global-version-Google-store/133356161760
-3. https://www.debenhams.com/webapp/wcs/stores/servlet/prod_10701_10001_123010030399_-1
-4. https://www.zalando.co.uk/zign-polo-shirt-black-zi122p006-q11.html
-5. https://www.mediamarkt.de/de/product/_samsung-galaxy-tab-a-10-1-wi-fi-2586325.html
-</pre>
-    </div>
+      <v-card-text>
+        <ol>
+          <li>Only plain text format is acceptable</li>
+          <li>Maximum file size is 1024kb or 1mb</li>
+          <li>You can import new products up to the limit specified in your plan</li>
+          <li>Empty lines and description rows starting with a hash # symbol are allowed</li>
+        </ol>
+      </v-card-text>
+    </v-card>
+
+    <URLRules />
   </div>
 
 </template>
@@ -90,11 +99,37 @@ export default {
         formData.append('type', 'URL');
         formData.append('file', this.file);
 
-        const result = await ImportService.uploadURL(formData);
-        if (result.status == true) this.$route.push({ name: 'import-details', params: { id: result.data.id } });
+        const result = await ImportService.uploadURLFile(formData);
+        if (result.status == true) {
+          if (result.data.successes) {
+            this.$router.push({ name: 'products' });
+          } else {
+            this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
+          }
+        }
         this.loading = false;
       }
     }
   },
+  components: {
+    URLRules: () => import('./URLRules'),
+  },
 };
 </script>
+
+<style scoped>
+  ol {
+    counter-reset: list;
+  }
+  ol > li {
+    list-style: none;
+  }
+  ol > li:before {
+    content: counter(list) ") ";
+    counter-increment: list;
+    font-weight: bold;
+  }
+  .v-card {
+    margin-top: 20px;
+  }
+</style>

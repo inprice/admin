@@ -43,13 +43,10 @@
             </div>
 
             <link-details
+              :data="openedDetail"
               :key="detailsRefreshCount"
               style="margin-top: -20px"
               v-if="showDetails==true && openedDetail && openedDetail.id==row.id"
-              :showInfoTab="false"
-              :historyList="openedDetail.historyList"
-              :priceList="openedDetail.priceList"
-              :specList="openedDetail.specList"
             />
 
           </v-card>
@@ -150,6 +147,10 @@ export default {
       if (res && res.data) {
         this.openedDetail = {};
         this.openedDetail.id = id;
+        this.openedDetail.lastCheck = res.data.link.lastCheck;
+        this.openedDetail.lastUpdate = res.data.link.lastUpdate;
+        this.openedDetail.brand = res.data.link.brand;
+        this.openedDetail.shipment = res.data.link.shipment;
         this.openedDetail.historyList = res.data.historyList;
         this.openedDetail.priceList = res.data.priceList;
         this.openedDetail.specList = res.data.specList;

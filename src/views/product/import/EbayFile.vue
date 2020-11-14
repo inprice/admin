@@ -1,79 +1,73 @@
 <template>
   <div>
-    <div class="display-1">
-      Ebay's SKU code list import
-    </div>
+    <v-btn 
+      small
+      @click="$router.go(-1)">
+        <v-icon class="mr-2">mdi-arrow-left-circle-outline</v-icon>
+        Go Back
+    </v-btn>
 
-    <p class="subtitle">
-      Import your products from a text file containing only Ebay's SKU codes
-    </p>
+    <v-card class="mt-1">
+      <v-card-title>
+        <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
+        <div>
+          <div>Ebay SKU File Import</div>
+          <div class="caption">Please upload your Ebay SKU file considering the rules in the following sections</div>
+        </div>
 
-    <p class="pt-5 mb-0">
-      <v-form ref="form" v-model="valid">
-        <v-file-input
-          autofocus
-          v-model="file"
-          large 
-          outlined 
-          counter
-          :show-size="1000"
-          :rules="rules"
-          :loading="loading"
-          accept=".txt" 
-          label="Please click here to select a text file"
-          prepend-icon=""
-          append-icon="">
-        </v-file-input>
-      </v-form>
-    </p>
+        <v-spacer></v-spacer>
 
-    <v-btn color="success" :dark="valid" :disabled="!valid" :loading="loading" @click="submit">Import</v-btn>
+        <v-btn 
+          color="success" 
+          :dark="valid" 
+          :disabled="!valid" 
+          :loading="loading" 
+          @click="submit"
+        >
+          Import
+        </v-btn>
+      </v-card-title>
 
-    <div class="pt-10">
-      <h3>In order to import a SKU code list file successfully, please pay attention to the following rules</h3>
+      <v-card-text>
+        <v-form ref="form" v-model="valid">
+          <v-file-input
+            autofocus
+            ref="fileInput"
+            v-model="file"
+            large 
+            outlined 
+            counter
+            :show-size="1000"
+            :rules="rules"
+            :loading="loading"
+            accept=".txt" 
+            label="Please click here to select a Ebay SKU file"
+            prepend-icon=""
+            append-icon="">
+          </v-file-input>
+        </v-form>
+      </v-card-text>
+    </v-card>
 
-      <h4 class="mt-7">File rules</h4>
-      <ul>
-        <li>Only plain text format is acceptable</li>
-        <li>Maximum allowed file size is 1024kb</li>
-        <li>You can add a new products up to the limit in your plan</li>
-        <li>Empty lines and description rows starting a hash # symbol are allowed</li>
-      </ul>
+    <v-card>
+      <v-card-title>
+        <v-icon class="mr-2">mdi-playlist-check</v-icon>
+        <div>File Rules</div>
+      </v-card-title>
 
-      <h4 class="mt-5">Code format rules</h4>
-      <ul>
-        <li>Each row must have a valid SKU code which must start with <strong>1, 2, </strong> or <strong>3</strong></li>
-        <li>The followings should consist of 10 or 11 digits</li>
-      </ul>
+      <v-divider/>
 
-    </div>
+      <v-card-text>
+        <ol>
+          <li>Only plain text format is acceptable</li>
+          <li>Maximum file size is 1024kb or 1mb</li>
+          <li>You can import new products up to the limit specified in your plan</li>
+          <li>Empty lines and description rows starting with a hash # symbol are allowed</li>
+        </ol>
+      </v-card-text>
+    </v-card>
 
-    <div class="pt-5">
-      <h3>Here is a valid SKU code list content</h3>
-<pre>
-1. 183767351247
-2. 16034214202
-3. 26363095820
-4. 191732626551
-</pre>
-    </div>
-
-    <div class="pt-5">
-      <h3>Another valid code list with description lines</h3>
-<pre>
-1. # -----------------------------------------
-2. # SKU CODE LIST
-3. # -----------------------------------------
-4. 183767351247
-5. 16034214202
-6.
-7. # -----------------------------------------
-8. # here is another description line
-9. # -----------------------------------------
-10. 26363095820
-11. 191732626551
-</pre>
-    </div>
+    <EbayRules />
   </div>
 
 </template>
@@ -105,11 +99,37 @@ export default {
         formData.append('type', 'EBAY_SKU');
         formData.append('file', this.file);
 
-        const result = await ImportService.uploadEbaySKU(formData);
-        if (result.status == true) this.$route.push({ name: 'import-details', params: { id: result.data.id } });
+        const result = await ImportService.uploadEbaySKUFile(formData);
+        if (result.status == true) {
+          if (result.data.successes) {
+            this.$router.push({ name: 'products' });
+          } else {
+            this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
+          }
+        }
         this.loading = false;
       }
     }
   },
+  components: {
+    EbayRules: () => import('./EbayRules'),
+  },
 };
 </script>
+
+<style scoped>
+  ol {
+    counter-reset: list;
+  }
+  ol > li {
+    list-style: none;
+  }
+  ol > li:before {
+    content: counter(list) ") ";
+    counter-increment: list;
+    font-weight: bold;
+  }
+  .v-card {
+    margin-top: 20px;
+  }
+</style>

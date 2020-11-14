@@ -1,12 +1,8 @@
 <template>
   <div>
-    <div class="display-1">
+    <div class="title pl-1 mb-2">
       User Settings
     </div>
-
-    <p class="subtitle mt-4 mb-8">
-      You are seeing <strong>{{ session.user }}</strong>({{ session.email }}) settings page.
-    </p>
 
     <profile />
     <invitations @accept="acceptInvitation"/>

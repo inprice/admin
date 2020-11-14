@@ -1,6 +1,5 @@
 const system = {
   ROW_LIMIT_FOR_LISTS: 25,
-  TAG_COLORS: ['orange', 'cyan', 'indigo', 'teal', 'green', 'purple']
 };
 
 const keys = {

@@ -1,22 +1,18 @@
 <template>
 
   <div>
-    <div class="display-1">
+    <div class="title">
       Products
     </div>
-    <p class="subtitle">
-      In this section, you can manage your products you want to monitor.
-    </p>
-    <v-divider></v-divider>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between mt-4">
+    <div class="d-flex justify-space-between mt-2">
 
       <div class="col-10 d-flex px-1 py-0">
         <v-text-field 
-          ref="searchField"
+          autofocus
           v-model="search.term"
           @keyup.enter.native="search"
           dense solo light
@@ -29,10 +25,9 @@
         </v-text-field>
 
         <v-btn 
-          dark
           fab small
+          elevation="3"
           class="ml-2"
-          color="success"
           @click="addNew">
             <v-icon>mdi-plus</v-icon>
         </v-btn>
