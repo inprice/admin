@@ -11,8 +11,8 @@
       <v-card-title>
         <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
         <div>
-          <div>URL List Import</div>
-          <div class="caption">Please copy-paste your url list in the text area below. Please consider the rules in the following sections</div>
+          <div>CSV List Import</div>
+          <div class="caption">Please copy-paste your csv list in the text area below. Please consider the rules in the following sections</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -47,7 +47,7 @@
       </v-card-text>
     </v-card>
 
-    <URLRules />
+    <CSVRules />
   </div>
 
 </template>
@@ -73,9 +73,13 @@ export default {
       if (this.valid) {
         this.loading = true;
 
-        const result = await ImportService.uploadURLList(this.content);
+        const result = await ImportService.uploadCSVList(this.content);
         if (result.status == true) {
-          this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
+          if (result.data.successes) {
+            this.$router.push({ name: 'products' });
+          } else {
+            this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
+          }
         }
         this.loading = false;
       }
@@ -93,7 +97,7 @@ export default {
     }
   },
   components: {
-    URLRules: () => import('./URLRules'),
+    CSVRules: () => import('./CSVRules'),
   },
 };
 </script>

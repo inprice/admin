@@ -11,8 +11,8 @@
       <v-card-title>
         <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
         <div>
-          <div>URL List Import</div>
-          <div class="caption">Please copy-paste your url list in the text area below. Please consider the rules in the following sections</div>
+          <div>Amazon ASIN List Import</div>
+          <div class="caption">Please copy-paste your asin list in the text area below. Please consider the rules in the following sections</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -47,7 +47,7 @@
       </v-card-text>
     </v-card>
 
-    <URLRules />
+    <AmazonRules />
   </div>
 
 </template>
@@ -73,7 +73,7 @@ export default {
       if (this.valid) {
         this.loading = true;
 
-        const result = await ImportService.uploadURLList(this.content);
+        const result = await ImportService.uploadAmazonASINList(this.content);
         if (result.status == true) {
           this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
         }
@@ -93,7 +93,7 @@ export default {
     }
   },
   components: {
-    URLRules: () => import('./URLRules'),
+    AmazonRules: () => import('./AmazonRules'),
   },
 };
 </script>

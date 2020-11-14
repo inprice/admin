@@ -81,42 +81,60 @@ const router = new VueRouter({
           component: () => import('./views/product/search/Index.vue')
         },
         {
-          name: 'import-csv',
-          path: 'import/csv',
-          component: () => import('./views/product/import/CSV.vue')
+          name: 'import',
+          path: 'import/product',
+          component: () => import('./views/product/import/Index.vue')
         },
         {
-          name: 'import-url',
+          name: 'import-details',
+          path: 'import/details/:id',
+          component: () => import('./views/product/import/List.vue')
+        },
+        {
+          name: 'import-csv-file',
+          path: 'import/csv-file',
+          component: () => import('./views/product/import/CSVFile.vue')
+        },
+        {
+          name: 'import-csv-list',
+          path: 'import/csv-list',
+          component: () => import('./views/product/import/CSVList.vue')
+        },
+        {
+          name: 'import-url-file',
+          path: 'import/url-file',
+          component: () => import('./views/product/import/URLFile.vue')
+        },
+        {
+          name: 'import-url-list',
           path: 'import/url-list',
           component: () => import('./views/product/import/URLList.vue')
         },
         {
-          name: 'import-ebay-sku',
-          path: 'import/ebay-sku',
-          component: () => import('./views/product/import/EbaySKU.vue')
+          name: 'import-ebay-file',
+          path: 'import/ebay-file',
+          component: () => import('./views/product/import/EbayFile.vue')
         },
         {
-          name: 'import-amazon-asin',
-          path: 'import/amazon-asin',
-          component: () => import('./views/product/import/AmazonASIN.vue')
+          name: 'import-ebay-list',
+          path: 'import/ebay-list',
+          component: () => import('./views/product/import/EbayList.vue')
+        },
+        {
+          name: 'import-amazon-file',
+          path: 'import/amazon-file',
+          component: () => import('./views/product/import/AmazonFile.vue')
+        },
+        {
+          name: 'import-amazon-list',
+          path: 'import/amazon-list',
+          component: () => import('./views/product/import/AmazonList.vue')
         },
         {
           name: 'subscription',
           path: 'subscription',
           component: () => import('./views/subscription/Index.vue')
         },
-        /*
-        {
-          name: 'imported-prods',
-          path: 'import/products',
-          component: () => import('./views/product/import/ImportedProducts.vue')
-        },
-        {
-          name: 'prod-links',
-          path: 'product/links/:prod_id',
-          component: () => import('./views/product/Links.vue')
-        },
-        */
        {
           name: 'links',
           path: 'links',

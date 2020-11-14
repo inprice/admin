@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="display-1 mb-5">
+    <div class="title pl-1">
       Subscription
     </div>
 
-    <v-card class="py-2">
+    <v-card class="mt-2">
       <v-card-title class="pb-0">
         <v-icon class="mr-4">mdi-text-box-check-outline</v-icon>
         <div class="col pa-0">

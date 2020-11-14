@@ -1,18 +1,14 @@
 <template>
 
   <div>
-    <div class="display-1">
+    <div class="title pl-1">
       Links
     </div>
-    <p class="subtitle">
-      Links of your competitors' product pages.
-    </p>
-    <v-divider></v-divider>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between mt-4">
+    <div class="d-flex justify-space-between mt-2">
 
       <div class="col-10 d-flex px-1 py-0">
         <v-text-field 
@@ -77,11 +73,6 @@
 
     <div class="col px-1">
       <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
-
-      <div class="caption mt-3">
-        <span class="font-italic font-weight-bold">Please note:</span>
-        Click the card to show/hide details panel!
-      </div>
 
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>

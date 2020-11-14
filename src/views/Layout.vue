@@ -32,39 +32,12 @@
             <v-list-item-title>Links' Statuses</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
-        <v-divider inset></v-divider>
-
-        <v-list-item link :to="{name: 'import-csv'}" v-if="$store.get('auth/IS_EDITOR')">
+        <v-list-item link :to="{name: 'import'}" v-if="$store.get('auth/IS_EDITOR')">
           <v-list-item-action>
-            <v-icon>mdi-file-delimited-outline</v-icon>
+            <v-icon>mdi-import</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>CSV File</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'import-url'}" v-if="$store.get('auth/IS_EDITOR')">
-          <v-list-item-action>
-            <v-icon>mdi-playlist-minus</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>URL List</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'import-ebay-sku'}" v-if="$store.get('auth/IS_EDITOR')">
-          <v-list-item-action>
-            <v-icon>mdi-format-list-bulleted</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Ebay's SKU List</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'import-amazon-asin'}" v-if="$store.get('auth/IS_EDITOR')">
-          <v-list-item-action>
-            <v-icon>mdi-amazon</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Amazon's ASIN List</v-list-item-title>
+            <v-list-item-title>Product Import</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

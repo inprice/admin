@@ -62,10 +62,9 @@
                 <td class="prop-name">Tags</td>
                 <td>
                   <v-chip
-                    class="mr-1 font-weight-bold"
-                    outlined small dark
+                    class="mr-1"
+                    outlined small
                     v-for="(tag, index) in prod.tags" :key="index"
-                    :color="`${tagcolors[index]} darken-1`"
                   >
                     {{ tag }}
                   </v-chip>
@@ -95,15 +94,8 @@
 </template>
 
 <script>
-import Consts from "@/data/system";
-
 export default {
   props: ['prod'],
-  computed: {
-    tagcolors() {
-      return Consts.system.TAG_COLORS;
-    }
-  },
   methods: {
     markPosition(pos) {
       if (pos == this.prod.position)
@@ -111,9 +103,6 @@ export default {
       else
         return '';
     },
-  },
-  components: {
-    /* Position: () => import('@/component/utility/Position.vue'), */
   },
 }
 </script>

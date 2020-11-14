@@ -61,7 +61,7 @@ export default {
       }
     },
     findProduct() {
-      ProductService.getEverything(this.$route.params.id).then(res => {
+      ProductService.getLinks(this.$route.params.id).then(res => {
         if (res && res.status == true) {
           this.data = res.data;
         }

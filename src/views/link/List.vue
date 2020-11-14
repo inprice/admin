@@ -10,7 +10,7 @@
 
             <div @click="toggleDetails(row.id)" style="cursor: pointer">
               <div class="d-flex justify-space-between subtitle">
-                <div>{{ row.name || row.problem }}</div>
+                <div>{{ row.name || row.problem || 'NOT YET' }}</div>
                 <div>{{ row.price | toPrice }}</div>
               </div>
 
@@ -43,13 +43,10 @@
             </div>
 
             <link-details
+              :data="openedDetail"
               :key="detailsRefreshCount"
               style="margin-top: -20px"
               v-if="showDetails==true && openedDetail && openedDetail.id==row.id"
-              :showInfoTab="false"
-              :historyList="openedDetail.historyList"
-              :priceList="openedDetail.priceList"
-              :specList="openedDetail.specList"
             />
 
           </v-card>
@@ -57,9 +54,14 @@
         </template>
       </v-hover>
 
+      <div class="caption mt-3">
+        <span class="font-italic font-weight-bold">Please note:</span>
+        Click the card to show/hide details panel!
+      </div>
+
     </div>
 
-    <p class="mt-3" v-if="isLoading==false">
+    <p class="mt-3" v-else>
       No link found! Please change your criteria or add new competitors to your products.
     </p>
 
@@ -145,6 +147,10 @@ export default {
       if (res && res.data) {
         this.openedDetail = {};
         this.openedDetail.id = id;
+        this.openedDetail.lastCheck = res.data.link.lastCheck;
+        this.openedDetail.lastUpdate = res.data.link.lastUpdate;
+        this.openedDetail.brand = res.data.link.brand;
+        this.openedDetail.shipment = res.data.link.shipment;
         this.openedDetail.historyList = res.data.historyList;
         this.openedDetail.priceList = res.data.priceList;
         this.openedDetail.specList = res.data.specList;
