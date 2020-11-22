@@ -20,7 +20,7 @@ const actions = {
     if (res.status == true) {
       dispatch('createSession', res);
     }
-    return res.data && res.data.sessionNo;
+    return res.data && res.data;
   },
 
   logout({ commit }, expired) {

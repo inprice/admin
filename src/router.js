@@ -131,11 +131,16 @@ const router = new VueRouter({
           component: () => import('./views/product/import/AmazonList.vue')
         },
         {
+          name: 'plans',
+          path: 'plans',
+          component: () => import('./views/plans/Index.vue')
+        },
+        {
           name: 'subscription',
           path: 'subscription',
           component: () => import('./views/subscription/Index.vue')
         },
-       {
+        {
           name: 'links',
           path: 'links',
           component: () => import('./views/link/Index.vue')

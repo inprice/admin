@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import CouponService from '@/service/coupon';
+import SubscriptionService from '@/service/subscription';
 
 export default {
   props: ['coupons', 'status'],
@@ -94,7 +94,7 @@ export default {
   methods: {
     async apply(index, code) {
       this.loading.apply = true;
-      const result = await CouponService.applyCoupon(code);
+      const result = await SubscriptionService.applyCoupon(code);
       if (result && result.status == true) {
         this.$emit('applied', result.data);
       }

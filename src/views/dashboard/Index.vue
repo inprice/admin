@@ -5,7 +5,7 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-right" v-if="hasAPlan">
+      <div class="text-right" v-if="hasAnActiveStatus">
         <span class="caption mr-2">{{ report.date }}</span>
         <v-btn small color="success" @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
@@ -14,19 +14,30 @@
     </div>
 
     <v-alert
-      class="mt-5 row" 
-      v-if="! hasAPlan"
-      color="red" border="left" elevation="2" colored-border type="warning">
-      You have no active plan yet!
-      <v-btn 
-        small
-        class="ml-10"
-        @click="$router.push( { name: 'subscription' })">
-          Please click here
-      </v-btn>
+      class="mb-0 mt-2" 
+      color="orange" border="left" elevation="2" colored-border type="warning"
+      >
+        <div class="d-flex justify-space-between" v-if="! hasAnActiveStatus && ! isStopped">
+          <div>
+            Seem that you have no active plan!
+            <span v-if="hasFreeUseRight">You can start your 30 days free trial period.</span>
+            <div>You can choose a plan that best suits your needs.</div>
+          </div>
+          <v-btn 
+            small
+            class="ml-3 my-auto"
+            @click="$router.push( { name: 'plans' })">
+              Please click here
+          </v-btn>
+        </div>
+        <div v-if="isStopped">
+          Your account has been stopped!
+          <div>If you think there is a problem, please contact us with an email <strong>support@inprice.io</strong></div>
+        </div>
+        <FreePlanTexts v-if="isInTrialPeriod" :daysToRenewal="report.company.daysToRenewal" :subsRenewalAt="report.company.subsRenewalAt" />
     </v-alert>
 
-    <v-row class="mt-2">
+    <v-row>
       <!-- ------------------------------- -->
       <!-- Products position statuses -->
       <!-- ------------------------------- -->
@@ -202,6 +213,9 @@
 
 <script>
 import DashboardService from '@/service/dashboard';
+import moment from 'moment-timezone';
+
+const ACTIVE_STATUSES = [ 'FREE', 'COUPONED', 'SUBSCRIBED' ];
 
 export default {
   data() {
@@ -214,14 +228,38 @@ export default {
     };
   },
   computed: {
-    hasAPlan() {
-      return this.report && this.report.company && this.report.company.planId;
-    }
+    hasAnActiveStatus() {
+      console.log('--', this.report);
+      if (this.report.company && this.report.company.subsStatus) {
+        if (ACTIVE_STATUSES.includes(this.report.company.subsStatus)) {
+          return (this.report.company.daysToRenewal !== undefined && this.report.company.daysToRenewal >= 0);
+        }
+      }
+      return false;
+    },
+    hasFreeUseRight() {
+      if (this.report.company && this.report.company.subsStatus) {
+        return (this.report.company.subsStatus == 'NOT_SET');
+      }
+      return false;
+    },
+    isStopped() {
+      if (this.report.company && this.report.company.subsStatus) {
+        return (this.report.company.subsStatus == 'STOPPED');
+      }
+      return false;
+    },
+    isInTrialPeriod() {
+      return (this.report.company && this.report.company.subsStatus && this.report.company.subsStatus == 'FREE');
+    },
   },
   methods: {
     async refresh() {
       const result = await DashboardService.refresh();
       this.report = result.data;
+      if (this.report.company.subsRenewalAt) {
+        this.report.company.daysToRenewal = moment(this.report.company.subsRenewalAt).diff(moment(), 'days')+1;
+      }
 
       if (this.report && this.report.products && this.report.products.positionDists) {
         let prodCount = 0;
@@ -246,6 +284,7 @@ export default {
   components: {
     PositionsBarChart: () => import('./PositionsBarChart.js'),
     StatusesPieChart: () => import('./StatusesPieChart.js'),
+    FreePlanTexts: () => import('@/component/app/FreePlanTexts.vue'),
   }
 };
 </script>
@@ -268,7 +307,7 @@ export default {
     padding: 0 0 0.8rem 0;
   }
   .row {
-    margin-top: 1rem;
+    margin-top: 7px;
   }
   .linear-table tr td {
     border-bottom: none !important;

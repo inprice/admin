@@ -43,6 +43,14 @@
 
         <v-divider inset></v-divider>
 
+        <v-list-item link :to="{name: 'plans'}">
+          <v-list-item-action>
+            <v-icon>mdi-form-select</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Plans</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item link :to="{name: 'subscription'}" v-if="$store.get('auth/IS_ADMIN')">
           <v-list-item-action>
             <v-icon>mdi-credit-card-check-outline</v-icon>

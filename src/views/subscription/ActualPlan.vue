@@ -24,17 +24,16 @@
     </v-simple-table>
 
     <div class="d-flex pa-4" v-else>
-      <div>You have <strong>no actual plan</strong> at the moment. Please pick a plan from the following table</div>
+      <div>You have <strong>no actual plan</strong> at the moment.</div>
       <v-spacer></v-spacer>
       <v-btn 
         small
         color="success"
-        @click="openApplyCouponDialog">
-          or Apply a coupon
+        @click="router.push({ name: 'plans' })">
+          Please pick a plan
       </v-btn>
     </div>
 
-    <apply-coupon ref="applyCouponDialog" @applied="applyCoupon" />
   </div>
 
 </template>
@@ -49,12 +48,6 @@ export default {
     applyCoupon(data) {
       this.$emit('applied', data);
     },
-    openApplyCouponDialog() {
-      this.$refs.applyCouponDialog.open();
-    },
-  },
-  components: {
-    ApplyCoupon: () => import('@/component/app/ApplyCoupon.vue')
   }
 };
 </script>

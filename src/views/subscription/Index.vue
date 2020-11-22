@@ -115,14 +115,10 @@ export default {
   },
   created() {
     this.$nextTick(async () => {
-      if (! this.plans || this.plans.length < 1) {
-        await this.$store.dispatch('system/fetchPlans');
-      }
       this.refreshActualPlan();
     });
   },
   components: {
-    Plans: () => import('./Plans'),
     ActualPlan: () => import('./ActualPlan'),
     InvoiceInfo: () => import('./InvoiceInfo'),
     Transactions: () => import('./Transactions'),

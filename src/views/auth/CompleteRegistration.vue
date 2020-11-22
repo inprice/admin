@@ -81,7 +81,7 @@ export default {
         this.loading = true;
         const result = await AuthService.completeRegistration(this.form.code.replaceAll('-', ''));
         if (result == true) {
-          this.$router.push({ name: 'dashboard', params: { sid: 0 } });
+          this.$router.push({ name: 'plans', params: { sid: 0 } });
           this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your company.' });
           return;
         }

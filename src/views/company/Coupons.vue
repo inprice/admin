@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import CouponService from '@/service/coupon';
+import SubscriptionService from '@/service/subscription';
 
 export default {
   props: ['status'],
@@ -96,7 +96,7 @@ export default {
   methods: {
     getCoupons() {
       this.loading.refresh = true;
-      CouponService.getCoupons()
+      SubscriptionService.getCoupons()
         .then((res) => {
           if (res && res.data) {
             this.coupons = res.data;
@@ -108,10 +108,10 @@ export default {
     },
     async apply(code) {
       if (code) {
-        this.$refs.confirm.open('Coupon', 'is going to be started immediately. Are you sure?', 'Your plan').then(async (confirm) => {
+        this.$refs.confirm.open('Coupon', 'is going to be started right now. Are you sure?', 'Your plan').then(async (confirm) => {
           if (confirm == true) {
             this.loading.apply = true;
-            const result = await CouponService.applyCoupon(code);
+            const result = await SubscriptionService.applyCoupon(code);
             if (result && result.status == true) {
               this.applyCoupon(result.data);
             }

@@ -21,7 +21,7 @@
               </div>
 
               <div class="d-flex justify-space-between caption">
-                <div class="text-truncate font-italic">
+                <div class="text-truncate">
                   <a :href="row.url" target="_blank">{{ row.url }}</a>
                 </div>
                 <div>{{ row.status.replaceAll('_', ' ') }}</div>

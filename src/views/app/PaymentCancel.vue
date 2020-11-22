@@ -13,11 +13,11 @@
         <h3 class="mb-8">We are sorry to see you cancelling subscription the platform.</h3>
         
         <div>Please don't forget that you can subscribe the platform whenever you want.</div>
-        <div>If you have any problem, please contact us with an email to <strong>support@inprice.io</strong></div>
+        <div>If you have any problem, please contact us with an email <strong>support@inprice.io</strong></div>
 
         <v-btn
           class="mt-10"
-          :to="{ name: 'dashboard' }"
+          :to="{ name: 'plans' }"
           color="primary"
           outlined
         >

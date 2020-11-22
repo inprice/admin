@@ -1,6 +1,7 @@
 import Helper from './helper';
 
 const baseURL = '/subscription';
+const couponBaseURL = '/coupon';
 
 export default {
 
@@ -27,6 +28,15 @@ export default {
 
   getTransactions() {
     return Helper.call('Transactions', { method: 'get', url: baseURL + '/trans' }, false);
+  },
+
+  getCoupons() {
+    return Helper.call('Coupons', { method: 'get', url: couponBaseURL }, false);
+  },
+
+  async startFreeUse() {
+    const res = await Helper.call('Free Use', { method: 'post', url: baseURL + '/free-use' });
+    return res;
   },
 
 };

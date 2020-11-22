@@ -6,6 +6,33 @@
 
     <v-tabs v-model="selectedTab" class="v-card v-sheet theme--light">
 
+      <!-- PRICES -->
+      <v-tab-item class="pb-2">
+        <v-simple-table dense v-if="data && data.priceList && data.priceList.length">
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-center" width="20%">Date</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">Position</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in data.priceList" :key="row.id">
+                <td class="text-center" width="20%">
+                  <ago :date="row.createdAt" />
+                </td>
+                <td class="text-center">{{ row.price | toPrice }}</td>
+                <td class="text-center">{{ row.position | toPosition }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+        <div v-else>
+          <div class="pa-2 pb-0">No data!</div>
+        </div>
+      </v-tab-item>
+
       <!-- PROPERTIES -->
       <v-tab-item class="pb-2">
         <v-simple-table class="property-table pt-3 pb-1" dense v-if="data">
@@ -59,33 +86,6 @@
         </div>
       </v-tab-item>
 
-      <!-- PRICES -->
-      <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="data && data.priceList && data.priceList.length">
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-center" width="20%">Date</th>
-                <th class="text-center">Price</th>
-                <th class="text-center">Position</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in data.priceList" :key="row.id">
-                <td class="text-center" width="20%">
-                  <ago :date="row.createdAt" />
-                </td>
-                <td class="text-center">{{ row.price | toPrice }}</td>
-                <td class="text-center">{{ row.position | toPosition }}</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-        <div v-else>
-          <div class="pa-2 pb-0">No data!</div>
-        </div>
-      </v-tab-item>
-
       <!-- SPECS -->
       <v-tab-item class="pb-2">
         <v-simple-table dense v-if="data && data.specList && data.specList.length">
@@ -118,7 +118,7 @@ export default {
   props: ["data"],
   data() {
     return {
-      tabs: ['Properties', 'History', 'Prices', 'Specs'],
+      tabs: ['Prices', 'Properties', 'History', 'Specs'],
       selectedTab: 0,
     }
   },
