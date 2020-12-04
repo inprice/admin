@@ -99,7 +99,7 @@
           <v-list-item>
             <v-list-item-content>
               <div class="subtitle font-weight-bold">{{ session.company }}</div>
-              <span class="caption">{{ session.email }} - {{ session.role }}</span>
+              <span class="black--text caption">{{ session.email }} - <span class="green--text font-weight-bold">{{ session.role }}</span></span>
             </v-list-item-content>
           </v-list-item>
         </v-list>

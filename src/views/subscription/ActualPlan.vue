@@ -1,23 +1,28 @@
 <template>
   <div>
-    <v-simple-table class="property-table pt-3 pb-1" v-if="status == 'ACTIVE' || status == 'COUPONED'">
+    <v-simple-table class="property-table pt-3 pb-1 offset-2" v-if="session.planName">
       <template v-slot:default>
         <tbody>
           <tr>
             <td class="prop-name">Name</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.name" /></td>
+            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="session.planName" /></td>
           </tr>
           <tr>
             <td class="prop-name">Status</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.status" /></td>
+            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="session.subsStatus" /></td>
           </tr>
           <tr>
             <td class="prop-name">Renewal Date</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.renewalTime" /></td>
-          </tr>
-          <tr>
-            <td class="prop-name">Description</td>
-            <td><v-text-field solo dense readonly hide-details="true" v-model="data.description" /></td>
+            <td class="d-flex">
+              <v-text-field solo dense readonly hide-details="true" class="col-4" v-model="session.subsRenewalAt" />
+              <v-btn 
+                small 
+                class="offset-1"
+                color="error"
+                @click="cancel">
+                  Cancel
+              </v-btn>
+            </td>
           </tr>
         </tbody>
       </template>
@@ -40,13 +45,10 @@
 
 <script>
 export default {
-  props: ['data', 'status'],
+  props: ['session'],
   methods: {
     cancel() {
       this.$emit('cancel');
-    },
-    applyCoupon(data) {
-      this.$emit('applied', data);
     },
   }
 };

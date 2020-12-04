@@ -14,6 +14,7 @@
     </div>
 
     <v-alert
+      v-if="!isASubscriber"
       class="mb-0 mt-2" 
       color="orange" border="left" elevation="2" colored-border type="warning"
       >
@@ -21,7 +22,7 @@
           <div>
             Seem that you have no active plan!
             <span v-if="hasFreeUseRight">You can start your 30 days free trial period.</span>
-            <div>You can choose a plan that best suits your needs.</div>
+            <div>And also, you can choose a plan that best suits your needs.</div>
           </div>
           <v-btn 
             small
@@ -229,7 +230,6 @@ export default {
   },
   computed: {
     hasAnActiveStatus() {
-      console.log('--', this.report);
       if (this.report.company && this.report.company.subsStatus) {
         if (ACTIVE_STATUSES.includes(this.report.company.subsStatus)) {
           return (this.report.company.daysToRenewal !== undefined && this.report.company.daysToRenewal >= 0);
@@ -252,12 +252,18 @@ export default {
     isInTrialPeriod() {
       return (this.report.company && this.report.company.subsStatus && this.report.company.subsStatus == 'FREE');
     },
+    isASubscriber() {
+      if (this.report.company && this.report.company.subsStatus && this.report.company.subsStatus == 'SUBSCRIBED') {
+        return (this.report.company.daysToRenewal !== undefined && this.report.company.daysToRenewal >= 0);
+      }
+      return false;
+    },
   },
   methods: {
     async refresh() {
       const result = await DashboardService.refresh();
       this.report = result.data;
-      if (this.report.company.subsRenewalAt) {
+      if (this.report && this.report.company.subsRenewalAt) {
         this.report.company.daysToRenewal = moment(this.report.company.subsRenewalAt).diff(moment(), 'days')+1;
       }
 

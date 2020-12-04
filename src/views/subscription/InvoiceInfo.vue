@@ -8,11 +8,11 @@
             <td><v-text-field solo dense readonly hide-details="true" :value="info.title || 'Not set!'" /></td>
           </tr>
           <tr>
-            <td class="prop-name">Address Line 1</td>
+            <td class="prop-name">Address 1</td>
             <td><v-text-field solo dense readonly hide-details="true" v-model="info.address1" /></td>
           </tr>
           <tr>
-            <td class="prop-name">Line 2</td>
+            <td class="prop-name">2</td>
             <td><v-text-field solo dense readonly hide-details="true" v-model="info.address2" /></td>
           </tr>
           <tr>
@@ -29,11 +29,12 @@
           </tr>
           <tr>
             <td class="prop-name">Country</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="info.country" /></td>
-            <td class="text-right">
+            <td class="d-flex">
+              <v-text-field solo dense readonly hide-details="true" class="col-6" v-model="info.country" />
               <v-btn 
                 small 
-                color="warning"
+                class="offset-1"
+                color="success"
                 @click="openInvoiceInfoDialog">
                   Edit
               </v-btn>

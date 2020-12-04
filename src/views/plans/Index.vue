@@ -37,48 +37,58 @@
         <v-icon class="mr-4">mdi-format-list-bulleted</v-icon>
         <div>
           <div>Plans table</div>
-          <div class="caption"><strong>Please note that</strong> all the prices in this table are monthly basis and in Euro currency!</div>
+          <div class="caption"><strong>Please note that</strong> all the prices in this table are monthly basis and in US dollar currency!</div>
         </div>
       </v-card-title>
 
       <v-divider></v-divider>
 
-      <div class="mx-1 py-1 text-center row">
-        <v-hover v-for="plan in plansSet" :key="plan.id">
-          <template v-slot="{ hover }">
-            <v-card class="col pa-1 ma-2 pb-4 transition-swing" :class="`elevation-${hover ? 10 : 3}`">
-              <div class="headline grey lighten-4 elevation-1 py-2 ">
-                <div class="subtitle-1 teal--text text-uppercase ">{{ plan.name }}</div>
-                <div class="text-h5">
-                  {{ '$' + plan.price.toFixed(2) }} 
-                  <span style="vertical-align: super;" class="caption font-weight-light"> / monthly</span>
+      <template v-for="(plansSet, ix) in plansSets">
+        <div class="pt-4 px-1 text-center d-flex" :class="{'pb-4': ix==plansSets.length-1}" :key="ix">
+          <v-hover v-for="plan in plansSet" :key="plan.id">
+            <template v-slot="{ hover }">
+              <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${session.planName == plan.name ? 'rainbow' : ''}`">
+                <div class="headline grey lighten-4 elevation-1 py-2 ">
+                  <div class="title teal--text darken-5 text-uppercase">
+                    <v-icon color="#00D63F" v-if="session.planName == plan.name">mdi-checkbox-marked-circle</v-icon>
+                    {{ plan.name.replace(' Plan', '') }}
+                  </div>
+
+                  <v-divider class="my-2"></v-divider>
+                  <div class="text-h5">
+                    {{ '$' + plan.price.toFixed(2) }} 
+                  </div>
+                  <div class="caption">per month</div>
                 </div>
-              </div>
 
-              <v-divider></v-divider>
+                <v-divider></v-divider>
 
-              <ul class="my-2 pr-1 text-left">
-                <span class="caption text-uppercase">Features</span>
-                <li class="caption mt-1" v-for="(feature, index) in plan.features" :key="index">
-                  {{ feature }}
-                </li>
-              </ul>
+                <ul class="my-2 pr-1">
+                  <div class="caption mt-1 pl-" v-for="(feature, index) in plan.features" :key="index">
+                    <span :class="{'font-weight-medium': index==0||index==3, 'red--text': index==0, 'blue--text darken-2': index==3}" >{{ feature }}</span>
+                  </div>
+                </ul>
 
-              <v-divider class="mb-4"></v-divider>
+                <v-divider 
+                  class="mb-4"
+                  v-if="session.subsStatus != 'SUBSCRIBED'"
+                ></v-divider>
 
-              <v-btn 
-                :loading="loading.subscribe" 
-                :disabled="loading.subscribe"
-                color="success"
-                class="mx-auto"
-                @click="subscribe(plan.id)"
-              >
-                Subscribe
-              </v-btn>
-            </v-card>
-          </template>
-        </v-hover>
-      </div>
+                <v-btn 
+                  v-if="session.subsStatus != 'SUBSCRIBED'"
+                  dark
+                  color="teal lighten-2"
+                  class="mx-auto mb-2"
+                  @click="subscribe(plan.id)"
+                >
+                  Subscribe
+                </v-btn>
+
+              </v-card>
+            </template>
+          </v-hover>
+        </div>
+      </template>
     </v-card>
 
     <v-card class="mt-4">
@@ -101,21 +111,36 @@
       <v-card-title>
         <v-icon class="mr-2">mdi-alert-circle-outline</v-icon>
         <div>
-          <div>Before choose a plan</div>
+          <div>Please keep in mind</div>
         </div>
       </v-card-title>
 
       <v-divider></v-divider>
 
       <div class="pa-3">
-        Please keep in mind
+        <div class="my-2 black--text">Before choosing a plan</div>
         <ul class="ml-4">
-          <li>All the plans displaying below is in monthly basis subscription model and US dollar currency. </li>
           <li>Please select one of them which suits most your needs.</li>
-          <li>You can cancel your active plan whenever you want but no refund.</li>
-          <li>You can downgrade or upgrade to another plan whenever you want without extra cost.</li>
-          <li>After downgrade or upgrade, you will be charging with new plan's cost on the day your current plan ends.</li>
+          <li>All the plans displaying in this page are in monthly subscription model.</li>
+          <li>And all the prices are in US dollar currency.</li>
+          <li>You can cancel your actual plan whenever you want <strong class="text-decoration-underline red--text">but no refund!</strong></li>
         </ul>
+
+        <v-divider class="my-3"></v-divider>
+
+        <div class="my-2 black--text">Want to change your plan</div>
+        <ol class="ml-4">
+          <li>If you wish to downgrade or upgrade, please cancel your actual plan first.</li>
+          <li>Then select new plan. In this way, you will not face any extra cost.</li>
+          <li>The remaining days from cancelled plan will be added up to new plan's starting day.</li>
+          <li>Existing product count in your account is important indicator you need to consider,</li>
+          <li>If your product count is greater than new plan's limit, please do one of the followings
+            <ul>
+              <li>You can select a broader plan</li>
+              <li>Or delete some of your products before transition.</li>
+            </ul>
+          </li>
+        </ol>
       </div>
     </v-card>
 
@@ -137,11 +162,10 @@ export default {
   data() {
     return {
       loading: {
-        subscribe: false,
         tryFreeUse: false,
       },
       company: null,
-      plansSet: [],
+      plansSets: [],
     }
   },
   computed: {
@@ -164,20 +188,23 @@ export default {
       });
     },
     async subscribe(planId) {
-      this.loading.subscribe = true;
+      const loader = this.$loading.show();
+
       const result = await SubsService.createSession(planId);
       if (result.status == true) {
         stripe.redirectToCheckout({
           sessionId: result.data.sessionId
         }).then(function (result) {
+          loader.hide();
           if (result.error && result.error.message) {
             this.$store.commit('snackbar/setMessage', { text: result.error.message, color: 'error' });
           } else {
             console.log('Calling result of stripes checkout form', result);
           }
         });
+      } else {
+        loader.hide();
       }
-      this.loading.subscribe = false;
     },
   },
   mounted() {
@@ -186,7 +213,23 @@ export default {
         .then((res) => {
           if (res && res.data) {
             this.company = res.data.company;
-            this.plansSet = res.data.plans;
+
+            let cell = 0;
+            let pSet = [];
+            for (let i = 0; i < res.data.plans.length; i++) {
+              if (cell == 3) {
+                this.plansSets.push(pSet);
+                pSet = [];
+                cell = 0;
+              }
+              pSet.push(res.data.plans[i]);
+              cell++;
+            }
+
+            if (pSet.length > 0) {
+              this.plansSets.push(pSet);
+            }
+
             if (this.company.subsRenewalAt) {
               this.company.daysToRenewal = moment(this.company.subsRenewalAt).diff(moment(), 'days')+1;
             }
@@ -200,3 +243,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .selected-true {
+    border: 6px solid #00D63F;
+  }
+</style>

@@ -12,7 +12,7 @@
           <div>
             <div class="caption float-left">Your actual plan and billing info.</div>
 
-            <v-btn-toggle tile class="float-right">
+            <v-btn-toggle tile class="float-right" :value="selectedTab">
               <v-btn @click="selectedTab=0" small>
                 Actual Plan
               </v-btn>
@@ -30,7 +30,7 @@
 
       <v-tabs v-model="selectedTab">
         <v-tab-item>
-          <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" @applied="couponApplied" />
+          <actual-plan @cancel="cancel" :session="session" />
         </v-tab-item>
         <v-tab-item>
           <invoice-info />
@@ -75,18 +75,16 @@ export default {
     cancel() {
       this.$refs.confirm.open('Cancel Subscription', 'will be cancelled. Are you sure?', 'Your actual subscription').then(async (confirm) => {
         if (confirm == true) {
+          const loader = this.$loading.show();
           const result = await SubsService.cancel();
           if (result && result.status == true) {
             this.$store.dispatch('auth/cancelSubscription');
             this.refreshActualPlan();
             this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
+          loader.hide();
         }
       });
-    },
-    couponApplied(/* data */) {
-      this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been successfully applied to your account.' });
-      this.refreshActualPlan();
     },
     refreshActualPlan() {
       for (const plan of this.plans) {

@@ -15,10 +15,27 @@
 
       <v-card class="text-center">
         <v-icon large class="pt-4">mdi-account-check</v-icon>
-        <v-list-item two-line>
-          <v-list-item-content>
+        <v-list-item two-line class="pt-0">
+          <v-list-item-content class="pt-2">
             <v-list-item-title class="title">{{ session.company }}</v-list-item-title>
-            <v-list-item-subtitle>{{ session.email }} - {{ session.role }}</v-list-item-subtitle>
+            <v-list-item-subtitle>
+              <v-chip outlined class="font-weight-medium" v-if="session.daysToRenewal > 0">
+                {{ session.planName }}
+                <span class="green--text mx-2">| {{ this.session.subsStatus }} |</span>
+                {{ session.subsRenewalAt }}
+              </v-chip>
+              <v-btn
+                v-else
+                outlined
+                style="text-transform: none"
+                :to="{ name: 'plans' }"
+                color="teal"
+                @click="menu=false"
+              >
+                Please select a plan!
+              </v-btn>
+
+            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-card>
@@ -62,25 +79,23 @@
 
       <v-card class="text-center">
         <v-btn
-          outlined
-          rounded
-          small
-          class="my-4 text-none"
+          class="my-3 text-normalize"
           @click="logout"
         >
-          Sign out of all accounts
+          Log out
         </v-btn>
-        
+<!--        
         <v-divider/>
         
-        <div class="py-4">
+         <div class="py-4">
           <div class="text-center">
             <v-btn text small class="text-none">Privacy Policy</v-btn>
             |
             <v-btn text small class="text-none">Terms of Services</v-btn>
           </div>
         </div>
-      </v-card>
+ -->
+       </v-card>
 
     </v-menu>
   </div>
