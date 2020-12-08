@@ -64,6 +64,18 @@ export default (Vue) => {
     return 'NA';
   });
 
+  Vue.filter('formatUSDate', (value) => {
+    try {
+      if (value) {
+        return moment(value.substring(0, 10)).tz(store.get(session+'@timezone')).format("MMM Do, YYYY");
+      }
+      /* eslint-disable no-empty */
+    } catch (error) {
+      console.error('Failed to format date', value, store.get(session), error);
+     }
+    return 'NA';
+  });
+
   Vue.filter('formatStatus', (value) => {
     try {
       if (value) {

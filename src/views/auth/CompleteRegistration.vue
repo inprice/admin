@@ -10,7 +10,7 @@
         <v-card class="pa-3 mb-10 body-2" color="yellow lighten-5">
 
           <div>
-            <div class="text-center mb-2">Please check your email account.</div>
+            <div class="title text-center mb-2">Please check your email account</div>
             <v-divider></v-divider>
             <p class="ma-4">
               We have just sent an email with activation code to your email address.

@@ -10,14 +10,14 @@
         <v-card class="pa-3 mb-10 body-2" :color="successful ? 'green lighten-5' : 'yellow lighten-5'">
 
           <div v-if="successful">
-            <div class="text-center mb-2">Please check your email account.</div>
+            <div class="title text-center mb-2">Please check your email account</div>
             <v-divider></v-divider>
             <p class="ma-4">
               An email with password reset instructions has been sent to the email address below.
             </p>
           </div>
           <div v-else>
-            <div class="text-center mb-2">Forgot password</div>
+            <div class="title text-center mb-2">Forgot password</div>
             <v-divider></v-divider>
             <p class="ma-4">
               Please provide your email address that you used when you signed up for your inprice account. We will send

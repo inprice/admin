@@ -4,7 +4,7 @@
       Plans
     </div>
 
-    <v-card class="mt-2" v-if="company && (company.subsStatus == 'NOT_SET' || company.subsStatus == 'FREE')">
+    <v-card class="mt-2" v-if="session.companyStatus == 'NOT_SET'">
       <v-card-title>
         <v-icon class="mr-2">mdi-arrow-right-thin-circle-outline</v-icon>
         <div>
@@ -14,13 +14,14 @@
 
       <v-divider></v-divider>
 
-      <div class="d-flex justify-space-between pa-4" v-if="company.subsStatus == 'NOT_SET'">
+      <div class="d-flex justify-space-between pa-4">
         <div>
-          You have a Free-Use right! Before begin, you are advised to use the platform free for 30 days.
+          You have a Free-Use right! You are highly advised to use the platform for free with a 30-day trial period before begin.
         </div>
-        <v-btn 
-          color="info"
-          class="my-auto"
+        <v-btn
+          small 
+          color="success"
+          class="my-auto ml-3"
           :loading="loading.tryFreeUse" 
           :disabled="loading.tryFreeUse"
           @click="startFreeUse"
@@ -28,8 +29,6 @@
           Let me try
         </v-btn>
       </div>
-
-      <FreePlanTexts class="pa-4" v-else :daysToRenewal="company.daysToRenewal" :subsRenewalAt="company.subsRenewalAt" />
     </v-card>
 
     <v-card class="mt-4 mb-2">
@@ -56,16 +55,18 @@
 
                   <v-divider class="my-2"></v-divider>
                   <div class="text-h5">
-                    {{ '$' + plan.price.toFixed(2) }} 
+                    {{ firstTitleRow(plan) }}
                   </div>
-                  <div class="caption">per month</div>
+                  <div class="caption">
+                    {{ secondTitleRow(plan) }}
+                  </div>
                 </div>
 
                 <v-divider></v-divider>
 
                 <ul class="my-2 pr-1">
                   <div class="caption mt-1 pl-" v-for="(feature, index) in plan.features" :key="index">
-                    <span :class="{'font-weight-medium': index==0||index==3, 'red--text': index==0, 'blue--text darken-2': index==3}" >{{ feature }}</span>
+                    <span :class="{'font-weight-medium': index==0||index==3, 'blue--text darken-2': index==3}" >{{ feature }}</span>
                   </div>
                 </ul>
 
@@ -77,7 +78,7 @@
                 <v-btn 
                   v-if="session.subsStatus != 'SUBSCRIBED'"
                   dark
-                  color="teal lighten-2"
+                  color="teal"
                   class="mx-auto mb-2"
                   @click="subscribe(plan.id)"
                 >
@@ -118,6 +119,7 @@
       <v-divider></v-divider>
 
       <div class="pa-3">
+
         <div class="my-2 black--text">Before choosing a plan</div>
         <ul class="ml-4">
           <li>Please select one of them which suits most your needs.</li>
@@ -128,13 +130,22 @@
 
         <v-divider class="my-3"></v-divider>
 
+        <div class="my-2 black--text">Want to change payment method</div>
+        <ul class="ml-4">
+          <li>Please cancel your actual plan first.</li>
+          <li>Then subscribe it again with your new payment instrument.</li>
+        </ul>
+
+        <v-divider class="my-3"></v-divider>
+
         <div class="my-2 black--text">Want to change your plan</div>
         <ol class="ml-4">
           <li>If you wish to downgrade or upgrade, please cancel your actual plan first.</li>
           <li>Then select new plan. In this way, you will not face any extra cost.</li>
-          <li>The remaining days from cancelled plan will be added up to new plan's starting day.</li>
-          <li>Existing product count in your account is important indicator you need to consider,</li>
-          <li>If your product count is greater than new plan's limit, please do one of the followings
+          <li>The remaining days from cancelled plan will be added on top of new plan's starting day.</li>
+          <li>Existing product count in your account is important indicator. Please consider followings;</li>
+          <li>If your product count is less than or equal to new plan's limit, no problem. You can pass and use new plan.</li>
+          <li>Otherwise, ie. your product count is greater than new plan's limit, please do one of the followings
             <ul>
               <li>You can select a broader plan</li>
               <li>Or delete some of your products before transition.</li>
@@ -153,18 +164,15 @@
 import SubsService from '@/service/subscription';
 import SystemService from '@/service/system';
 import { get } from 'vuex-pathify'
-import moment from 'moment-timezone';
 
 const stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
 
 export default {
-  props: ['status'],
   data() {
     return {
       loading: {
         tryFreeUse: false,
       },
-      company: null,
       plansSets: [],
     }
   },
@@ -177,11 +185,14 @@ export default {
         if (confirm == true) {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
+
           if (result.status == true) {
-            this.company.subsStatus = 'FREE';
-            this.company.freeUsage = true;
-            this.company.subsRenewalAt = moment(moment().add(30, 'd').format('YYYY-MM-DD HH:mm:ss'));
-            this.company.daysToRenewal = moment(this.company.subsRenewalAt).diff(moment(), 'days')+1;
+            SystemService.refreshSession()
+              .then((res) => {
+                if (res) {
+                  this.$store.commit('auth/REFRESH_SESSION', res.data.session);
+                }
+            });
           }
           this.loading.tryFreeUse = false;
         }
@@ -206,32 +217,49 @@ export default {
         loader.hide();
       }
     },
+    firstTitleRow(plan) {
+      if (this.session.planName == plan.name) {
+        if (this.session.companyStatus == 'SUBSCRIBED') {
+          return this.session.companyStatus;
+        } else if (this.session.companyStatus == 'FREE') {
+          return 'FREE USE';
+        } else if (this.session.companyStatus == 'COUPONED') {
+          return 'COUPON USE';
+        }
+      }
+      return '$' + plan.price.toFixed(2);
+    },
+    secondTitleRow(plan) {
+      if (this.session.planName == plan.name) {
+        if (this.session.companyStatus == 'SUBSCRIBED') {
+          return 'renews on ' + this.$options.filters.formatUSDate(this.session.subsRenewalAt);
+        } else if (this.session.companyStatus == 'FREE' || this.session.companyStatus == 'COUPONED') {
+          return 'ends on ' + this.$options.filters.formatUSDate(this.session.subsRenewalAt);
+        }
+      }
+      return 'per month';
+    }
   },
   mounted() {
     this.$nextTick(async () => {
       SystemService.fetchPlans()
         .then((res) => {
           if (res && res.data) {
-            this.company = res.data.company;
 
             let cell = 0;
             let pSet = [];
-            for (let i = 0; i < res.data.plans.length; i++) {
+            for (let i = 0; i < res.data.length; i++) {
               if (cell == 3) {
                 this.plansSets.push(pSet);
                 pSet = [];
                 cell = 0;
               }
-              pSet.push(res.data.plans[i]);
+              pSet.push(res.data[i]);
               cell++;
             }
 
             if (pSet.length > 0) {
               this.plansSets.push(pSet);
-            }
-
-            if (this.company.subsRenewalAt) {
-              this.company.daysToRenewal = moment(this.company.subsRenewalAt).diff(moment(), 'days')+1;
             }
           }
         });
@@ -239,7 +267,6 @@ export default {
   },
   components: {
     confirm: () => import('@/component/Confirm.vue'),
-    FreePlanTexts: () => import('@/component/app/FreePlanTexts.vue'),
   }
 };
 </script>

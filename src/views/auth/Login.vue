@@ -109,10 +109,10 @@ export default {
           const daysToRenewal = sessions.daysToRenewal;
           const productCount = sessions.productCount;
           if (daysToRenewal !== undefined && daysToRenewal > 0) {
-            if (productCount) {
-              this.$router.push({ name: 'products', params: { sid: result.sessionNo } });
-            } else {
+            if (productCount && productCount > 0) {
               this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
+            } else {
+              this.$router.push({ name: 'products', params: { sid: result.sessionNo } });
             }
           } else {
             this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });

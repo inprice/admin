@@ -9,4 +9,8 @@ export default {
     return res;
   },
 
+  refreshSession() {
+    return Helper.call('Plans', { method: 'get', url: baseURL + '/refresh-session' }, false);
+  },
+
 };

@@ -35,7 +35,6 @@
           Your account has been stopped!
           <div>If you think there is a problem, please contact us with an email <strong>support@inprice.io</strong></div>
         </div>
-        <FreePlanTexts v-if="isInTrialPeriod" :daysToRenewal="report.company.daysToRenewal" :subsRenewalAt="report.company.subsRenewalAt" />
     </v-alert>
 
     <v-row>
@@ -289,8 +288,7 @@ export default {
   },
   components: {
     PositionsBarChart: () => import('./PositionsBarChart.js'),
-    StatusesPieChart: () => import('./StatusesPieChart.js'),
-    FreePlanTexts: () => import('@/component/app/FreePlanTexts.vue'),
+    StatusesPieChart: () => import('./StatusesPieChart.js')
   }
 };
 </script>

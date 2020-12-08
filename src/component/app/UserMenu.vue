@@ -79,6 +79,8 @@
 
       <v-card class="text-center">
         <v-btn
+          text
+          outlined
           class="my-3 text-normalize"
           @click="logout"
         >

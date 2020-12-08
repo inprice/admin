@@ -168,6 +168,10 @@
 
       <v-responsive class="mx-auto overflow-visible" max-width="1024">
         <v-container>
+
+          <!-- Alert box for FREE status -->
+          <status-alert v-if="$route.name != 'plans' && $route.name != 'subscription'" :session="session" />
+
           <router-view></router-view>
         </v-container>
       </v-responsive>
@@ -183,6 +187,9 @@ import { get } from 'vuex-pathify'
 import ProductService from '@/service/product';
 
 export default {
+  computed: {
+    session: get('auth/session'),
+  },
   data() {
     return {
       searching: false,
@@ -207,9 +214,6 @@ export default {
         this.products = [];
       }
     },
-  },
-  computed: {
-    session: get('auth/session'),
   },
   methods: {
     changeDrawerPosition() {
@@ -248,6 +252,7 @@ export default {
   },
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),
+    StatusAlert: () => import('@/component/app/StatusAlert.vue'),
     CompanyInfoDialog: () => import('./company/CompanyInfo.vue')
   },
 };
