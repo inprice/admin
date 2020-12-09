@@ -39,23 +39,19 @@
 
     </v-card>
 
-    <confirm ref="confirm"></confirm>
-
-    <div v-if="session.subsStatus != 'ACTIVE'">
-      <plans :rows="plans" :status="session.subsStatus" />
-    </div>
+    <coupons :status="session.subsStatus" />
 
     <div v-if="session.subsStatus != 'NOT_SET'">
       <transactions :all="allTrans" :invoices="invoiceTrans" />
     </div>
+
+    <confirm ref="confirm"></confirm>
 
   </div>
 </template>
 
 <script>
 import SubsService from '@/service/subscription';
-
-import moment from 'moment';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -65,9 +61,9 @@ export default {
   },
   data() {
     return {
-      actualPlan: {},
       allTrans: [],
       invoiceTrans: [],
+      coupons: [],
       selectedTab: 0
     };
   },
@@ -76,50 +72,33 @@ export default {
       this.$refs.confirm.open('Cancel Subscription', 'will be cancelled. Are you sure?', 'Your actual subscription').then(async (confirm) => {
         if (confirm == true) {
           const loader = this.$loading.show();
-          const result = await SubsService.cancel();
-          if (result && result.status == true) {
-            this.$store.dispatch('auth/cancelSubscription');
-            this.refreshActualPlan();
+          const res = await SubsService.cancel();
+          if (res && res.status == true) {
+            this.$store.commit('auth/REFRESH_SESSION', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
           loader.hide();
         }
       });
     },
-    refreshActualPlan() {
-      for (const plan of this.plans) {
-        if (plan.id == this.session.planId) {
-          const renewal = moment(this.session.subsRenewalAt, "YYYY-MM-DD");
-          const current = moment().startOf('day');
-          const days = moment.duration(renewal.diff(current)).asDays();
-
-          this.actualPlan = {
-            name: plan.name, 
-            description: 'Up to ' + plan.productLimit + ' products.', 
-            status: this.session.subsStatus, 
-            renewalTime: `${renewal.format('DD-MM-YYYY')} ( ${days} days ${(days >= 0 ? 'remain' : 'passed')} )`
-          };
-          break;
-        }
-      }
+  },
+  created() {
+    this.$nextTick(async () => {
       SubsService.getTransactions()
         .then((res) => {
           if (res) {
+            this.coupons = res.data.coupons;
             this.allTrans = res.data.all;
             this.invoiceTrans = res.data.invoice;
           }
       });
-    },
-  },
-  created() {
-    this.$nextTick(async () => {
-      this.refreshActualPlan();
     });
   },
   components: {
     ActualPlan: () => import('./ActualPlan'),
     InvoiceInfo: () => import('./InvoiceInfo'),
     Transactions: () => import('./Transactions'),
+    Coupons: () => import('./Coupons'),
     confirm: () => import('@/component/Confirm.vue'),
   }
 };

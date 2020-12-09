@@ -13,30 +13,6 @@
       </div>
     </div>
 
-    <v-alert
-      v-if="!isASubscriber"
-      class="mb-0 mt-2" 
-      color="orange" border="left" elevation="2" colored-border type="warning"
-      >
-        <div class="d-flex justify-space-between" v-if="! hasAnActiveStatus && ! isStopped">
-          <div>
-            Seem that you have no active plan!
-            <span v-if="hasFreeUseRight">You can start your 30 days free trial period.</span>
-            <div>And also, you can choose a plan that best suits your needs.</div>
-          </div>
-          <v-btn 
-            small
-            class="ml-3 my-auto"
-            @click="$router.push( { name: 'plans' })">
-              Please click here
-          </v-btn>
-        </div>
-        <div v-if="isStopped">
-          Your account has been stopped!
-          <div>If you think there is a problem, please contact us with an email <strong>support@inprice.io</strong></div>
-        </div>
-    </v-alert>
-
     <v-row>
       <!-- ------------------------------- -->
       <!-- Products position statuses -->
@@ -213,9 +189,8 @@
 
 <script>
 import DashboardService from '@/service/dashboard';
+import SystemConsts from '@/data/system';
 import moment from 'moment-timezone';
-
-const ACTIVE_STATUSES = [ 'FREE', 'COUPONED', 'SUBSCRIBED' ];
 
 export default {
   data() {
@@ -230,30 +205,9 @@ export default {
   computed: {
     hasAnActiveStatus() {
       if (this.report.company && this.report.company.subsStatus) {
-        if (ACTIVE_STATUSES.includes(this.report.company.subsStatus)) {
+        if (SystemConsts.ACTIVE_COMPANY_STATUSES.includes(this.report.company.subsStatus)) {
           return (this.report.company.daysToRenewal !== undefined && this.report.company.daysToRenewal >= 0);
         }
-      }
-      return false;
-    },
-    hasFreeUseRight() {
-      if (this.report.company && this.report.company.subsStatus) {
-        return (this.report.company.subsStatus == 'NOT_SET');
-      }
-      return false;
-    },
-    isStopped() {
-      if (this.report.company && this.report.company.subsStatus) {
-        return (this.report.company.subsStatus == 'STOPPED');
-      }
-      return false;
-    },
-    isInTrialPeriod() {
-      return (this.report.company && this.report.company.subsStatus && this.report.company.subsStatus == 'FREE');
-    },
-    isASubscriber() {
-      if (this.report.company && this.report.company.subsStatus && this.report.company.subsStatus == 'SUBSCRIBED') {
-        return (this.report.company.daysToRenewal !== undefined && this.report.company.daysToRenewal >= 0);
       }
       return false;
     },

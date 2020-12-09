@@ -15,6 +15,12 @@ const POSITIONS = [
   { value: 5, text: 'HIGHEST' }
 ];
 
+const ACTIVE_COMPANY_STATUSES = [
+  'FREE',
+  'COUPONED',
+  'SUBSCRIBED'
+];
+
 const POSITION_NAMES = POSITIONS.map(pos =>  pos.text);
 
 const STATUSES = [
@@ -51,4 +57,5 @@ export default {
   POSITION_NAMES,
   STATUSES,
   IMPORT_STATUSES,
+  ACTIVE_COMPANY_STATUSES,
 }

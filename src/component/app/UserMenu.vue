@@ -18,18 +18,20 @@
         <v-list-item two-line class="pt-0">
           <v-list-item-content class="pt-2">
             <v-list-item-title class="title">{{ session.company }}</v-list-item-title>
-            <v-list-item-subtitle>
-              <v-chip outlined class="font-weight-medium" v-if="session.daysToRenewal > 0">
+            <v-list-item-subtitle class="my-2">
+              <v-chip outlined class="font-weight-medium" v-if="hasAnActiveStatus">
                 {{ session.planName }}
-                <span class="green--text mx-2">| {{ this.session.subsStatus }} |</span>
-                {{ session.subsRenewalAt }}
+                <span class="green--text mx-2">| {{ this.session.companyStatus }} |</span>
+                {{ $options.filters.formatUSDate(session.subsRenewalAt) }}
               </v-chip>
               <v-btn
                 v-else
+                text
+                small
                 outlined
-                style="text-transform: none"
+                color="info"
                 :to="{ name: 'plans' }"
-                color="teal"
+                :disabled="$route.name == 'plans'"
                 @click="menu=false"
               >
                 Please select a plan!
@@ -86,7 +88,7 @@
         >
           Log out
         </v-btn>
-<!--        
+
         <v-divider/>
         
          <div class="py-4">
@@ -96,7 +98,7 @@
             <v-btn text small class="text-none">Terms of Services</v-btn>
           </div>
         </div>
- -->
+
        </v-card>
 
     </v-menu>
@@ -104,6 +106,7 @@
 </template>
 
 <script>
+import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -116,6 +119,12 @@ export default {
   computed: {
     session: get('auth/session'),
     sessions: get('auth/sessions'),
+    hasAnActiveStatus() {
+      if (SystemConsts.ACTIVE_COMPANY_STATUSES.includes(this.session.companyStatus)) {
+        return (this.session.daysToRenewal !== undefined && this.session.daysToRenewal >= 0);
+      }
+      return false;
+    },
   },
   methods: {
     openChangePasswordDialog() {
@@ -124,7 +133,7 @@ export default {
     },
     logout() {
       this.$store.dispatch('auth/logout', false);
-    }
+    },
   }
 }
 </script>

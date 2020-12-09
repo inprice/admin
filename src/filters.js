@@ -67,12 +67,20 @@ export default (Vue) => {
   Vue.filter('formatUSDate', (value) => {
     try {
       if (value) {
-        return moment(value.substring(0, 10)).tz(store.get(session+'@timezone')).format("MMM Do, YYYY");
+        const a = moment(value.substring(0, 10) + ' 23:59:59').tz(store.get(session+'@timezone'));
+        console.log('///', session+'@timezone', store.get(session+'@timezone'));
+        const dayDiff = a.diff(moment(), 'days');
+        if (dayDiff == 0) {
+          return 'Today';
+        } else if (dayDiff == 1) {
+          return 'Tomorrow';
+        }
+        return a.format("MMM Do, YYYY");
       }
       /* eslint-disable no-empty */
     } catch (error) {
-      console.error('Failed to format date', value, store.get(session), error);
-     }
+      console.error('Failed to format date', value, error);
+    }
     return 'NA';
   });
 

@@ -57,8 +57,6 @@ const mutations = {
   REFRESH_SESSION(state, data) {
     state.session = data;
     state.sessions[state.sessionNo] = data;
-    console.log('data-->', data);
-    console.log('sess-->', state.sessions);
   },
 
   REFRESH_SESSIONS(state, data) {

@@ -5,24 +5,19 @@
       v-if="(session.companyStatus == 'FREE' || session.companyStatus == 'COUPONED') && session.daysToRenewal <= 7"
       dense
       color="cyan darken-1"
-      border="left"
-      colored-border
       elevation="2"
       type="info"
     >
       <div class="d-flex justify-space-between">
-        <span v-if="session.daysToRenewal < 0">
+        <span v-if="session.daysToRenewal <= 0">
           Your {{ freeIndicator }} period has ended <ago class="d-inline font-weight-bold" :date="session.subsRenewalAt" />.
         </span>
-        <span v-if="session.daysToRenewal == 0">
-          Your {{ freeIndicator }} period will be ending <strong>today</strong>.
+        <span v-if="session.daysToRenewal == 1 || session.daysToRenewal == 2">
+          Your {{ freeIndicator }} period will be ending <strong>{{ session.subsRenewalAt | formatUSDate }}</strong>.
         </span>
-        <span v-if="session.daysToRenewal > 0 && session.daysToRenewal < 4">
+        <span v-if="session.daysToRenewal > 2">
           You've started {{ freeIndicator }} period <ago class="d-inline font-weight-bold" :date="session.subsRenewalAt" />.
-          And it is about to end within <strong>{{ daysToRenewal }} days</strong>.
-        </span>
-        <span v-if="session.daysToRenewal >= 4">
-          Your {{ freeIndicator }} period is active and there are only {{session.daysToRenewal}} days left.
+          There are only {{session.daysToRenewal}} days left to end.
         </span>
         <v-btn 
           small
@@ -38,8 +33,6 @@
       v-if="session.companyStatus == 'SUBSCRIBED'"
       dense
       color="cyan darken-1"
-      border="left"
-      colored-border
       elevation="2"
       type="info"
     >
@@ -64,9 +57,8 @@
     <v-alert
       v-if="isPassiveStatus"
       dense
-      color="cyan darken-1"
-      border="left"
       colored-border
+      color="cyan darken-1"
       elevation="2"
       type="info"
     >

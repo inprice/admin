@@ -16,7 +16,7 @@
 
       <div class="d-flex justify-space-between pa-4">
         <div>
-          You have a Free-Use right! You are highly advised to use the platform for free with a 30-day trial period before begin.
+          You have a Free-Use right! You are highly advised to start with a 30-day free trial period.
         </div>
         <v-btn
           small 
@@ -46,10 +46,10 @@
         <div class="pt-4 px-1 text-center d-flex" :class="{'pb-4': ix==plansSets.length-1}" :key="ix">
           <v-hover v-for="plan in plansSet" :key="plan.id">
             <template v-slot="{ hover }">
-              <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${session.planName == plan.name ? 'rainbow' : ''}`">
+              <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisPlanSelected(plan.name) ? 'rainbow' : ''}`">
                 <div class="headline grey lighten-4 elevation-1 py-2 ">
                   <div class="title teal--text darken-5 text-uppercase">
-                    <v-icon color="#00D63F" v-if="session.planName == plan.name">mdi-checkbox-marked-circle</v-icon>
+                    <v-icon color="#00D63F" v-if="isThisPlanSelected(plan.name)">mdi-checkbox-marked-circle</v-icon>
                     {{ plan.name.replace(' Plan', '') }}
                   </div>
 
@@ -163,6 +163,7 @@
 <script>
 import SubsService from '@/service/subscription';
 import SystemService from '@/service/system';
+import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
 const stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
@@ -232,12 +233,15 @@ export default {
     secondTitleRow(plan) {
       if (this.session.planName == plan.name) {
         if (this.session.companyStatus == 'SUBSCRIBED') {
-          return 'renews on ' + this.$options.filters.formatUSDate(this.session.subsRenewalAt);
+          return 'renews ' + (this.session.daysToRenewal > 2 ? ' on' : '') + this.$options.filters.formatUSDate(this.session.subsRenewalAt);
         } else if (this.session.companyStatus == 'FREE' || this.session.companyStatus == 'COUPONED') {
-          return 'ends on ' + this.$options.filters.formatUSDate(this.session.subsRenewalAt);
+          return 'ends ' + (this.session.daysToRenewal > 2 ? ' on' : '') +  this.$options.filters.formatUSDate(this.session.subsRenewalAt);
         }
       }
       return 'per month';
+    },
+    isThisPlanSelected(planName) {
+      return (this.session.planName == planName && SystemConsts.ACTIVE_COMPANY_STATUSES.includes(this.session.companyStatus));
     }
   },
   mounted() {
