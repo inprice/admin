@@ -58,6 +58,32 @@ const router = new VueRouter({
       }
     },
     {
+      name: 'notifications',
+      path: '/',
+      component: () => import('./views/Layout.vue'),
+      meta: {
+        requiresAuth: false
+      },
+      children: [
+        {
+          name: 'paymentok',
+          path: '/payment-ok',
+          component: () => import('./views/app/PaymentOK'),
+          meta: {
+            openToPublic: false
+          }
+        },
+        {
+          name: 'error',
+          path: '/error',
+          component: () => import('./views/errors/ServerError'),
+          meta: {
+            openToPublic: false
+          }
+        },
+      ],
+    },
+    {
       name: 'app',
       path: '/:sid/app',
       component: () => import('./views/Layout.vue'),
@@ -156,14 +182,6 @@ const router = new VueRouter({
           component: () => import('./views/company/Index.vue')
         },
       ]
-    },
-    {
-      path: '/payment-ok',
-      component: () => import('./views/app/PaymentOK')
-    },
-    {
-      path: '/error',
-      component: () => import('./views/errors/ServerError')
     },
     {
       path: '*',

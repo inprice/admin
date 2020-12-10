@@ -41,6 +41,15 @@ const actions = {
     state.sessionNo = res.data.sessionNo;
     commit('REFRESH_SESSIONS', res.data);
     loginChannel.postMessage(res.data);
+  },
+
+  refreshSession({ commit }) {
+    ApiService.get('/app/refresh-session')
+      .then((res) => {
+        if (res && res.data) {
+          commit('REFRESH_SESSION', res.data.data.session);
+        }
+      });
   }
 
 };

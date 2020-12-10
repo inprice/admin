@@ -170,7 +170,10 @@
         <v-container>
 
           <!-- Alert box for FREE status -->
-          <status-alert v-if="$route.name != 'plans' && $route.name != 'subscription'" :session="session" />
+          <status-alert 
+            v-if="isSuitableForStatusAlert"
+            :session="session" 
+          />
 
           <router-view></router-view>
         </v-container>
@@ -186,9 +189,19 @@
 import { get } from 'vuex-pathify'
 import ProductService from '@/service/product';
 
+const EXC_PAGES = [
+  'plans',
+  'subscription',
+  'error',
+  'paymentok'
+];
+
 export default {
   computed: {
     session: get('auth/session'),
+    isSuitableForStatusAlert() {
+      return ! EXC_PAGES.includes(this.$route.name);
+    }
   },
   data() {
     return {

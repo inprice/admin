@@ -5,10 +5,8 @@ const couponBaseURL = '/coupon';
 
 export default {
 
-  async getInfo() {
-    const res = await Helper.call('Invoice Info', { method: 'get', url: baseURL }, false);
-    if (res.status == true && res.data) return res.data;
-    return null;
+  getInfo() {
+    return Helper.call('Invoice Info', { method: 'get', url: baseURL }, false);
   },
 
   async saveInfo(form) {

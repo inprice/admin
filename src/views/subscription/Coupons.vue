@@ -62,14 +62,11 @@
         <div class="caption pa-4"><strong>Please Note that: </strong> If you have any, available coupons can be used when you have no actual plan!</div>
 
       </div>
-      <div v-else>
-        <v-divider></v-divider>
-        <v-card-text>
-          <p>
-            You have no coupon right now.
-          </p>
-        </v-card-text>
-      </div>
+
+      <no-data 
+        v-else 
+        :message="'You have no coupon right now.'"
+      />
 
     </v-card>
 
@@ -136,6 +133,7 @@ export default {
   components: {
     ApplyCoupon: () => import('@/component/app/ApplyCoupon.vue'),
     confirm: () => import('@/component/Confirm.vue'),
+    NoData: () => import('@/component/simple/NoData.vue'),
   }
 }
 </script>

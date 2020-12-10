@@ -9,6 +9,7 @@ dotenv.config();
 import vuetify from './plugins/vuetify';
 import Filters from './filters';
 
+
 Vue.config.productionTip = false
 
 Filters(Vue);
@@ -23,6 +24,7 @@ Vue.use(Loading, {
 
 import './assets/css/main.css';
 import './assets/css/rainbow.css';
+import './mixins/common-functions'
 
 import Chart from 'chart.js'
 /* eslint-disable no-unused-vars */

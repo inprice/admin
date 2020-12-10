@@ -28,9 +28,12 @@
             </tbody>
           </template>
         </v-simple-table>
-        <div v-else>
-          <div class="pa-2 pb-0">No data!</div>
-        </div>
+
+        <no-data 
+          v-else 
+          :message="'No data.'"
+        />
+
       </v-tab-item>
 
       <!-- PROPERTIES -->
@@ -81,9 +84,11 @@
             </tbody>
           </template>
         </v-simple-table>
-        <div v-else>
-          <div class="pa-2 pb-0">No data!</div>
-        </div>
+
+        <no-data 
+          v-else 
+          :message="'No data.'"
+        />
       </v-tab-item>
 
       <!-- SPECS -->
@@ -104,9 +109,12 @@
             </tbody>
           </template>
         </v-simple-table>
-        <div v-else>
-          <div class="pa-2 pb-0">No data!</div>
-        </div>
+
+        <no-data 
+          v-else 
+          :message="'No data.'"
+        />
+
       </v-tab-item>
 
     </v-tabs>
@@ -122,5 +130,8 @@ export default {
       selectedTab: 0,
     }
   },
+  components: {
+    NoData: () => import('@/component/simple/NoData.vue'),
+  }
 }
 </script>

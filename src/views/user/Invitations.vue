@@ -79,14 +79,11 @@
         </p>
 
       </div>
-      <div v-else>
-        <v-divider></v-divider>
-        <v-card-text>
-          <p>
-            You have no invitation right now.
-          </p>
-        </v-card-text>
-      </div>
+
+      <no-data 
+        v-else 
+        :message="'You have no invitation right now.'"
+      />
 
     </v-card>
 
@@ -146,6 +143,7 @@ export default {
     });
   },
   components: {
+    NoData: () => import('@/component/simple/NoData.vue'),
     confirm: () => import('@/component/Confirm.vue')
   }
 }

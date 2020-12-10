@@ -40,6 +40,13 @@
         </div>
       </v-card-title>
 
+        <no-data 
+          v-if="session.companyStatus == 'CANCELLED' || session.companyStatus == 'STOPPED'"
+          :message="'Your current subscription has been ' + session.companyStatus.toLowerCase()"
+        >
+          <ago class="d-inline" :date="session.lastStatusUpdate" />! Please select a new plan below.
+        </no-data>
+
       <v-divider></v-divider>
 
       <template v-for="(plansSet, ix) in plansSets">
@@ -72,11 +79,11 @@
 
                 <v-divider 
                   class="mb-4"
-                  v-if="session.subsStatus != 'SUBSCRIBED'"
+                  v-if="session.companyStatus != 'SUBSCRIBED'"
                 ></v-divider>
 
                 <v-btn 
-                  v-if="session.subsStatus != 'SUBSCRIBED'"
+                  v-if="session.companyStatus != 'SUBSCRIBED'"
                   dark
                   color="teal"
                   class="mx-auto mb-2"
@@ -163,7 +170,6 @@
 <script>
 import SubsService from '@/service/subscription';
 import SystemService from '@/service/system';
-import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
 const stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
@@ -174,11 +180,11 @@ export default {
       loading: {
         tryFreeUse: false,
       },
-      plansSets: [],
     }
   },
   computed: {
     session: get('auth/session'),
+    plansSets: get('system/plansSets'),
   },
   methods: {
     async startFreeUse() {
@@ -194,6 +200,8 @@ export default {
                   this.$store.commit('auth/REFRESH_SESSION', res.data.session);
                 }
             });
+          } else {
+            this.$store.dispatch('auth/refreshSession');
           }
           this.loading.tryFreeUse = false;
         }
@@ -233,43 +241,26 @@ export default {
     secondTitleRow(plan) {
       if (this.session.planName == plan.name) {
         if (this.session.companyStatus == 'SUBSCRIBED') {
-          return 'renews ' + (this.session.daysToRenewal > 2 ? ' on' : '') + this.$options.filters.formatUSDate(this.session.subsRenewalAt);
+          return 'renews ' + (this.session.daysToRenewal > 2 ? ' on ' : '') + this.$options.filters.formatUSDate(this.session.subsRenewalAt);
         } else if (this.session.companyStatus == 'FREE' || this.session.companyStatus == 'COUPONED') {
-          return 'ends ' + (this.session.daysToRenewal > 2 ? ' on' : '') +  this.$options.filters.formatUSDate(this.session.subsRenewalAt);
+          return 'ends ' + (this.session.daysToRenewal > 2 ? ' on ' : '') +  this.$options.filters.formatUSDate(this.session.subsRenewalAt);
         }
       }
       return 'per month';
     },
     isThisPlanSelected(planName) {
-      return (this.session.planName == planName && SystemConsts.ACTIVE_COMPANY_STATUSES.includes(this.session.companyStatus));
+      return (this.session.planName == planName && this.hasCompanyActiveStatus(this.session.companyStatus, this.session.daysToRenewal));
     }
   },
   mounted() {
     this.$nextTick(async () => {
-      SystemService.fetchPlans()
-        .then((res) => {
-          if (res && res.data) {
-
-            let cell = 0;
-            let pSet = [];
-            for (let i = 0; i < res.data.length; i++) {
-              if (cell == 3) {
-                this.plansSets.push(pSet);
-                pSet = [];
-                cell = 0;
-              }
-              pSet.push(res.data[i]);
-              cell++;
-            }
-
-            if (pSet.length > 0) {
-              this.plansSets.push(pSet);
-            }
-          }
-        });
+      if (!this.plansSets || !this.plansSets.length) {
+        this.$store.dispatch('system/fetchPlans');
+      }
     });
   },
   components: {
+    NoData: () => import('@/component/simple/NoData.vue'),
     confirm: () => import('@/component/Confirm.vue'),
   }
 };

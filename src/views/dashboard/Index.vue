@@ -5,7 +5,7 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-right" v-if="hasAnActiveStatus">
+      <div class="text-right" v-if="report.company && hasCompanyActiveStatus(report.company.subsStatus, report.company.daysToRenewal)">
         <span class="caption mr-2">{{ report.date }}</span>
         <v-btn small color="success" @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
@@ -189,7 +189,6 @@
 
 <script>
 import DashboardService from '@/service/dashboard';
-import SystemConsts from '@/data/system';
 import moment from 'moment-timezone';
 
 export default {
@@ -201,16 +200,6 @@ export default {
         link: 0
       }
     };
-  },
-  computed: {
-    hasAnActiveStatus() {
-      if (this.report.company && this.report.company.subsStatus) {
-        if (SystemConsts.ACTIVE_COMPANY_STATUSES.includes(this.report.company.subsStatus)) {
-          return (this.report.company.daysToRenewal !== undefined && this.report.company.daysToRenewal >= 0);
-        }
-      }
-      return false;
-    },
   },
   methods: {
     async refresh() {

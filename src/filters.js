@@ -54,22 +54,23 @@ export default (Vue) => {
 
   Vue.filter('formatDate', (value) => {
     try {
-      if (value) {
-        return moment(value).tz(store.get(session+'@timezone')).fromNow();
+      const tz = store.get(session+'@timezone');
+      if (tz && value) {
+        return moment(value).tz(tz).fromNow();
       }
       /* eslint-disable no-empty */
     } catch (error) {
-      console.error('Failed to format date', value, store.get(session), error);
+      console.error('Failed to format date', value, error);
      }
     return 'NA';
   });
 
   Vue.filter('formatUSDate', (value) => {
     try {
-      if (value) {
-        const a = moment(value.substring(0, 10) + ' 23:59:59').tz(store.get(session+'@timezone'));
-        console.log('///', session+'@timezone', store.get(session+'@timezone'));
-        const dayDiff = a.diff(moment(), 'days');
+      const tz = store.get(session+'@timezone');
+      if (tz && value) {
+        const a = moment(value).tz(tz);
+        const dayDiff = a.diff(moment().tz(tz), 'days');
         if (dayDiff == 0) {
           return 'Today';
         } else if (dayDiff == 1) {

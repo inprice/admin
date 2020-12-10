@@ -19,7 +19,7 @@
           <v-list-item-content class="pt-2">
             <v-list-item-title class="title">{{ session.company }}</v-list-item-title>
             <v-list-item-subtitle class="my-2">
-              <v-chip outlined class="font-weight-medium" v-if="hasAnActiveStatus">
+              <v-chip outlined class="font-weight-medium" v-if="hasCompanyActiveStatus(session.companyStatus, session.daysToRenewal)">
                 {{ session.planName }}
                 <span class="green--text mx-2">| {{ this.session.companyStatus }} |</span>
                 {{ $options.filters.formatUSDate(session.subsRenewalAt) }}
@@ -83,7 +83,9 @@
         <v-btn
           text
           outlined
-          class="my-3 text-normalize"
+          small
+          class="my-3"
+          color="info"
           @click="logout"
         >
           Log out
@@ -106,7 +108,6 @@
 </template>
 
 <script>
-import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -119,12 +120,6 @@ export default {
   computed: {
     session: get('auth/session'),
     sessions: get('auth/sessions'),
-    hasAnActiveStatus() {
-      if (SystemConsts.ACTIVE_COMPANY_STATUSES.includes(this.session.companyStatus)) {
-        return (this.session.daysToRenewal !== undefined && this.session.daysToRenewal >= 0);
-      }
-      return false;
-    },
   },
   methods: {
     openChangePasswordDialog() {
