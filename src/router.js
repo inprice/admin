@@ -64,24 +64,6 @@ const router = new VueRouter({
       meta: {
         requiresAuth: false
       },
-      children: [
-        {
-          name: 'paymentok',
-          path: '/payment-ok',
-          component: () => import('./views/app/PaymentOK'),
-          meta: {
-            openToPublic: false
-          }
-        },
-        {
-          name: 'error',
-          path: '/error',
-          component: () => import('./views/errors/ServerError'),
-          meta: {
-            openToPublic: false
-          }
-        },
-      ],
     },
     {
       name: 'app',
@@ -181,7 +163,22 @@ const router = new VueRouter({
           path: 'company-settings',
           component: () => import('./views/company/Index.vue')
         },
+        {
+          name: 'payment-ok',
+          path: 'payment-ok/:hash',
+          component: () => import('./views/app/PaymentOK'),
+        },
+        {
+          name: 'payment-cancel',
+          path: 'payment-cancel/:hash',
+          component: () => import('./views/app/PaymentCancel'),
+        },
       ]
+    },
+    {
+      name: 'error',
+      path: '/error',
+      component: () => import('./views/errors/ServerError'),
     },
     {
       path: '*',

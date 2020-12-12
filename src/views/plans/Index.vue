@@ -210,7 +210,7 @@ export default {
     async subscribe(planId) {
       const loader = this.$loading.show();
 
-      const result = await SubsService.createSession(planId);
+      const result = await SubsService.createCheckout(planId);
       if (result.status == true) {
         stripe.redirectToCheckout({
           sessionId: result.data.sessionId

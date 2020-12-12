@@ -1,32 +1,55 @@
 <template>
-  <v-row align="center" class="text-center">
-    <v-col>
-      <h1 class="h2 green--text mb-4">
-        <v-icon large color="green">mdi-check-circle-outline</v-icon> Payment Successful!
-      </h1>
+  <div class="pa-5">
+    <h1 class="h2 green--text text-center mb-4">
+      <v-icon large color="green">mdi-check-circle-outline</v-icon> Payment Successful!
+    </h1>
 
-      <h3 class="mb-8">Thank you! Your payment has been processed successfully.</h3>
-      
-      <div><strong>Please note that</strong> sometimes payment process takes time to show up in your account.</div>
-      <div>If you don't see any changes after two hours, please contact us with an email <strong>support@inprice.io</strong></div>
+    <h3 class="mb-2 text-center">Thank you! Your payment has been processed successfully.</h3>
+    
+    <v-card class="pa-5 mt-10">
+      <div class="pb-3 font-weight-medium">
+        <v-icon left>mdi-alert-circle-outline</v-icon>
+        Please note that sometimes payment process takes time to show up.
+      </div>
 
+      <v-divider class="py-2"></v-divider>
+
+      <div class="mb-2">
+        If you don't see any update in your session after two hours, please do the following in order
+      </div>
+
+      <ul>
+        <li>Click 'Refresh Session' button on Subscription page.</li>
+        <li>Log out and in.</li>
+        <li>Inform us by sending an email to <strong>support@inprice.io</strong></li>
+      </ul>
+    </v-card>
+
+    <div class="text-center">
       <v-btn
         class="mt-10"
         color="primary"
         outlined
-        :to="{ name: 'products' }"
+        @click="gotoDashboard"
       >
         Turn to dashboard
       </v-btn>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
+  methods: {
+    gotoDashboard() {
+      this.$store.dispatch('auth/refreshSession');
+      this.$router.push({ name: 'products' });
+    }
+  },
   mounted() {
-    this.$store.dispatch('auth/refreshSession');
+    this.$nextTick(() => {
+      this.$store.dispatch('auth/refreshSession');
+    });
   }
-
 }
 </script>

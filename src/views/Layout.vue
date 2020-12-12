@@ -193,7 +193,8 @@ const EXC_PAGES = [
   'plans',
   'subscription',
   'error',
-  'paymentok'
+  'payment-ok',
+  'payment-cancel'
 ];
 
 export default {

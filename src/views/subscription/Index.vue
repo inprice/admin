@@ -15,7 +15,7 @@
             <div class="caption">Your actual plan and billing info.</div>
           </div>
           <v-btn small class="my-auto" @click="refreshSession">
-            Refresh Plan
+            Refresh Session
           </v-btn>
         </div>
       </v-card-title>

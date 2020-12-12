@@ -14,11 +14,6 @@ export default {
     return res.status;
   },
 
-  async createSession(planId) {
-    const res = await Helper.call('Create Session', { url: baseURL + '/create-session/' + planId });
-    return res;
-  },
-
   async cancel() {
     const res = await Helper.call('Cancel Subscription', { method: 'put', url: baseURL + '/cancel' });
     return res;
@@ -35,6 +30,15 @@ export default {
   async startFreeUse() {
     const res = await Helper.call('Free Use', { method: 'post', url: baseURL + '/free-use' });
     return res;
+  },
+
+  async createCheckout(planId) {
+    const res = await Helper.call('Create Checkout', { url: baseURL + '/create-checkout/' + planId });
+    return res;
+  },
+
+  cancelCheckout(hash) {
+    return Helper.call('Cancel Checkout', { method: 'post', url: baseURL + '/cancel-checkout/' + hash });
   },
 
 };
