@@ -30,21 +30,17 @@
     </v-alert>
 
     <v-alert
-      v-if="session.companyStatus == 'SUBSCRIBED'"
+      v-if="session.companyStatus == 'SUBSCRIBED' && session.daysToRenewal < 2"
       dense
       color="cyan darken-1"
       elevation="2"
       type="info"
     >
-      <div class="d-flex justify-space-between">
-        <span v-if="session.daysToRenewal < 0">
+      <div class="d-flex justify-space-between" v-if="session.daysToRenewal < 0">
+        <span>
           Your subscription has ended <ago class="d-inline font-weight-bold" :date="session.subsRenewalAt" />.
         </span>
-        <span v-if="session.daysToRenewal == 0 || session.daysToRenewal == 1">
-          Your subscription will be renewed <strong>{{ session.daysToRenewal == 0 ? 'today' : 'tomorrow'}}</strong>.
-        </span>
         <v-btn 
-          v-if="session.daysToRenewal < 0"
           small
           color="success"
           class="ml-3 my-auto"
@@ -52,6 +48,9 @@
             See Plans
         </v-btn>
       </div>
+      <span v-if="session.daysToRenewal == 0 || session.daysToRenewal == 1">
+        Your subscription will be renewed <strong>{{ session.daysToRenewal == 0 ? 'today' : 'tomorrow'}}</strong>.
+      </span>
     </v-alert>
 
     <v-alert

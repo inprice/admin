@@ -87,6 +87,7 @@ export default {
           const loader = this.$loading.show();
           const res = await SubsService.cancel();
           if (res && res.status == true) {
+            this.$store.commit('auth/REFRESH_SESSION', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
           this.refreshSession();

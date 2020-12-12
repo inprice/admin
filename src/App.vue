@@ -3,7 +3,7 @@
 
     <v-snackbar 
       v-model="snackbar.show" 
-      :timeout="3500" 
+      :timeout="4000" 
       :color="snackbar.color"
       top
     >

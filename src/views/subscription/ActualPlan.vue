@@ -51,9 +51,9 @@ export default {
     getCycleLable() {
       if (this.hasCompanyActiveStatus(this.session.companyStatus, this.session.daysToRenewal)) {
         if (this.session.companyStatus == 'SUBSCRIBED')
-          return 'Renewal Date';
+          return 'Renewal';
         else
-          return 'Ending Date';
+          return 'Ending';
       } else {
         if (this.session.companyStatus == 'NOT_SET')
           return 'Created At';
