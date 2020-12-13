@@ -6,8 +6,6 @@
 
     <profile />
     <users />
-    <coupons :status="session.subsStatus" />
-
     <delete-everything />
 
   </div>
@@ -22,7 +20,6 @@ export default {
   components: {
     Profile: () => import('./Profile'),
     Users: () => import('./Users'),
-    Coupons: () => import('./Coupons'),
     DeleteEverything: () => import('./DeleteEverything')
   }
 };

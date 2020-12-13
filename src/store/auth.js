@@ -20,7 +20,7 @@ const actions = {
     if (res.status == true) {
       dispatch('createSession', res);
     }
-    return res.data && res.data.sessionNo;
+    return res.data && res.data;
   },
 
   logout({ commit }, expired) {
@@ -39,8 +39,17 @@ const actions = {
   createSession({ state, commit }, res) {
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(res.data.sessions));
     state.sessionNo = res.data.sessionNo;
-    commit('REFRESH_SESSION', res.data);
+    commit('REFRESH_SESSIONS', res.data);
     loginChannel.postMessage(res.data);
+  },
+
+  refreshSession({ commit }) {
+    ApiService.get('/app/refresh-session')
+      .then((res) => {
+        if (res && res.data) {
+          commit('REFRESH_SESSION', res.data.data.session);
+        }
+      });
   }
 
 };
@@ -55,6 +64,11 @@ const mutations = {
   },
 
   REFRESH_SESSION(state, data) {
+    state.session = data;
+    state.sessions[state.sessionNo] = data;
+  },
+
+  REFRESH_SESSIONS(state, data) {
     state.sessions = data.sessions;
     state.session = data.sessions[state.sessionNo];
   },
@@ -104,7 +118,7 @@ const getters = {
 
 const loginChannel = new BroadcastChannel('login');
 loginChannel.onmessage = (e) => {
-  mutations.REFRESH_SESSION(state, e);
+  mutations.REFRESH_SESSIONS(state, e);
 };
 
 const logoutChannel = new BroadcastChannel('logout');

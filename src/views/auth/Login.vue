@@ -105,7 +105,18 @@ export default {
         this.loading = true;
         const result = await this.$store.dispatch('auth/login', this.form);
         if (result != null) {
-          this.$router.push({ name: 'dashboard', params: { sid: result } });
+          const sessions = result.sessions[result.sessionNo];
+          const daysToRenewal = sessions.daysToRenewal;
+          const productCount = sessions.productCount;
+          if (daysToRenewal !== undefined && daysToRenewal > 0) {
+            if (productCount && productCount > 0) {
+              this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
+            } else {
+              this.$router.push({ name: 'products', params: { sid: result.sessionNo } });
+            }
+          } else {
+            this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
+          }
           return;
         }
         this.loading = false;

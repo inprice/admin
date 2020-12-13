@@ -70,11 +70,11 @@
           </v-btn>
         </v-card-actions>
       </div>
-      <v-card-text v-else>
-        <p>
-          You have no active session other than this.
-        </p>
-      </v-card-text>
+
+      <no-data 
+        v-else 
+        :message="'You have no active session other than this.'"
+      />
 
     </v-card>
   </div>
@@ -113,6 +113,9 @@ export default {
     this.$nextTick(() => {
       this.getOpenedSessions();
     });
+  },
+  components: {
+    NoData: () => import('@/component/simple/NoData.vue'),
   }
 }
 </script>

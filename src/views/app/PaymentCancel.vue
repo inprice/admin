@@ -1,29 +1,51 @@
 <template>
-  <v-container
-    class="text-center"
-    fill-height
-    style="height: calc(70vh);"
-  >
-    <v-row align="center">
-      <v-col>
-        <h1 class="h2 red--text mb-4">
-          <v-icon large color="red">mdi-close-circle</v-icon> Payment Cancelled!
-        </h1>
+  <div class="pa-5">
+    <h1 class="h2 blue--text text-center mb-4">
+      <v-icon large color="blue">mdi-close-circle-outline</v-icon> Checkout Cancelled!
+    </h1>
 
-        <h3 class="mb-8">We are sorry to see you cancelling subscription the platform.</h3>
-        
-        <div>Please don't forget that you can subscribe the platform whenever you want.</div>
-        <div>If you have any problem, please contact us with an email to <strong>support@inprice.io</strong></div>
+    <h3 class="mb-2 text-center">You cancelled your checkout!</h3>
+    
+    <v-card class="pa-5 mt-10">
+      <div class="pb-3 font-weight-medium">
+        <v-icon left>mdi-alert-circle-outline</v-icon>
+        Please keep in mind
+      </div>
 
-        <v-btn
-          class="mt-10"
-          :to="{ name: 'dashboard' }"
-          color="primary"
-          outlined
-        >
-          Turn to dashboard
-        </v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+      <v-divider class="py-2"></v-divider>
+
+      <div class="mb-2">
+        <div> - Since the checkout avoided, no action will be taken about this.</div>
+        <div> - You can subscribe a new plan whenever you want.</div>
+        <div> - If you have a problem, please contact us with an email <strong>support@inprice.io</strong></div>
+      </div>
+
+    </v-card>
+
+    <div class="text-center">
+      <v-btn
+        class="mt-10"
+        color="primary"
+        outlined
+        :to="{ name: 'plans' }"
+      >
+        Turn to plans
+      </v-btn>
+    </div>
+  </div>
 </template>
+
+<script>
+import SubsService from '@/service/subscription';
+
+export default {
+  mounted() {
+    this.$nextTick(() => {
+      const hash = this.$route.params.hash;
+      if (hash) {
+        SubsService.cancelCheckout(hash);
+      }
+    });
+  }
+}
+</script>

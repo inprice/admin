@@ -7,55 +7,64 @@
     <v-card class="mt-2">
       <v-card-title class="pb-0">
         <v-icon class="mr-4">mdi-text-box-check-outline</v-icon>
-        <div class="col pa-0">
-          <div>Plan &amp; Billing Info</div>
+        <div class="col pa-0 d-flex justify-space-between">
           <div>
-            <div class="caption float-left">Your actual plan and billing info.</div>
-
-            <v-btn-toggle tile class="float-right">
-              <v-btn @click="selectedTab=0" small>
-                Actual Plan
-              </v-btn>
-
-              <v-btn @click="selectedTab=1" small>
-                Invoice Header
-              </v-btn>
-            </v-btn-toggle>
+            <span>
+              Plan &amp; Billing Info
+            </span>
+            <div class="caption">Your actual plan and billing info.</div>
           </div>
-
+          <v-btn small class="my-auto" @click="refreshSession">
+            Refresh Session
+          </v-btn>
         </div>
       </v-card-title>
+
+      <v-btn-toggle tile :value="selectedTab" class="mt-2">
+        <v-btn @click="selectedTab=0" small>
+          Actual Plan
+        </v-btn>
+        <v-btn @click="selectedTab=1" small>
+          Invoice Header
+        </v-btn>
+      </v-btn-toggle>
 
       <v-divider></v-divider>
 
       <v-tabs v-model="selectedTab">
         <v-tab-item>
-          <actual-plan @cancel="cancel" :data="actualPlan" :status="session.subsStatus" @applied="couponApplied" />
+          <actual-plan :session="session" />
         </v-tab-item>
         <v-tab-item>
-          <invoice-info />
+          <invoice-info v-if="session.everSubscribed == true"/>
+          <no-data v-else>
+            In order to set your invoice header, <span class="font-weight-medium">you need to subscribe first!</span>
+            <v-btn 
+              small
+              color="success"
+              class="ml-3 my-auto"
+              @click="$router.push( { name: 'plans' })">
+                See Plans
+            </v-btn>
+          </no-data>
         </v-tab-item>
       </v-tabs>
 
     </v-card>
 
-    <confirm ref="confirm"></confirm>
+    <coupons :status="session.companyStatus" />
 
-    <div v-if="session.subsStatus != 'ACTIVE'">
-      <plans :rows="plans" :status="session.subsStatus" />
-    </div>
-
-    <div v-if="session.subsStatus != 'NOT_SET'">
+    <div v-if="session.companyStatus != 'NOT_SET'">
       <transactions :all="allTrans" :invoices="invoiceTrans" />
     </div>
+
+    <confirm ref="confirm"></confirm>
 
   </div>
 </template>
 
 <script>
 import SubsService from '@/service/subscription';
-
-import moment from 'moment';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -65,68 +74,36 @@ export default {
   },
   data() {
     return {
-      actualPlan: {},
       allTrans: [],
       invoiceTrans: [],
+      coupons: [],
       selectedTab: 0
     };
   },
   methods: {
-    cancel() {
-      this.$refs.confirm.open('Cancel Subscription', 'will be cancelled. Are you sure?', 'Your actual subscription').then(async (confirm) => {
-        if (confirm == true) {
-          const result = await SubsService.cancel();
-          if (result && result.status == true) {
-            this.$store.dispatch('auth/cancelSubscription');
-            this.refreshActualPlan();
-            this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
-          }
-        }
-      });
-    },
-    couponApplied(/* data */) {
-      this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been successfully applied to your account.' });
-      this.refreshActualPlan();
-    },
-    refreshActualPlan() {
-      for (const plan of this.plans) {
-        if (plan.id == this.session.planId) {
-          const renewal = moment(this.session.subsRenewalAt, "YYYY-MM-DD");
-          const current = moment().startOf('day');
-          const days = moment.duration(renewal.diff(current)).asDays();
-
-          this.actualPlan = {
-            name: plan.name, 
-            description: 'Up to ' + plan.productLimit + ' products.', 
-            status: this.session.subsStatus, 
-            renewalTime: `${renewal.format('DD-MM-YYYY')} ( ${days} days ${(days >= 0 ? 'remain' : 'passed')} )`
-          };
-          break;
-        }
-      }
+    refreshSession() {
+      this.$store.dispatch('auth/refreshSession');
+    }
+  },
+  created() {
+    this.$nextTick(async () => {
       SubsService.getTransactions()
         .then((res) => {
           if (res) {
+            this.coupons = res.data.coupons;
             this.allTrans = res.data.all;
             this.invoiceTrans = res.data.invoice;
           }
       });
-    },
-  },
-  created() {
-    this.$nextTick(async () => {
-      if (! this.plans || this.plans.length < 1) {
-        await this.$store.dispatch('system/fetchPlans');
-      }
-      this.refreshActualPlan();
     });
   },
   components: {
-    Plans: () => import('./Plans'),
     ActualPlan: () => import('./ActualPlan'),
     InvoiceInfo: () => import('./InvoiceInfo'),
     Transactions: () => import('./Transactions'),
+    Coupons: () => import('./Coupons'),
     confirm: () => import('@/component/Confirm.vue'),
+    NoData: () => import('@/component/simple/NoData.vue'),
   }
 };
 </script>

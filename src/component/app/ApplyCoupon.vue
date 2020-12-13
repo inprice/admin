@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import CouponService from '@/service/coupon';
+import SubscriptionService from '@/service/subscription';
 
 export default {
   data() {
@@ -63,7 +63,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await CouponService.applyCoupon(this.form.code);
+        const result = await SubscriptionService.applyCoupon(this.form.code);
         if (result && result.status == true) {
           this.$emit('applied', result.data);
           this.close();

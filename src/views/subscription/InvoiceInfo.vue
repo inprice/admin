@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-simple-table class="property-table pt-3 pb-1">
+    <v-simple-table class="property-table pt-3 pb-2">
       <template v-slot:default>
         <tbody>
           <tr>
@@ -8,11 +8,11 @@
             <td><v-text-field solo dense readonly hide-details="true" :value="info.title || 'Not set!'" /></td>
           </tr>
           <tr>
-            <td class="prop-name">Address Line 1</td>
+            <td class="prop-name">Address 1</td>
             <td><v-text-field solo dense readonly hide-details="true" v-model="info.address1" /></td>
           </tr>
           <tr>
-            <td class="prop-name">Line 2</td>
+            <td class="prop-name">2</td>
             <td><v-text-field solo dense readonly hide-details="true" v-model="info.address2" /></td>
           </tr>
           <tr>
@@ -29,11 +29,16 @@
           </tr>
           <tr>
             <td class="prop-name">Country</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="info.country" /></td>
-            <td class="text-right">
+            <td class="d-flex">
+              <v-text-field solo dense readonly hide-details="true" class="col-6" v-model="info.country" />
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td class="py-1">
               <v-btn 
                 small 
-                color="warning"
+                color="success"
                 @click="openInvoiceInfoDialog">
                   Edit
               </v-btn>
@@ -73,8 +78,12 @@ export default {
       }
     },
     async fetchData() {
-      const result = await SubsService.getInfo();
-      if (result) this.invoiceInfoUpdated(result);
+      SubsService.getInfo()
+        .then((res) => {
+          if (res && res.data) {
+            this.invoiceInfoUpdated(res.data.data);
+          }
+        });
     }
   },
   components: {

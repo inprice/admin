@@ -5,7 +5,7 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-right" v-if="hasAPlan">
+      <div class="text-right" v-if="report.company && hasCompanyActiveStatus(report.company.subsStatus, report.company.daysToRenewal)">
         <span class="caption mr-2">{{ report.date }}</span>
         <v-btn small color="success" @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
@@ -13,20 +13,7 @@
       </div>
     </div>
 
-    <v-alert
-      class="mt-5 row" 
-      v-if="! hasAPlan"
-      color="red" border="left" elevation="2" colored-border type="warning">
-      You have no active plan yet!
-      <v-btn 
-        small
-        class="ml-10"
-        @click="$router.push( { name: 'subscription' })">
-          Please click here
-      </v-btn>
-    </v-alert>
-
-    <v-row class="mt-2">
+    <v-row>
       <!-- ------------------------------- -->
       <!-- Products position statuses -->
       <!-- ------------------------------- -->
@@ -202,6 +189,7 @@
 
 <script>
 import DashboardService from '@/service/dashboard';
+import moment from 'moment-timezone';
 
 export default {
   data() {
@@ -213,15 +201,13 @@ export default {
       }
     };
   },
-  computed: {
-    hasAPlan() {
-      return this.report && this.report.company && this.report.company.planId;
-    }
-  },
   methods: {
     async refresh() {
       const result = await DashboardService.refresh();
       this.report = result.data;
+      if (this.report && this.report.company.subsRenewalAt) {
+        this.report.company.daysToRenewal = moment(this.report.company.subsRenewalAt).diff(moment(), 'days')+1;
+      }
 
       if (this.report && this.report.products && this.report.products.positionDists) {
         let prodCount = 0;
@@ -245,7 +231,7 @@ export default {
   },
   components: {
     PositionsBarChart: () => import('./PositionsBarChart.js'),
-    StatusesPieChart: () => import('./StatusesPieChart.js'),
+    StatusesPieChart: () => import('./StatusesPieChart.js')
   }
 };
 </script>
@@ -268,7 +254,7 @@ export default {
     padding: 0 0 0.8rem 0;
   }
   .row {
-    margin-top: 1rem;
+    margin-top: 7px;
   }
   .linear-table tr td {
     border-bottom: none !important;

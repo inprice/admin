@@ -58,6 +58,14 @@ const router = new VueRouter({
       }
     },
     {
+      name: 'notifications',
+      path: '/',
+      component: () => import('./views/Layout.vue'),
+      meta: {
+        requiresAuth: false
+      },
+    },
+    {
       name: 'app',
       path: '/:sid/app',
       component: () => import('./views/Layout.vue'),
@@ -131,11 +139,16 @@ const router = new VueRouter({
           component: () => import('./views/product/import/AmazonList.vue')
         },
         {
+          name: 'plans',
+          path: 'plans',
+          component: () => import('./views/plans/Index.vue')
+        },
+        {
           name: 'subscription',
           path: 'subscription',
           component: () => import('./views/subscription/Index.vue')
         },
-       {
+        {
           name: 'links',
           path: 'links',
           component: () => import('./views/link/Index.vue')
@@ -150,19 +163,22 @@ const router = new VueRouter({
           path: 'company-settings',
           component: () => import('./views/company/Index.vue')
         },
+        {
+          name: 'payment-ok',
+          path: 'payment-ok/:hash',
+          component: () => import('./views/app/PaymentOK'),
+        },
+        {
+          name: 'payment-cancel',
+          path: 'payment-cancel/:hash',
+          component: () => import('./views/app/PaymentCancel'),
+        },
       ]
     },
     {
-      path: '/payment-ok',
-      component: () => import('./views/app/PaymentOK')
-    },
-    {
-      path: '/payment-cancel',
-      component: () => import('./views/app/PaymentCancel')
-    },
-    {
+      name: 'error',
       path: '/error',
-      component: () => import('./views/errors/ServerError')
+      component: () => import('./views/errors/ServerError'),
     },
     {
       path: '*',

@@ -1,60 +1,69 @@
 <template>
   <div>
-    <v-simple-table class="property-table pt-3 pb-1" v-if="status == 'ACTIVE' || status == 'COUPONED'">
+    <v-simple-table class="property-table pt-3 pb-2 offset-2">
       <template v-slot:default>
         <tbody>
           <tr>
-            <td class="prop-name">Name</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.name" /></td>
+            <td class="prop-name">Plan Name</td>
+            <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="session.planName || 'Not selected!'" /></td>
           </tr>
           <tr>
             <td class="prop-name">Status</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.status" /></td>
+            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="session.companyStatus" /></td>
           </tr>
           <tr>
-            <td class="prop-name">Renewal Date</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="data.renewalTime" /></td>
+            <td class="prop-name text-capitalize">{{ getCycleLabel }}</td>
+            <td class="d-flex">
+              <v-text-field solo dense readonly hide-details="true" class="col-4" :value="getEndDate" />
+            </td>
           </tr>
           <tr>
-            <td class="prop-name">Description</td>
-            <td><v-text-field solo dense readonly hide-details="true" v-model="data.description" /></td>
+            <td></td>
+            <td class="py-1">
+              <v-btn 
+                v-if="!hasCompanyActiveStatus(session.companyStatus, session.daysToRenewal)"
+                small
+                color="success"
+                @click="$router.push({ name: 'plans' })">
+                  Select a plan
+              </v-btn>
+            </td>
           </tr>
         </tbody>
       </template>
     </v-simple-table>
 
-    <div class="d-flex pa-4" v-else>
-      <div>You have <strong>no actual plan</strong> at the moment. Please pick a plan from the following table</div>
-      <v-spacer></v-spacer>
-      <v-btn 
-        small
-        color="success"
-        @click="openApplyCouponDialog">
-          or Apply a coupon
-      </v-btn>
-    </div>
-
-    <apply-coupon ref="applyCouponDialog" @applied="applyCoupon" />
   </div>
 
 </template>
 
 <script>
 export default {
-  props: ['data', 'status'],
-  methods: {
-    cancel() {
-      this.$emit('cancel');
+  props: ['session'],
+  computed: {
+    getCycleLabel() {
+      if (this.hasCompanyActiveStatus(this.session.companyStatus, this.session.daysToRenewal)) {
+        if (this.session.companyStatus == 'SUBSCRIBED')
+          return 'Renewal';
+        else
+          return 'Ending';
+      } else {
+        if (this.session.companyStatus == 'NOT_SET')
+          return 'Created At';
+        else
+          return this.session.companyStatus.toLowerCase() + ' At';
+      }
     },
-    applyCoupon(data) {
-      this.$emit('applied', data);
-    },
-    openApplyCouponDialog() {
-      this.$refs.applyCouponDialog.open();
-    },
+    getEndDate() {
+      if (this.hasCompanyActiveStatus(this.session.companyStatus, this.session.daysToRenewal)) {
+        return this.session.subsRenewalAt;
+      } else {
+        if (this.session.companyStatus == 'NOT_SET')
+          return 'NOT_SET';
+        else
+          return this.session.lastStatusUpdate;
+      }
+    }
   },
-  components: {
-    ApplyCoupon: () => import('@/component/app/ApplyCoupon.vue')
-  }
 };
 </script>

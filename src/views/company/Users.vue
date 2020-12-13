@@ -107,14 +107,11 @@
         </div>
 
       </div>
-      <div v-else>
-        <v-divider></v-divider>
-        <v-card-text>
-          <p>
-            You have no user right now.
-          </p>
-        </v-card-text>
-      </div>
+
+      <no-data 
+        v-else 
+        :message="'You have no user right now.'"
+      />
 
     </v-card>
 
@@ -199,6 +196,7 @@ export default {
   },
   components: {
     SendInvitation: () => import('./components/SendInvitation.vue'),
+    NoData: () => import('@/component/simple/NoData.vue'),
     confirm: () => import('@/component/Confirm.vue')
   }
 }

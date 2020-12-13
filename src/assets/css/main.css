@@ -11,7 +11,7 @@
 
 .property-table td {
   padding-left: 0;
-  height: 32px;
+  height: inherit !important;
   min-height: 32px !important;
 }
 

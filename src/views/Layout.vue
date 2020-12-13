@@ -43,6 +43,14 @@
 
         <v-divider inset></v-divider>
 
+        <v-list-item link :to="{name: 'plans'}">
+          <v-list-item-action>
+            <v-icon>mdi-form-select</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Plans</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item link :to="{name: 'subscription'}" v-if="$store.get('auth/IS_ADMIN')">
           <v-list-item-action>
             <v-icon>mdi-credit-card-check-outline</v-icon>
@@ -91,7 +99,7 @@
           <v-list-item>
             <v-list-item-content>
               <div class="subtitle font-weight-bold">{{ session.company }}</div>
-              <span class="caption">{{ session.email }} - {{ session.role }}</span>
+              <span class="black--text caption">{{ session.email }} - <span class="green--text font-weight-bold">{{ session.role }}</span></span>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -160,6 +168,13 @@
 
       <v-responsive class="mx-auto overflow-visible" max-width="1024">
         <v-container>
+
+          <!-- Alert box for FREE status -->
+          <status-alert 
+            v-if="isSuitableForStatusAlert"
+            :session="session" 
+          />
+
           <router-view></router-view>
         </v-container>
       </v-responsive>
@@ -174,7 +189,21 @@
 import { get } from 'vuex-pathify'
 import ProductService from '@/service/product';
 
+const EXC_PAGES = [
+  'plans',
+  'subscription',
+  'error',
+  'payment-ok',
+  'payment-cancel'
+];
+
 export default {
+  computed: {
+    session: get('auth/session'),
+    isSuitableForStatusAlert() {
+      return ! EXC_PAGES.includes(this.$route.name);
+    }
+  },
   data() {
     return {
       searching: false,
@@ -199,9 +228,6 @@ export default {
         this.products = [];
       }
     },
-  },
-  computed: {
-    session: get('auth/session'),
   },
   methods: {
     changeDrawerPosition() {
@@ -240,6 +266,7 @@ export default {
   },
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),
+    StatusAlert: () => import('@/component/app/StatusAlert.vue'),
     CompanyInfoDialog: () => import('./company/CompanyInfo.vue')
   },
 };
