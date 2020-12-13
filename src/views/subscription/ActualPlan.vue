@@ -12,7 +12,7 @@
             <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="session.companyStatus" /></td>
           </tr>
           <tr>
-            <td class="prop-name text-capitalize">{{ getCycleLable }}</td>
+            <td class="prop-name text-capitalize">{{ getCycleLabel }}</td>
             <td class="d-flex">
               <v-text-field solo dense readonly hide-details="true" class="col-4" :value="getEndDate" />
             </td>
@@ -21,14 +21,7 @@
             <td></td>
             <td class="py-1">
               <v-btn 
-                small 
-                color="error"
-                v-if="hasCompanyActiveStatus(session.companyStatus, session.daysToRenewal)"
-                @click="$emit('cancel')">
-                  Cancel
-              </v-btn>
-              <v-btn 
-                v-else
+                v-if="!hasCompanyActiveStatus(session.companyStatus, session.daysToRenewal)"
                 small
                 color="success"
                 @click="$router.push({ name: 'plans' })">
@@ -48,7 +41,7 @@
 export default {
   props: ['session'],
   computed: {
-    getCycleLable() {
+    getCycleLabel() {
       if (this.hasCompanyActiveStatus(this.session.companyStatus, this.session.daysToRenewal)) {
         if (this.session.companyStatus == 'SUBSCRIBED')
           return 'Renewal';

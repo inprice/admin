@@ -53,7 +53,7 @@
         <div class="pt-4 px-1 text-center d-flex" :class="{'pb-4': ix==plansSets.length-1}" :key="ix">
           <v-hover v-for="plan in plansSet" :key="plan.id">
             <template v-slot="{ hover }">
-              <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisPlanSelected(plan.name) ? 'rainbow' : ''}`">
+              <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisPlanSelected(plan.id) ? 'rainbow' : ''}`">
                 <div class="headline grey lighten-4 elevation-1 py-2 ">
                   <div class="title teal--text darken-5 text-uppercase">
                     <v-icon color="#00D63F" v-if="isThisPlanSelected(plan.name)">mdi-checkbox-marked-circle</v-icon>
@@ -77,20 +77,38 @@
                   </div>
                 </ul>
 
-                <v-divider 
-                  class="mb-4"
-                  v-if="session.companyStatus != 'SUBSCRIBED'"
-                ></v-divider>
+                <v-divider class="mb-4"></v-divider>
 
                 <v-btn 
                   v-if="session.companyStatus != 'SUBSCRIBED'"
                   dark
-                  color="teal"
+                  color="success"
                   class="mx-auto mb-2"
                   @click="subscribe(plan.id)"
                 >
                   Subscribe
                 </v-btn>
+
+                <div v-if="session.companyStatus == 'SUBSCRIBED' && session.planId">
+                  <v-btn 
+                    v-if="plan.id == session.planId"
+                    dark
+                    color="warning"
+                    class="mx-auto mb-2"
+                    @click="cancel()"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn 
+                    v-else
+                    dark
+                    :color="plan.id > session.planId ? 'info' : 'orange'"
+                    class="mx-auto mb-2"
+                    @click="cahangeTo(plan.id)"
+                  >
+                    {{ plan.id > session.planId ? 'UPGRADE' : 'DOWNGRADE' }}
+                  </v-btn>
+                </div>
 
               </v-card>
             </template>
@@ -209,7 +227,6 @@ export default {
     },
     async subscribe(planId) {
       const loader = this.$loading.show();
-
       const result = await SubsService.createCheckout(planId);
       if (result.status == true) {
         stripe.redirectToCheckout({
@@ -225,6 +242,32 @@ export default {
       } else {
         loader.hide();
       }
+    },
+    async changeTo(planId) {
+      const loader = this.$loading.show();
+      const res = await SubsService.changeTo(planId);
+      if (res.status == true) {
+        loader.hide();
+        this.$store.commit('auth/REFRESH_SESSION', res.data.session);
+        this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been changed.' });
+      } else {
+        loader.hide();
+      }
+    },
+    cancel() {
+      this.$refs.confirm.open('Cancel Subscription', 
+        'will be cancelled. Are you sure? Please note that; you will be recieving a coupon to amortise your remaining days, if any!', 
+        'Your actual subscription').then(async (confirm) => {
+        if (confirm == true) {
+          const loader = this.$loading.show();
+          const res = await SubsService.cancel();
+          if (res && res.status == true) {
+            this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
+          }
+          this.$store.commit('auth/REFRESH_SESSION', res.data.session);
+          loader.hide();
+        }
+      });
     },
     firstTitleRow(plan) {
       if (this.session.planName == plan.name) {
@@ -248,8 +291,8 @@ export default {
       }
       return 'per month';
     },
-    isThisPlanSelected(planName) {
-      return (this.session.planName == planName && this.hasCompanyActiveStatus(this.session.companyStatus, this.session.daysToRenewal));
+    isThisPlanSelected(planId) {
+      return (this.session.planId == planId && this.hasCompanyActiveStatus(this.session.companyStatus, this.session.daysToRenewal));
     }
   },
   mounted() {

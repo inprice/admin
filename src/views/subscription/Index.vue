@@ -33,7 +33,7 @@
 
       <v-tabs v-model="selectedTab">
         <v-tab-item>
-          <actual-plan @cancel="cancel" :session="session" />
+          <actual-plan :session="session" />
         </v-tab-item>
         <v-tab-item>
           <invoice-info v-if="session.everSubscribed == true"/>
@@ -81,20 +81,6 @@ export default {
     };
   },
   methods: {
-    cancel() {
-      this.$refs.confirm.open('Cancel Subscription', 'will be cancelled. Are you sure?', 'Your actual subscription').then(async (confirm) => {
-        if (confirm == true) {
-          const loader = this.$loading.show();
-          const res = await SubsService.cancel();
-          if (res && res.status == true) {
-            this.$store.commit('auth/REFRESH_SESSION', res.data.session);
-            this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
-          }
-          this.refreshSession();
-          loader.hide();
-        }
-      });
-    },
     refreshSession() {
       this.$store.dispatch('auth/refreshSession');
     }

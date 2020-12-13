@@ -37,6 +37,11 @@ export default {
     return res;
   },
 
+  async changeTo(planId) {
+    const res = await Helper.call('Change Plan', { url: baseURL + '/change-plan/' + planId });
+    return res;
+  },
+
   cancelCheckout(hash) {
     return Helper.call('Cancel Checkout', { method: 'post', url: baseURL + '/cancel-checkout/' + hash });
   },
