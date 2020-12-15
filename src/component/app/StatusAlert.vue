@@ -2,22 +2,22 @@
   <div>
 
     <v-alert
-      v-if="(session.companyStatus == 'FREE' || session.companyStatus == 'COUPONED') && session.daysToRenewal <= 7"
+      v-if="CURSTAT.isFree && CURSTAT.daysToRenewal <= 7"
       dense
       color="cyan darken-1"
       elevation="2"
       type="info"
     >
       <div class="d-flex justify-space-between">
-        <span v-if="session.daysToRenewal <= 0">
-          Your {{ freeIndicator }} period has ended <ago class="d-inline font-weight-bold" :date="session.subsRenewalAt" />.
+        <span v-if="CURSTAT.daysToRenewal <= 0">
+          Your {{ freeIndicator() }} period has ended <ago class="d-inline font-weight-bold" :date="CURSTAT.renewalAt" />.
         </span>
-        <span v-if="session.daysToRenewal == 1 || session.daysToRenewal == 2">
-          Your {{ freeIndicator }} period will be ending <strong>{{ session.subsRenewalAt | formatUSDate }}</strong>.
+        <span v-if="CURSTAT.daysToRenewal == 1 || CURSTAT.daysToRenewal == 2">
+          Your {{ freeIndicator() }} period will be ending <strong>{{ CURSTAT.renewalAt | formatUSDate }}</strong>.
         </span>
-        <span v-if="session.daysToRenewal > 2">
-          You've started {{ freeIndicator }} period <ago class="d-inline font-weight-bold" :date="session.subsRenewalAt" />.
-          There are only {{session.daysToRenewal}} days left to end.
+        <span v-if="CURSTAT.daysToRenewal > 2">
+          You've started {{ freeIndicator() }} period <ago class="d-inline font-weight-bold" :date="CURSTAT.renewalAt" />.
+          There are only {{ CURSTAT.daysToRenewal }} days left to end.
         </span>
         <v-btn 
           small
@@ -30,31 +30,17 @@
     </v-alert>
 
     <v-alert
-      v-if="session.companyStatus == 'SUBSCRIBED' && session.daysToRenewal < 2"
+      v-if="CURSTAT.isSubscriber && CURSTAT.hasTime && CURSTAT.daysToRenewal < 2"
       dense
       color="cyan darken-1"
       elevation="2"
       type="info"
     >
-      <div class="d-flex justify-space-between" v-if="session.daysToRenewal < 0">
-        <span>
-          Your subscription has ended <ago class="d-inline font-weight-bold" :date="session.subsRenewalAt" />.
-        </span>
-        <v-btn 
-          small
-          color="success"
-          class="ml-3 my-auto"
-          @click="$router.push( { name: 'plans' })">
-            See Plans
-        </v-btn>
-      </div>
-      <span v-if="session.daysToRenewal == 0 || session.daysToRenewal == 1">
-        Your subscription will be renewed <strong>{{ session.daysToRenewal == 0 ? 'today' : 'tomorrow'}}</strong>.
-      </span>
+      Your subscription will be renewed <strong>{{ CURSTAT.daysToRenewal == 0 ? 'today' : 'tomorrow'}}</strong>.
     </v-alert>
 
     <v-alert
-      v-if="isPassiveStatus"
+      v-if="!CURSTAT.isActive"
       dense
       colored-border
       color="cyan darken-1"
@@ -63,10 +49,7 @@
     >
       <div class="d-flex justify-space-between">
         <span>
-          You have no active subscription right now.
-          <span v-if="session.productCount > 0">You need to start a subscription to continue monitoring your competitors.</span>
-          <span v-if="session.productCount == 0 && session.companyStatus == 'NOT_SET'">Would you like to start with free use period?</span>
-          <span v-if="session.productCount == 0 && session.companyStatus != 'NOT_SET'">Would you like to subscribe a plan to begin monitoring?</span>
+          You have no active subscription right now. {{ infoForPassiveCompany() }}
         </span>
         <v-btn 
           small
@@ -82,25 +65,31 @@
 </template>
 
 <script>
+import { get } from 'vuex-pathify'
+
 export default {
-  props: {
-    session: Object
-  },
   computed: {
-    isPassiveStatus() {
-      return ! (
-        this.session.companyStatus == 'FREE' || 
-        this.session.companyStatus == 'COUPONED' || 
-        this.session.companyStatus == 'SUBSCRIBED'
-      );
-    },
+    CURSTAT: get('auth/CURRENT_STATUS'),
+  },
+  methods: {
     freeIndicator() {
-      if (this.session.companyStatus == 'FREE') {
+      if (this.CURSTAT.status == 'FREE') {
         return '30 days free trial';
       } else {
         return 'coupon';
       }
     },
+    infoForPassiveCompany() {
+      if (this.CURSTAT.hasProduct) {
+        return "You need to start a subscription to continue monitoring.";
+      } else {
+        if (this.CURSTAT == 'CREATED') {
+          return "You can start with a free trial perid for 30 days.";
+        } else {
+          return "Would you like to subscribe a plan to start monitoring?";
+        }
+      } 
+    }
   }
 }
 </script>

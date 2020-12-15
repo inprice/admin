@@ -38,7 +38,7 @@ export default {
   },
 
   async changeTo(planId) {
-    const res = await Helper.call('Change Plan', { url: baseURL + '/change-plan/' + planId });
+    const res = await Helper.call('Change Plan', { method: 'put', url: baseURL + '/change-plan/' + planId });
     return res;
   },
 

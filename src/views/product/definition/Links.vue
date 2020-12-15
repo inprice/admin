@@ -253,7 +253,7 @@ export default {
     },
   },
   components: {
-    confirm: () => import('@/component/Confirm.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
     LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
   },
   mounted() {

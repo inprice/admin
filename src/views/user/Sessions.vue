@@ -71,7 +71,7 @@
         </v-card-actions>
       </div>
 
-      <no-data 
+      <block-message 
         v-else 
         :message="'You have no active session other than this.'"
       />
@@ -115,7 +115,7 @@ export default {
     });
   },
   components: {
-    NoData: () => import('@/component/simple/NoData.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 }
 </script>

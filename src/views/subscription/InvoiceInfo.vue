@@ -5,7 +5,7 @@
         <tbody>
           <tr>
             <td class="prop-name">Title</td>
-            <td><v-text-field solo dense readonly hide-details="true" :value="info.title || 'Not set!'" /></td>
+            <td><v-text-field solo dense readonly hide-details="true" :value="info.title || 'Just created!'" /></td>
           </tr>
           <tr>
             <td class="prop-name">Address 1</td>

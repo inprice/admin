@@ -108,7 +108,7 @@
 
       </div>
 
-      <no-data 
+      <block-message 
         v-else 
         :message="'You have no user right now.'"
       />
@@ -196,8 +196,8 @@ export default {
   },
   components: {
     SendInvitation: () => import('./components/SendInvitation.vue'),
-    NoData: () => import('@/component/simple/NoData.vue'),
-    confirm: () => import('@/component/Confirm.vue')
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    Confirm: () => import('@/component/Confirm.vue')
   }
 }
 </script>

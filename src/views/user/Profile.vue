@@ -34,11 +34,11 @@
           <tbody>
             <tr>
               <td class="prop-name">Name</td>
-              <td><v-text-field solo dense readonly hide-details="true" v-model="session.user" /></td>
+              <td><v-text-field solo dense readonly hide-details="true" v-model="CURSTAT.user" /></td>
             </tr>
             <tr>
               <td class="prop-name">Time Zone</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="session.timezone" /></td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="CURSTAT.timezone" /></td>
             </tr>
             <tr>
               <td class="prop-name">Password</td>
@@ -60,14 +60,14 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    session: get('auth/session')
+    CURSTAT: get('auth/CURRENT_STATUS')
   },
   methods: {
     openChangePasswordDialog() {
-      this.$refs.changePasswordDialog.open(this.session.email);
+      this.$refs.changePasswordDialog.open(this.CURSTAT.email);
     },
     openUpdateUserDialog() {
-      this.$refs.updateUserDialog.open({ name: this.session.user, timezone: this.session.timezone });
+      this.$refs.updateUserDialog.open({ name: this.CURSTAT.user, timezone: this.CURSTAT.timezone });
     },
   },
   components: {

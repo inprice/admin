@@ -63,7 +63,7 @@
 
       </div>
 
-      <no-data 
+      <block-message 
         v-else 
         :message="'You have no coupon right now.'"
       />
@@ -132,8 +132,8 @@ export default {
   },
   components: {
     ApplyCoupon: () => import('@/component/app/ApplyCoupon.vue'),
-    confirm: () => import('@/component/Confirm.vue'),
-    NoData: () => import('@/component/simple/NoData.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 }
 </script>

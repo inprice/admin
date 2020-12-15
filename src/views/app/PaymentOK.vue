@@ -5,8 +5,38 @@
     </h1>
 
     <h3 class="mb-2 text-center">Thank you! Your payment has been processed successfully.</h3>
-    
+
     <v-card class="pa-5 mt-10">
+      <div class="pb-3 font-weight-medium">
+        <v-icon left>mdi-bullhorn-outline</v-icon>
+        Your plan details
+      </div>
+
+      <v-divider class="py-2"></v-divider>
+
+      <v-simple-table class="property-table">
+        <template v-slot:default>
+          <tbody>
+            <tr>
+              <td class="prop-name">Status</td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="CURSTAT.status" /></td>
+            </tr>
+            <tr>
+              <td class="prop-name">Plan Name</td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="CURSTAT.planName || 'Not selected!'" /></td>
+            </tr>
+            <tr>
+              <td class="prop-name text-capitalize">Renewal At</td>
+              <td class="d-flex">
+                <v-text-field solo dense readonly hide-details="true" class="col-4" v-model="CURSTAT.renewalAt" />
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </v-card>
+    
+    <v-card class="pa-5 mt-5">
       <div class="pb-3 font-weight-medium">
         <v-icon left>mdi-alert-circle-outline</v-icon>
         Please note that sometimes payment process takes time to show up.
@@ -30,18 +60,23 @@
         class="mt-10"
         color="primary"
         outlined
-        @click="gotoDashboard"
+        @click="gotoProductsPage"
       >
-        Turn to dashboard
+        Go to products page
       </v-btn>
     </div>
   </div>
 </template>
 
 <script>
+import { get } from 'vuex-pathify'
+
 export default {
+  computed: {
+    CURSTAT: get('auth/CURRENT_STATUS'),
+  },
   methods: {
-    gotoDashboard() {
+    gotoProductsPage() {
       this.$store.dispatch('auth/refreshSession');
       this.$router.push({ name: 'products' });
     }

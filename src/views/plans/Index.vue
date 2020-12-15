@@ -4,7 +4,7 @@
       Plans
     </div>
 
-    <v-card class="mt-2" v-if="session.companyStatus == 'NOT_SET'">
+    <v-card class="mt-2" v-if="CURSTAT.status == 'CREATED'">
       <v-card-title>
         <v-icon class="mr-2">mdi-arrow-right-thin-circle-outline</v-icon>
         <div>
@@ -40,12 +40,28 @@
         </div>
       </v-card-title>
 
-        <no-data 
-          v-if="session.companyStatus == 'CANCELLED' || session.companyStatus == 'STOPPED'"
-          :message="'Your current subscription has been ' + session.companyStatus.toLowerCase()"
+        <block-message 
+          v-if="CURSTAT.isFree"
+          :message="'Your actual status is ' + CURSTAT.status.toLowerCase() + ' use. It\'s ending ' + prettyRemainingDaysForFree()"
         >
-          <ago class="d-inline" :date="session.lastStatusUpdate" />! Please select a new plan below.
-        </no-data>
+          You can subscribe to any plan below
+          <v-btn 
+            dark
+            small
+            color="error"
+            class="float-right d-inline"
+            @click="cancel()"
+          >
+            Or Cancel
+          </v-btn>
+        </block-message>
+
+        <block-message 
+          v-if="CURSTAT.isActive == false"
+          :message="'Your last subscription has been ' + CURSTAT.status.toLowerCase()"
+        >
+          <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
+        </block-message>
 
       <v-divider></v-divider>
 
@@ -56,7 +72,7 @@
               <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisPlanSelected(plan.id) ? 'rainbow' : ''}`">
                 <div class="headline grey lighten-4 elevation-1 py-2 ">
                   <div class="title teal--text darken-5 text-uppercase">
-                    <v-icon color="#00D63F" v-if="isThisPlanSelected(plan.name)">mdi-checkbox-marked-circle</v-icon>
+                    <v-icon color="red darken-2" v-if="isThisPlanSelected(plan.id)">mdi-checkbox-marked-circle</v-icon>
                     {{ plan.name.replace(' Plan', '') }}
                   </div>
 
@@ -80,7 +96,7 @@
                 <v-divider class="mb-4"></v-divider>
 
                 <v-btn 
-                  v-if="session.companyStatus != 'SUBSCRIBED'"
+                  v-if="CURSTAT.isSubscriber == false"
                   dark
                   color="success"
                   class="mx-auto mb-2"
@@ -89,11 +105,11 @@
                   Subscribe
                 </v-btn>
 
-                <div v-if="session.companyStatus == 'SUBSCRIBED' && session.planId">
+                <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
                   <v-btn 
-                    v-if="plan.id == session.planId"
+                    v-if="plan.id == CURSTAT.planId"
                     dark
-                    color="warning"
+                    color="error"
                     class="mx-auto mb-2"
                     @click="cancel()"
                   >
@@ -102,11 +118,11 @@
                   <v-btn 
                     v-else
                     dark
-                    :color="plan.id > session.planId ? 'info' : 'orange'"
+                    :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
                     class="mx-auto mb-2"
-                    @click="cahangeTo(plan.id)"
+                    @click="changeTo(plan.id)"
                   >
-                    {{ plan.id > session.planId ? 'UPGRADE' : 'DOWNGRADE' }}
+                    {{ plan.id > CURSTAT.planId ? 'UPGRADE' : 'DOWNGRADE' }}
                   </v-btn>
                 </div>
 
@@ -187,7 +203,6 @@
 
 <script>
 import SubsService from '@/service/subscription';
-import SystemService from '@/service/system';
 import { get } from 'vuex-pathify'
 
 const stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
@@ -201,8 +216,8 @@ export default {
     }
   },
   computed: {
-    session: get('auth/session'),
     plansSets: get('system/plansSets'),
+    CURSTAT: get('auth/CURRENT_STATUS'),
   },
   methods: {
     async startFreeUse() {
@@ -210,14 +225,8 @@ export default {
         if (confirm == true) {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
-
           if (result.status == true) {
-            SystemService.refreshSession()
-              .then((res) => {
-                if (res) {
-                  this.$store.commit('auth/REFRESH_SESSION', res.data.session);
-                }
-            });
+            this.$store.commit('auth/REFRESH_SESSION', result.data.session);
           } else {
             this.$store.dispatch('auth/refreshSession');
           }
@@ -234,7 +243,7 @@ export default {
         }).then(function (result) {
           loader.hide();
           if (result.error && result.error.message) {
-            this.$store.commit('snackbar/setMessage', { text: result.error.message, color: 'error' });
+            this.$store.commit('snackbar/setMessage', { text: result.error.message, level: 'error' });
           } else {
             console.log('Calling result of stripes checkout form', result);
           }
@@ -244,56 +253,69 @@ export default {
       }
     },
     async changeTo(planId) {
-      const loader = this.$loading.show();
-      const res = await SubsService.changeTo(planId);
-      if (res.status == true) {
-        loader.hide();
-        this.$store.commit('auth/REFRESH_SESSION', res.data.session);
-        this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been changed.' });
-      } else {
-        loader.hide();
-      }
+      const dir = (planId > this.CURSTAT.planId ? 'UPGRADED' : 'DOWNGRADED');
+      this.$refs.confirm.open('Change Plan', 'will be '+dir+'. Are you sure?', 
+        'Your actual plan').then(async (confirm) => {
+        if (confirm == true) {
+          const loader = this.$loading.show();
+          const res = await SubsService.changeTo(planId);
+          if (res.status == true) {
+            loader.hide();
+            this.$store.commit('auth/REFRESH_SESSION', res.data.session);
+            this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been changed.' });
+          }
+          loader.hide();
+        }
+      });
     },
     cancel() {
-      this.$refs.confirm.open('Cancel Subscription', 
-        'will be cancelled. Are you sure? Please note that; you will be recieving a coupon to amortise your remaining days, if any!', 
+      this.$refs.confirm.open('Cancel Subscription', 'will be cancelled. Are you sure?', 
         'Your actual subscription').then(async (confirm) => {
         if (confirm == true) {
           const loader = this.$loading.show();
           const res = await SubsService.cancel();
           if (res && res.status == true) {
+            this.$store.commit('auth/REFRESH_SESSION', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
-          this.$store.commit('auth/REFRESH_SESSION', res.data.session);
           loader.hide();
         }
       });
     },
     firstTitleRow(plan) {
-      if (this.session.planName == plan.name) {
-        if (this.session.companyStatus == 'SUBSCRIBED') {
-          return this.session.companyStatus;
-        } else if (this.session.companyStatus == 'FREE') {
+      if (this.CURSTAT.planName == plan.name) {
+        if (this.CURSTAT.isSubscriber) {
+          return this.CURSTAT.status;
+        } else if (this.CURSTAT.status == 'FREE') {
           return 'FREE USE';
-        } else if (this.session.companyStatus == 'COUPONED') {
+        } else if (this.CURSTAT.status == 'COUPONED') {
           return 'COUPON USE';
         }
       }
       return '$' + plan.price.toFixed(2);
     },
     secondTitleRow(plan) {
-      if (this.session.planName == plan.name) {
-        if (this.session.companyStatus == 'SUBSCRIBED') {
-          return 'renews ' + (this.session.daysToRenewal > 2 ? ' on ' : '') + this.$options.filters.formatUSDate(this.session.subsRenewalAt);
-        } else if (this.session.companyStatus == 'FREE' || this.session.companyStatus == 'COUPONED') {
-          return 'ends ' + (this.session.daysToRenewal > 2 ? ' on ' : '') +  this.$options.filters.formatUSDate(this.session.subsRenewalAt);
-        }
+      if (this.isThisPlanSelected(plan.id)) {
+        if (this.CURSTAT.daysToRenewal > 0)
+          return this.$options.filters.formatUSDate(this.CURSTAT.renewalAt) + ' - ' + this.CURSTAT.daysToRenewal + ' days left';
+        else
+          return this.$options.filters.formatUSDate(this.CURSTAT.renewalAt);
       }
       return 'per month';
     },
     isThisPlanSelected(planId) {
-      return (this.session.planId == planId && this.hasCompanyActiveStatus(this.session.companyStatus, this.session.daysToRenewal));
-    }
+      return (this.CURSTAT.isActive && this.CURSTAT.planId == planId);
+    },
+    prettyRemainingDaysForFree() {
+      let res;
+      if (this.CURSTAT.daysToRenewal == 0) 
+        res = 'TODAY!';
+      else if (this.CURSTAT.daysToRenewal == 1) 
+        res = 'TOMORROW!';
+      else
+        res = 'IN ' + this.CURSTAT.daysToRenewal + ' DAYS!';
+      return res;
+    },
   },
   mounted() {
     this.$nextTick(async () => {
@@ -303,8 +325,8 @@ export default {
     });
   },
   components: {
-    NoData: () => import('@/component/simple/NoData.vue'),
-    confirm: () => import('@/component/Confirm.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
   }
 };
 </script>

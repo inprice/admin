@@ -5,7 +5,7 @@ function logoutCheck(reason) {
   if (reason.includes("code 401") || reason.includes("be expired")) {
     store.dispatch('auth/logout', true);
   } else {
-    store.commit('snackbar/setMessage', { text: reason, color: 'error' });
+    store.commit('snackbar/setMessage', { text: reason, level: 'error' });
   }
 }
 

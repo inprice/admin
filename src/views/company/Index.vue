@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="title pl-1 mb-2">
-      {{ session.company }} Settings
+      {{ CURSTAT.company }} Settings
     </div>
 
     <profile />
@@ -13,9 +13,10 @@
 
 <script>
 import { get } from 'vuex-pathify'
+
 export default {
   computed: {
-    session: get('auth/session'),
+    CURSTAT: get('auth/CURRENT_STATUS'),
   },
   components: {
     Profile: () => import('./Profile'),

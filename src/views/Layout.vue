@@ -91,19 +91,20 @@
         </v-list-item>
 
       </v-list>
-
+<!--
       <template v-slot:append>
         <v-divider />
 
         <v-list v-if="drawerStatus == 2">
           <v-list-item>
             <v-list-item-content>
-              <div class="subtitle font-weight-bold">{{ session.company }}</div>
-              <span class="black--text caption">{{ session.email }} - <span class="green--text font-weight-bold">{{ session.role }}</span></span>
+              <div class="subtitle font-weight-bold">{{ CURSTAT.company }}</div>
+              <span class="black--text caption">{{ CURSTAT.email }} - <span class="green--text font-weight-bold">{{ CURSTAT.role }}</span></span>
             </v-list-item-content>
           </v-list-item>
         </v-list>
       </template>
+-->
     </v-navigation-drawer>
 
     <!--v-app-bar app color="blue-grey" dark clipped-left -->
@@ -170,10 +171,7 @@
         <v-container>
 
           <!-- Alert box for FREE status -->
-          <status-alert 
-            v-if="isSuitableForStatusAlert"
-            :session="session" 
-          />
+          <status-alert v-if="isSuitableForStatusAlert" />
 
           <router-view></router-view>
         </v-container>
@@ -186,7 +184,6 @@
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
 import ProductService from '@/service/product';
 
 const EXC_PAGES = [
@@ -199,7 +196,6 @@ const EXC_PAGES = [
 
 export default {
   computed: {
-    session: get('auth/session'),
     isSuitableForStatusAlert() {
       return ! EXC_PAGES.includes(this.$route.name);
     }

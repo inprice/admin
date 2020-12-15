@@ -29,7 +29,7 @@
           </template>
         </v-simple-table>
 
-        <no-data 
+        <block-message 
           v-else 
           :message="'No data.'"
         />
@@ -85,7 +85,7 @@
           </template>
         </v-simple-table>
 
-        <no-data 
+        <block-message 
           v-else 
           :message="'No data.'"
         />
@@ -110,7 +110,7 @@
           </template>
         </v-simple-table>
 
-        <no-data 
+        <block-message 
           v-else 
           :message="'No data.'"
         />
@@ -131,7 +131,7 @@ export default {
     }
   },
   components: {
-    NoData: () => import('@/component/simple/NoData.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 }
 </script>

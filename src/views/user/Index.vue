@@ -13,12 +13,7 @@
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
-
 export default {
-  computed: {
-    session: get('auth/session'),
-  },
   methods: {
     acceptInvitation() {
       this.$refs.memberships.refreshMembers();

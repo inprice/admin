@@ -24,7 +24,6 @@ Vue.use(Loading, {
 
 import './assets/css/main.css';
 import './assets/css/rainbow.css';
-import './mixins/common-functions'
 
 import Chart from 'chart.js'
 /* eslint-disable no-unused-vars */

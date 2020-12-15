@@ -128,7 +128,7 @@ export default {
     this.findDetails();
   },
   components: {
-    confirm: () => import('@/component/Confirm.vue')
+    Confirm: () => import('@/component/Confirm.vue')
   },
   watch: {
     '$route.path' () {
