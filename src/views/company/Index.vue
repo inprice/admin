@@ -6,7 +6,7 @@
 
     <profile />
     <users />
-    <delete-everything />
+    <delete-company />
 
   </div>
 </template>
@@ -21,7 +21,7 @@ export default {
   components: {
     Profile: () => import('./Profile'),
     Users: () => import('./Users'),
-    DeleteEverything: () => import('./DeleteEverything')
+    DeleteCompany: () => import('./DeleteCompany')
   }
 };
 </script>

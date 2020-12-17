@@ -52,7 +52,7 @@ export default {
       this.$refs.passwordConfirmDialog.open();
     },
     async confirmed(password) {
-      const result = await CompanyService.deleteEverything(password);
+      const result = await CompanyService.deleteCompany(password);
       if (result == true) {
         this.$refs.passwordConfirmDialog.close();
         this.$store.dispatch('auth/logout', false);

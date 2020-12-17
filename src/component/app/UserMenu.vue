@@ -46,12 +46,12 @@
 
       <v-card>
         <v-list subheader>
-          <div v-if="sessions.length">
+          <div v-if="sessions && sessions.length">
             <template v-for="({ email, company, role }, i) in sessions">
               <v-list-item
                 v-if="email != CURSTAT.email || company != CURSTAT.company"
                 :key="i"
-                :href="`/${i}/app/dashboard`"
+                :href="findPath(i)"
                 target="_blank"
                 @click="menu=!menu"
               >
@@ -74,7 +74,7 @@
           <v-list-item :href="`/login?m=addNew`" target="_blank">
             <v-icon class="mr-3">mdi-plus</v-icon>
             <v-list-item-content>
-              <v-list-item-subtitle>Add another account</v-list-item-subtitle>
+              <v-list-item-subtitle>Login to another company</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
@@ -110,6 +110,7 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -129,6 +130,25 @@ export default {
     },
     logout() {
       this.$store.dispatch('auth/logout', false);
+    },
+    findPath(sesNo) {
+      const session = this.sessions[sesNo];
+      const renewal = moment(session.renewalAt, 'YYYY-MM-DD').tz(session.timezone);
+      const dayDiff = renewal.diff(moment().startOf('day'), 'days');
+      const base = (session.companyStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
+      const hasTime = (dayDiff >= base && session.companyStatus != 'CANCELLED' && session.companyStatus != 'STOPPED');
+
+      let toPage = 'plans';
+      if (hasTime) {
+        if (session.productCount > 0) {
+          toPage = 'dashboard';
+        } else {
+          toPage = 'products';
+        }
+      } else {
+        toPage = 'plans';
+      }
+      return `/${sesNo}/app/${toPage}`;
     },
     prettyRemainingDays() {
       let res;

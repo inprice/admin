@@ -91,20 +91,20 @@
         </v-list-item>
 
       </v-list>
-<!--
+
       <template v-slot:append>
         <v-divider />
 
-        <v-list v-if="drawerStatus == 2">
+        <v-list v-if="drawerStatus == 2 && CURSTAT">
           <v-list-item>
             <v-list-item-content>
               <div class="subtitle font-weight-bold">{{ CURSTAT.company }}</div>
-              <span class="black--text caption">{{ CURSTAT.email }} - <span class="green--text font-weight-bold">{{ CURSTAT.role }}</span></span>
+              <span class="black--text caption">{{ CURSTAT.email }}</span>
             </v-list-item-content>
           </v-list-item>
         </v-list>
       </template>
--->
+
     </v-navigation-drawer>
 
     <!--v-app-bar app color="blue-grey" dark clipped-left -->
@@ -185,6 +185,7 @@
 
 <script>
 import ProductService from '@/service/product';
+import { get } from 'vuex-pathify'
 
 const EXC_PAGES = [
   'plans',
@@ -196,6 +197,7 @@ const EXC_PAGES = [
 
 export default {
   computed: {
+    CURSTAT: get('auth/CURRENT_STATUS'),
     isSuitableForStatusAlert() {
       return ! EXC_PAGES.includes(this.$route.name);
     }
@@ -253,7 +255,7 @@ export default {
     openProductPage(id, name) {
       this.searchTerm = name;
       if (this.$route.params.id == id) return;
-      if (window.location.href.indexOf('/product/') > 0) {
+      if (window.location.href.indexOf('/product/') > -1) {
         this.$router.replace({ params: { id } });
       } else {
         this.$router.push({ name: 'product', params: { id } });

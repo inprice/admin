@@ -1,5 +1,5 @@
 <template>
-  <v-alert type="info" color="info" text tile :value="true">
+  <v-alert type="info" color="info" text tile :value="true" :dense="dense" :elevation="dense ? 2 : 0">
     <div class="black--text">
       {{ message }}
       <slot></slot>
@@ -10,7 +10,11 @@
 <script>
 export default {
   props: {
-    message: String
+    message: String,
+    dense: {
+      default: false,
+      type: Boolean,
+    }
   }
 }
 </script>

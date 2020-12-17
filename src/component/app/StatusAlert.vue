@@ -1,52 +1,30 @@
 <template>
   <div>
 
-    <v-alert
-      v-if="CURSTAT.isFree && CURSTAT.daysToRenewal <= 7"
-      dense
-      color="cyan darken-1"
-      elevation="2"
-      type="info"
-    >
+    <block-message v-if="CURSTAT.isFree && CURSTAT.daysToRenewal <= 7" dense>
       <div class="d-flex justify-space-between">
-        <span v-if="CURSTAT.daysToRenewal <= 0">
-          Your {{ freeIndicator() }} period has ended <ago class="d-inline font-weight-bold" :date="CURSTAT.renewalAt" />.
+        <span v-if="CURSTAT.daysToRenewal == 0 || CURSTAT.daysToRenewal == 1">
+          Your {{ freeIndicator() }} is ending <strong>{{ CURSTAT.daysToRenewal == 0 ? 'TODAY' : 'TOMORROW' }}</strong>.
         </span>
-        <span v-if="CURSTAT.daysToRenewal == 1 || CURSTAT.daysToRenewal == 2">
-          Your {{ freeIndicator() }} period will be ending <strong>{{ CURSTAT.renewalAt | formatUSDate }}</strong>.
-        </span>
-        <span v-if="CURSTAT.daysToRenewal > 2">
+        <span v-else>
           You've started {{ freeIndicator() }} period <ago class="d-inline font-weight-bold" :date="CURSTAT.renewalAt" />.
-          There are only {{ CURSTAT.daysToRenewal }} days left to end.
+          There are only <strong>{{ CURSTAT.daysToRenewal }} days</strong> left to end.
         </span>
         <v-btn 
           small
-          color="success"
+          color="primary"
           class="ml-3 my-auto"
           @click="$router.push( { name: 'plans' })">
             See Plans
         </v-btn>
       </div>
-    </v-alert>
+    </block-message>
 
-    <v-alert
-      v-if="CURSTAT.isSubscriber && CURSTAT.hasTime && CURSTAT.daysToRenewal < 2"
-      dense
-      color="cyan darken-1"
-      elevation="2"
-      type="info"
-    >
-      Your subscription will be renewed <strong>{{ CURSTAT.daysToRenewal == 0 ? 'today' : 'tomorrow'}}</strong>.
-    </v-alert>
+    <block-message v-if="CURSTAT.isSubscriber && CURSTAT.hasTime && CURSTAT.daysToRenewal < 2" dense>
+      Your subscription will be renewed <strong>{{ CURSTAT.daysToRenewal == 0 ? 'TODAY' : 'TOMORROW'}}</strong>.
+    </block-message>
 
-    <v-alert
-      v-if="!CURSTAT.isActive"
-      dense
-      colored-border
-      color="cyan darken-1"
-      elevation="2"
-      type="info"
-    >
+    <block-message v-if="!CURSTAT.isActive" dense>
       <div class="d-flex justify-space-between">
         <span>
           You have no active subscription right now. {{ infoForPassiveCompany() }}
@@ -58,8 +36,8 @@
           @click="$router.push( { name: 'plans' })">
             See Plans
         </v-btn>
-        </div>
-    </v-alert>
+      </div>
+    </block-message>
 
   </div>
 </template>
@@ -86,10 +64,13 @@ export default {
         if (this.CURSTAT == 'CREATED') {
           return "You can start with a free trial perid for 30 days.";
         } else {
-          return "Would you like to subscribe a plan to start monitoring?";
+          return "Would you like to subscribe a plan?";
         }
       } 
     }
+  },
+  components: {
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 }
 </script>

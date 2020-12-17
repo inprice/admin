@@ -69,10 +69,10 @@
         <div class="pt-4 px-1 text-center d-flex" :class="{'pb-4': ix==plansSets.length-1}" :key="ix">
           <v-hover v-for="plan in plansSet" :key="plan.id">
             <template v-slot="{ hover }">
-              <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisPlanSelected(plan.id) ? 'rainbow' : ''}`">
+              <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisSelected(plan.id) ? 'rainbow' : ''}`">
                 <div class="headline grey lighten-4 elevation-1 py-2 ">
                   <div class="title teal--text darken-5 text-uppercase">
-                    <v-icon color="red darken-2" v-if="isThisPlanSelected(plan.id)">mdi-checkbox-marked-circle</v-icon>
+                    <v-icon color="red darken-2" v-if="isThisSelected(plan.id)">mdi-checkbox-marked-circle</v-icon>
                     {{ plan.name.replace(' Plan', '') }}
                   </div>
 
@@ -295,7 +295,7 @@ export default {
       return '$' + plan.price.toFixed(2);
     },
     secondTitleRow(plan) {
-      if (this.isThisPlanSelected(plan.id)) {
+      if (this.isThisSelected(plan.id)) {
         if (this.CURSTAT.daysToRenewal > 0)
           return this.$options.filters.formatUSDate(this.CURSTAT.renewalAt) + ' - ' + this.CURSTAT.daysToRenewal + ' days left';
         else
@@ -303,7 +303,7 @@ export default {
       }
       return 'per month';
     },
-    isThisPlanSelected(planId) {
+    isThisSelected(planId) {
       return (this.CURSTAT.isActive && this.CURSTAT.planId == planId);
     },
     prettyRemainingDaysForFree() {
@@ -313,7 +313,7 @@ export default {
       else if (this.CURSTAT.daysToRenewal == 1) 
         res = 'TOMORROW!';
       else
-        res = 'IN ' + this.CURSTAT.daysToRenewal + ' DAYS!';
+        res = 'in ' + this.CURSTAT.daysToRenewal + ' DAYS!';
       return res;
     },
   },

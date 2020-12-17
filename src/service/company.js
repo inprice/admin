@@ -12,7 +12,7 @@ export default {
 
   async create(form) {
     const res = await Helper.call('Create Company', { method: 'post', url: baseURL, data: form });
-    return res.status;
+    return res && res.status;
   },
 
   async update(form) {
@@ -20,7 +20,7 @@ export default {
     return res.status;
   },
 
-  async deleteEverything(password) {
+  async deleteCompany(password) {
     const res = await Helper.call('Delete Company', { method: 'put', url: baseURL + '/delete', data: { value: password }});
     return res.status;
   }

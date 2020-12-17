@@ -128,15 +128,15 @@ export default {
         this.loading = true;
 
         if (this.isInsert) {
-          const result = await CompanyService.create(this.form);
-          if (result == true) {
+          const res = await CompanyService.create(this.form);
+          if (res == true) {
             this.$store.commit('snackbar/setMessage', { text: 'Successfull, you will be able to work with new company after sign in again.' });
             this.close();
             return;
           }
         } else {
-          const result = await CompanyService.update(this.form);
-          if (result == true) {
+          const res = await CompanyService.update(this.form);
+          if (res == true) {
             this.$store.set('auth/COMPANY_INFO', this.form);
             this.close();
             return;
