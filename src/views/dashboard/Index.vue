@@ -5,7 +5,7 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-right" v-if="report.company && CURSTAT.isActive">
+      <div class="text-right" v-if="report.account && CURSTAT.isActive">
         <span class="caption mr-2">{{ report.date }}</span>
         <v-btn small color="success" @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
@@ -210,8 +210,8 @@ export default {
     async refresh() {
       const result = await DashboardService.refresh();
       this.report = result.data;
-      if (this.report && this.report.company.renewalAt) {
-        this.report.company.daysToRenewal = moment(this.report.company.renewalAt).diff(moment(), 'days')+1;
+      if (this.report && this.report.account.renewalAt) {
+        this.report.account.daysToRenewal = moment(this.report.account.renewalAt).diff(moment(), 'days')+1;
       }
 
       if (this.report && this.report.products && this.report.products.positionDists) {

@@ -82,7 +82,7 @@ export default {
         const result = await AuthService.completeRegistration(this.form.code.replaceAll('-', ''));
         if (result == true) {
           this.$router.push({ name: 'plans', params: { sid: 0 } });
-          this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your company.' });
+          this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your account.' });
           return;
         }
         this.loading = false;

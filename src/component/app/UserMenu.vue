@@ -17,7 +17,7 @@
         <v-icon large class="pt-4">mdi-account-check</v-icon>
         <v-list-item two-line class="pt-0">
           <v-list-item-content class="pt-2">
-            <v-list-item-title class="title">{{ CURSTAT.company }}</v-list-item-title>
+            <v-list-item-title class="title">{{ CURSTAT.account }}</v-list-item-title>
             <v-list-item-subtitle class="my-2">
               <v-chip outlined class="font-weight-medium" v-if="CURSTAT.isActive">
                 {{ CURSTAT.planName }}
@@ -47,9 +47,9 @@
       <v-card>
         <v-list subheader>
           <div v-if="sessions && sessions.length">
-            <template v-for="({ email, company, role }, i) in sessions">
+            <template v-for="({ email, account, role }, i) in sessions">
               <v-list-item
-                v-if="email != CURSTAT.email || company != CURSTAT.company"
+                v-if="email != CURSTAT.email || account != CURSTAT.account"
                 :key="i"
                 :href="findPath(i)"
                 target="_blank"
@@ -58,7 +58,7 @@
                 <v-icon class="mr-3">mdi-account-arrow-right-outline</v-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title>{{ company }}</v-list-item-title>
+                  <v-list-item-title>{{ account }}</v-list-item-title>
                   <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
                 </v-list-item-content>
 
@@ -74,7 +74,7 @@
           <v-list-item :href="`/login?m=addNew`" target="_blank">
             <v-icon class="mr-3">mdi-plus</v-icon>
             <v-list-item-content>
-              <v-list-item-subtitle>Login to another company</v-list-item-subtitle>
+              <v-list-item-subtitle>Login to another account</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
@@ -135,8 +135,8 @@ export default {
       const session = this.sessions[sesNo];
       const renewal = moment(session.renewalAt, 'YYYY-MM-DD').tz(session.timezone);
       const dayDiff = renewal.diff(moment().startOf('day'), 'days');
-      const base = (session.companyStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
-      const hasTime = (dayDiff >= base && session.companyStatus != 'CANCELLED' && session.companyStatus != 'STOPPED');
+      const base = (session.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
+      const hasTime = (dayDiff >= base && session.accountStatus != 'CANCELLED' && session.accountStatus != 'STOPPED');
 
       let toPage = 'plans';
       if (hasTime) {

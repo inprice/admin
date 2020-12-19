@@ -21,9 +21,9 @@
             >
               <v-text-field
                 autofocus
-                label="Company Name"
-                v-model="form.companyName"
-                :rules="rules.companyName"
+                label="Account Name"
+                v-model="form.accountName"
+                :rules="rules.accountName"
                 type="text"
                 maxlength="70"
               />
@@ -97,7 +97,7 @@ export default {
       rules: {},
       form: {
         email: '',
-        companyName: '',
+        accountName: '',
         password: '',
         repeatPassword: ''
       },
@@ -120,9 +120,9 @@ export default {
     },
     activateRules() {
       this.rules = {
-        companyName: [
-          v => !!v || "Company name is required",
-          v => (v.length >= 3 && v.length <= 70) || "Company name must be between 3-70 chars"
+        accountName: [
+          v => !!v || "Account name is required",
+          v => (v.length >= 3 && v.length <= 70) || "Account name must be between 3-70 chars"
         ],
         email: [
           v => !!v || "E-mail is required",

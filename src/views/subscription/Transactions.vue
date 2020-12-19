@@ -4,7 +4,7 @@
       <v-icon class="mr-4">mdi-clipboard-list-outline</v-icon>
       <div class="col pa-0">
         <div>Transactions</div>
-        <div class="caption float-left">The list of operations in this company.</div>
+        <div class="caption float-left">The list of operations in this account.</div>
       </div>
     </v-card-title>
 

@@ -60,6 +60,8 @@ const mutations = {
   REFRESH_SESSION(state, ses) {
     state.session = ses;
     state.sessions[state.sessionNo] = ses;
+    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
+    loginChannel.postMessage(state.sessions);
   },
 
   REFRESH_SESSIONS(state, data) {
@@ -87,8 +89,8 @@ const mutations = {
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
   },
 
-  SET_COMPANY_INFO(state, data) {
-    state.session.company = data.name;
+  SET_ACCOUNT_INFO(state, data) {
+    state.session.account = data.name;
     state.session.currencyFormat = data.currencyFormat;
     state.sessions[state.sessionNo] = state.session;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.sessions));
@@ -96,7 +98,7 @@ const mutations = {
 */
 }
 
-const ACTIVE_COMPANY_STATUSES = [
+const ACTIVE_ACCOUNT_STATUSES = [
   'FREE',
   'COUPONED',
   'SUBSCRIBED'
@@ -129,8 +131,8 @@ const getters = {
         isFree : false,
         hasTime : false,
         daysToRenewal : 0,
-        company: state.session.company,
-        status: state.session.companyStatus,
+        account: state.session.account,
+        status: state.session.accountStatus,
         planId: state.session.planId,
         planName: state.session.planName,
         renewalAt: state.session.renewalAt,
@@ -145,8 +147,8 @@ const getters = {
       if (state.session.renewalAt) {
         const renewal = moment(state.session.renewalAt, 'YYYY-MM-DD').tz(state.session.timezone);
         const dayDiff = renewal.diff(moment().startOf('day'), 'days');
-        const base = (state.session.companyStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
-        const value = (dayDiff >= base && ACTIVE_COMPANY_STATUSES.includes(state.session.companyStatus));
+        const base = (state.session.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
+        const value = (dayDiff >= base && ACTIVE_ACCOUNT_STATUSES.includes(state.session.accountStatus));
         stat.isActive = value;
         stat.isSubscriber = (value && base < 0);
         stat.isFree = (value && stat.isSubscriber == false);

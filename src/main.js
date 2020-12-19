@@ -14,14 +14,6 @@ Vue.config.productionTip = false
 
 Filters(Vue);
 
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
-Vue.use(Loading, {
-  color: '#FF3800',
-  width: 48,
-  backgroundColor: '#f0f0f0'
-});
-
 import './assets/css/main.css';
 import './assets/css/rainbow.css';
 

@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="title pl-1 mb-2">
-      {{ CURSTAT.company }} Settings
+      {{ CURSTAT.account }} Settings
     </div>
 
     <profile />
     <users />
-    <delete-company />
+    <delete-account />
 
   </div>
 </template>
@@ -21,7 +21,7 @@ export default {
   components: {
     Profile: () => import('./Profile'),
     Users: () => import('./Users'),
-    DeleteCompany: () => import('./DeleteCompany')
+    DeleteAccount: () => import('./DeleteAccount')
   }
 };
 </script>

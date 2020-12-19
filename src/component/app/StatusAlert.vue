@@ -27,7 +27,7 @@
     <block-message v-if="!CURSTAT.isActive" dense>
       <div class="d-flex justify-space-between">
         <span>
-          You have no active subscription right now. {{ infoForPassiveCompany() }}
+          You have no active subscription right now. {{ infoForPassiveAccount() }}
         </span>
         <v-btn 
           small
@@ -57,7 +57,7 @@ export default {
         return 'coupon';
       }
     },
-    infoForPassiveCompany() {
+    infoForPassiveAccount() {
       if (this.CURSTAT.hasProduct) {
         return "You need to start a subscription to continue monitoring.";
       } else {

@@ -5,7 +5,7 @@
         <v-icon class="mr-4">mdi-account-plus-outline</v-icon>
         <div>
           <div>Invitations</div>
-          <div class="caption">You manage your recieved invitations here to join other companies</div>
+          <div class="caption">You manage your recieved invitations here to join other accounts</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -32,7 +32,7 @@
           <template v-slot:default>
             <thead>
               <tr>
-                <th>Company</th>
+                <th>Account</th>
                 <th width="5%" class="text-center">Role</th>
                 <th width="20%" class="text-center">Date</th>
                 <th width="24%" class="text-center">Action</th>
@@ -40,7 +40,7 @@
             </thead>
             <tbody>
               <tr v-for="inv in invitations" :key="inv.id">
-                <td>{{ inv.company }}</td>
+                <td>{{ inv.account }}</td>
                 <td class="text-center">{{ inv.role }}</td>
                 <td class="text-center">
                   <ago :date="inv.date" />
@@ -51,7 +51,7 @@
                     class="mx-2"
                     :loading="loading.reject" 
                     :disabled="loading.reject"
-                    @click="reject(inv.id, inv.company)"
+                    @click="reject(inv.id, inv.account)"
                   >
                     Reject
                   </v-btn>
@@ -75,7 +75,7 @@
 
         <p class="caption py-4">
           <v-icon class="mx-2">mdi-alert-circle-outline</v-icon>
-          Please note: You will be able to see all accepted companies after login again.
+          Please note: You will be able to see all accepted accounts after login again.
         </p>
 
       </div>
@@ -126,8 +126,8 @@ export default {
       }
       this.loading.accept = false;
     },
-    async reject(id, company) {
-      this.$refs.confirm.open('Reject', 'You are about to reject the invitation of ' + company + '. Are you sure?').then(async (confirm) => {
+    async reject(id, account) {
+      this.$refs.confirm.open('Reject', 'You are about to reject the invitation of ' + account + '. Are you sure?').then(async (confirm) => {
         if (confirm == true) {
           this.loading.reject = true;
           const result = await UserService.rejectInvitation(id);

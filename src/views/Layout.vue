@@ -70,23 +70,23 @@
             <v-list-item-title>User Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'company-settings'}" v-if="$store.get('auth/IS_ADMIN')">
+        <v-list-item link :to="{name: 'account-settings'}" v-if="$store.get('auth/IS_ADMIN')">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Company Settings</v-list-item-title>
+            <v-list-item-title>Account Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
         <v-divider inset></v-divider>
 
-        <v-list-item @click="openCreateCompany">
+        <v-list-item @click="openCreateAccount">
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Create a New Company</v-list-item-title>
+            <v-list-item-title>Add a New Account</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -98,7 +98,7 @@
         <v-list v-if="drawerStatus == 2 && CURSTAT">
           <v-list-item>
             <v-list-item-content>
-              <div class="subtitle font-weight-bold">{{ CURSTAT.company }}</div>
+              <div class="subtitle font-weight-bold">{{ CURSTAT.account }}</div>
               <span class="black--text caption">{{ CURSTAT.email }}</span>
             </v-list-item-content>
           </v-list-item>
@@ -178,7 +178,7 @@
       </v-responsive>
     </v-main>
 
-    <CompanyInfoDialog ref="companyInfoDialog"/>
+    <AccountInfoDialog ref="accountInfoDialog"/>
 
   </v-app>
 </template>
@@ -245,8 +245,8 @@ export default {
         }
       }
     },
-    openCreateCompany() {
-      this.$refs.companyInfoDialog.edit(null, true);
+    openCreateAccount() {
+      this.$refs.accountInfoDialog.edit(null, true);
     },
     clearSearchTerm() {
       this.searchTerm = '';
@@ -265,7 +265,7 @@ export default {
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),
     StatusAlert: () => import('@/component/app/StatusAlert.vue'),
-    CompanyInfoDialog: () => import('./company/CompanyInfo.vue')
+    AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
 };
 </script>

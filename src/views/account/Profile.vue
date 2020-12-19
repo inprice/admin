@@ -5,7 +5,7 @@
         <v-icon class="mr-4">mdi-home-city-outline</v-icon>
         <div>
           <div>Profile</div>
-          <div class="caption">You can edit your company profile here using actions buttons placed on the right</div>
+          <div class="caption">You can edit your account profile here using actions buttons placed on the right</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -13,7 +13,7 @@
         <v-btn 
           small 
           color="warning"
-          @click="openCompanyInfoDialog">
+          @click="openAccountInfoDialog">
             Edit
         </v-btn>
        </v-card-title>
@@ -25,7 +25,7 @@
           <tbody>
             <tr>
               <td class="prop-name">Title</td>
-              <td><v-text-field solo dense readonly hide-details="true" v-model="CURSTAT.company" /></td>
+              <td><v-text-field solo dense readonly hide-details="true" v-model="CURSTAT.account" /></td>
             </tr>
             <tr>
               <td class="prop-name">Format</td>
@@ -37,28 +37,28 @@
 
     </v-card>
 
-    <CompanyInfoDialog ref="companyInfoDialog"/>
+    <AccountInfoDialog ref="accountInfoDialog"/>
   </div>
 </template>
 
 <script>
 import { get } from 'vuex-pathify'
-import CompanyService from '@/service/company';
+import AccountService from '@/service/account';
 
 export default {
   computed: {
     CURSTAT: get('auth/CURRENT_STATUS')
   },
   methods: {
-    async openCompanyInfoDialog() {
-      const result = await CompanyService.get();
+    async openAccountInfoDialog() {
+      const result = await AccountService.get();
       if (result) {
-        this.$refs.companyInfoDialog.edit(result, false);
+        this.$refs.accountInfoDialog.edit(result, false);
       }
     },
   },
   components: {
-    CompanyInfoDialog: () => import('./CompanyInfo.vue')
+    AccountInfoDialog: () => import('./AccountInfo.vue')
   }
 }
 </script>

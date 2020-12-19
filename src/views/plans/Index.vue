@@ -58,7 +58,7 @@
 
         <block-message 
           v-if="CURSTAT.isActive == false"
-          :message="'Your last subscription has been ' + CURSTAT.status.toLowerCase()"
+          :message="'This account has been ' + CURSTAT.status.toLowerCase()"
         >
           <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
         </block-message>
@@ -154,6 +154,7 @@
         <v-icon class="mr-2">mdi-alert-circle-outline</v-icon>
         <div>
           <div>Please keep in mind</div>
+          <div class="subtitle-2">For only subscribers!</div>
         </div>
       </v-card-title>
 
@@ -161,17 +162,16 @@
 
       <div class="pa-3">
 
-        <div class="my-2 black--text">Before choosing a plan</div>
+        <div class="my-2 teal--text font-weight-medium">Before choosing a plan</div>
         <ul class="ml-4">
           <li>Please select one of them which suits most your needs.</li>
           <li>All the plans displaying in this page are in monthly subscription model.</li>
           <li>And all the prices are in US dollar currency.</li>
-          <li>You can cancel your actual plan whenever you want <strong class="text-decoration-underline red--text">but no refund!</strong></li>
         </ul>
 
         <v-divider class="my-3"></v-divider>
 
-        <div class="my-2 black--text">Want to change payment method</div>
+        <div class="my-2 teal--text font-weight-medium">Want to change payment method</div>
         <ul class="ml-4">
           <li>Please cancel your actual plan first.</li>
           <li>Then subscribe it again with your new payment instrument.</li>
@@ -179,24 +179,58 @@
 
         <v-divider class="my-3"></v-divider>
 
-        <div class="my-2 black--text">Want to change your plan</div>
+        <div class="my-2 teal--text font-weight-medium">Want to change your actual plan</div>
         <ol class="ml-4">
-          <li>If you wish to downgrade or upgrade, please cancel your actual plan first.</li>
-          <li>Then select new plan. In this way, you will not face any extra cost.</li>
-          <li>The remaining days from cancelled plan will be added on top of new plan's starting day.</li>
-          <li>Existing product count in your account is important indicator. Please consider followings;</li>
-          <li>If your product count is less than or equal to new plan's limit, no problem. You can pass and use new plan.</li>
-          <li>Otherwise, ie. your product count is greater than new plan's limit, please do one of the followings
+          <li>You are completely free to either downgrade or upgrade whenever you want.</li>
+          <li>You see three types of buttons under each plan box above;
             <ul>
-              <li>You can select a broader plan</li>
-              <li>Or delete some of your products before transition.</li>
+              <li><strong>DOWNGRADE</strong>: You can downgrade to this plan.</li>
+              <li><strong>CANCEL</strong>: You can cancel your actual subscription.</li>
+              <li><strong>UPGRADE</strong>: You can upgrade to this plan.</li>
+            </ul>
+          </li>
+          <li>For upgrading, a proportional invoice (taking into the remaining days) will be created for the difference between two plans.</li>
+          <li>For downgrading, 
+            <ul>
+              <li>you will be allowed when your account's product count equal or less than new plan.</li>
+              <li>if there are more than three days to renewal from your actual plan, we will issue a coupon to compensate those days.</li>
             </ul>
           </li>
         </ol>
+
+        <v-divider class="my-3"></v-divider>
+
+        <div class="my-2 teal--text font-weight-medium">After cancelling</div>
+        <ul class="ml-4">
+          <li>Your feedbacks are always very important to us, please let us know the reason.</li>
+          <li>Please note that: there is <span class="red--text font-weight-bold">no refund for cancel!</span></li>
+          <li>If you have an active subscription and there is more than three days to renewal, 
+            <ul>
+              <li>Instead, we will issue a coupon for you to compensate those days.</li>
+              <li>You (or your friends) can use those coupons whenever you want.</li>
+            </ul>
+          </li>
+        </ul>
+
       </div>
     </v-card>
 
     <confirm ref="confirm"></confirm>
+
+    <v-overlay :value="loading.overlay">
+      <v-card>
+        <div style="background-color: white; width: 300px" class="my-auto pa-5">
+          <v-progress-circular
+            indeterminate
+            size="40"
+            class="ml-2"
+            color="grey darken-1"
+          ></v-progress-circular>
+          <h3 class="d-inline subtitle-1 black--text ml-5">Please wait, loading...</h3>
+        </div>
+      </v-card>
+    </v-overlay>
+    
   </div>
 
 </template>
@@ -211,6 +245,7 @@ export default {
   data() {
     return {
       loading: {
+        overlay: false,
         tryFreeUse: false,
       },
     }
@@ -235,13 +270,13 @@ export default {
       });
     },
     async subscribe(planId) {
-      const loader = this.$loading.show();
+      this.loading.overlay = true;
       const result = await SubsService.createCheckout(planId);
       if (result.status == true) {
         stripe.redirectToCheckout({
           sessionId: result.data.sessionId
         }).then(function (result) {
-          loader.hide();
+          this.loading.overlay = false;
           if (result.error && result.error.message) {
             this.$store.commit('snackbar/setMessage', { text: result.error.message, level: 'error' });
           } else {
@@ -249,22 +284,31 @@ export default {
           }
         });
       } else {
-        loader.hide();
+        this.loading.overlay = false;
       }
     },
     async changeTo(planId) {
       const dir = (planId > this.CURSTAT.planId ? 'UPGRADED' : 'DOWNGRADED');
-      this.$refs.confirm.open('Change Plan', 'will be '+dir+'. Are you sure?', 
-        'Your actual plan').then(async (confirm) => {
+      this.$refs.confirm.open('Change Plan', 'will be '+dir+'. Are you sure?', 'Your actual plan').then(async (confirm) => {
         if (confirm == true) {
-          const loader = this.$loading.show();
+          this.loading.overlay = true;
           const res = await SubsService.changeTo(planId);
           if (res.status == true) {
-            loader.hide();
-            this.$store.commit('auth/REFRESH_SESSION', res.data.session);
-            this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been changed.' });
+
+            let retry = 0;
+            const refreshId = setInterval(() => {
+              this.$store.dispatch('auth/refreshSession'); 
+              if (this.CURSTAT.planId == planId || retry >= 5) {
+                clearInterval(refreshId);
+                this.loading.overlay = false;
+                this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been successfully ' + dir });
+              }
+              retry++;
+            }, 1000);
+
+          } else {
+            this.loading.overlay = false;
           }
-          loader.hide();
         }
       });
     },
@@ -272,13 +316,13 @@ export default {
       this.$refs.confirm.open('Cancel Subscription', 'will be cancelled. Are you sure?', 
         'Your actual subscription').then(async (confirm) => {
         if (confirm == true) {
-          const loader = this.$loading.show();
+          this.loading.overlay = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
             this.$store.commit('auth/REFRESH_SESSION', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
-          loader.hide();
+          this.loading.overlay = false;
         }
       });
     },
