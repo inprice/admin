@@ -5,7 +5,7 @@
         <v-icon class="mr-4">mdi-account-supervisor</v-icon>
         <div>
           <div>Memberships</div>
-          <div class="caption">All the companies you have been joined are listed in this section.</div>
+          <div class="caption">All the accounts you have been joined are listed in this section.</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -32,7 +32,7 @@
           <template v-slot:default>
             <thead>
               <tr>
-                <th>Company</th>
+                <th>Account</th>
                 <th width="5%" class="text-center">Role</th>
                 <th width="20%" class="text-center">Date</th>
                 <th width="12%" class="text-center">Action</th>
@@ -51,7 +51,7 @@
                     small
                     :loading="loading.leave" 
                     :disabled="loading.leave"
-                    @click="leave(mem.id, mem.company)"
+                    @click="leave(mem.id, mem.account)"
                   >
                     Leave
                   </v-btn>
@@ -67,12 +67,12 @@
 
         <p class="caption py-4">
           <v-icon class="mx-2">mdi-alert-circle-outline</v-icon>
-          Please note: If you leave from any company, you will be able to see the refreshed menu after login again.
+          Please note: If you leave from any account, you will be able to see the refreshed menu after login again.
         </p>
 
       </div>
 
-      <no-data 
+      <block-message 
         v-else 
         :message="'You have no member right now.'"
       />
@@ -109,8 +109,8 @@ export default {
       }
       this.loading.refresh = false;
     },
-    async leave(id, company) {
-      this.$refs.confirm.open('Leave', 'You are about to leave from ' + company + '. Are you sure?').then(async (confirm) => {
+    async leave(id, account) {
+      this.$refs.confirm.open('Leave', 'You are about to leave from ' + account + '. Are you sure?').then(async (confirm) => {
         if (confirm == true) {
           this.loading.leave = true;
           const result = await UserService.leaveMember(id);
@@ -126,8 +126,8 @@ export default {
     });
   },
   components: {
-    NoData: () => import('@/component/simple/NoData.vue'),
-    confirm: () => import('@/component/Confirm.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
   }
 }
 </script>

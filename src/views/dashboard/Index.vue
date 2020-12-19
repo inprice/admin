@@ -5,7 +5,7 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-right" v-if="report.company && hasCompanyActiveStatus(report.company.subsStatus, report.company.daysToRenewal)">
+      <div class="text-right" v-if="report.account && CURSTAT.isActive">
         <span class="caption mr-2">{{ report.date }}</span>
         <v-btn small color="success" @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
@@ -188,6 +188,8 @@
 </template>
 
 <script>
+import { get } from 'vuex-pathify'
+
 import DashboardService from '@/service/dashboard';
 import moment from 'moment-timezone';
 
@@ -201,12 +203,15 @@ export default {
       }
     };
   },
+  computed: {
+    CURSTAT: get('auth/CURRENT_STATUS'),
+  },
   methods: {
     async refresh() {
       const result = await DashboardService.refresh();
       this.report = result.data;
-      if (this.report && this.report.company.subsRenewalAt) {
-        this.report.company.daysToRenewal = moment(this.report.company.subsRenewalAt).diff(moment(), 'days')+1;
+      if (this.report && this.report.account.renewalAt) {
+        this.report.account.daysToRenewal = moment(this.report.account.renewalAt).diff(moment(), 'days')+1;
       }
 
       if (this.report && this.report.products && this.report.products.positionDists) {

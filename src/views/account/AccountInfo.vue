@@ -3,10 +3,10 @@
 
     <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
       <v-card>
-        <v-card-title>{{ isInsert ? 'New company' : 'Company info' }}</v-card-title>
+        <v-card-title>{{ isInsert ? 'New account' : 'Account info' }}</v-card-title>
 
         <v-card-subtitle class="pb-0" v-if="isInsert">
-          You will be able to see new company after sign in again.
+          You will be able to see new account after sign in again.
         </v-card-subtitle>
         <v-divider></v-divider>
 
@@ -98,7 +98,7 @@
 
 <script>
 import ApiService from '@/service/api';
-import CompanyService from '@/service/company';
+import AccountService from '@/service/account';
 
 import numFormatter from 'number-format.js';
 import currencyNames from '@/data/currency-names';
@@ -128,16 +128,16 @@ export default {
         this.loading = true;
 
         if (this.isInsert) {
-          const result = await CompanyService.create(this.form);
-          if (result == true) {
-            this.$store.commit('snackbar/setMessage', { text: 'Successfull, you will be able to work with new company after sign in again.' });
+          const res = await AccountService.create(this.form);
+          if (res == true) {
+            this.$store.commit('snackbar/setMessage', { text: 'Successfull, you will be able to work with new account after sign in again.' });
             this.close();
             return;
           }
         } else {
-          const result = await CompanyService.update(this.form);
-          if (result == true) {
-            this.$store.set('auth/COMPANY_INFO', this.form);
+          const res = await AccountService.update(this.form);
+          if (res == true) {
+            this.$store.set('auth/ACCOUNT_INFO', this.form);
             this.close();
             return;
           }
@@ -172,7 +172,7 @@ export default {
       } else {
         this.form.name = '';
         if (!this.form.currencyCode) {
-          ApiService.get('/company/geo')
+          ApiService.get('/account/geo')
             .then((res) => {
               if (!this.form.currencyCode) this.form.currencyCode = res.data.data.currencyCode;
               if (!this.form.currencyFormat) this.form.currencyFormat = currencyFormats[this.form.currencyCode];

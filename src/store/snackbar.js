@@ -1,13 +1,24 @@
 const state = {
   text: '',
-  color: 'info'
+  color: 'info',
+  level: 'info',
 };
 
 const mutations = {
 
   setMessage(state, message) {
     state.text = message.text;
-    state.color = (message.color ? message.color : 'cyan darken-2');
+    if (message.level) state.level = message.level;
+    switch (message.level) {
+      case 'error': {
+        state.color = 'red';
+        break;
+      }
+      default: {
+        state.color = 'cyan darken-2';
+        break;
+      }
+    }
   }
 
 };

@@ -4,19 +4,22 @@
     <v-dialog v-model="opened" max-width="350" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Please enter your password</v-card-title>
+        <v-card-subtitle>Last confirmation</v-card-subtitle>
+
         <v-divider></v-divider>
 
         <v-card-text class="mt-5">
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
               autofocus
               label="Password"
               v-model="form.password"
               :rules="rules.password"
-              :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPass ? 'text' : 'password'"
-              @click:append="showPass = !showPass"
+              type="text"
               maxlength="16"
+              class="password-wo-help"
+              autocomplete="new-password"
+              @keyup.native.enter="valid && submit()"
             />
           </v-form>
         </v-card-text>
@@ -44,7 +47,6 @@
 export default {
   data() {
     return {
-      showPass: false,
       opened: false,
       loading: false,
       valid: false,
@@ -67,13 +69,16 @@ export default {
       this.rules = {
         password: [
           v => !!v || "Required",
-          v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => (v && v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
         ],
       }
     },
     open() {
       this.opened = true;
-      this.$nextTick(() => this.$refs.form.resetValidation());
+      this.form.password = null;
+      this.$nextTick(() => {
+        this.$refs.form.resetValidation()
+      });
     },
     stopLoading() {
       this.loading = false;

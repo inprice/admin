@@ -76,7 +76,7 @@ export default {
     Edit: () => import('./Edit'),
     Prices: () => import('./Prices'),
     Links: () => import('./Links'),
-    confirm: () => import('@/component/Confirm.vue')
+    Confirm: () => import('@/component/Confirm.vue')
   },
   watch: {
     '$route.path' () {

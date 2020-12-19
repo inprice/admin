@@ -70,23 +70,23 @@
             <v-list-item-title>User Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'company-settings'}" v-if="$store.get('auth/IS_ADMIN')">
+        <v-list-item link :to="{name: 'account-settings'}" v-if="$store.get('auth/IS_ADMIN')">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Company Settings</v-list-item-title>
+            <v-list-item-title>Account Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
         <v-divider inset></v-divider>
 
-        <v-list-item @click="openCreateCompany">
+        <v-list-item @click="openCreateAccount">
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Create a New Company</v-list-item-title>
+            <v-list-item-title>Add a New Account</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -95,15 +95,16 @@
       <template v-slot:append>
         <v-divider />
 
-        <v-list v-if="drawerStatus == 2">
+        <v-list v-if="drawerStatus == 2 && CURSTAT">
           <v-list-item>
             <v-list-item-content>
-              <div class="subtitle font-weight-bold">{{ session.company }}</div>
-              <span class="black--text caption">{{ session.email }} - <span class="green--text font-weight-bold">{{ session.role }}</span></span>
+              <div class="subtitle font-weight-bold">{{ CURSTAT.account }}</div>
+              <span class="black--text caption">{{ CURSTAT.email }}</span>
             </v-list-item-content>
           </v-list-item>
         </v-list>
       </template>
+
     </v-navigation-drawer>
 
     <!--v-app-bar app color="blue-grey" dark clipped-left -->
@@ -170,24 +171,21 @@
         <v-container>
 
           <!-- Alert box for FREE status -->
-          <status-alert 
-            v-if="isSuitableForStatusAlert"
-            :session="session" 
-          />
+          <status-alert v-if="isSuitableForStatusAlert" />
 
           <router-view></router-view>
         </v-container>
       </v-responsive>
     </v-main>
 
-    <CompanyInfoDialog ref="companyInfoDialog"/>
+    <AccountInfoDialog ref="accountInfoDialog"/>
 
   </v-app>
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
 import ProductService from '@/service/product';
+import { get } from 'vuex-pathify'
 
 const EXC_PAGES = [
   'plans',
@@ -199,7 +197,7 @@ const EXC_PAGES = [
 
 export default {
   computed: {
-    session: get('auth/session'),
+    CURSTAT: get('auth/CURRENT_STATUS'),
     isSuitableForStatusAlert() {
       return ! EXC_PAGES.includes(this.$route.name);
     }
@@ -247,8 +245,8 @@ export default {
         }
       }
     },
-    openCreateCompany() {
-      this.$refs.companyInfoDialog.edit(null, true);
+    openCreateAccount() {
+      this.$refs.accountInfoDialog.edit(null, true);
     },
     clearSearchTerm() {
       this.searchTerm = '';
@@ -257,7 +255,7 @@ export default {
     openProductPage(id, name) {
       this.searchTerm = name;
       if (this.$route.params.id == id) return;
-      if (window.location.href.indexOf('/product/') > 0) {
+      if (window.location.href.indexOf('/product/') > -1) {
         this.$router.replace({ params: { id } });
       } else {
         this.$router.push({ name: 'product', params: { id } });
@@ -267,7 +265,7 @@ export default {
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),
     StatusAlert: () => import('@/component/app/StatusAlert.vue'),
-    CompanyInfoDialog: () => import('./company/CompanyInfo.vue')
+    AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
 };
 </script>

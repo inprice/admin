@@ -5,14 +5,14 @@
     </div>
 
     <v-card class="mt-2">
-      <v-card-title class="pb-0">
+      <v-card-title>
         <v-icon class="mr-4">mdi-text-box-check-outline</v-icon>
         <div class="col pa-0 d-flex justify-space-between">
           <div>
             <span>
-              Plan &amp; Billing Info
+              Billing Info
             </span>
-            <div class="caption">Your actual plan and billing info.</div>
+            <div class="caption">Your invoice header.</div>
           </div>
           <v-btn small class="my-auto" @click="refreshSession">
             Refresh Session
@@ -20,41 +20,25 @@
         </div>
       </v-card-title>
 
-      <v-btn-toggle tile :value="selectedTab" class="mt-2">
-        <v-btn @click="selectedTab=0" small>
-          Actual Plan
-        </v-btn>
-        <v-btn @click="selectedTab=1" small>
-          Invoice Header
-        </v-btn>
-      </v-btn-toggle>
-
       <v-divider></v-divider>
 
-      <v-tabs v-model="selectedTab">
-        <v-tab-item>
-          <actual-plan :session="session" />
-        </v-tab-item>
-        <v-tab-item>
-          <invoice-info v-if="session.everSubscribed == true"/>
-          <no-data v-else>
-            In order to set your invoice header, <span class="font-weight-medium">you need to subscribe first!</span>
-            <v-btn 
-              small
-              color="success"
-              class="ml-3 my-auto"
-              @click="$router.push( { name: 'plans' })">
-                See Plans
-            </v-btn>
-          </no-data>
-        </v-tab-item>
-      </v-tabs>
+      <invoice-info v-if="CURSTAT.everSubscribed == true"/>
+      <block-message v-else>
+        In order to set your invoice header, <span class="font-weight-medium">you need to subscribe first!</span>
+        <v-btn 
+          small
+          color="success"
+          class="ml-3 my-auto"
+          @click="$router.push( { name: 'plans' })">
+            See Plans
+        </v-btn>
+      </block-message>
 
     </v-card>
 
-    <coupons :status="session.companyStatus" />
+    <coupons :status="CURSTAT.status" />
 
-    <div v-if="session.companyStatus != 'NOT_SET'">
+    <div v-if="CURSTAT.status != 'CREATED'">
       <transactions :all="allTrans" :invoices="invoiceTrans" />
     </div>
 
@@ -64,13 +48,13 @@
 </template>
 
 <script>
-import SubsService from '@/service/subscription';
 import { get } from 'vuex-pathify'
+import SubsService from '@/service/subscription';
 
 export default {
   computed: {
     plans: get('system/plans'),
-    session: get('auth/session'),
+    CURSTAT: get('auth/CURRENT_STATUS'),
   },
   data() {
     return {
@@ -98,12 +82,11 @@ export default {
     });
   },
   components: {
-    ActualPlan: () => import('./ActualPlan'),
     InvoiceInfo: () => import('./InvoiceInfo'),
     Transactions: () => import('./Transactions'),
     Coupons: () => import('./Coupons'),
-    confirm: () => import('@/component/Confirm.vue'),
-    NoData: () => import('@/component/simple/NoData.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 };
 </script>

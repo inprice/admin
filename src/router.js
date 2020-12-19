@@ -159,9 +159,9 @@ const router = new VueRouter({
           component: () => import('./views/user/Index.vue')
         },
         {
-          name: 'company-settings',
-          path: 'company-settings',
-          component: () => import('./views/company/Index.vue')
+          name: 'account-settings',
+          path: 'account-settings',
+          component: () => import('./views/account/Index.vue')
         },
         {
           name: 'payment-ok',

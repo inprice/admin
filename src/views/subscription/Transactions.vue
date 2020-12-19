@@ -4,7 +4,7 @@
       <v-icon class="mr-4">mdi-clipboard-list-outline</v-icon>
       <div class="col pa-0">
         <div>Transactions</div>
-        <div class="caption float-left">The list of operations in this company.</div>
+        <div class="caption float-left">The list of operations in this account.</div>
       </div>
     </v-card-title>
 
@@ -42,7 +42,7 @@
             </tbody>
           </template>
         </v-simple-table>
-        <no-data 
+        <block-message 
           v-else 
           :message="'You have no transaction.'"
         />
@@ -69,7 +69,7 @@
             </tbody>
           </template>
         </v-simple-table>
-        <no-data 
+        <block-message 
           v-else 
           :message="'You have no invoice.'"
         />
@@ -89,7 +89,7 @@ export default {
     }
   },
   components: {
-    NoData: () => import('@/component/simple/NoData.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 };
 </script>

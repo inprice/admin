@@ -47,7 +47,7 @@
               persistent-hint
               small-chips
             >
-              <template v-slot:no-data>
+              <template v-slot:block-message>
                 <v-list-item>
                   <v-list-item-content>
                     <v-list-item-title>

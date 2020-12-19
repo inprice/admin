@@ -17,12 +17,14 @@
         <v-icon large class="pt-4">mdi-account-check</v-icon>
         <v-list-item two-line class="pt-0">
           <v-list-item-content class="pt-2">
-            <v-list-item-title class="title">{{ session.company }}</v-list-item-title>
+            <v-list-item-title class="title">{{ CURSTAT.account }}</v-list-item-title>
             <v-list-item-subtitle class="my-2">
-              <v-chip outlined class="font-weight-medium" v-if="hasCompanyActiveStatus(session.companyStatus, session.daysToRenewal)">
-                {{ session.planName }}
-                <span class="green--text mx-2">| {{ this.session.companyStatus }} |</span>
-                {{ $options.filters.formatUSDate(session.subsRenewalAt) }}
+              <v-chip outlined class="font-weight-medium" v-if="CURSTAT.isActive">
+                {{ CURSTAT.planName }}
+                <span class="green--text mx-2">| {{ CURSTAT.status }} |</span>
+                <span>
+                  {{ prettyRemainingDays() }}
+                </span>
               </v-chip>
               <v-btn
                 v-else
@@ -44,19 +46,19 @@
 
       <v-card>
         <v-list subheader>
-          <div v-if="sessions.length">
-            <template v-for="({ email, company, role }, i) in sessions">
+          <div v-if="sessions && sessions.length">
+            <template v-for="({ email, account, role }, i) in sessions">
               <v-list-item
-                v-if="email != session.email || company != session.company"
+                v-if="email != CURSTAT.email || account != CURSTAT.account"
                 :key="i"
-                :href="`/${i}/app/dashboard`"
+                :href="findPath(i)"
                 target="_blank"
                 @click="menu=!menu"
               >
                 <v-icon class="mr-3">mdi-account-arrow-right-outline</v-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title>{{ company }}</v-list-item-title>
+                  <v-list-item-title>{{ account }}</v-list-item-title>
                   <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
                 </v-list-item-content>
 
@@ -72,7 +74,7 @@
           <v-list-item :href="`/login?m=addNew`" target="_blank">
             <v-icon class="mr-3">mdi-plus</v-icon>
             <v-list-item-content>
-              <v-list-item-subtitle>Add another account</v-list-item-subtitle>
+              <v-list-item-subtitle>Login to another account</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
@@ -108,33 +110,60 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
 import { get } from 'vuex-pathify'
 
 export default {
-  name: 'UserMenu',
   data() {
     return {
       menu: false
     }
   },
   computed: {
-    session: get('auth/session'),
     sessions: get('auth/sessions'),
+    CURSTAT: get('auth/CURRENT_STATUS'),
   },
   methods: {
     openChangePasswordDialog() {
       this.menu = false;
-      this.$refs.changePasswordDialog.open(this.session.email);
+      this.$refs.changePasswordDialog.open(this.CURSTAT.email);
     },
     logout() {
       this.$store.dispatch('auth/logout', false);
     },
+    findPath(sesNo) {
+      const session = this.sessions[sesNo];
+      const renewal = moment(session.renewalAt, 'YYYY-MM-DD').tz(session.timezone);
+      const dayDiff = renewal.diff(moment().startOf('day'), 'days');
+      const base = (session.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
+      const hasTime = (dayDiff >= base && session.accountStatus != 'CANCELLED' && session.accountStatus != 'STOPPED');
+
+      let toPage = 'plans';
+      if (hasTime) {
+        if (session.productCount > 0) {
+          toPage = 'dashboard';
+        } else {
+          toPage = 'products';
+        }
+      } else {
+        toPage = 'plans';
+      }
+      return `/${sesNo}/app/${toPage}`;
+    },
+    prettyRemainingDays() {
+      let res;
+      if (this.CURSTAT.daysToRenewal < 0) 
+        res = Math.abs(this.CURSTAT.daysToRenewal) + ' days ago';
+      else if (this.CURSTAT.daysToRenewal == 0) 
+        res = 'Today';
+      else if (this.CURSTAT.daysToRenewal == 1) 
+        res = 'Tomorrow';
+      else if (this.CURSTAT.daysToRenewal < 8) 
+        res = this.CURSTAT.daysToRenewal + ' days left';
+      else
+        res = this.$options.filters.formatUSDate(this.CURSTAT.renewalAt);
+      return res;
+    }
   }
 }
 </script>
-
-<style scoped>
-  .v-btn {
-    color: #606060;
-  }
-</style>

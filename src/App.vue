@@ -3,23 +3,25 @@
 
     <v-snackbar 
       v-model="snackbar.show" 
-      :timeout="4000" 
+      :timeout="4500" 
       :color="snackbar.color"
       top
     >
-      <v-icon left>mdi-alert-circle-outline</v-icon>
+      <v-icon left>mdi-shield-alert-outline</v-icon>
       {{ snackbar.message }}
       <template v-slot:action="{ attrs }">
         <v-btn
           text
           color="white"
           v-bind="attrs"
-          @click="snackbar.show = false"
+          @click="closeSnackBar"
         >
           Close
         </v-btn>
       </template>
     </v-snackbar>
+
+    <notification ref="notification"></notification>
 
     <router-view></router-view>
 
@@ -32,6 +34,7 @@ export default {
     return {
       snackbar: {
         show: false,
+        level: 'info',
         color: 'info',
         message: ''
       }
@@ -40,17 +43,31 @@ export default {
   created() {
     this.$store.watch(state => state.snackbar.text, () => {
       if (this.$store.state.snackbar.text !== '') {
-        this.snackbar.show = true;
-        this.snackbar.message = this.$store.state.snackbar.text;
-        this.snackbar.color = this.$store.state.snackbar.color;
+        //this.snackbar.level = this.$store.state.snackbar.level;
+        //if (this.snackbar.level == 'info') {
+          this.snackbar.show = true;
+          this.snackbar.message = this.$store.state.snackbar.text;
+          this.snackbar.color = this.$store.state.snackbar.color;
+        //} else {
+        //  this.snackbar.message = this.$store.state.snackbar.text;
+        //  this.$refs.notification.open('Info', this.snackbar.message);
+        //}
         this.$store.commit('snackbar/setMessage', { text: '' });
       }
     });
+  },
+  methods: {
+    closeSnackBar() {
+      this.snackbar.show = false;
+    }
   },
   watch: {
     '$route.path' () {
       typeof window !== 'undefined' && window.scrollTo(0, 0)
     }
+  },
+  components: {
+    Notification: () => import('@/component/Notification.vue'),
   }
 }
 </script>
