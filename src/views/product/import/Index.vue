@@ -1,11 +1,14 @@
 <template>
   <div>
 
-    <div class="title">
-      Product Import
+    <div>
+      <div class="title">Product Import</div>
+      <div class="body-2">Import your product definitions as batch.</div>
     </div>
 
-    <div class="d-flex justify-space-between mt-3">
+    <v-divider class="mt-2"></v-divider>
+
+    <div class="d-flex justify-space-between mt-3" v-if="CURSTAT.isActive">
       <div class="subtitle mt-1">
         Previous import operations.
       </div>
@@ -81,7 +84,7 @@
       </div>
     </div>
 
-    <v-card class="mt-2">
+    <v-card class="mt-2" v-if="CURSTAT.isActive">
       <div v-if="rows.length">
         <v-divider></v-divider>
         <v-simple-table>
@@ -108,9 +111,22 @@
         </v-simple-table>
       </div>
 
-      <div v-else class="ml-2 py-3">
-        No import found!
-      </div>
+    </v-card>
+
+    <v-card v-else>
+      <block-message 
+        class="mt-2"
+        :message="'You are not allowed to manage your links until activate your account!'">
+
+        <v-btn 
+          small
+          color="success"
+          class="my-auto float-right"
+          @click="$router.push( { name: 'plans' })">
+            See Plans
+        </v-btn>
+
+      </block-message>
     </v-card>
 
   </div>
@@ -118,8 +134,12 @@
 
 <script>
 import ImportService from '@/service/imbort';
+import { get } from 'vuex-pathify'
 
 export default {
+  computed: {
+    CURSTAT: get('auth/CURRENT_STATUS'),
+  },
   data() {
     return {
       rows: []
@@ -130,6 +150,9 @@ export default {
       .then((res) => {
         if (res && res.data) this.rows = res.data;
       });
+  },
+  components: {
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 };
 </script>

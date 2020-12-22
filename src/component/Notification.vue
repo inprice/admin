@@ -22,7 +22,7 @@
 
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
-        <v-btn @click.native="close" color="red lighten-1" dark class="mt-3 mb-2" small>OK</v-btn>
+        <v-btn @click.native="close" color="red lighten-1" dark class="mt-3 mb-2">OK</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

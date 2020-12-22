@@ -31,18 +31,25 @@
       </div>
     </v-card>
 
-    <v-card class="mt-4 mb-2">
-      <v-card-title>
-        <v-icon class="mr-4">mdi-format-list-bulleted</v-icon>
-        <div>
-          <div>Plans table</div>
-          <div class="caption"><strong>Please note that</strong> all the prices in this table are monthly basis and in US dollar currency!</div>
+    <v-card class="my-2">
+      <v-card-title class="d-block">
+        <div class="d-flex justify-space-between">
+          <div class="d-flex">
+            <v-icon class="mr-4">mdi-format-list-bulleted</v-icon>
+            <div class="d-inline">
+              <div>Table</div>
+              <div class="caption"><strong>Please note that</strong> all the prices in this table are monthly basis and in US dollar currency!</div>
+            </div>
+          </div>
+          <v-btn small class="my-auto" @click="refreshSession">
+            Refresh Session
+          </v-btn>
         </div>
       </v-card-title>
 
         <block-message 
           v-if="CURSTAT.isFree"
-          :message="'Your actual status is ' + CURSTAT.status.toLowerCase() + ' use. It\'s ending ' + prettyRemainingDaysForFree()"
+          :message="'Your actual status is ' + CURSTAT.status.toLowerCase() + '. It\'s ending ' + prettyRemainingDaysForFree()"
         >
           You can subscribe to any plan below
           <v-btn 
@@ -69,10 +76,9 @@
         <div class="pt-4 px-1 text-center d-flex" :class="{'pb-4': ix==plansSets.length-1}" :key="ix">
           <v-hover v-for="plan in plansSet" :key="plan.id">
             <template v-slot="{ hover }">
-              <v-card class="mx-2 pa-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisSelected(plan.id) ? 'rainbow' : ''}`">
+              <v-card class="mx-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisSelected(plan.id) ? 'rainbow pa-0' : 'pa-2'}`">
                 <div class="headline grey lighten-4 elevation-1 py-2 ">
                   <div class="title teal--text darken-5 text-uppercase">
-                    <v-icon color="red darken-2" v-if="isThisSelected(plan.id)">mdi-checkbox-marked-circle</v-icon>
                     {{ plan.name.replace(' Plan', '') }}
                   </div>
 
@@ -216,20 +222,7 @@
     </v-card>
 
     <confirm ref="confirm"></confirm>
-
-    <v-overlay :value="loading.overlay">
-      <v-card>
-        <div style="background-color: white; width: 300px" class="my-auto pa-5">
-          <v-progress-circular
-            indeterminate
-            size="40"
-            class="ml-2"
-            color="grey darken-1"
-          ></v-progress-circular>
-          <h3 class="d-inline subtitle-1 black--text ml-5">Please wait, loading...</h3>
-        </div>
-      </v-card>
-    </v-overlay>
+    <overlay :show="loading.overlay" />
     
   </div>
 
@@ -360,6 +353,9 @@ export default {
         res = 'in ' + this.CURSTAT.daysToRenewal + ' DAYS!';
       return res;
     },
+    refreshSession() {
+      this.$store.dispatch('auth/refreshSession');
+    }
   },
   mounted() {
     this.$nextTick(async () => {
@@ -371,12 +367,15 @@ export default {
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
+    Overlay: () => import('@/component/app/Overlay.vue'),
   }
 };
 </script>
 
 <style scoped>
-  .selected-true {
-    border: 6px solid #00D63F;
+  .rainbow {
+    border: 7px solid transparent;
+    border-image: linear-gradient(to top left, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);  
+    border-image-slice: 1;
   }
 </style>

@@ -22,21 +22,24 @@
 
       <v-divider></v-divider>
 
-      <invoice-info v-if="CURSTAT.everSubscribed == true"/>
+      <invoice-info v-if="CURSTAT.status == 'SUBSCRIBED'"/>
+
       <block-message v-else>
-        In order to set your invoice header, <span class="font-weight-medium">you need to subscribe first!</span>
-        <v-btn 
-          small
-          color="success"
-          class="ml-3 my-auto"
-          @click="$router.push( { name: 'plans' })">
-            See Plans
-        </v-btn>
+        <div class="d-flex justify-space-between">
+          <span>
+            In order to set your invoice header, <span class="font-weight-medium">you need to have an active subscription!</span>
+          </span>
+          <v-btn 
+            small
+            color="success"
+            class="ml-3 my-auto"
+            @click="$router.push( { name: 'plans' })">
+              See Plans
+          </v-btn>
+        </div>
       </block-message>
 
     </v-card>
-
-    <coupons :status="CURSTAT.status" />
 
     <div v-if="CURSTAT.status != 'CREATED'">
       <transactions :all="allTrans" :invoices="invoiceTrans" />
@@ -48,8 +51,8 @@
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
 import SubsService from '@/service/subscription';
+import { get } from 'vuex-pathify'
 
 export default {
   computed: {
@@ -60,7 +63,6 @@ export default {
     return {
       allTrans: [],
       invoiceTrans: [],
-      coupons: [],
       selectedTab: 0
     };
   },
@@ -74,7 +76,6 @@ export default {
       SubsService.getTransactions()
         .then((res) => {
           if (res) {
-            this.coupons = res.data.coupons;
             this.allTrans = res.data.all;
             this.invoiceTrans = res.data.invoice;
           }
@@ -84,7 +85,6 @@ export default {
   components: {
     InvoiceInfo: () => import('./InvoiceInfo'),
     Transactions: () => import('./Transactions'),
-    Coupons: () => import('./Coupons'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }

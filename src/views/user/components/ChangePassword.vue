@@ -51,9 +51,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="submit"
             color="primary"
             :loading="loading" 
@@ -106,6 +105,20 @@ export default {
         this.loading = false;
       }
     },
+    open(title) {
+      this.title = title;
+      this.opened = true;
+      let self = this;
+      this.$nextTick(() => {
+        self.$refs.form.resetValidation();
+        Utility.removeTabIndexFromIconButtons(self.$el);
+      });
+    },
+    close() {
+      this.opened = false;
+      this.loading = false;
+      this.$refs.form.resetValidation();
+    },
     activateRules() {
       this.rules = {
         oldPassword: [
@@ -124,20 +137,6 @@ export default {
         ],
       }
     },
-    open(title) {
-      this.title = title;
-      this.opened = true;
-      let self = this;
-      this.$nextTick(() => {
-        self.$refs.form.resetValidation();
-        Utility.removeTabIndexFromIconButtons(self.$el);
-      });
-    },
-    close() {
-      this.opened = false;
-      this.loading = false;
-      this.$refs.form.resetValidation();
-    }
   }
 };
 </script>

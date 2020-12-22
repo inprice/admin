@@ -15,7 +15,6 @@ Vue.config.productionTip = false
 Filters(Vue);
 
 import './assets/css/main.css';
-import './assets/css/rainbow.css';
 
 import Chart from 'chart.js'
 /* eslint-disable no-unused-vars */

@@ -1,8 +1,8 @@
-import { HorizontalBar } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
 import SystemConsts from '@/data/system';
 
 export default {
-  extends: HorizontalBar,
+  extends: Bar,
   props: ['series'],
   mounted () {
     this.renderChart({

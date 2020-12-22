@@ -29,9 +29,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="submit"
             color="primary"
             :loading="loading" 
@@ -80,17 +79,6 @@ export default {
         this.loading = false;
       }
     },
-    activateRules() {
-      this.rules = {
-        name: [
-          v => !!v || "Required",
-          v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
-        ],
-        timezone: [
-          v => !!v || "Time zone is required",
-        ],
-      }
-    },
     open(data) {
       this.opened = true;
       let self = this;
@@ -103,7 +91,18 @@ export default {
       this.$refs.form.resetValidation();
       this.opened = false;
       this.loading = false;
-    }
+    },
+    activateRules() {
+      this.rules = {
+        name: [
+          v => !!v || "Required",
+          v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
+        ],
+        timezone: [
+          v => !!v || "Time zone is required",
+        ],
+      }
+    },
   }
 };
 </script>

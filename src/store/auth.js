@@ -39,6 +39,7 @@ const actions = {
   createSession({ state, commit }, res) {
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(res.data.sessions));
     state.sessionNo = res.data.sessionNo;
+    state.sessions[state.sessionNo] = res.data.sessions[state.sessionNo];
     commit('REFRESH_SESSIONS', res.data);
     loginChannel.postMessage(res.data);
   },
