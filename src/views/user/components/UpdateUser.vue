@@ -3,10 +3,12 @@
 
     <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
       <v-card>
-        <v-card-title>Update your info</v-card-title>
+        <v-card-title>Update info</v-card-title>
+        <v-card-subtitle class="pb-2">for {{ CURSTAT.email }}</v-card-subtitle>
+
         <v-divider></v-divider>
 
-        <v-card-text class="mt-5">
+        <v-card-text class="pt-2 pb-0">
           <v-form ref="form" v-model="valid">
             <v-text-field
               autofocus
@@ -49,8 +51,12 @@
 <script>
 import UserService from '@/service/user';
 import timezones from '@/data/timezones';
+import { get } from 'vuex-pathify'
 
 export default {
+  computed: {
+    CURSTAT: get('auth/CURRENT_STATUS')
+  },
   data() {
     return {
       opened: false,

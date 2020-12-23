@@ -19,7 +19,7 @@
 
     <v-card class="mt-2">
 
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-format-list-bulleted</v-icon>
         <div>The import details of your upload.</div>
       </v-card-title>

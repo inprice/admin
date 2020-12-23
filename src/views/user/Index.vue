@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="title pl-1 mb-2">
-      User Settings
+    <div>
+      <div class="title">{{ CURSTAT.user }}</div>
+      <div class="body-2">User settings and sessions info.</div>
     </div>
+
+    <v-divider class="mt-2"></v-divider>
 
     <profile />
     <invitations @accept="acceptInvitation"/>
@@ -13,7 +16,12 @@
 </template>
 
 <script>
+import { get } from 'vuex-pathify'
+
 export default {
+  computed: {
+    CURSTAT: get('auth/CURRENT_STATUS'),
+  },
   methods: {
     acceptInvitation() {
       this.$refs.memberships.refreshMembers();

@@ -53,9 +53,9 @@
 
     </div>
 
-    <p class="mt-3" v-else>
-      No product found! You can add a new one or change your criteria.
-    </p>
+    <v-card v-else >
+      <block-message :message="'No product found! You can add a new one or change your criteria.'" />
+    </v-card>
 
   </div>
 
@@ -68,6 +68,9 @@ export default {
     edit(id) {
       this.$emit('edit', id);
     },
+  },
+  components: {
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 };
 </script>

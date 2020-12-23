@@ -4,7 +4,7 @@
 
     <v-card>
       
-      <v-card-title class="pb-1">
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-finance</v-icon>
         <div>
           <div>Prices</div>

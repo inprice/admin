@@ -11,11 +11,11 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between mt-2" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="d-flex justify-space-between" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
 
-      <div class="col-10 d-flex px-1 py-0">
+      <div class="col-10 pl-0 d-flex">
         <v-text-field 
-          ref="searchField"
+          autofocus
           v-model="search.term"
           @keyup.enter.native="search"
           dense solo light
@@ -39,7 +39,7 @@
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
-            class="col-1" 
+            class="col-1 my-auto" 
             v-bind="attrs"
             v-on="on"
           >
@@ -74,7 +74,7 @@
 
     </div>
 
-    <div class="col px-1" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="col px-0 pt-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
       <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
 
       <div class="mt-3">

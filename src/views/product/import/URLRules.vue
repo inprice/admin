@@ -2,7 +2,7 @@
   <div>
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-2">mdi-format-columns</v-icon>
         <div>The rules each row in your content must match</div>
       </v-card-title>
@@ -22,7 +22,7 @@
     </v-card>
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
         <div>A valid URL list</div>
       </v-card-title>
@@ -57,7 +57,7 @@ https://www.mediamarkt.de/de/product/_samsung-galaxy-tab-a-10-1-wi-fi-2586325.ht
     font-weight: bold;
   }
   .v-card {
-    margin-top: 20px;
+    margin-top: 15px;
   }
   .v-card__title {
     padding-bottom: 10px;

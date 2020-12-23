@@ -1,11 +1,14 @@
 <template>
   <div>
-    <div class="title pl-1">
-      Plans
+    <div>
+      <div class="title">Plans</div>
+      <div class="body-2">The plans and the rules for subscription.</div>
     </div>
 
-    <v-card class="mt-2" v-if="CURSTAT.status == 'CREATED'">
-      <v-card-title>
+    <v-divider class="mt-2"></v-divider>
+
+    <v-card class="mt-3" v-if="CURSTAT.status == 'CREATED'">
+      <v-card-title class="pb-2">
         <v-icon class="mr-2">mdi-arrow-right-thin-circle-outline</v-icon>
         <div>
           <div>Free use</div>
@@ -31,8 +34,8 @@
       </div>
     </v-card>
 
-    <v-card class="my-2">
-      <v-card-title class="d-block">
+    <v-card class="my-3">
+      <v-card-title class="d-block pb-2">
         <div class="d-flex justify-space-between">
           <div class="d-flex">
             <v-icon class="mr-4">mdi-format-list-bulleted</v-icon>
@@ -47,9 +50,11 @@
         </div>
       </v-card-title>
 
+      <v-card>
         <block-message 
+          class="mb-0"
           v-if="CURSTAT.isFree"
-          :message="'Your actual status is ' + CURSTAT.status.toLowerCase() + '. It\'s ending ' + prettyRemainingDaysForFree()"
+          :message="'Your actual status is ' + CURSTAT.status + '. It\'s ending ' + prettyRemainingDaysForFree()"
         >
           You can subscribe to any plan below
           <v-btn 
@@ -63,12 +68,14 @@
           </v-btn>
         </block-message>
 
-        <block-message 
+        <block-message
+          class="mb-0" 
           v-if="CURSTAT.isActive == false"
           :message="'This account has been ' + CURSTAT.status.toLowerCase()"
         >
           <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
         </block-message>
+      </v-card>
 
       <v-divider></v-divider>
 

@@ -1,30 +1,18 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-3">
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-book-open</v-icon>
         <div>
           <div>Sessions</div>
-          <div class="caption">Other than the session(s) in this browser, all other opened sessions are listed below.</div>
+          <div class="caption">Other than the session(s) in this browser, all the opened sessions</div>
         </div>
 
         <v-spacer></v-spacer>
 
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              small icon
-              v-on="on"
-              elevation="1"
-              :loading="loading.refresh" 
-              :disabled="loading.refresh"
-              @click="getOpenedSessions"
-            >
-              <v-icon>mdi-refresh-circle</v-icon>
-            </v-btn>
-          </template>
-          <span>Refresh the list</span>
-        </v-tooltip>
+        <v-btn small @click="getOpenedSessions">
+          Refresh
+        </v-btn>
       </v-card-title>
 
       <v-divider></v-divider>
@@ -56,7 +44,7 @@
         <v-card-actions class="pt-3">
           <p class="caption mt-4">
             <v-icon class="mx-2">mdi-alert-circle-outline</v-icon>
-            Please keep in mind: if you click the button, you will terminate this session too.
+            <b>Please keep in mind</b>: if you click the button, you will terminate this session too.
           </p>
           <v-spacer></v-spacer>
           <v-btn
@@ -105,7 +93,9 @@ export default {
     async closeAllSessions() {
       this.loading.closeall = true;
       const result = await UserService.closeAllSessions();
-      if (result == true) this.sessions = [];
+      if (result == true) {
+        this.$store.dispatch('auth/logout', false);
+      }
       this.loading.closeall = false;
     }
   },

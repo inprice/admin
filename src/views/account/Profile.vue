@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="mt-3">
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-home-city-outline</v-icon>
         <div>
           <div>Profile</div>
@@ -25,7 +25,7 @@
           <tbody>
             <tr>
               <td class="prop-name">Title</td>
-              <td><v-text-field solo dense readonly hide-details="true" v-model="CURSTAT.account" /></td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="CURSTAT.account" /></td>
             </tr>
             <tr>
               <td class="prop-name">Format</td>

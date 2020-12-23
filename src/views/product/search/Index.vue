@@ -11,7 +11,7 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between mt-2" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="d-flex justify-space-between" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
 
       <div class="col-10 pl-0 d-flex">
         <v-text-field 
@@ -31,6 +31,7 @@
           fab small
           elevation="3"
           class="ml-2"
+          style="height: 100%"
           @click="addNew">
             <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -47,7 +48,7 @@
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
-            class="col-1 mr-1 my-auto"
+            class="col-1 my-auto"
             v-bind="attrs"
             v-on="on"
           >
@@ -101,8 +102,9 @@
 
     </div>
 
-    <div class="col px-1" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="col px-0 pt-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
       <list :rows="searchResult" @edit="edit" :isLoading="isListLoading" />
+
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>

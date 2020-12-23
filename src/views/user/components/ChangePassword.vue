@@ -4,11 +4,11 @@
     <v-dialog v-model="opened" max-width="350" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Change password</v-card-title>
-        <v-card-subtitle>for {{ title }}</v-card-subtitle>
+        <v-card-subtitle class="pb-2">for {{ title }}</v-card-subtitle>
 
         <v-divider></v-divider>
 
-        <v-card-text class="mt-5">
+        <v-card-text class="pt-2 pb-0">
 
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field

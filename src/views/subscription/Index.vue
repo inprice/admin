@@ -1,11 +1,14 @@
 <template>
   <div>
-    <div class="title pl-1">
-      Subscription
+    <div>
+      <div class="title">Subscription</div>
+      <div class="body-2">Your account's subscription info.</div>
     </div>
 
-    <v-card class="mt-2">
-      <v-card-title>
+    <v-divider class="mt-2"></v-divider>
+
+    <v-card class="mt-3">
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-text-box-check-outline</v-icon>
         <div class="col pa-0 d-flex justify-space-between">
           <div>

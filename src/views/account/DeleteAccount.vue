@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5">
+  <div>
     <v-card>
       <v-card-title>
         <v-icon color="red" class="mr-4">mdi-alert-decagram-outline</v-icon>

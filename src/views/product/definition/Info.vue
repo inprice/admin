@@ -2,7 +2,7 @@
   <div>
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-clipboard-edit-outline</v-icon>
         <div>{{ prod.name }}</div>
       </v-card-title>

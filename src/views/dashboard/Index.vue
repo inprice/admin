@@ -3,7 +3,7 @@
 
     <status-alert></status-alert>
 
-    <div class="d-flex mt-2 pl-1">
+    <div class="d-flex">
       <div>
         <div class="title">Dashboard</div>
         <div class="body-2">An overall information of your current status.</div>
@@ -11,11 +11,11 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-right my-auto" v-if="report.account && CURSTAT.isActive">
-        <span class="caption mr-2">{{ report.date }}</span>
-        <v-btn small color="success" @click="refresh">
+      <div class="text-center my-auto" v-if="report.account && CURSTAT.isActive">
+        <v-btn small text color="info" @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
         </v-btn>
+        <div class="caption">{{ report.date }}</div>
       </div>
     </div>
 
@@ -26,7 +26,7 @@
       <!-- Products position statuses -->
       <!-- ------------------------------- -->
       <v-card class="col" v-if="report && report.products && report.products.positionDists">
-        <v-card-title>
+        <v-card-title class="pb-2">
           <v-icon class="mr-4">mdi-layers</v-icon>
           <div class="col pa-0">
             <div>Product positions</div>
@@ -44,7 +44,7 @@
       <!-- Links status distributions -->
       <!-- -------------------------------- -->
       <v-card class="col" v-if="report && report.links && report.links.statusDists">
-        <v-card-title>
+        <v-card-title class="pb-2">
           <v-icon class="mr-4">mdi-layers-outline</v-icon>
           <div class="col pa-0">
             <div>Link statuses</div>
@@ -63,7 +63,7 @@
     <!-- MRU 25 Links -->
     <!-- ------------------ -->
     <v-card class="mt-3">
-      <v-card-title class="pa-3">
+      <v-card-title class="pa-2">
         <v-icon class="mr-4">mdi-account-search-outline</v-icon>
         <div>
           <div>Links</div>
@@ -106,7 +106,7 @@
       <!-- 10 Products having the lowest prices -->
       <!-- ------------------------------------ -->
     <v-card class="mt-3">
-      <v-card-title class="pa-3">
+      <v-card-title class="pa-2">
         <v-icon class="mr-4">mdi-arrow-down-circle-outline</v-icon>
         <div>
           <div>10 products with low prices</div>
@@ -152,7 +152,7 @@
     <!-- 10 Products having the highest prices -->
     <!-- ------------------------------------- -->
     <v-card class="mt-3">
-      <v-card-title class="pa-3">
+      <v-card-title class="pa-2">
         <v-icon class="mr-4">mdi-arrow-up-circle-outline</v-icon>
         <div>
           <div>10 Products with high prices</div>
@@ -233,9 +233,11 @@ export default {
         this.total.product = prodCount;
 
         let compCount = 0;
-        for (var j = 0; j < this.report.links.statusDists.length; j++) {
-          const comp = this.report.links.statusDists[j];
-          compCount += comp.count;
+        if (this.report.links.statusDists) {
+          for (var j = 0; j < this.report.links.statusDists.length; j++) {
+            const comp = this.report.links.statusDists[j];
+            compCount += comp.count;
+          }
         }
         this.total.link = compCount;
       }

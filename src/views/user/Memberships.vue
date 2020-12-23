@@ -1,31 +1,21 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-3">
     <v-card>
-      <v-card-title class="pb-0">
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-account-supervisor</v-icon>
         <div>
           <div>Memberships</div>
-          <div class="caption">All the accounts you have been joined are listed in this section.</div>
+          <div class="caption">All the accounts you have been joined</div>
         </div>
 
         <v-spacer></v-spacer>
 
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              small icon
-              v-on="on"
-              elevation="1"
-              :loading="loading.refresh" 
-              :disabled="loading.refresh"
-              @click="refreshMembers"
-            >
-              <v-icon>mdi-refresh-circle</v-icon>
-            </v-btn>
-          </template>
-          <span>Refresh the list</span>
-        </v-tooltip>
+        <v-btn small @click="refreshMembers">
+          Refresh
+        </v-btn>
       </v-card-title>
+
+      <v-divider></v-divider>
 
       <div v-if="members.length">
         <v-simple-table>

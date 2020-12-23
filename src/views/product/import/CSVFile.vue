@@ -7,8 +7,8 @@
         Go Back
     </v-btn>
 
-    <v-card class="mt-1">
-      <v-card-title>
+    <v-card>
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
         <div>
           <div>CSV File Import</div>
@@ -50,7 +50,7 @@
     </v-card>
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-2">mdi-playlist-check</v-icon>
         <div>File Rules</div>
       </v-card-title>
@@ -130,6 +130,6 @@ export default {
     font-weight: bold;
   }
   .v-card {
-    margin-top: 20px;
+    margin-top: 15px;
   }
 </style>

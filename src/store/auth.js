@@ -141,6 +141,7 @@ const getters = {
         lastStatusUpdate: state.session.lastStatusUpdate,
         email: state.session.email,
         user: state.session.user,
+        role: state.session.role,
         timezone: state.session.timezone,
         currencyFormat: state.session.currencyFormat,
         everSubscribed: state.session.everSubscribed,

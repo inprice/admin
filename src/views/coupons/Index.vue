@@ -1,11 +1,14 @@
 <template>
   <div>
-    <div class="title pl-1">
-      Coupons
+    <div>
+      <div class="title">Coupons</div>
+      <div class="body-2">Manage your coupons for your account.</div>
     </div>
 
-    <v-card class="mt-2">
-      <v-card-title>
+    <v-divider class="mt-2"></v-divider>
+
+    <v-card class="mt-3">
+      <v-card-title class="pb-2">
         <v-icon class="mr-4 my-auto">mdi-ticket-confirmation-outline</v-icon>
         <div>
           <div>Coupons</div>
@@ -55,7 +58,10 @@
                 <td class="text-center font-weight-bold">{{ cpn.days }}</td>
                 <td class="text-center">
                   <v-chip small label outlined v-if="cpn.issuedAt">USED</v-chip>
-                  <v-chip small label outlined dark v-else color="teal">AVAILABLE</v-chip>
+                  <div v-else>
+                    <v-chip small label outlined dark v-if="canUseCoupon" color="teal">AVAILABLE</v-chip>
+                    <v-chip small label outlined dark v-else color="red">NOT NOW</v-chip>
+                  </div>
                 </td>
                 <td class="text-center">
                   <ago :date="cpn.issuedAt" v-if="cpn.issuedAt" />
@@ -162,7 +168,7 @@ export default {
       this.$refs.applyCouponDialog.open();
     },
   },
-  mounted() {
+  created() {
     this.$nextTick(() => {
       this.getCoupons();
     });

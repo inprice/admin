@@ -61,9 +61,9 @@
 
     </div>
 
-    <p class="mt-3" v-else>
-      No link found! Please change your criteria or add new competitors to your products.
-    </p>
+    <v-card v-else >
+      <block-message :message="'No link found! Please change your criteria or add new competitors to your products.'" />
+    </v-card>
 
     <confirm ref="confirm"></confirm>
   </div>
@@ -168,6 +168,7 @@ export default {
   components: {
     Confirm: () => import('@/component/Confirm.vue'),
     LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 };
 </script>

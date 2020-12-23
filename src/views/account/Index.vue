@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="title pl-1 mb-2">
-      {{ CURSTAT.account }} Settings
+    <div>
+      <div class="title">{{ CURSTAT.account }}</div>
+      <div class="body-2">Account settings.</div>
     </div>
+
+    <v-divider class="mt-2"></v-divider>
 
     <profile />
     <users />

@@ -1,90 +1,85 @@
 <template>
   <div>
 
-    <div>
-      <div class="title">Product Import</div>
-      <div class="body-2">Import your product definitions as batch.</div>
+    <div class="d-flex justify-space-between">
+      <div>
+        <div class="title">Product Import</div>
+        <div class="body-2">Import your product definitions as batch.</div>
+      </div>
+
+      <v-menu
+        offset-y
+        bottom
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            small
+            v-bind="attrs"
+            v-on="on"
+            class="my-auto"
+          >
+            Select a Method
+          </v-btn>
+        </template>
+
+        <v-list dense>
+          <v-list-item link :to="{name: 'import-csv-file' }">
+            <v-list-item-content>
+              <v-list-item-title>CSV File</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link :to="{name: 'import-csv-list' }">
+            <v-list-item-content>
+              <v-list-item-title>CSV List</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item link :to="{name: 'import-url-file'}">
+            <v-list-item-content>
+              <v-list-item-title>URL File</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link :to="{name: 'import-url-list' }">
+            <v-list-item-content>
+              <v-list-item-title>URL List</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item link :to="{name: 'import-ebay-file'}">
+            <v-list-item-content>
+              <v-list-item-title>Ebay SKU File</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link :to="{name: 'import-ebay-list' }">
+            <v-list-item-content>
+              <v-list-item-title>Ebay SKU List</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item link :to="{name: 'import-amazon-file'}">
+            <v-list-item-content>
+              <v-list-item-title>Amazon ASIN File</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link :to="{name: 'import-amazon-list' }">
+            <v-list-item-content>
+              <v-list-item-title>Amazon ASIN List</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+        </v-list>
+      </v-menu>
     </div>
 
     <v-divider class="mt-2"></v-divider>
 
-    <div class="d-flex justify-space-between mt-3" v-if="CURSTAT.isActive">
-      <div class="subtitle mt-1">
-        Previous import operations.
-      </div>
-
-      <div class="text-center">
-        <v-menu
-          open-on-hover
-          offset-y
-          bottom
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-            >
-              Select a Method
-            </v-btn>
-          </template>
-
-          <v-list dense>
-            <v-list-item link :to="{name: 'import-csv-file' }">
-              <v-list-item-content>
-                <v-list-item-title>CSV File</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link :to="{name: 'import-csv-list' }">
-              <v-list-item-content>
-                <v-list-item-title>CSV List</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item link :to="{name: 'import-url-file'}">
-              <v-list-item-content>
-                <v-list-item-title>URL File</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link :to="{name: 'import-url-list' }">
-              <v-list-item-content>
-                <v-list-item-title>URL List</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item link :to="{name: 'import-ebay-file'}">
-              <v-list-item-content>
-                <v-list-item-title>Ebay SKU File</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link :to="{name: 'import-ebay-list' }">
-              <v-list-item-content>
-                <v-list-item-title>Ebay SKU List</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item link :to="{name: 'import-amazon-file'}">
-              <v-list-item-content>
-                <v-list-item-title>Amazon ASIN File</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link :to="{name: 'import-amazon-list' }">
-              <v-list-item-content>
-                <v-list-item-title>Amazon ASIN List</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-          </v-list>
-        </v-menu>
-      </div>
-    </div>
-
-    <v-card class="mt-2" v-if="CURSTAT.isActive">
+    <v-card class="mt-3" v-if="CURSTAT.isActive">
       <div v-if="rows.length">
         <v-divider></v-divider>
         <v-simple-table>
@@ -111,12 +106,14 @@
         </v-simple-table>
       </div>
 
+      <v-card v-else >
+        <block-message :message="'No import found!'" />
+      </v-card>
     </v-card>
 
-    <v-card v-else>
+    <v-card v-else class="mt-3">
       <block-message 
-        class="mt-2"
-        :message="'You are not allowed to manage your links until activate your account!'">
+        :message="'You are not allowed to import new products until activate your account!'">
 
         <v-btn 
           small
