@@ -7,8 +7,8 @@
         Go Back
     </v-btn>
 
-    <v-card class="mt-1">
-      <v-card-title>
+    <v-card class="mt-4">
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
         <div>
           <div>Amazon ASIN List Import</div>

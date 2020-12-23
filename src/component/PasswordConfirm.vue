@@ -3,12 +3,13 @@
 
     <v-dialog v-model="opened" max-width="350" overlay-opacity="0.2">
       <v-card>
-        <v-card-title>Please enter your password</v-card-title>
-        <v-card-subtitle>Last confirmation</v-card-subtitle>
+        <v-card-title>Last confirmation</v-card-title>
+        <v-card-subtitle class="pb-2">Please enter your password</v-card-subtitle>
 
         <v-divider></v-divider>
 
-        <v-card-text class="mt-5">
+        <v-card-text class="pt-2 pb-0">
+
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
               autofocus
@@ -26,9 +27,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="submit"
             color="primary"
             :loading="loading" 

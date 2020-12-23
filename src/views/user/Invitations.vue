@@ -1,30 +1,18 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-4">
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-account-plus-outline</v-icon>
         <div>
           <div>Invitations</div>
-          <div class="caption">You manage your recieved invitations here to join other accounts</div>
+          <div class="caption">Your recieved invitations</div>
         </div>
 
         <v-spacer></v-spacer>
 
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              small icon
-              v-on="on"
-              elevation="1"
-              :loading="loading.refresh" 
-              :disabled="loading.refresh"
-              @click="getInvitations"
-            >
-              <v-icon>mdi-refresh-circle</v-icon>
-            </v-btn>
-          </template>
-          <span>Refresh the list</span>
-        </v-tooltip>
+        <v-btn small @click="getInvitations">
+          Refresh
+        </v-btn>
       </v-card-title>
 
       <div v-if="invitations.length">

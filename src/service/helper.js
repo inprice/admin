@@ -2,7 +2,7 @@ import ApiService from './api';
 import store from '../store'
 
 function logoutCheck(reason) {
-  if (reason.includes("code 401") || reason.includes("be expired")) {
+  if (reason.includes("code 401") || reason.includes("be expired") || (reason.includes("Network Error") && !window.location.href.includes("/login"))) {
     store.dispatch('auth/logout', true);
   } else {
     store.commit('snackbar/setMessage', { text: reason, level: 'error' });

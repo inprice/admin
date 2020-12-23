@@ -2,7 +2,7 @@
   <div>
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-2">mdi-format-columns</v-icon>
         <div>The rules each row in your content must match</div>
       </v-card-title>
@@ -21,7 +21,7 @@
     </v-card>
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-2">mdi-table-column</v-icon>
         <div>Column rules</div>
       </v-card-title>
@@ -38,7 +38,7 @@
     </v-card>
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
         <div>A valid CSV content</div>
       </v-card-title>
@@ -55,7 +55,7 @@
     </v-card>
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
         <div>Another valid CSV content with description and empty lines</div>
       </v-card-title>
@@ -89,7 +89,7 @@
     font-weight: bold;
   }
   .v-card {
-    margin-top: 20px;
+    margin-top: 15px;
   }
   .v-card__title {
     padding-bottom: 10px;

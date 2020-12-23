@@ -79,9 +79,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="submit"
             color="primary"
             :loading="loading" 
@@ -99,26 +98,20 @@
 
 <script>
 import SubsService from '@/service/subscription';
-import countries from '@/data/countries';
 
 export default {
+  props: {
+    countries: {
+      type: Array
+    }
+  },
   data() {
     return {
       opened: false,
       loading: false,
       valid: false,
-      countries,
       rules: {},
-      form: {
-        customerId: '',
-        title: '',
-        address1: '',
-        address2: '',
-        postcode: '',
-        city: '',
-        state: '',
-        country: ''
-      }
+      form: {}
     };
   },
   methods: {
@@ -135,6 +128,31 @@ export default {
         }
         this.loading = false;
       }
+    },
+    fetchData() {
+      SubsService.getInfo()
+        .then((res) => {
+          if (res && res.data) {
+            this.form = res.data;
+            for (let i = 0; i < this.countries.length; i++) {
+              const country = this.countries[i];
+              if (country.value == this.country) {
+                this.country = country.text;
+                break;
+              }
+            }
+          }
+        });
+    },
+    open() {
+
+      this.fetchData();
+      this.opened = true;
+    },
+    close() {
+      this.$refs.form.resetValidation();
+      this.opened = false;
+      this.loading = false;
     },
     activateRules() {
       this.rules = {
@@ -164,33 +182,6 @@ export default {
         ],
       }
     },
-    edit(data) {
-      if (data) {
-        this.form = data;
-        this.form.customerId = data.subsCustomerId;
-      } else {
-        this.form = {
-          customerId: '',
-          title: '',
-          address1: '',
-          address2: '',
-          postcode: '',
-          city: '',
-          state: '',
-          country: ''
-        };
-      }
-      this.open();
-    },
-    open() {
-      this.opened = true;
-      this.$nextTick(() => this.$refs.form.resetValidation());
-    },
-    close() {
-      this.$refs.form.resetValidation();
-      this.opened = false;
-      this.loading = false;
-    }
   }
 };
 </script>

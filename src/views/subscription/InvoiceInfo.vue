@@ -48,7 +48,7 @@
       </template>
     </v-simple-table>
 
-    <InvoiceInfoDialog ref="invoiceInfoDialog" :saved="invoiceInfoUpdated" />
+    <InvoiceInfoDialog ref="invoiceInfoDialog" @saved="invoiceInfoUpdated" :countries="countries" />
   </div>
 </template>
 
@@ -59,29 +59,29 @@ import countries from '@/data/countries';
 export default {
   data() {
     return {
+      countries,
       info: {},
     }
   },
   methods: {
     async openInvoiceInfoDialog() {
-      await this.fetchData();
-      this.$refs.invoiceInfoDialog.edit(this.info);
+      this.$refs.invoiceInfoDialog.open();
     },
     invoiceInfoUpdated(data) {
       this.info = data;
       for (let i = 0; i < countries.length; i++) {
         const country = countries[i];
         if (country.value == this.info.country) {
-          this.info.country = country.value + ' - ' + country.text;
+          this.info.country = country.text;
           break;
         }
       }
     },
-    async fetchData() {
+    fetchData() {
       SubsService.getInfo()
         .then((res) => {
           if (res && res.data) {
-            this.invoiceInfoUpdated(res.data.data);
+            this.invoiceInfoUpdated(res.data);
           }
         });
     }

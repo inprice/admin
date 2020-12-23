@@ -39,6 +39,7 @@ const actions = {
   createSession({ state, commit }, res) {
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(res.data.sessions));
     state.sessionNo = res.data.sessionNo;
+    state.sessions[state.sessionNo] = res.data.sessions[state.sessionNo];
     commit('REFRESH_SESSIONS', res.data);
     loginChannel.postMessage(res.data);
   },
@@ -140,6 +141,7 @@ const getters = {
         lastStatusUpdate: state.session.lastStatusUpdate,
         email: state.session.email,
         user: state.session.user,
+        role: state.session.role,
         timezone: state.session.timezone,
         currencyFormat: state.session.currencyFormat,
         everSubscribed: state.session.everSubscribed,

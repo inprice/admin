@@ -59,6 +59,14 @@
             <v-list-item-title>Subscription</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item link :to="{name: 'coupons'}">
+          <v-list-item-action>
+            <v-icon>mdi-ticket-confirmation-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Coupons</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
         <v-divider inset></v-divider>
 
@@ -169,10 +177,6 @@
 
       <v-responsive class="mx-auto overflow-visible" max-width="1024">
         <v-container>
-
-          <!-- Alert box for FREE status -->
-          <status-alert v-if="isSuitableForStatusAlert" />
-
           <router-view></router-view>
         </v-container>
       </v-responsive>
@@ -187,20 +191,9 @@
 import ProductService from '@/service/product';
 import { get } from 'vuex-pathify'
 
-const EXC_PAGES = [
-  'plans',
-  'subscription',
-  'error',
-  'payment-ok',
-  'payment-cancel'
-];
-
 export default {
   computed: {
     CURSTAT: get('auth/CURRENT_STATUS'),
-    isSuitableForStatusAlert() {
-      return ! EXC_PAGES.includes(this.$route.name);
-    }
   },
   data() {
     return {
@@ -264,7 +257,6 @@ export default {
   },
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),
-    StatusAlert: () => import('@/component/app/StatusAlert.vue'),
     AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
 };

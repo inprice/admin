@@ -4,11 +4,11 @@
     <v-dialog v-model="opened" max-width="350" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Apply a coupon code</v-card-title>
-        <v-card-subtitle>Please enter your coupon code below</v-card-subtitle>
+        <v-card-subtitle class="pb-2">Please enter your coupon code below</v-card-subtitle>
 
         <v-divider></v-divider>
 
-        <v-card-text class="mt-5">
+        <v-card-text class="pt-2 pb-0">
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
               autofocus
@@ -24,9 +24,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="submit"
             color="primary"
             :loading="loading"
@@ -43,7 +42,7 @@
 </template>
 
 <script>
-import SubscriptionService from '@/service/subscription';
+import CouponService from '@/service/coupon';
 
 export default {
   data() {
@@ -63,7 +62,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await SubscriptionService.applyCoupon(this.form.code);
+        const result = await CouponService.applyCoupon(this.form.code);
         if (result && result.status == true) {
           this.$emit('applied', result.data);
           this.close();

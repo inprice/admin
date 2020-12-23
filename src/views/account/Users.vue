@@ -2,7 +2,7 @@
   <div class="mt-5">
 
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-account-multiple</v-icon>
         <div>
           <div>Users</div>

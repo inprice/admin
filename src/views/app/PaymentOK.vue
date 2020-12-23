@@ -66,19 +66,7 @@
       </v-btn>
     </div>
 
-    <v-overlay :value="overlay">
-      <v-card>
-        <div style="background-color: white; width: 300px" class="my-auto pa-5">
-          <v-progress-circular
-            indeterminate
-            size="40"
-            class="ml-2"
-            color="grey darken-1"
-          ></v-progress-circular>
-          <h3 class="d-inline subtitle-1 black--text ml-5">Please wait, loading...</h3>
-        </div>
-      </v-card>
-    </v-overlay>
+    <overlay :show="overlay" />
 
   </div>
 </template>
@@ -111,6 +99,9 @@ export default {
       }
       retry++;
     }, 1000);
+  },
+  components: {
+    Overlay: () => import('@/component/app/Overlay.vue'),
   }
 }
 </script>

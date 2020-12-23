@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5">
+  <div>
     <v-card>
       <v-card-title>
         <v-icon color="red" class="mr-4">mdi-alert-decagram-outline</v-icon>
@@ -18,7 +18,7 @@
             <ul class="mt-2">
               <li>Are you absolutely sure? If so, in opening dialog, please provide your password to delete this account.</li>
               <li>Once you delete a account, there is no going back. All your data is permanently deleted. Please be certain.</li>
-              <li>You cannot delete the account while you have an active subscription. If you want to proceed, you need to cancel your subscription first.</li>
+              <li>You cannot delete your account while you have an active subscription. To proceed, you need to cancel your subscription first.</li>
             </ul>
           </div>
 

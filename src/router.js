@@ -149,6 +149,11 @@ const router = new VueRouter({
           component: () => import('./views/subscription/Index.vue')
         },
         {
+          name: 'coupons',
+          path: 'coupons',
+          component: () => import('./views/coupons/Index.vue')
+        },
+        {
           name: 'links',
           path: 'links',
           component: () => import('./views/link/Index.vue')

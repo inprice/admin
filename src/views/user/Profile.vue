@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="mt-3">
     <v-card>
-      <v-card-title>
+      <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-account-circle-outline</v-icon>
         <div>
           <div>Profile</div>
-          <div class="caption">You can edit your profile info here using actions buttons placed on the right</div>
+          <div class="caption">Your profile info</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -34,11 +34,15 @@
           <tbody>
             <tr>
               <td class="prop-name">Name</td>
-              <td><v-text-field solo dense readonly hide-details="true" v-model="CURSTAT.user" /></td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-6"  v-model="CURSTAT.user" /></td>
             </tr>
             <tr>
               <td class="prop-name">Time Zone</td>
               <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="CURSTAT.timezone" /></td>
+            </tr>
+            <tr>
+              <td class="prop-name">Role</td>
+              <td><v-text-field solo dense readonly hide-details="true" class="col-3" :value="CURSTAT.role" /></td>
             </tr>
             <tr>
               <td class="prop-name">Password</td>

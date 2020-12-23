@@ -1,16 +1,19 @@
 <template>
 
   <div>
-    <div class="title">
-      Products
+    <div>
+      <div class="title">Products</div>
+      <div class="body-2">Your product definitions.</div>
     </div>
+
+    <v-divider class="mt-2"></v-divider>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between mt-2">
+    <div class="d-flex justify-space-between" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
 
-      <div class="col-10 d-flex px-1 py-0">
+      <div class="col-10 pl-0 d-flex">
         <v-text-field 
           autofocus
           v-model="search.term"
@@ -28,6 +31,7 @@
           fab small
           elevation="3"
           class="ml-2"
+          style="height: 100%"
           @click="addNew">
             <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -44,7 +48,7 @@
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
-            class="col-1 mr-1" 
+            class="col-1 my-auto"
             v-bind="attrs"
             v-on="on"
           >
@@ -98,15 +102,31 @@
 
     </div>
 
-    <div class="col px-1">
+    <div class="col px-0 pt-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
       <list :rows="searchResult" @edit="edit" :isLoading="isListLoading" />
+
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>
+
+      <edit ref="editDialog" @saved="refreshAll" />
     </div>
 
-    <edit ref="editDialog" @saved="refreshAll" />
+    <v-card v-else>
+      <block-message 
+        class="mt-2"
+        :message="'You are not allowed to manage your products until activate your account!'">
 
+        <v-btn 
+          small
+          color="success"
+          class="my-auto float-right"
+          @click="$router.push( { name: 'plans' })">
+            See Plans
+        </v-btn>
+
+      </block-message>
+    </v-card>
   </div>
 
 </template>
@@ -115,8 +135,12 @@
 import ProductService from '@/service/product';
 import TagService from '@/service/tag';
 import SystemConsts from '@/data/system';
+import { get } from 'vuex-pathify'
 
 export default {
+  computed: {
+    CURSTAT: get('auth/CURRENT_STATUS'),
+  },
   data() {
     return {
       search: {
@@ -216,6 +240,7 @@ export default {
   components: {
     List: () => import('./List'),
     Edit: () => import('../definition/Edit'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 }
 </script>

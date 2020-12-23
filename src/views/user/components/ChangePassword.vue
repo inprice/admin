@@ -4,11 +4,11 @@
     <v-dialog v-model="opened" max-width="350" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Change password</v-card-title>
-        <v-card-subtitle>for {{ title }}</v-card-subtitle>
+        <v-card-subtitle class="pb-2">for {{ title }}</v-card-subtitle>
 
         <v-divider></v-divider>
 
-        <v-card-text class="mt-5">
+        <v-card-text class="pt-2 pb-0">
 
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
@@ -51,9 +51,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="submit"
             color="primary"
             :loading="loading" 
@@ -106,6 +105,20 @@ export default {
         this.loading = false;
       }
     },
+    open(title) {
+      this.title = title;
+      this.opened = true;
+      let self = this;
+      this.$nextTick(() => {
+        self.$refs.form.resetValidation();
+        Utility.removeTabIndexFromIconButtons(self.$el);
+      });
+    },
+    close() {
+      this.opened = false;
+      this.loading = false;
+      this.$refs.form.resetValidation();
+    },
     activateRules() {
       this.rules = {
         oldPassword: [
@@ -124,20 +137,6 @@ export default {
         ],
       }
     },
-    open(title) {
-      this.title = title;
-      this.opened = true;
-      let self = this;
-      this.$nextTick(() => {
-        self.$refs.form.resetValidation();
-        Utility.removeTabIndexFromIconButtons(self.$el);
-      });
-    },
-    close() {
-      this.opened = false;
-      this.loading = false;
-      this.$refs.form.resetValidation();
-    }
   }
 };
 </script>

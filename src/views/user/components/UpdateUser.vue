@@ -3,10 +3,12 @@
 
     <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
       <v-card>
-        <v-card-title>Update your info</v-card-title>
+        <v-card-title>Update info</v-card-title>
+        <v-card-subtitle class="pb-2">for {{ CURSTAT.email }}</v-card-subtitle>
+
         <v-divider></v-divider>
 
-        <v-card-text class="mt-5">
+        <v-card-text class="pt-2 pb-0">
           <v-form ref="form" v-model="valid">
             <v-text-field
               autofocus
@@ -29,9 +31,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="submit"
             color="primary"
             :loading="loading" 
@@ -50,8 +51,12 @@
 <script>
 import UserService from '@/service/user';
 import timezones from '@/data/timezones';
+import { get } from 'vuex-pathify'
 
 export default {
+  computed: {
+    CURSTAT: get('auth/CURRENT_STATUS')
+  },
   data() {
     return {
       opened: false,
@@ -80,17 +85,6 @@ export default {
         this.loading = false;
       }
     },
-    activateRules() {
-      this.rules = {
-        name: [
-          v => !!v || "Required",
-          v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
-        ],
-        timezone: [
-          v => !!v || "Time zone is required",
-        ],
-      }
-    },
     open(data) {
       this.opened = true;
       let self = this;
@@ -103,7 +97,18 @@ export default {
       this.$refs.form.resetValidation();
       this.opened = false;
       this.loading = false;
-    }
+    },
+    activateRules() {
+      this.rules = {
+        name: [
+          v => !!v || "Required",
+          v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
+        ],
+        timezone: [
+          v => !!v || "Time zone is required",
+        ],
+      }
+    },
   }
 };
 </script>

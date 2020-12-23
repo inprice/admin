@@ -36,51 +36,28 @@
             maxlength="16"
           />
 
-          <v-simple-table dense class="mb-4 col-10 mx-auto">
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-right" width="40%">Sample Values</th>
-                  <th class="text-right">Formatted</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-right">0.25</td>
-                  <td class="text-right">{{ formatCurrency(0.25) }}</td>
-                </tr>
-                <tr>
-                  <td class="text-right">100</td>
-                  <td class="text-right">{{ formatCurrency(100) }}</td>
-                </tr>
-                <tr>
-                  <td class="text-right">100.5</td>
-                  <td class="text-right">{{ formatCurrency(100.5) }}</td>
-                </tr>
-                <tr>
-                  <td class="text-right">1250.10</td>
-                  <td class="text-right">{{ formatCurrency(1250.10) }}</td>
-                </tr>
-                <tr>
-                  <td class="text-right">1250.2557</td>
-                  <td class="text-right">{{ formatCurrency(1250.2557) }}</td>
-                </tr>
-                <tr>
-                  <td class="text-right">1263500.34</td>
-                  <td class="text-right">{{ formatCurrency(1263500.34) }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-          
+          <div class="d-flex">
+            <v-select class="mx-5"
+              label="Sample"
+              v-model="sampleAmount"
+              :items="sampleAmounts"
+              :menu-props="{ auto: true, overflowY: true }"
+              @change="setCurrencyFormat"
+            />
+
+            <v-text-field class="mx-5"
+              readonly
+              label="Result"
+              :value="formatCurrency(sampleAmount)"
+            />
+          </div>
         </v-form>
 
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="submit"
             color="primary"
             :loading="loading" 
@@ -117,7 +94,9 @@ export default {
         name: '',
         currencyCode: '',
         currencyFormat: ''
-      }
+      },
+      sampleAmount: 0.25,
+      sampleAmounts: [0.25, 100, 100.5, 1250.10, 3200.2443, 1263500.34 ],
     };
   },
   methods: {

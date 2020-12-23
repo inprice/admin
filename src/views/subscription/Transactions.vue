@@ -49,13 +49,13 @@
       </v-tab-item>
 
       <v-tab-item>
-        <v-simple-table dense class="pb-1" v-if="invoices && invoices.length">
+        <v-simple-table dense fixed-header class="invoices-table pb-1" v-if="invoices && invoices.length">
           <template v-slot:default>
             <thead>
               <tr>
-                <th width="15%">Date</th>
-                <th width="10%">Event</th>
-                <th>URL</th>
+                <th width="20%">Date</th>
+                <th width="25%">Event</th>
+                <th width="55%">URL</th>
               </tr>
             </thead>
             <tbody>
@@ -64,7 +64,11 @@
                   <ago :date="row.createdAt" />
                 </td>
                 <td>{{ row.event }}</td>
-                <td><v-btn :href="row.fileUrl" target="_blank" small class="ma-1">Open a new tab <v-icon right>mdi-arrow-right-circle-outline</v-icon></v-btn></td>
+                <td>
+                  <div class="text-truncate">
+                    <a :href="row.fileUrl" target="_blank">{{ row.fileUrl }}</a>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </template>
@@ -93,3 +97,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .invoices-table >>> table {
+    table-layout: fixed !important;
+  }
+</style>

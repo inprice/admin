@@ -1,18 +1,21 @@
 <template>
 
   <div>
-    <div class="title pl-1">
-      Links
+    <div>
+      <div class="title">Links</div>
+      <div class="body-2">The list of your competitors linked to your products.</div>
     </div>
+
+    <v-divider class="mt-2"></v-divider>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between mt-2">
+    <div class="d-flex justify-space-between" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
 
-      <div class="col-10 d-flex px-1 py-0">
+      <div class="col-10 pl-0 d-flex">
         <v-text-field 
-          ref="searchField"
+          autofocus
           v-model="search.term"
           @keyup.enter.native="search"
           dense solo light
@@ -36,7 +39,7 @@
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
-            class="col-1" 
+            class="col-1 my-auto" 
             v-bind="attrs"
             v-on="on"
           >
@@ -71,13 +74,29 @@
 
     </div>
 
-    <div class="col px-1">
+    <div class="col px-0 pt-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
       <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
 
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>
     </div>
+
+    <v-card v-else>
+      <block-message 
+        class="mt-2"
+        :message="'You are not allowed to manage your products until activate your account!'">
+
+        <v-btn 
+          small
+          color="success"
+          class="my-auto float-right"
+          @click="$router.push( { name: 'plans' })">
+            See Plans
+        </v-btn>
+
+      </block-message>
+    </v-card>
 
   </div>
 
@@ -86,9 +105,11 @@
 <script>
 import LinkService from '@/service/link';
 import SystemConsts from '@/data/system';
+import { get } from 'vuex-pathify'
 
 export default {
   computed: {
+    CURSTAT: get('auth/CURRENT_STATUS'),
     statuses() {
       return SystemConsts.STATUSES;
     }
@@ -171,6 +192,7 @@ export default {
   },
   components: {
     List: () => import('./List'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 }
 </script>
