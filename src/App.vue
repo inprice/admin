@@ -21,7 +21,34 @@
       </template>
     </v-snackbar>
 
-    <notification ref="notification"></notification>
+    <v-dialog
+      persistent
+      v-model="warning.show"
+      :max-width="350"
+      :style="{ zIndex: 200 }"
+      @keydown.esc="close"
+      overlay-opacity="0.2"
+    >
+      <v-card>
+        <v-toolbar dense flat>
+          <v-icon class="mr-2">mdi-shield-alert-outline</v-icon>
+          <v-toolbar-title>{{ warning.title }}</v-toolbar-title>
+        </v-toolbar>
+
+        <v-divider></v-divider>
+
+        <v-card-text class="pa-4">
+          {{ warning.message }}
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions class="pt-0">
+          <v-spacer></v-spacer>
+          <v-btn @click.native="closeWarning" text class="mt-3 mb-2">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <router-view></router-view>
 
@@ -37,28 +64,38 @@ export default {
         level: 'info',
         color: 'info',
         message: ''
+      },
+      warning: {
+        show: false,
+        title: 'Warning',
+        message: ''
       }
     }
   },
   created() {
     this.$store.watch(state => state.snackbar.text, () => {
       if (this.$store.state.snackbar.text !== '') {
-        //this.snackbar.level = this.$store.state.snackbar.level;
-        //if (this.snackbar.level == 'info') {
-          this.snackbar.show = true;
-          this.snackbar.message = this.$store.state.snackbar.text;
-          this.snackbar.color = this.$store.state.snackbar.color;
-        //} else {
-        //  this.snackbar.message = this.$store.state.snackbar.text;
-        //  this.$refs.notification.open('Info', this.snackbar.message);
-        //}
+        this.snackbar.show = true;
+        this.snackbar.message = this.$store.state.snackbar.text;
+        this.snackbar.color = this.$store.state.snackbar.color;
         this.$store.commit('snackbar/setMessage', { text: '' });
+      }
+    });
+    this.$store.watch(state => state.warning.text, () => {
+      if (this.$store.state.warning.text !== '') {
+        this.warning.show = true;
+        this.warning.title = this.$store.state.warning.title;
+        this.warning.message = this.$store.state.warning.text;
+        this.$store.commit('warning/setMessage', { text: '' });
       }
     });
   },
   methods: {
     closeSnackBar() {
       this.snackbar.show = false;
+    },
+    closeWarning() {
+      this.warning.show = false;
     }
   },
   watch: {
@@ -66,9 +103,6 @@ export default {
       typeof window !== 'undefined' && window.scrollTo(0, 0)
     }
   },
-  components: {
-    Notification: () => import('@/component/Notification.vue'),
-  }
 }
 </script>
 

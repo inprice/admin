@@ -99,7 +99,7 @@ export default {
     };
   },
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   methods: {
     async submit() {
@@ -107,7 +107,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await this.$store.dispatch('auth/login', this.form);
+        const result = await this.$store.dispatch('session/login', this.form);
         if (result != null) {
           if (this.CURSTAT.hasTime) {
             if (this.CURSTAT.productCount > 0) {

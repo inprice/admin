@@ -106,7 +106,7 @@ const passives = [ 'CREATED', 'CANCELLED', 'STOPPED' ];
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
     canUseCoupon() {
       return passives.includes(this.CURSTAT.status);
     } 
@@ -145,7 +145,7 @@ export default {
       this.loading.apply = true;
       const result = await CouponService.applyCoupon(code);
       if (result && result.status == true) {
-        this.$store.commit('auth/REFRESH_SESSION', result.data.session);
+        this.$store.commit('session/CURRENT', result.data.session);
         this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been successfully applied.' });
         this.getCoupons();
       }
@@ -157,7 +157,7 @@ export default {
           this.loading.apply = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
-            this.$store.commit('auth/REFRESH_SESSION', res.data.session);
+            this.$store.commit('session/CURRENT', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been cancelled.' });
           }
           this.loading.apply = false;

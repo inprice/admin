@@ -1,11 +1,11 @@
 <template>
   <div class="mt-3">
-    <v-card>
+    <v-card class="pb-2">
       <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-home-city-outline</v-icon>
         <div>
           <div>Profile</div>
-          <div class="caption">You can edit your account profile here using actions buttons placed on the right</div>
+          <div class="caption">Profile info of your account.</div>
         </div>
 
         <v-spacer></v-spacer>
@@ -23,14 +23,8 @@
       <v-simple-table class="property-table pt-3 pb-1">
         <template v-slot:default>
           <tbody>
-            <tr>
-              <td class="prop-name">Title</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="CURSTAT.account" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Format</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="CURSTAT.currencyFormat" /></td>
-            </tr>
+            <property valueClass="col-6" name="Title" :value="CURSTAT.account" />
+            <property valueClass="col-4" name="Format" :value="CURSTAT.currencyFormat" />
           </tbody>
         </template>
       </v-simple-table>
@@ -47,7 +41,7 @@ import AccountService from '@/service/account';
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS')
+    CURSTAT: get('session/getCurrentStatus')
   },
   methods: {
     async openAccountInfoDialog() {
@@ -58,7 +52,8 @@ export default {
     },
   },
   components: {
-    AccountInfoDialog: () => import('./AccountInfo.vue')
+    AccountInfoDialog: () => import('./AccountInfo.vue'),
+    Property: () => import('@/component/app/Property.vue')
   }
 }
 </script>

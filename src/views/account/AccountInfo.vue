@@ -8,7 +8,8 @@
         <v-card-subtitle class="pb-0" v-if="isInsert">
           You will be able to see new account after sign in again.
         </v-card-subtitle>
-        <v-divider></v-divider>
+
+        <v-divider class="my-2"></v-divider>
 
         <v-form ref="form" v-model="valid" class="mt-5">
           <v-text-field class="mx-5"
@@ -116,7 +117,7 @@ export default {
         } else {
           const res = await AccountService.update(this.form);
           if (res == true) {
-            this.$store.set('auth/ACCOUNT_INFO', this.form);
+            this.$store.set('session/ACCOUNT_INFO', this.form);
             this.close();
             return;
           }

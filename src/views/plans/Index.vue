@@ -252,7 +252,7 @@ export default {
   },
   computed: {
     plansSets: get('system/plansSets'),
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   methods: {
     async startFreeUse() {
@@ -261,9 +261,9 @@ export default {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
           if (result.status == true) {
-            this.$store.commit('auth/REFRESH_SESSION', result.data.session);
+            this.$store.commit('session/CURRENT', result.data.session);
           } else {
-            this.$store.dispatch('auth/refreshSession');
+            this.$store.dispatch('session/refresh');
           }
           this.loading.tryFreeUse = false;
         }
@@ -297,7 +297,7 @@ export default {
 
             let retry = 0;
             const refreshId = setInterval(() => {
-              this.$store.dispatch('auth/refreshSession'); 
+              this.$store.dispatch('session/refresh'); 
               if (this.CURSTAT.planId == planId || retry >= 5) {
                 clearInterval(refreshId);
                 this.loading.overlay = false;
@@ -319,7 +319,7 @@ export default {
           this.loading.overlay = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
-            this.$store.commit('auth/REFRESH_SESSION', res.data.session);
+            this.$store.commit('session/CURRENT', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
           this.loading.overlay = false;
@@ -361,7 +361,7 @@ export default {
       return res;
     },
     refreshSession() {
-      this.$store.dispatch('auth/refreshSession');
+      this.$store.dispatch('session/refresh');
     }
   },
   mounted() {

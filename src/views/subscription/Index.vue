@@ -60,7 +60,7 @@ import { get } from 'vuex-pathify'
 export default {
   computed: {
     plans: get('system/plans'),
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   data() {
     return {
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     refreshSession() {
-      this.$store.dispatch('auth/refreshSession');
+      this.$store.dispatch('session/refresh');
     }
   },
   created() {

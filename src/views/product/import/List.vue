@@ -29,22 +29,10 @@
       <v-simple-table class="property-table pt-3 pb-1" dense v-if="data && data.import">
         <template v-slot:default>
           <tbody>
-            <tr>
-              <td class="prop-name">Type</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-3" :value="data.import.type + (data.import.is_file ? ' File' : ' List')" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Date</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-3" v-model="data.import.createdAt" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Successes</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-2" :value="data.import.successCount" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Failes</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-2" :value="data.import.problemCount" /></td>
-            </tr>
+            <property valueClass="col-3" name="Type" :value="data.import.type + (data.import.is_file ? ' File' : ' List')" />
+            <property valueClass="col-3" name="Date" :value="data.import.createdAt" />
+            <property valueClass="col-2" name="Successes" :value="data.import.successCount" />
+            <property valueClass="col-2" name="Failures" :value="data.import.problemCount" />
           </tbody>
         </template>
       </v-simple-table>
@@ -128,7 +116,8 @@ export default {
     this.findDetails();
   },
   components: {
-    Confirm: () => import('@/component/Confirm.vue')
+    Confirm: () => import('@/component/Confirm.vue'),
+    Property: () => import('@/component/app/Property.vue')
   },
   watch: {
     '$route.path' () {

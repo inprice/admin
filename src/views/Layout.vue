@@ -32,7 +32,7 @@
             <v-list-item-title>Links' Statuses</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'import'}" v-if="$store.get('auth/IS_EDITOR')">
+        <v-list-item link :to="{name: 'import'}">
           <v-list-item-action>
             <v-icon>mdi-import</v-icon>
           </v-list-item-action>
@@ -51,7 +51,7 @@
             <v-list-item-title>Plans</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'subscription'}" v-if="$store.get('auth/IS_ADMIN')">
+        <v-list-item link :to="{name: 'subscription'}">
           <v-list-item-action>
             <v-icon>mdi-credit-card-check-outline</v-icon>
           </v-list-item-action>
@@ -78,7 +78,7 @@
             <v-list-item-title>User Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'account-settings'}" v-if="$store.get('auth/IS_ADMIN')">
+        <v-list-item link :to="{name: 'account-settings'}">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-action>
@@ -193,7 +193,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   data() {
     return {

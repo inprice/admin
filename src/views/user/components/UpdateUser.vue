@@ -20,7 +20,7 @@
             />
 
             <v-select
-              label="Time Zone"
+              label="Timezone"
               v-model="form.timezone"
               :items="timezones"
               :menu-props="{ auto: true, overflowY: true }"
@@ -55,7 +55,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS')
+    CURSTAT: get('session/getCurrentStatus')
   },
   data() {
     return {
@@ -78,7 +78,7 @@ export default {
         this.loading = true;
         const result = await UserService.update(this.form);
         if (result == true) {
-          this.$store.set('auth/USER_INFO', this.form);
+          this.$store.set('session/USER_INFO', this.form);
           this.close();
           return;
         }
@@ -105,7 +105,7 @@ export default {
           v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
         ],
         timezone: [
-          v => !!v || "Time zone is required",
+          v => !!v || "Timezone is required",
         ],
       }
     },

@@ -1,6 +1,6 @@
 <template>
   <div class="mt-3">
-    <v-card>
+    <v-card class="pb-2">
       <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-account-circle-outline</v-icon>
         <div>
@@ -32,22 +32,10 @@
       <v-simple-table class="property-table pt-3 pb-1">
         <template v-slot:default>
           <tbody>
-            <tr>
-              <td class="prop-name">Name</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-6"  v-model="CURSTAT.user" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Time Zone</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-6" v-model="CURSTAT.timezone" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Role</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-3" :value="CURSTAT.role" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Password</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-3" :value="'****'" /></td>
-            </tr>
+            <property valueClass="col-6" name="Name" :value="CURSTAT.user" />
+            <property valueClass="col-6" name="Timezone" :value="CURSTAT.timezone" />
+            <property valueClass="col-3" name="Role" :value="CURSTAT.role" />
+            <property valueClass="col-3" name="Password" value="****" />
           </tbody>
         </template>
       </v-simple-table>
@@ -64,7 +52,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS')
+    CURSTAT: get('session/getCurrentStatus')
   },
   methods: {
     openChangePasswordDialog() {
@@ -76,7 +64,8 @@ export default {
   },
   components: {
     UpdateUserDialog: () => import('./components/UpdateUser.vue'),
-    ChangePasswordDialog: () => import('./components/ChangePassword.vue')
+    ChangePasswordDialog: () => import('./components/ChangePassword.vue'),
+    Property: () => import('@/component/app/Property.vue')
   }
 }
 </script>
