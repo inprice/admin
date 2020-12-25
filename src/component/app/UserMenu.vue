@@ -46,8 +46,8 @@
 
       <v-card>
         <v-list subheader>
-          <div v-if="sessions && sessions.length">
-            <template v-for="({ email, account, role }, i) in sessions">
+          <div v-if="sesList && sesList.length">
+            <template v-for="({ email, account, role }, i) in sesList">
               <v-list-item
                 v-if="email != CURSTAT.email || account != CURSTAT.account"
                 :key="i"
@@ -120,8 +120,8 @@ export default {
     }
   },
   computed: {
-    sessions: get('auth/sessions'),
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    sesList: get('session/getSessionList'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   methods: {
     openChangePasswordDialog() {
@@ -129,10 +129,10 @@ export default {
       this.$refs.changePasswordDialog.open(this.CURSTAT.email);
     },
     logout() {
-      this.$store.dispatch('auth/logout', false);
+      this.$store.dispatch('session/logout', false);
     },
     findPath(sesNo) {
-      const session = this.sessions[sesNo];
+      const session = this.sesList[sesNo];
       const renewal = moment(session.renewalAt, 'YYYY-MM-DD').tz(session.timezone);
       const dayDiff = renewal.diff(moment().startOf('day'), 'days');
       const base = (session.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!

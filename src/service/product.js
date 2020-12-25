@@ -16,6 +16,8 @@ export default {
   },
 
   async save(form) {
+    if (store.get('session/isViewer')) return;
+
     let method = 'post', opType = 'added';
     if (form.id && form.id > 0) {
       method = 'put'; opType = 'edited';
@@ -39,11 +41,15 @@ export default {
   },
 
   async toggle(id) {
+    if (store.get('session/isViewer')) return;
+
     const res = await Helper.call('Product Toggle', { method: 'put', url: baseURL + '/toggle/' + id });
     return res.status;
   },
 
   async remove(id) {
+    if (store.get('session/isViewer')) return;
+
     const res = await Helper.call('Product Delete', { method: 'delete', url: baseURL + '/' + id });
     return res.status;
   }

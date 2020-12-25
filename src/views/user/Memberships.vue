@@ -110,7 +110,7 @@ export default {
       });
     }
   },
-  mounted() {
+  created() {
     this.$nextTick(() => {
       this.refreshMembers();
     });

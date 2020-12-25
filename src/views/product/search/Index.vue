@@ -28,6 +28,7 @@
         </v-text-field>
 
         <v-btn 
+          :disabled="$store.get('session/isViewer')"
           fab small
           elevation="3"
           class="ml-2"
@@ -139,7 +140,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   data() {
     return {

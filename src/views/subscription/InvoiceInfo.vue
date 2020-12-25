@@ -3,47 +3,24 @@
     <v-simple-table class="property-table pt-3 pb-2">
       <template v-slot:default>
         <tbody>
-          <tr>
-            <td class="prop-name">Title</td>
-            <td><v-text-field solo dense readonly hide-details="true" :value="info.title || 'Just created!'" /></td>
-          </tr>
-          <tr>
-            <td class="prop-name">Address 1</td>
-            <td><v-text-field solo dense readonly hide-details="true" v-model="info.address1" /></td>
-          </tr>
-          <tr>
-            <td class="prop-name">2</td>
-            <td><v-text-field solo dense readonly hide-details="true" v-model="info.address2" /></td>
-          </tr>
-          <tr>
-            <td class="prop-name">Postcode</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-2" v-model="info.postcode" /></td>
-          </tr>
-          <tr>
-            <td class="prop-name">City</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="info.city" /></td>
-          </tr>
-          <tr>
-            <td class="prop-name">State</td>
-            <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="info.state" /></td>
-          </tr>
-          <tr>
-            <td class="prop-name">Country</td>
-            <td class="d-flex">
-              <v-text-field solo dense readonly hide-details="true" class="col-6" v-model="info.country" />
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td class="py-1">
-              <v-btn 
-                small 
-                color="success"
-                @click="openInvoiceInfoDialog">
-                  Edit
-              </v-btn>
-            </td>
-          </tr>
+            <property name="Title" :value="info.title || 'Just created!'" />
+            <property name="Address 1" :value="info.address1" />
+            <property name="2" :value="info.address2" />
+            <property name="Postcode" valueClass="col-2" :value="info.postcode" />
+            <property name="City" valueClass="col-4" :value="info.city" />
+            <property name="State" valueClass="col-4" :value="info.state" />
+            <property name="Country" valueClass="col-6" :value="info.country" />
+
+            <property valueClass="col-3">
+              <td class="d-flex">
+                <v-btn 
+                  small 
+                  color="success"
+                  @click="openInvoiceInfoDialog">
+                    Edit
+                </v-btn>
+              </td>
+            </property>
         </tbody>
       </template>
     </v-simple-table>
@@ -87,7 +64,8 @@ export default {
     }
   },
   components: {
-    InvoiceInfoDialog: () => import('./InvoiceInfoEdit.vue')
+    InvoiceInfoDialog: () => import('./InvoiceInfoEdit.vue'),
+    Property: () => import('@/component/app/Property.vue')
   },
   mounted() {
     this.fetchData();

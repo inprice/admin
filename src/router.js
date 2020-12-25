@@ -58,14 +58,6 @@ const router = new VueRouter({
       }
     },
     {
-      name: 'notifications',
-      path: '/',
-      component: () => import('./views/Layout.vue'),
-      meta: {
-        requiresAuth: false
-      },
-    },
-    {
       name: 'app',
       path: '/:sid/app',
       component: () => import('./views/Layout.vue'),
@@ -166,7 +158,10 @@ const router = new VueRouter({
         {
           name: 'account-settings',
           path: 'account-settings',
-          component: () => import('./views/account/Index.vue')
+          component: () => import('./views/account/Index.vue'),
+          meta: {
+            requiresAdmin: true
+          },
         },
         {
           name: 'payment-ok',
@@ -186,6 +181,11 @@ const router = new VueRouter({
       component: () => import('./views/errors/ServerError'),
     },
     {
+      name: 'forbidden',
+      path: '/forbidden',
+      component: () => import('./views/errors/Forbidden'),
+    },
+    {
       path: '*',
       component: () => import('./views/errors/404NotFound')
     }
@@ -195,8 +195,7 @@ const router = new VueRouter({
 import store from './store';
 import SystemConsts from '@/data/system';
 
-const SESSION = 'auth/session';
-const SESSIONS = SESSION+'s';
+const SESSION = 'session/current';
 
 router.beforeEach((to, from, next) => {
   if (to.name) NProgress.start();
@@ -205,35 +204,42 @@ router.beforeEach((to, from, next) => {
   if (to.name == 'login' && to.query.m == 'addNew') return next();
   if (to.matched.some(record => record.meta.openToPublic)) return next();
 
-  let sessions = store.get(SESSIONS);
+  let sesList = store.get('session/getSessionList');
 
-  if (!sessions || !sessions.length) {
-    sessions = JSON.parse(localStorage.getItem(SystemConsts.keys.SESSIONS));
-    if (sessions && sessions.length > 0) {
-      store.set(SESSIONS, sessions);
+  if (!sesList || !sesList.length) {
+    sesList = JSON.parse(localStorage.getItem(SystemConsts.keys.SESSIONS));
+    if (sesList && sesList.length > 0) {
+      store.set('session/LIST', sesList);
     }
   }
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (sessions && sessions.length > 0) {
+    if (sesList && sesList.length > 0) {
 
       const sid = to.params.sid;
-      if (sid == undefined || sid < 0 || sid >= sessions.length) {
-        store.set(SESSION, sessions[0]);
+      if (sid == undefined || sid < 0 || sid >= sesList.length) {
+        store.set(SESSION, sesList[0]);
         const newPath = to.path.replace(`/${to.params.sid}/`, '/0/');
         return next(newPath);
       } else {
         const session = store.get(SESSION);
-        if (Object.keys(session).length == 0) {
-          store.set(SESSION, sessions[sid]);
+        if (!session || Object.keys(session).length == 0) {
+          store.set(SESSION, sesList[sid]);
         }
       }
     } else {
       return next({ name: 'login' });
     }
-  } 
+  }
 
-  if (to.name == 'login' && (sessions && sessions.length > 0)) {
+  if (to.matched.some(record => record.meta.requiresAdmin)) {
+    const CURSTAT = store.get('session/getCurrentStatus');
+    if (CURSTAT.role != 'ADMIN') {
+      return next({ name: 'forbidden' });
+    }
+  }
+
+  if (to.name == 'login' && (sesList && sesList.length > 0)) {
     return next({ name: 'dashboard', params: { sid: 0 } });
   }
 

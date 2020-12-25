@@ -10,16 +10,17 @@
       </v-btn>
       <v-btn 
         small
+        :disabled="$store.get('session/isViewer')"
         @click="remove">
           <v-icon class="mr-2">mdi-close-circle-outline</v-icon>
           Delete
       </v-btn>
     </div>
 
-    <info :prod="data.product" @edit="edit" @remove="remove" class="mt-4" />
-    <prices :prod="data.product" v-if="data.product.avgPrice > 0" />
+    <info :prod="data.product" @edit="edit" @remove="remove" class="mt-3" />
+    <prices :prod="data.product" v-if="data.product.avgPrice > 0"  class="mt-3" />
 
-    <links :prodId="data.product.id" :links="data.links" class="mt-2" @deleted="findProduct" @statusToggled="findProduct" />
+    <links :prodId="data.product.id" :links="data.links" class="mt-3" @deleted="findProduct" @statusToggled="findProduct" />
 
     <edit ref="editDialog" @saved="findProduct" />
     <confirm ref="confirm" />
@@ -37,9 +38,6 @@ export default {
     };
   },
   methods: {
-    addNew() {
-      this.$refs.editDialog.open();
-    },
     edit() {
       let cloned = JSON.parse(JSON.stringify(this.data.product));
       this.$refs.editDialog.open(cloned);
@@ -66,7 +64,7 @@ export default {
           this.data = res.data;
         }
       });
-    }
+    },
   },
   mounted() {
     this.findProduct();

@@ -2,7 +2,7 @@ import store from './store';
 import moment from 'moment-timezone';
 import numFormatter from 'number-format.js';
 
-const session = 'auth/session';
+const SESSION = 'session/current';
 
 export default (Vue) => {
   Vue.filter('toPosition', (value) => {
@@ -39,7 +39,7 @@ export default (Vue) => {
 
   Vue.filter('toCurrency', (value) => {
     try {
-      return numFormatter(store.get(session+'@currencyFormat'), value);
+      return numFormatter(store.get(SESSION+'@currencyFormat'), value);
       /* eslint-disable no-empty */
     } catch (error) { }
   });
@@ -54,7 +54,7 @@ export default (Vue) => {
 
   Vue.filter('formatDate', (value) => {
     try {
-      const tz = store.get(session+'@timezone');
+      const tz = store.get(SESSION+'@timezone');
       if (tz && value) {
         return moment(value).tz(tz).fromNow();
       }
@@ -67,7 +67,7 @@ export default (Vue) => {
 
   Vue.filter('formatUSDate', (value) => {
     try {
-      const tz = store.get(session+'@timezone');
+      const tz = store.get(SESSION+'@timezone');
       if (tz && value) {
         const a = moment(value).tz(tz);
         const dayDiff = a.diff(moment().tz(tz), 'days');

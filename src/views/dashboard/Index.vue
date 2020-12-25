@@ -19,9 +19,9 @@
       </div>
     </div>
 
-    <v-divider class="mt-2"></v-divider>
+    <v-divider class="my-2"></v-divider>
 
-    <div class="mt-3">
+    <div class="px-2 row">
       <!-- ------------------------------- -->
       <!-- Products position statuses -->
       <!-- ------------------------------- -->
@@ -62,7 +62,7 @@
     <!-- ------------------ -->
     <!-- MRU 25 Links -->
     <!-- ------------------ -->
-    <v-card class="mt-3">
+    <v-card class="mt-2">
       <v-card-title class="pa-2">
         <v-icon class="mr-4">mdi-account-search-outline</v-icon>
         <div>
@@ -214,7 +214,7 @@ export default {
     };
   },
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   methods: {
     async refresh() {

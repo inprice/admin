@@ -19,7 +19,7 @@
 
         <v-btn 
           color="success" 
-          :dark="valid" 
+          :class="{'white--text': valid }"
           :disabled="!valid" 
           :loading="loading" 
           @click="submit"

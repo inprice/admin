@@ -13,6 +13,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            :disabled="$store.get('session/isViewer')"
             small
             v-bind="attrs"
             v-on="on"
@@ -135,7 +136,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   data() {
     return {

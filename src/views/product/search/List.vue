@@ -7,26 +7,26 @@
         <template v-slot="{ hover }">
 
           <v-card @click="edit(row.id)" class="mt-3 pa-1 pb-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
-            <div class="d-flex justify-space-between subtitle px-3 pt-1">
-              <div class="">{{ row.name }}</div>
-              <div>{{ row.price | toPrice }}</div>
+            <div class="d-flex justify-space-between subtitle px-3 pt-1 font-weight-medium">
+              <div>{{ row.name }}</div>
+              <div>{{ row.price | toCurrency }}</div>
             </div>
             <div class="d-flex justify-space-between px-3 caption">
               <ago :date="row.updatedAt || row.createdAt" />
-              <div>{{ row.position | toPosition }}</div>
+              <div class="blue--text">{{ row.position | toPosition }}</div>
             </div>
 
             <div class="d-flex justify-space-between mt-1">
               <div class="ml-2" v-if="row.tags && row.tags.length">
                 <v-chip
                   class="mr-1"
-                  outlined small
+                  outlined label small
                   v-for="(tag, index) in row.tags" :key="index"
                 >
                   {{ tag }}
                 </v-chip>
               </div>
-              <div class="caption ml-3" v-else>
+              <div class="caption ml-3 green--text font-weight-medium" v-else>
                 #{{ row.code }}
               </div>
 

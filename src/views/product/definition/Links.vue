@@ -5,15 +5,16 @@
       <v-card-title>
         <v-icon class="mr-4">mdi-vector-link</v-icon>
         <div>
-          <div>Links</div>
-          <div class="caption">The url list of your competitors' product pages.</div>
+          <div>Binding Competitor</div>
+          <div class="caption">Bind the url address of your competitor's product page.</div>
         </div>
         <v-spacer></v-spacer>
         <v-btn 
-          dark small
+          :disabled="$store.get('session/isViewer')"
+          small
           v-if="!showAddNewBar"
           color="info"
-          class="ml-4"
+          class="ml-4 white--text"
           @click="openAddNewBar">
             <v-icon>mdi-plus</v-icon>Add a new Url
         </v-btn>
@@ -72,12 +73,13 @@
       </div>
     </v-card>
 
-    <div v-if="rows && rows.length" class="mt-2">
+    <div v-if="rows && rows.length">
+      <div class="title ml-2 mt-3">Competitors</div>
 
       <v-hover v-for="(row, index) in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card class="my-3 pa-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+          <v-card class="mt-1 mb-3 pa-2 transition-swing font-weight-medium" :class="`elevation-${hover ? 6 : 2}`">
             <div @click="toggleDetails(index)" style="cursor: pointer">
               <div class="d-flex justify-space-between subtitle">
                 <div>{{ row.name || (row.status == 'TOBE_CLASSIFIED' ? 'WILL BE SET SOON' : row.problem) }}</div>
@@ -103,18 +105,27 @@
             <div class="row mr-0">
               <v-spacer></v-spacer>
               <div>
-                <v-btn class="mx-1" small @click="toggleStatus(index, row.id)">
-                  <span v-if="row.status=='PAUSED'">Resume</span>
-                  <span v-else>Pause</span>
+                <v-btn 
+                  :disabled="$store.get('session/isViewer')"
+                  small
+                  class="mx-1"
+                  @click="toggleStatus(index, row.id)">
+                    <span v-if="row.status=='PAUSED'">Resume</span>
+                    <span v-else>Pause</span>
                 </v-btn>
-                <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
+                <v-btn
+                  :disabled="$store.get('session/isViewer')"
+                  small
+                  class="mx-1"
+                  @click="remove(index, row.id, (row.name || row.url))">
+                    Delete
+                  </v-btn>
               </div>
             </div>
 
             <link-details
               :data="row"
               :key="row.detailsRefreshCount"
-              style="margin-top: -20px"
               v-if="showingIndex==index && showDetails==true"
             />
 
@@ -122,6 +133,11 @@
 
         </template>
       </v-hover>
+
+      <div class="caption mt-3">
+        <span class="font-weight-bold orange--text">Tip:</span>
+        Click on the card to toggle details panel!
+      </div>
 
     </div>
     <confirm ref="confirm"></confirm>

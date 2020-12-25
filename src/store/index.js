@@ -3,16 +3,18 @@ import Vuex from 'vuex';
 import pathify from 'vuex-pathify'
 
 import system from './system';
-import auth from './auth';
+import session from './session';
 import snackbar from './snackbar';
+import warning from './warning';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
     system,
-    auth,
-    snackbar
+    session,
+    snackbar,
+    warning
   },
 
   plugins: [

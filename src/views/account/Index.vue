@@ -19,7 +19,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   components: {
     Profile: () => import('./Profile'),

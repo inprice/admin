@@ -46,7 +46,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   data() {
     return {
@@ -61,7 +61,7 @@ export default {
       const result = await AccountService.deleteAccount(password);
       if (result == true) {
         this.$refs.passwordConfirmDialog.close();
-        this.$store.dispatch('auth/logout', false);
+        this.$store.dispatch('session/logout', false);
       } else {
         this.$refs.passwordConfirmDialog.stopLoading();
       }

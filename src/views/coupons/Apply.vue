@@ -29,7 +29,7 @@
             @click="submit"
             color="primary"
             :loading="loading"
-            :disabled="loading"
+            :disabled="loading || $store.get('session/isViewer')"
           >
             Apply
           </v-btn>

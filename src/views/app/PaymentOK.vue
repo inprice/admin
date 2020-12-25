@@ -17,20 +17,9 @@
       <v-simple-table class="property-table">
         <template v-slot:default>
           <tbody>
-            <tr>
-              <td class="prop-name">Status</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-4" v-model="CURSTAT.status" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name">Plan Name</td>
-              <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="CURSTAT.planName || 'Not selected!'" /></td>
-            </tr>
-            <tr>
-              <td class="prop-name text-capitalize">Renewal At</td>
-              <td class="d-flex">
-                <v-text-field solo dense readonly hide-details="true" class="col-4" v-model="CURSTAT.renewalAt" />
-              </td>
-            </tr>
+            <property valueClass="col-4" name="Status" :value="CURSTAT.status" />
+            <property valueClass="col-4" name="Plan Name" :value="CURSTAT.planName || 'Not selected!'" />
+            <property valueClass="col-4" name="Renewal At" :value="CURSTAT.renewalAt" />
           </tbody>
         </template>
       </v-simple-table>
@@ -76,7 +65,7 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   data() {
     return {
@@ -92,7 +81,7 @@ export default {
     let retry = 0;
     this.overlay = true;
     const refreshId = setInterval(() => {
-      this.$store.dispatch('auth/refreshSession'); 
+      this.$store.dispatch('session/refresh'); 
       if (this.CURSTAT.status == 'SUBSCRIBED' || retry >= 5) {
         clearInterval(refreshId);
         this.overlay = false;
@@ -102,6 +91,7 @@ export default {
   },
   components: {
     Overlay: () => import('@/component/app/Overlay.vue'),
+    Property: () => import('@/component/app/Property.vue')
   }
 }
 </script>

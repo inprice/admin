@@ -16,7 +16,7 @@
             Refresh
           </v-btn>
 
-          <v-btn small dark color="success" class="mx-2" @click="openSendDialog">
+          <v-btn small color="success" class="mx-2 white--text" @click="openSendDialog">
             Invite a user
           </v-btn>
         </div>

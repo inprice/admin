@@ -7,8 +7,8 @@
     <v-tabs v-model="selectedTab" class="v-card v-sheet theme--light">
 
       <!-- PRICES -->
-      <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="data && data.priceList && data.priceList.length">
+      <v-tab-item>
+        <v-simple-table dense v-if="data && data.priceList && data.priceList.length" class="pb-1">
           <template v-slot:default>
             <thead>
               <tr>
@@ -37,34 +37,22 @@
       </v-tab-item>
 
       <!-- PROPERTIES -->
-      <v-tab-item class="pb-2">
-        <v-simple-table class="property-table pt-3 pb-1" dense v-if="data">
+      <v-tab-item>
+        <v-simple-table class="property-table pt-3 pb-2" dense v-if="data">
           <template v-slot:default>
             <tbody>
-              <tr>
-                <td class="prop-name">Brand</td>
-                <td><v-text-field solo dense readonly hide-details="true" class="col-5" :value="data.brand || 'NA'" /></td>
-              </tr>
-              <tr>
-                <td class="prop-name">Shipment</td>
-                <td><v-text-field solo dense readonly hide-details="true" class="col-5" :value="data.shipment || 'NA'" /></td>
-              </tr>
-              <tr>
-                <td class="prop-name">Last Check</td>
-                <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="data.lastCheck | formatDate" /></td>
-              </tr>
-              <tr>
-                <td class="prop-name">Last Update</td>
-                <td><v-text-field solo dense readonly hide-details="true" class="col-4" :value="data.lastUpdate | formatDate" /></td>
-              </tr>
+              <property valueClass="col-5" name="Brand" :value="data.brand || 'NA'" />
+              <property valueClass="col-5" name="Shipment" :value="data.shipment || 'NA'" />
+              <property valueClass="col-4" name="Last Check" :value="data.lastCheck || 'NA'" />
+              <property valueClass="col-4" name="Last Update" :value="data.lastUpdate | formatDate" />
             </tbody>
           </template>
         </v-simple-table>
       </v-tab-item>
 
       <!-- HISTORY -->
-      <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="data && data.historyList && data.historyList.length">
+      <v-tab-item>
+        <v-simple-table dense v-if="data && data.historyList && data.historyList.length" class="pb-1">
           <template v-slot:default>
             <thead>
               <tr>
@@ -92,8 +80,8 @@
       </v-tab-item>
 
       <!-- SPECS -->
-      <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="data && data.specList && data.specList.length">
+      <v-tab-item>
+        <v-simple-table dense v-if="data && data.specList && data.specList.length" class="pb-1">
           <template v-slot:default>
             <thead>
               <tr>
@@ -132,6 +120,13 @@ export default {
   },
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    Property: () => import('@/component/app/Property.vue')
   }
 }
 </script>
+
+<style scoped>
+  .av-window-item {
+    padding-bottom: 0 !important;
+  }
+</style>

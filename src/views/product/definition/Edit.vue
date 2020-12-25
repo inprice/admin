@@ -4,6 +4,7 @@
     <v-dialog v-model="opened" max-width="500" overlay-opacity="0.2">
       <v-card>
         <v-card-title>Product details</v-card-title>
+        <v-card-subtitle>{{ form.name }}</v-card-subtitle>
         <v-divider class="mb-2"></v-divider>
 
         <v-card-text class="pb-0">

@@ -33,6 +33,7 @@
             In order to set your invoice header, <span class="font-weight-medium">you need to have an active subscription!</span>
           </span>
           <v-btn 
+            :disabled="$store.get('session/isNotAdmin')"
             small
             color="success"
             class="ml-3 my-auto"
@@ -60,7 +61,7 @@ import { get } from 'vuex-pathify'
 export default {
   computed: {
     plans: get('system/plans'),
-    CURSTAT: get('auth/CURRENT_STATUS'),
+    CURSTAT: get('session/getCurrentStatus'),
   },
   data() {
     return {
@@ -71,7 +72,7 @@ export default {
   },
   methods: {
     refreshSession() {
-      this.$store.dispatch('auth/refreshSession');
+      this.$store.dispatch('session/refresh');
     }
   },
   created() {
