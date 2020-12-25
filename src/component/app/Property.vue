@@ -16,11 +16,8 @@ export default {
     name: {
       type: String
     },
-    value: {
-      type: String
-    },
+    value: { },
     valueClass: {
-      type: String,
       default: 'col'
     }
   }

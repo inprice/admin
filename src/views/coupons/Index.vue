@@ -18,7 +18,8 @@
         <v-spacer></v-spacer>
 
         <v-btn 
-          v-if="canUseCoupon"
+          :disabled="$store.get('session/isNotAdmin')"
+          v-if="CURSTAT.isActive == false"
           small 
           class="mx-2 my-auto"
           color="success"
@@ -27,10 +28,11 @@
         </v-btn>
 
         <v-btn 
+          :disabled="$store.get('session/isNotAdmin')"
           v-if="CURSTAT.status == 'COUPONED'"
-          dark
           small
           color="red"
+          class="white--text"
           @click="cancel"
         >
           Cancel
@@ -54,24 +56,25 @@
             </thead>
             <tbody>
               <tr v-for="cpn in coupons" :key="cpn.id">
-                <td class="text-center font-weight-bold">{{ cpn.code }}</td>
+                <td class="text-center font-weight-bold">{{ maskCode(cpn) }}</td>
                 <td class="text-center font-weight-bold">{{ cpn.days }}</td>
                 <td class="text-center">
                   <v-chip small label outlined v-if="cpn.issuedAt">USED</v-chip>
                   <div v-else>
-                    <v-chip small label outlined dark v-if="canUseCoupon" color="teal">AVAILABLE</v-chip>
-                    <v-chip small label outlined dark v-else color="red">NOT NOW</v-chip>
+                    <v-chip small label outlined dark v-if="$store.get('session/isAdmin')" color="teal">AVAILABLE</v-chip>
+                    <v-chip small label outlined dark v-else color="red">ADMIN NEEDED</v-chip>
                   </div>
                 </td>
                 <td class="text-center">
                   <ago :date="cpn.issuedAt" v-if="cpn.issuedAt" />
                   <v-btn
                     v-else
-                    small dark
+                    small
                     color="light-blue"
-                    :disabled="loading.apply || canUseCoupon == false"
+                    :disabled="loading.apply || $store.get('session/isNotAdmin') || CURSTAT.isActive == true"
                     @click="apply(cpn.code)"
-                    style="min-width: 80%">
+                    style="min-width: 80%"
+                    class="white--text">
                     Use
                   </v-btn>
                 </td>
@@ -102,14 +105,9 @@ import SubsService from '@/service/subscription';
 import CouponService from '@/service/coupon';
 import { get } from 'vuex-pathify'
 
-const passives = [ 'CREATED', 'CANCELLED', 'STOPPED' ];
-
 export default {
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
-    canUseCoupon() {
-      return passives.includes(this.CURSTAT.status);
-    } 
   },
   data() {
     return {
@@ -167,6 +165,12 @@ export default {
     openApplyCouponDialog() {
       this.$refs.applyCouponDialog.open();
     },
+    maskCode(coupon) {
+      if (!coupon.issuedAt && this.$store.get('session/isNotAdmin')) {
+        return coupon.code.substring(0, 2) + '***' + coupon.code.substring(5);
+      }
+      return coupon.code;
+    }
   },
   created() {
     this.$nextTick(() => {

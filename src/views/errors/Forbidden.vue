@@ -13,8 +13,8 @@
           {{ message }}
         </p>
 
-        <v-btn @click="$router.go(-1)" large class="mt-10">
-          Go back
+        <v-btn :to="{ name: 'login' }" large class="mt-10">
+          Turn to Dashboard
         </v-btn>
       </v-col>
     </v-row>
@@ -26,9 +26,9 @@
 export default {
   data() {
     return {
-      title: 'Page not found!',
-      number: 404,
-      message: 'The page you are looking for does not exist!',
+      title: 'Permission problem!',
+      number: 403,
+      message: 'You are not allowed to enter this section!',
     };
   }
 }

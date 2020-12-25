@@ -78,7 +78,7 @@
             <v-list-item-title>User Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'account-settings'}">
+        <v-list-item link :to="{name: 'account-settings'}" :disabled="$store.get('session/isNotAdmin')">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-action>
@@ -115,8 +115,7 @@
 
     </v-navigation-drawer>
 
-    <!--v-app-bar app color="blue-grey" dark clipped-left -->
-    <v-app-bar app dark clipped-left color="blue-grey">
+    <v-app-bar app clipped-left color="blue-grey"  dark>
 
       <v-app-bar-nav-icon @click.stop="changeDrawerPosition"></v-app-bar-nav-icon>
       <div class="hidden-sm-and-down ml-4 mt-2">

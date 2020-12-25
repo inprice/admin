@@ -1,5 +1,6 @@
 import ApiService from './api';
 import store from '../store'
+import router from '../router';
 
 function logoutCheck(reason) {
   if (reason.includes("code 401") || reason.includes("be expired") || (reason.includes("Network Error") && !window.location.href.includes("/login"))) {
@@ -27,6 +28,10 @@ export default {
         } else {
           if (res.data.status == 404 && sensitiveFor404 == false) {
             return { status: true };
+          }
+          if (res.data.status == 403) {
+            router.push({ name: 'forbidden' });
+            return;
           }
 
           logoutCheck(res.data.reason);

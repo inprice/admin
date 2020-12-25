@@ -28,6 +28,7 @@
         </v-text-field>
 
         <v-btn 
+          :disabled="$store.get('session/isViewer')"
           fab small
           elevation="3"
           class="ml-2"

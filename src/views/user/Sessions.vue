@@ -85,7 +85,7 @@ export default {
       this.loading.closeall = false;
     }
   },
-  mounted() {
+  created() {
     this.$nextTick(() => {
       this.getOpenedSessions();
     });

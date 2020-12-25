@@ -1,10 +1,13 @@
 import Helper from './helper';
+import store from '../store';
 
 const baseURL = '/link';
 
 export default {
 
   async insert(data) {
+    if (store.get('session/isViewer')) return;
+
     const res = await Helper.call('Link Save', { method: 'post', url: baseURL, data });
     return res;
   },
@@ -22,6 +25,8 @@ export default {
   },
 
   async remove(id) {
+    if (store.get('session/isViewer')) return;
+
     const res = await Helper.call('Link Delete', { method: 'delete', url: baseURL + '/' + id });
     return res.status;
   },
@@ -33,6 +38,8 @@ export default {
   },
 
   async toggleStatus(id) {
+    if (store.get('session/isViewer')) return;
+
     const res = await Helper.call('Toggle Status', { method: 'put', url: baseURL + '/toggle/' + id });
     return res.status;
   }

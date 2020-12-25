@@ -8,7 +8,8 @@
           <v-icon class="mr-2">mdi-arrow-left-circle-outline</v-icon>
           Go Back
       </v-btn>
-      <v-btn 
+      <v-btn
+        :disabled="$store.get('session/isViewer')"
         v-if="data && data.import"
         small
         @click="remove">
@@ -32,7 +33,7 @@
             <property valueClass="col-3" name="Type" :value="data.import.type + (data.import.is_file ? ' File' : ' List')" />
             <property valueClass="col-3" name="Date" :value="data.import.createdAt" />
             <property valueClass="col-2" name="Successes" :value="data.import.successCount" />
-            <property valueClass="col-2" name="Failures" :value="data.import.problemCount" />
+            <property valueClass="col-2" name="Failures" :value="data.import.problemCount || '0'" />
           </tbody>
         </template>
       </v-simple-table>
@@ -45,7 +46,7 @@
             <thead>
               <tr>
                 <th>Data</th>
-                <th>Status</th>
+                <th>Looks</th>
                 <!--
                 <th class="text-center">Status</th>
                  -->

@@ -7,8 +7,8 @@
     <v-tabs v-model="selectedTab" class="v-card v-sheet theme--light">
 
       <!-- PRICES -->
-      <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="data && data.priceList && data.priceList.length">
+      <v-tab-item>
+        <v-simple-table dense v-if="data && data.priceList && data.priceList.length" class="pb-1">
           <template v-slot:default>
             <thead>
               <tr>
@@ -37,8 +37,8 @@
       </v-tab-item>
 
       <!-- PROPERTIES -->
-      <v-tab-item class="pb-2">
-        <v-simple-table class="property-table pt-3 pb-1" dense v-if="data">
+      <v-tab-item>
+        <v-simple-table class="property-table pt-3 pb-2" dense v-if="data">
           <template v-slot:default>
             <tbody>
               <property valueClass="col-5" name="Brand" :value="data.brand || 'NA'" />
@@ -51,8 +51,8 @@
       </v-tab-item>
 
       <!-- HISTORY -->
-      <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="data && data.historyList && data.historyList.length">
+      <v-tab-item>
+        <v-simple-table dense v-if="data && data.historyList && data.historyList.length" class="pb-1">
           <template v-slot:default>
             <thead>
               <tr>
@@ -80,8 +80,8 @@
       </v-tab-item>
 
       <!-- SPECS -->
-      <v-tab-item class="pb-2">
-        <v-simple-table dense v-if="data && data.specList && data.specList.length">
+      <v-tab-item>
+        <v-simple-table dense v-if="data && data.specList && data.specList.length" class="pb-1">
           <template v-slot:default>
             <thead>
               <tr>
@@ -124,3 +124,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .av-window-item {
+    padding-bottom: 0 !important;
+  }
+</style>

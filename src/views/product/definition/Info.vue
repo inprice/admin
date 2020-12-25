@@ -5,6 +5,7 @@
       <div class="d-flex justify-space-between pa-4">
         <div class="my-auto"><v-icon class="mr-2">mdi-clipboard-edit-outline</v-icon> {{ prod.name }}</div>
         <v-btn 
+          :disabled="$store.get('session/isViewer')"
           small 
           class="my-auto"
           color="success"
@@ -54,7 +55,7 @@
               </td>
             </property>
 
-            <property valueClass="col-6" name="Tags" :value="prod.tags ? prod.tags.join(', ') : ''" />
+            <property valueClass="col-6" name="Tags" :value="prod.tags.length ? prod.tags.join(', ') : 'NA'" />
           </tbody>
         </template>
       </v-simple-table>

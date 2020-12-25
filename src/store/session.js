@@ -39,7 +39,7 @@ const actions = {
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(res.data.sessions));
     state.no = res.data.sessionNo;
     state.list[state.no] = res.data.sessions[state.no];
-    commit('LIST', res.data);
+    commit('SET_LIST', res.data);
     loginChannel.postMessage(res.data);
   },
 
@@ -47,7 +47,7 @@ const actions = {
     ApiService.get('/app/refresh-session')
       .then((res) => {
         if (res && res.data) {
-          commit('CURRENT', res.data.data.session);
+          commit('SET_CURRENT', res.data.data.session);
         }
       });
   }
@@ -137,15 +137,15 @@ const getters = {
     return state.current.role === 'ADMIN';
   },
 
+  isNotAdmin: (state) => {
+    return state.current.role !== 'ADMIN';
+  },
+
   isEditor: (state) => {
     return state.current.role === 'EDITOR' || getters.isAdmin(state);
   },
 
   isViewer: (state) => {
-    return state.current.role === 'VIEWER' || getters.isEditor(state);
-  },
-
-  isJustViewer: (state) => {
     return state.current.role === 'VIEWER';
   },
 
@@ -153,7 +153,7 @@ const getters = {
 
 const loginChannel = new BroadcastChannel('login');
 loginChannel.onmessage = (e) => {
-  mutations.LIST(state, e);
+  mutations.SET_LIST(state, e);
 };
 
 const logoutChannel = new BroadcastChannel('logout');

@@ -33,6 +33,7 @@
             In order to set your invoice header, <span class="font-weight-medium">you need to have an active subscription!</span>
           </span>
           <v-btn 
+            :disabled="$store.get('session/isNotAdmin')"
             small
             color="success"
             class="ml-3 my-auto"

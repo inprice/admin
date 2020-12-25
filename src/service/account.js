@@ -1,4 +1,5 @@
 import Helper from './helper';
+import store from '../store';
 
 const baseURL = '/account';
 
@@ -21,6 +22,8 @@ export default {
   },
 
   async deleteAccount(password) {
+    if (store.get('session/isNotAdmin')) return;
+
     const res = await Helper.call('Delete Account', { method: 'put', url: baseURL + '/delete', data: { value: password }});
     return res.status;
   }

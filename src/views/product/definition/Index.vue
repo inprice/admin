@@ -10,6 +10,7 @@
       </v-btn>
       <v-btn 
         small
+        :disabled="$store.get('session/isViewer')"
         @click="remove">
           <v-icon class="mr-2">mdi-close-circle-outline</v-icon>
           Delete
@@ -37,9 +38,6 @@ export default {
     };
   },
   methods: {
-    addNew() {
-      this.$refs.editDialog.open();
-    },
     edit() {
       let cloned = JSON.parse(JSON.stringify(this.data.product));
       this.$refs.editDialog.open(cloned);
@@ -66,7 +64,7 @@ export default {
           this.data = res.data;
         }
       });
-    }
+    },
   },
   mounted() {
     this.findProduct();

@@ -1,16 +1,18 @@
 const state = {
-  title: '',
+  title: 'Warning',
   text: '',
+  action: '',
+  counter: 0
 };
 
 const actions = {
 
-  youMustBeEditor({ state }) {
-    state.text = 'Only those users having Editor role are allowed!'
+  youMustBeEditor({ state }, action) {
+    state.text = `You are not allowed to ${action}!`
   },
 
-  youMustBeAdmin({ state }) {
-    state.text = 'You must be Admin to do this action!'
+  youMustBeAdmin({ state }, action) {
+    state.text = `Only admin is allowed to ${action}!`
   },
 
 };
@@ -18,11 +20,18 @@ const actions = {
 const mutations = {
 
   setMessage(state, message) {
+    const notChanged = (message.text == state.text);
     if (message.title)
       state.title = message.title;
     else
       state.title = 'Warning';
+    state.action = message.action;
     state.text = message.text;
+    if (!notChanged) {
+      state.counter++;
+    } else {
+      state.counter = 0;
+    }
   }
 
 };

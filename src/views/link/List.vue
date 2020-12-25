@@ -9,7 +9,7 @@
           <v-card class="mb-3 pa-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
 
             <div @click="toggleDetails(row.id)" style="cursor: pointer">
-              <div class="d-flex justify-space-between subtitle">
+              <div class="d-flex justify-space-between subtitle font-weight-medium">
                 <div>{{ row.name || row.problem || 'NOT YET' }}</div>
                 <div>{{ row.price | toPrice }}</div>
               </div>
@@ -17,7 +17,7 @@
               <div class="d-flex justify-space-between caption">
                 <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
                 <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
-                <div>{{ row.position | toPosition }}</div>
+                <div class="blue--text">{{ row.position | toPosition }}</div>
               </div>
 
               <div class="d-flex justify-space-between caption">
@@ -33,11 +33,11 @@
             <div class="row mr-0">
               <v-spacer></v-spacer>
               <div>
-                <v-btn class="mx-1" small @click="toggleStatus(index, row.id)">
+                <v-btn class="mx-1" small @click="toggleStatus(index, row.id)" :disabled="$store.get('session/isViewer')">
                   <span v-if="row.status=='PAUSED'">Resume</span>
                   <span v-else>Pause</span>
                 </v-btn>
-                <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))">Delete</v-btn>
+                <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))" :disabled="$store.get('session/isViewer')">Delete</v-btn>
                 <v-btn class="mx-1" small @click="openProductPage(row.productId)">Product Page</v-btn>
               </div>
             </div>
@@ -45,7 +45,6 @@
             <link-details
               :data="openedDetail"
               :key="detailsRefreshCount"
-              style="margin-top: -20px"
               v-if="showDetails==true && openedDetail && openedDetail.id==row.id"
             />
 
@@ -55,8 +54,8 @@
       </v-hover>
 
       <div class="caption mt-3">
-        <span class="font-italic font-weight-bold">Please note:</span>
-        Click the card to show/hide details panel!
+        <span class="font-weight-bold orange--text">Tip:</span>
+        Click on the card to toggle details panel!
       </div>
 
     </div>

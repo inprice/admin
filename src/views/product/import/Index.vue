@@ -13,6 +13,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            :disabled="$store.get('session/isViewer')"
             small
             v-bind="attrs"
             v-on="on"

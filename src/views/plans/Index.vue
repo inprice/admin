@@ -26,7 +26,7 @@
           color="success"
           class="my-auto ml-3"
           :loading="loading.tryFreeUse" 
-          :disabled="loading.tryFreeUse"
+          :disabled="loading.tryFreeUse || $store.get('session/isNotAdmin')"
           @click="startFreeUse"
         >
           Let me try
@@ -53,15 +53,14 @@
       <v-card>
         <block-message 
           class="mb-0"
-          v-if="CURSTAT.isFree"
+          v-if="CURSTAT.isFree && $store.get('session/isAdmin')"
           :message="'Your actual status is ' + CURSTAT.status + '. It\'s ending ' + prettyRemainingDaysForFree()"
         >
           You can subscribe to any plan below
           <v-btn 
-            dark
             small
             color="error"
-            class="float-right d-inline"
+            class="float-right d-inline white--text"
             @click="cancel()"
           >
             Or Cancel
@@ -108,31 +107,31 @@
 
                 <v-divider class="mb-4"></v-divider>
 
-                <v-btn 
+                <v-btn
+                  :disabled="$store.get('session/isNotAdmin')" 
                   v-if="CURSTAT.isSubscriber == false"
-                  dark
                   color="success"
-                  class="mx-auto mb-2"
+                  class="mx-auto mb-2 white--text"
                   @click="subscribe(plan.id)"
                 >
                   Subscribe
                 </v-btn>
 
                 <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
-                  <v-btn 
+                  <v-btn
+                    :disabled="$store.get('session/isNotAdmin')" 
                     v-if="plan.id == CURSTAT.planId"
-                    dark
                     color="error"
-                    class="mx-auto mb-2"
+                    class="mx-auto mb-2 white--text"
                     @click="cancel()"
                   >
                     Cancel
                   </v-btn>
                   <v-btn 
                     v-else
-                    dark
+                    :disabled="$store.get('session/isNotAdmin')"
                     :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
-                    class="mx-auto mb-2"
+                    class="mx-auto mb-2 white--text"
                     @click="changeTo(plan.id)"
                   >
                     {{ plan.id > CURSTAT.planId ? 'UPGRADE' : 'DOWNGRADE' }}

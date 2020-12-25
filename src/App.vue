@@ -22,22 +22,21 @@
     </v-snackbar>
 
     <v-dialog
-      persistent
       v-model="warning.show"
       :max-width="350"
       :style="{ zIndex: 200 }"
-      @keydown.esc="close"
+      @keydown.esc="closeWarning"
       overlay-opacity="0.2"
     >
       <v-card>
-        <v-toolbar dense flat>
-          <v-icon class="mr-2">mdi-shield-alert-outline</v-icon>
-          <v-toolbar-title>{{ warning.title }}</v-toolbar-title>
-        </v-toolbar>
+        <div class="white--text font-weight-bold pa-2 pl-3" style="background-color: #e77">
+          {{ warning.title }}
+        </div>
 
         <v-divider></v-divider>
 
-        <v-card-text class="pa-4">
+        <v-card-text class="pa-4 black--text">
+          <v-icon class="mr-1">mdi-help-circle-outline</v-icon>
           {{ warning.message }}
         </v-card-text>
 
@@ -45,7 +44,7 @@
 
         <v-card-actions class="pt-0">
           <v-spacer></v-spacer>
-          <v-btn @click.native="closeWarning" text class="mt-3 mb-2">OK</v-btn>
+          <v-btn @click.native="closeWarning" text class="mt-2">OK</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

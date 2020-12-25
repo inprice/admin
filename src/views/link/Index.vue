@@ -88,6 +88,7 @@
         :message="'You are not allowed to manage your products until activate your account!'">
 
         <v-btn 
+          :disabled="$store.get('session/isViewer')"
           small
           color="success"
           class="my-auto float-right"

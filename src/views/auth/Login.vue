@@ -118,7 +118,6 @@ export default {
           } else {
             this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
           }
-          return;
         }
         this.loading = false;
       }
