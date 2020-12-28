@@ -143,7 +143,7 @@ export default {
       rows: []
     }
   },
-  mounted() {
+  created() {
     ImportService.getList()
       .then((res) => {
         if (res && res.data) this.rows = res.data;

@@ -67,7 +67,7 @@ export default {
     InvoiceInfoDialog: () => import('./InvoiceInfoEdit.vue'),
     Property: () => import('@/component/app/Property.vue')
   },
-  mounted() {
+  created() {
     this.fetchData();
   }
 }

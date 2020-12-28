@@ -31,8 +31,6 @@
       <v-menu
         v-model="menu"
         :close-on-content-click="false"
-        offset-y
-        bottom left
         :nudge-width="100"
         transition="slide-x-transition"
       >
@@ -151,7 +149,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.triggerSearch();
   },
   watch: {
@@ -223,4 +221,4 @@ export default {
     font-weight: 400 !important;
     color: rgba(0, 0, 0, 0.87) !important;
   }
-</style>
+ </style>

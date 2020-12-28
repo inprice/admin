@@ -39,7 +39,7 @@ const actions = {
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(res.data.sessions));
     state.no = res.data.sessionNo;
     state.list[state.no] = res.data.sessions[state.no];
-    commit('SET_LIST', res.data);
+    commit('list', res.data);
     loginChannel.postMessage(res.data);
   },
 
@@ -47,7 +47,7 @@ const actions = {
     ApiService.get('/app/refresh-session')
       .then((res) => {
         if (res && res.data) {
-          commit('SET_CURRENT', res.data.data.session);
+          commit('current', res.data.data.session);
         }
       });
   }
@@ -56,14 +56,14 @@ const actions = {
 
 const mutations = {
 
-  SET_CURRENT(state, ses) {
+  current(state, ses) {
     state.current = ses;
     state.list[state.no] = ses;
     localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.list));
     loginChannel.postMessage(state.list);
   },
 
-  SET_LIST(state, data) {
+  list(state, data) {
     //persisting list into localstorage is alredy done by caller function!
     if (data.sessions) {
       state.list = data.sessions;
@@ -153,7 +153,7 @@ const getters = {
 
 const loginChannel = new BroadcastChannel('login');
 loginChannel.onmessage = (e) => {
-  mutations.SET_LIST(state, e);
+  mutations.list(state, e);
 };
 
 const logoutChannel = new BroadcastChannel('logout');

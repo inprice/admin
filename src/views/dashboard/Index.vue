@@ -12,10 +12,11 @@
       <v-spacer></v-spacer>
 
       <div class="text-center my-auto" v-if="report.account && CURSTAT.isActive">
-        <v-btn small text color="info" @click="refresh">
+        <div class="mb-1 caption">{{ report.date | formatDate }}</div>
+        <v-btn small @click="refresh">
           <v-icon left>mdi-refresh</v-icon> Refresh
+          <br>
         </v-btn>
-        <div class="caption">{{ report.date }}</div>
       </div>
     </div>
 
@@ -30,7 +31,7 @@
           <v-icon class="mr-4">mdi-layers</v-icon>
           <div class="col pa-0">
             <div>Product positions</div>
-            <div class="caption float-left">The positions of your products.</div>
+            <div class="caption">The positions of your products.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
@@ -48,7 +49,7 @@
           <v-icon class="mr-4">mdi-layers-outline</v-icon>
           <div class="col pa-0">
             <div>Link statuses</div>
-            <div class="caption float-left">The statuses of your competitors.</div>
+            <div class="caption">The statuses of your competitors.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
@@ -59,87 +60,50 @@
       </v-card>
     </div>
 
-    <!-- ------------------ -->
-    <!-- MRU 25 Links -->
-    <!-- ------------------ -->
-    <v-card class="mt-2">
-      <v-card-title class="pa-2">
-        <v-icon class="mr-4">mdi-account-search-outline</v-icon>
-        <div>
-          <div>Links</div>
-          <div class="caption float-left">The list of Most Recently Updated 25 competitors.</div>
-        </div>
-      </v-card-title>
-      <v-divider></v-divider>
-      <v-simple-table dense v-if="report && report.links && report.links.mru25.length">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th>Seller & Platform | URL</th>
-              <th width="10%" class="text-right">Price</th>
-              <th width="20%">Status</th>
-              <th width="15%">Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, index) in report.links.mru25" :key="index" :title="row.productName">
-              <td v-if="row.seller">{{ (row.seller || 'NA') + (' ('+row.platform+')' || '') }}</td>
-              <td v-else class="caption font-italic">{{ row.url }}</td>
-              <td width="10%" class="text-right font-weight-bold">{{ row.price | toPrice }}</td>
-              <td width="20%">{{ row.status | formatStatus }}</td>
-              <td width="15%">
-                <ago :date="row.lastUpdate" />
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
 
-      <block-message 
-        v-else 
-        class="mb-0"
-        :message="'No data.'"
-      />
-    </v-card>
-
-      <!-- ------------------------------------ -->
-      <!-- 10 Products having the lowest prices -->
-      <!-- ------------------------------------ -->
+    <!-- ------------------------------------ -->
+    <!-- 10 Products having the lowest prices -->
+    <!-- ------------------------------------ -->
     <v-card class="mt-3">
       <v-card-title class="pa-2">
         <v-icon class="mr-4">mdi-arrow-down-circle-outline</v-icon>
         <div>
           <div>10 products with low prices</div>
-          <div class="caption float-left">The list of 10 products having the lowest prices among their competitors.</div>
+          <div class="caption">Your 10 products having the lowest prices.</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
-      <v-simple-table dense v-if="report && report.products && report.products.extremePrices.lowest && report.products.extremePrices.lowest.length">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th width="20%">Name</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Links</th>
-              <th class="text-right">Ranking</th>
-              <th class="text-center">Date</th>
-              <th class="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row) in report.products.extremePrices.lowest" :key="row.id">
-              <td>{{ row.name }}</td>
-              <td class="text-right">{{ row.price | toCurrency }}</td>
-              <td class="text-right">{{ row.links || 0 }}</td>
-              <td class="text-right">{{ row.ranking || 1 }}</td>
-              <td class="text-center">
-                <ago :date="row.lastUpdate" />
-              </td>
-              <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
+
+      <div 
+        class="v-data-table v-data-table--dense theme--light put-behind" 
+        v-if="report && report.products && report.products.extremePrices.lowest && report.products.extremePrices.lowest.length">
+        <div class="v-data-table__wrapper">
+          <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
+            <thead>
+              <tr>
+                <th :width="RESPROPS.priceTable.name">Name</th>
+                <th :width="RESPROPS.priceTable.price" class="text-right">Price</th>
+                <th :width="RESPROPS.priceTable.ranking" class="text-center">Ranking</th>
+                <th :width="RESPROPS.priceTable.date" class="text-center">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                style="cursor: pointer"
+                link @click="$router.push({ name: 'product', params: { id: row.id } })"
+                v-for="(row) in report.products.extremePrices.lowest" 
+                :key="row.id">
+                <td>{{ row.name }}</td>
+                <td class="text-right">{{ row.price | toPrice }}</td>
+                <td class="text-center">{{ (row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA') }}</td>
+                <td class="text-center">
+                  <ago :date="row.lastUpdate" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <block-message 
         v-else 
@@ -156,36 +120,87 @@
         <v-icon class="mr-4">mdi-arrow-up-circle-outline</v-icon>
         <div>
           <div>10 Products with high prices</div>
-          <div class="caption float-left">The list of 10 products having the highest prices among their competitors.</div>
+          <div class="caption">Your 10 products having the highest prices.</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
-      <v-simple-table dense v-if="report && report.products && report.products.extremePrices.highest && report.products.extremePrices.highest.length">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th width="20%">Name</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Links</th>
-              <th class="text-right">Ranking</th>
-              <th class="text-center">Date</th>
-              <th class="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row) in report.products.extremePrices.highest" :key="row.id">
-              <td>{{ row.name }}</td>
-              <td class="text-right">{{ row.price | toCurrency }}</td>
-              <td class="text-right">{{ row.links || 0 }}</td>
-              <td class="text-right">{{ row.ranking || 1 }}</td>
-              <td class="text-center">
-                <ago :date="row.lastUpdate" />
-              </td>
-              <td class="text-center"><v-btn small class="ma-1">Edit</v-btn></td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
+
+      <div 
+        class="v-data-table v-data-table--dense theme--light put-behind" 
+        v-if="report && report.products && report.products.extremePrices.highest && report.products.extremePrices.highest.length">
+        <div class="v-data-table__wrapper">
+          <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
+            <thead>
+              <tr>
+                <th :width="RESPROPS.priceTable.name">Name</th>
+                <th :width="RESPROPS.priceTable.price" class="text-right">Price</th>
+                <th :width="RESPROPS.priceTable.ranking" class="text-center">Ranking</th>
+                <th :width="RESPROPS.priceTable.date" class="text-center">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr 
+                style="cursor: pointer"
+                link @click="$router.push({ name: 'product', params: { id: row.id } })"
+                v-for="(row) in report.products.extremePrices.highest" 
+                :key="row.id">
+                <td>{{ row.name }}</td>
+                <td class="text-right">{{ row.price | toPrice }}</td>
+                <td class="text-center">{{ (row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA') }}</td>
+                <td class="text-center">
+                  <ago :date="row.lastUpdate" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <block-message 
+        v-else 
+        class="mb-0"
+        :message="'No data.'"
+      />
+    </v-card>
+
+    <!-- ------------------ -->
+    <!-- MRU 25 Links -->
+    <!-- ------------------ -->
+    <v-card class="mt-2">
+      <v-card-title class="pa-2 d-flex">
+        <v-icon class="mr-4">mdi-account-search-outline</v-icon>
+        <div>
+          <div>Competitors</div>
+          <div class="caption">Most recently updated 25 competitors.</div>
+        </div>
+      </v-card-title>
+      <v-divider></v-divider>
+
+      <div class="v-data-table v-data-table--dense theme--light put-behind" v-if="report && report.links && report.links.mru25.length">
+        <div class="v-data-table__wrapper">
+          <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
+            <thead>
+              <tr>
+                <th :width="RESPROPS.linksTable.seller" class="text-truncate">Seller & Platform | URL</th>
+                <th :width="RESPROPS.linksTable.price" class="text-right">Price</th>
+                <th :width="RESPROPS.linksTable.status">Status</th>
+                <th :width="RESPROPS.linksTable.time">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in report.links.mru25" :key="index" :title="row.productName">
+                <td v-if="row.seller">{{ (row.seller || 'NA') + (' ('+row.platform+')' || '') }}</td>
+                <td v-else class="font-italic">{{ row.url }}</td>
+                <td class="text-right">{{ row.price | toPrice }}</td>
+                <td>{{ row.status | formatStatus }}</td>
+                <td>
+                  <ago :date="row.lastUpdate" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <block-message 
         v-else 
@@ -215,12 +230,32 @@ export default {
   },
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'md':
+        case 'lg':
+        case 'xl': {
+          return {
+            'table-layout': '',
+            linksTable: { seller: '', price: '15%', status: '18%', time: '18%' },
+            priceTable: { name: '', price: '15%', ranking: '10%', date: '18%', action: '10%' }
+          };
+        }
+        default: {
+          return {
+            'table-layout': 'fixed',
+            linksTable: { seller: '300px', price: '150px', status: '150px', time: '150px' },
+            priceTable: { name: '300px', price: '150px', ranking: '80px', date: '150px', action: '100px' }
+          };
+        }
+      }
+    },
   },
   methods: {
     async refresh() {
       const result = await DashboardService.refresh();
       this.report = result.data;
-      if (this.report && this.report.account.renewalAt) {
+      if (this.report && this.report.account && this.report.account.renewalAt) {
         this.report.account.daysToRenewal = moment(this.report.account.renewalAt).diff(moment(), 'days')+1;
       }
 
@@ -243,7 +278,7 @@ export default {
       }
     },  
   },
-  mounted() {
+  created() {
     this.refresh();
   },
   components: {

@@ -209,7 +209,7 @@ router.beforeEach((to, from, next) => {
   if (!sesList || !sesList.length) {
     sesList = JSON.parse(localStorage.getItem(SystemConsts.keys.SESSIONS));
     if (sesList && sesList.length > 0) {
-      store.set('session/LIST', sesList);
+      store.set('session/list', sesList);
     }
   }
 

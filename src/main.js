@@ -23,6 +23,9 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import VueMask from 'v-mask'
 Vue.use(VueMask);
 
+import VuePageTransition from 'vue-page-transition'
+ Vue.use(VuePageTransition)
+
 Vue.component('ago', () => import('./component/simple/Ago.vue'));
 
 Chart.defaults.global.legend.display = false;

@@ -79,9 +79,9 @@
       <v-hover v-for="(row, index) in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card class="mt-1 mb-3 pa-2 transition-swing font-weight-medium" :class="`elevation-${hover ? 6 : 2}`">
+          <v-card class="mt-1 mb-3 pa-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
             <div @click="toggleDetails(index)" style="cursor: pointer">
-              <div class="d-flex justify-space-between subtitle">
+              <div class="d-flex justify-space-between subtitle font-weight-medium">
                 <div>{{ row.name || (row.status == 'TOBE_CLASSIFIED' ? 'WILL BE SET SOON' : row.problem) }}</div>
                 <div>{{ row.price | toPrice }}</div>
               </div>
@@ -272,7 +272,7 @@ export default {
     Confirm: () => import('@/component/Confirm.vue'),
     LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
   },
-  mounted() {
+  created() {
     this.$nextTick(() => {
       this.rows = this.links
     });

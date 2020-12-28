@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="mt-3">
     <v-card>
       <v-card-title>
-        <v-icon color="red" class="mr-4">mdi-alert-decagram-outline</v-icon>
+        <v-icon class="mr-4">mdi-alert-decagram-outline</v-icon>
         <div>
           <div>Delete this account</div>
         </div>

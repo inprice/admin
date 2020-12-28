@@ -37,18 +37,28 @@
             maxlength="16"
           />
 
+          <div class="text-center my-auto prop-value subtitle-2 blue--text">
+            To see the format in action, please change the sample
+          </div>
+
+          <v-divider class="my-3"></v-divider>
+
           <div class="d-flex">
-            <v-select class="mx-5"
+            <v-select 
+              class="mx-5 col"
               label="Sample"
               v-model="sampleAmount"
               :items="sampleAmounts"
               :menu-props="{ auto: true, overflowY: true }"
               @change="setCurrencyFormat"
+              hide-details
             />
 
-            <v-text-field class="mx-5"
+            <v-text-field 
+              class="mx-5 col"
               readonly
               label="Result"
+              hide-details
               :value="formatCurrency(sampleAmount)"
             />
           </div>

@@ -1,6 +1,5 @@
 <template>
-  <div class="mt-5">
-
+  <div class="mt-3">
     <v-card>
       <v-card-title class="pb-2">
         <v-icon class="mr-4">mdi-account-multiple</v-icon>
@@ -189,7 +188,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.$nextTick(() => {
       this.refreshMembers();
     });

@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4" lg="3" xl="2">
+      <v-col cols="12" sm="8" md="6" lg="3" xl="2">
 
         <div class="text-center mb-8">
           <img :src="verticalBrand" :width="140" />
@@ -71,6 +71,7 @@
         <div class="text-center font-weight-light mt-6">
           Don't have an account yet? <router-link to="request-registration">Sign Up</router-link>
         </div>
+
       </v-col>
     </v-row>
   </v-container>
@@ -136,7 +137,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
 
     this.infoMessage = null;

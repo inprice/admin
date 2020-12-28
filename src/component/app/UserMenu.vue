@@ -18,12 +18,12 @@
         <v-list-item two-line class="pt-0">
           <v-list-item-content class="pt-2">
             <v-list-item-title class="title">{{ CURSTAT.account }}</v-list-item-title>
-            <v-list-item-subtitle class="my-2">
+            <v-list-item-subtitle class="my-2 py-2">
               <v-chip outlined class="font-weight-medium" v-if="CURSTAT.isActive">
-                {{ CURSTAT.planName }}
-                <span class="green--text mx-2">| {{ CURSTAT.status }} |</span>
+                {{ CURSTAT.planName }} |
+                <span class="green--text px-2">{{ CURSTAT.status }}</span>
                 <span>
-                  {{ prettyRemainingDays() }}
+                  | {{ prettyRemainingDays() }}
                 </span>
               </v-chip>
               <v-btn
@@ -44,8 +44,8 @@
         </v-list-item>
       </v-card>
 
-      <v-card>
-        <v-list subheader>
+      <v-card class="tiling-card">
+        <v-list subheader class="pb-0">
           <div v-if="sesList && sesList.length">
             <template v-for="({ email, account, role }, i) in sesList">
               <v-list-item
@@ -73,7 +73,7 @@
 
           <v-list-item :href="`/login?m=addNew`" target="_blank">
             <v-icon class="mr-3">mdi-plus</v-icon>
-            <v-list-item-content>
+            <v-list-item-content flat>
               <v-list-item-subtitle>Login to another account</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -88,7 +88,7 @@
           small
           class="my-3"
           color="info"
-          @click="logout"
+          @click="$store.dispatch('session/logout', false)"
         >
           Log out
         </v-btn>
@@ -128,9 +128,6 @@ export default {
       this.menu = false;
       this.$refs.changePasswordDialog.open(this.CURSTAT.email);
     },
-    logout() {
-      this.$store.dispatch('session/logout', false);
-    },
     findPath(sesNo) {
       const session = this.sesList[sesNo];
       const renewal = moment(session.renewalAt, 'YYYY-MM-DD').tz(session.timezone);
@@ -167,3 +164,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .v-sheet.v-card {
+    border-radius: 0;
+  }
+</style>

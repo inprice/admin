@@ -228,7 +228,7 @@
     </v-card>
 
     <confirm ref="confirm"></confirm>
-    <overlay :show="loading.overlay" />
+    <overlay :show="loading.overlay" @cancelled="cancelCheckout" />
     
   </div>
 
@@ -238,11 +238,12 @@
 import SubsService from '@/service/subscription';
 import { get } from 'vuex-pathify'
 
-const stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
+let stripe;
 
 export default {
   data() {
     return {
+      currentCheckoutHash: null,
       loading: {
         overlay: false,
         tryFreeUse: false,
@@ -260,7 +261,7 @@ export default {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
           if (result.status == true) {
-            this.$store.commit('session/CURRENT', result.data.session);
+            this.$store.commit('session/current', result.data.session);
           } else {
             this.$store.dispatch('session/refresh');
           }
@@ -272,18 +273,28 @@ export default {
       this.loading.overlay = true;
       const result = await SubsService.createCheckout(planId);
       if (result.status == true) {
+        this.currentCheckoutHash = result.data.hash;
+        if (!stripe) stripe = window.Stripe(process.env.VUE_APP_STRIPE_PK);
         stripe.redirectToCheckout({
           sessionId: result.data.sessionId
-        }).then(function (result) {
+        }).then((result) => {
           this.loading.overlay = false;
           if (result.error && result.error.message) {
             this.$store.commit('snackbar/setMessage', { text: result.error.message, level: 'error' });
           } else {
             console.log('Calling result of stripes checkout form', result);
           }
+        }).catch((err) => {
+          if (err instanceof DOMException) {
+            this.$store.commit('snackbar/setMessage', { text: 'Please use the platform on a normal browser!', level: 'error' });
+          } else {
+            this.$store.commit('snackbar/setMessage', { text: err.message, level: 'error' });
+          }
+          this.cancelCheckout();
         });
       } else {
         this.loading.overlay = false;
+        this.currentCheckoutHash = null;
       }
     },
     async changeTo(planId) {
@@ -318,12 +329,17 @@ export default {
           this.loading.overlay = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
-            this.$store.commit('session/CURRENT', res.data.session);
+            this.$store.commit('session/current', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
           this.loading.overlay = false;
         }
       });
+    },
+    cancelCheckout() {
+      this.loading.overlay = false;
+      SubsService.cancelCheckout(this.currentCheckoutHash);
+      this.currentCheckoutHash = null;
     },
     firstTitleRow(plan) {
       if (this.CURSTAT.planName == plan.name) {
@@ -363,8 +379,8 @@ export default {
       this.$store.dispatch('session/refresh');
     }
   },
-  mounted() {
-    this.$nextTick(async () => {
+  created() {
+    this.$nextTick(() => {
       if (!this.plansSets || !this.plansSets.length) {
         this.$store.dispatch('system/fetchPlans');
       }

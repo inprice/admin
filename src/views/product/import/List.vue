@@ -113,7 +113,7 @@ export default {
       });
     }
   },
-  mounted() {
+  created() {
     this.findDetails();
   },
   components: {
