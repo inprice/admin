@@ -72,7 +72,7 @@
 
     </div>
 
-    <div class="col px-0 pt-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
       <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
 
       <div class="mt-3">
@@ -182,7 +182,7 @@ export default {
               this.searchResult = [];
             }
             if (res) {
-              this.isLoadMoreDisabled = (res.length < SystemConsts.system.ROW_LIMIT_FOR_LISTS);
+              this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
             }
         });
       },

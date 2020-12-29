@@ -29,8 +29,9 @@
 
         <v-btn 
           :disabled="$store.get('session/isViewer')"
+          title="Add new product"
           fab small
-          elevation="3"
+          elevation="2"
           class="ml-2"
           style="height: 100%"
           @click="addNew">
@@ -47,14 +48,17 @@
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
-            class="col-1 my-auto"
+            title="Filtering options"
+            fab small
+            elevation="2"
+            class="my-auto"
             v-bind="attrs"
             v-on="on"
           >
-            Filters
+            <v-icon>mdi-filter-outline</v-icon>
           </v-btn>
-        </template>        
-
+        </template>
+  
         <v-card class="altlik-card">
           <!-- Positions -->
           <v-card class="ma-2" tile>
@@ -101,7 +105,7 @@
 
     </div>
 
-    <div class="col px-0 pt-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
       <list :rows="searchResult" @edit="edit" :isLoading="isListLoading" />
 
       <div class="mt-3">
@@ -226,7 +230,7 @@ export default {
               this.searchResult = [];
             }
             if (res) {
-              this.isLoadMoreDisabled = (res.length < SystemConsts.system.ROW_LIMIT_FOR_LISTS);
+              this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
             }
         });
       },

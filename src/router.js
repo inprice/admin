@@ -207,7 +207,7 @@ router.beforeEach((to, from, next) => {
   let sesList = store.get('session/getSessionList');
 
   if (!sesList || !sesList.length) {
-    sesList = JSON.parse(localStorage.getItem(SystemConsts.keys.SESSIONS));
+    sesList = JSON.parse(localStorage.getItem(SystemConsts.KEYS.SESSIONS));
     if (sesList && sesList.length > 0) {
       store.set('session/list', sesList);
     }

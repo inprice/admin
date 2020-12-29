@@ -4,7 +4,7 @@
       <v-card-title>
         <v-icon class="mr-4">mdi-alert-decagram-outline</v-icon>
         <div>
-          <div>Delete this account</div>
+          <div>Delete - <span class="red--text darken-3">{{ CURSTAT.account }}</span></div>
         </div>
        </v-card-title>
 

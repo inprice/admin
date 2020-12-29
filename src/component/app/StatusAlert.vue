@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -52,7 +53,7 @@ export default {
   methods: {
     freeIndicator() {
       if (this.CURSTAT.status == 'FREE') {
-        return '30 days free trial';
+        return SystemConsts.LIMITS.DAYS_FOR_FREE_USE + ' days free trial';
       } else {
         return 'coupon';
       }
@@ -62,7 +63,7 @@ export default {
         return "You need to start a subscription to continue monitoring.";
       } else {
         if (this.CURSTAT == 'CREATED') {
-          return "You can start with a free trial perid for 30 days.";
+          return "You can start with a free trial perid for "+SystemConsts.LIMITS.DAYS_FOR_FREE_USE+" days.";
         } else {
           return "Would you like to subscribe a plan?";
         }

@@ -107,6 +107,15 @@
 
         <v-divider inset></v-divider>
 
+        <v-list-item :href="`/login?m=addNew`" target="_blank">
+          <v-list-item-action>
+            <v-icon>mdi-folder-multiple-plus-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Login to another</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item @click="$store.dispatch('session/logout', false)">
           <v-list-item-action>
             <v-icon>mdi-exit-to-app</v-icon>
@@ -141,6 +150,7 @@
     <v-app-bar app clipped-left color="blue-grey"  dark>
 
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      {{ $vuetify.breakpoint.name }}
 
       <div class="hidden-sm-and-down ml-4 mt-2">
         <img :src="brandNameW" :width="150" />
@@ -194,10 +204,6 @@
     </v-app-bar>
 
     <v-main>
-
-      <!-- v-responsive class="mx-auto overflow-visible" :style="this.$route.name != 'dashboard' ? 'max-width: 1024px' : ''">
-        <v-container :fluid="this.$route.name == 'dashboard'" -->
-
       <v-responsive class="mx-auto overflow-visible" max-width="1024">
         <v-container>
           <vue-page-transition name="fade">

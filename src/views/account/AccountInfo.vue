@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <div class="d-flex justify-center">
 
     <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
       <v-card>
@@ -37,31 +37,6 @@
             maxlength="16"
           />
 
-          <div class="text-center my-auto prop-value subtitle-2 blue--text">
-            To see the format in action, please change the sample
-          </div>
-
-          <v-divider class="my-3"></v-divider>
-
-          <div class="d-flex">
-            <v-select 
-              class="mx-5 col"
-              label="Sample"
-              v-model="sampleAmount"
-              :items="sampleAmounts"
-              :menu-props="{ auto: true, overflowY: true }"
-              @change="setCurrencyFormat"
-              hide-details
-            />
-
-            <v-text-field 
-              class="mx-5 col"
-              readonly
-              label="Result"
-              hide-details
-              :value="formatCurrency(sampleAmount)"
-            />
-          </div>
         </v-form>
 
         <v-card-actions>
@@ -81,14 +56,15 @@
 
       </v-card>
     </v-dialog>
-  </v-row>
+
+  </div>
 </template>
 
 <script>
 import ApiService from '@/service/api';
 import AccountService from '@/service/account';
 
-import numFormatter from 'number-format.js';
+//import numFormatter from 'number-format.js';
 import currencyNames from '@/data/currency-names';
 import currencyFormats from '@/data/currency-formats';
 
@@ -180,9 +156,11 @@ export default {
       this.opened = false;
       this.loading = false;
     },
+    /*
     formatCurrency(value) {
       return numFormatter(this.form.currencyFormat, value);
     }
+    */
   }
 };
 </script>

@@ -1,32 +1,28 @@
 <template>
-  <v-alert
-    dense
-    outlined
-    :color="bgColor"
-    class="pa-0"
-  >
-    <div v-if="dir == 'ltr'">
-      <strong :style="{ color: tagColor, backgroundColor: bgColor }">{{ tag }}</strong><span :style="{ color: fgColor || bgColor }">{{ value }}</span>
+  <div :class="{ 'caption': dense }" class="d-flex whole">
+    <div :style="{ color: fgColor, backgroundColor: bgColor, 'width' : '100%' }" class="px-2 tag-section my-auto">
+      {{ tag }}
     </div>
-    <div v-else>
-      <span :style="{ color: fgColor || bgColor }">{{ value }}</span><strong :style="{ color: tagColor, backgroundColor: bgColor }">{{ tag }}</strong>
+    <div v-if="value" :style="{ color: fgColor || bgColor }" class="value-section mx-auto px-2 my-auto">
+      {{ value }}
     </div>
-  </v-alert>
+    <slot></slot>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'semi-chip',
   props: {
+    dense: {
+      type: Boolean,
+      default: false
+    },
     tag: {
       type: String
     },
     value: {
       type: String
-    },
-    dir: {
-      type: String,
-      default: 'ltr'
     },
     fgColor: {
       type: String
@@ -44,14 +40,16 @@ export default {
 </script>
 
 <style scoped>
-  .v-alert__content {
-    flex: none;
+  .whole {
+    border: 1px #ccc solid; 
+    border-radius: 3px;
   }
-  .v-alert__content strong {
-    display: inline-table;
-    padding: 0 7px;
+  .tag-section {
+    font-weight: 500;
+    border-right: 1px #ccc solid; 
+    border-radius: 0 3p 3px 0;
   }
-  .v-alert__content span {
-    padding: 0 7px;
+  .value-section {
+    background-color: white;
   }
 </style>

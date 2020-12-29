@@ -7,41 +7,52 @@
         <template v-slot="{ hover }">
 
           <v-card @click="edit(row.id)" class="mt-3 pa-1 pb-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
-            <div class="d-flex justify-space-between subtitle px-3 pt-1 font-weight-medium">
+
+            <div class="d-flex justify-space-between caption px-2">
+              <span>#{{ row.code }}</span>
+              <span>{{ row.position | toPosition }}</span>
+            </div>
+
+            <div class="d-flex justify-space-between subtitle px-2 pb-2 font-weight-medium">
               <div>{{ row.name }}</div>
-              <div>{{ row.price | toCurrency }}</div>
-            </div>
-            <div class="d-flex justify-space-between px-3 caption">
-              <ago :date="row.updatedAt || row.createdAt" />
-              <div class="blue--text">{{ row.position | toPosition }}</div>
+              <div class="my-auto" style="color: #33afff">{{ row.price | toPrice }}</div>
             </div>
 
-            <div class="d-flex justify-space-between mt-1">
-              <div class="ml-2" v-if="row.tags && row.tags.length">
-                <v-chip
-                  class="mr-1"
-                  outlined label small
-                  v-for="(tag, index) in row.tags" :key="index"
-                >
-                  {{ tag }}
-                </v-chip>
-              </div>
-              <div class="caption ml-3 green--text font-weight-medium" v-else>
-                #{{ row.code }}
+            <v-divider class="mb-2"></v-divider>
+
+            <div class="caption px-2 d-flex justify-space-between">
+              <div>
+                Ranking: <span class="font-weight-bold">{{ row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA' }}</span>
+                <div>
+                </div>
+                  Tags: <span class="font-weight-medium">{{ row.tags.length ? row.tags.join(', ') : 'NA' }}</span>
+                <div>
+                  Updated: <ago :date="row.updatedAt || row.createdAt" class="d-inline font-weight-medium" />
+                </div>
               </div>
 
-              <div class="caption px-2" v-if="row.minSeller">
-                <v-chip class="ml-1" outlined label small :title="row.minSeller + ' (' + row.minPlatform + ')'">
-                  Min: <span class="ml-2 font-weight-bold green--text">{{ row.minPrice }}</span>
-                </v-chip>
-                <v-chip class="ml-1" outlined label small>
-                  Avg: <span class="ml-2 font-weight-bold">{{ row.avgPrice }}</span>
-                </v-chip>
-                <v-chip class="ml-1" outlined label small :title="row.maxSeller + ' (' + row.maxPlatform + ')'">
-                  Max: <span class="ml-2 font-weight-bold red--text">{{ row.maxPrice }}</span>
-                </v-chip>
+              <div v-if="row.minSeller" class="font-weight-bold ">
+                <semi-chip 
+                  bgColor="#eee" 
+                  fgColor="teal" 
+                  tag="MIN"
+                  :value="row.minPrice | toPrice" 
+                  :title="row.minSeller + ' (' + row.minPlatform + ')'" />
+
+                <semi-chip 
+                  bgColor="#eee" 
+                  fgColor="black" 
+                  tag="AVG" 
+                  :value="row.avgPrice | toPrice" />
+
+                <semi-chip 
+                  bgColor="#eee" 
+                  fgColor="tomato" 
+                  tag="MAX" 
+                  :value="row.maxPrice | toPrice" 
+                  :title="row.maxSeller + ' (' + row.maxPlatform + ')'" />
               </div>
-              <div class="caption px-3" v-else>
+              <div class="caption px-2" v-else>
                 Not classified yet!
               </div>
             </div>
@@ -54,7 +65,7 @@
     </div>
 
     <v-card v-else >
-      <block-message :message="'No product found! You can add a new one or change your criteria.'" />
+      <block-message v-if="updated" :message="'No product found! You can add a new one or change your criteria.'" />
     </v-card>
 
   </div>
@@ -64,14 +75,23 @@
 <script>
 export default {
   props: ['rows', 'isLoading'],
+  data() {
+    return {
+      updated: false,
+    }
+  },
   methods: {
     edit(id) {
       this.$emit('edit', id);
     },
   },
   components: {
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    SemiChip: () => import('@/component/SemiChip.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
+  updated() {
+    this.$nextTick(() => this.updated = true);
+  }
 };
 </script>
 
