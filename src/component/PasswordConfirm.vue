@@ -1,7 +1,10 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="350" overlay-opacity="0.2">
+    <v-dialog 
+      v-model="opened" 
+      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      overlay-opacity="0.2">
       <v-card>
         <v-card-title>Last confirmation</v-card-title>
         <v-card-subtitle class="pb-2">Please enter your password</v-card-subtitle>

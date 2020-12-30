@@ -3,18 +3,18 @@
 
     <v-card class="pb-2">
       <v-card-title>
-        <v-icon class="mr-4">mdi-vector-link</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-vector-link</v-icon>
         <div>
           <div>Binding Competitor</div>
           <div class="caption">Bind the url address of your competitor's product page.</div>
         </div>
-        <v-spacer></v-spacer>
+        <v-spacer class="hidden-xs-only"></v-spacer>
         <v-btn 
           :disabled="$store.get('session/isViewer')"
           small
           v-if="!showAddNewBar"
           color="info"
-          class="ml-4 white--text"
+          class="mt-4 mx-auto white--text"
           @click="openAddNewBar">
             <v-icon>mdi-plus</v-icon>Add a new Url
         </v-btn>
@@ -41,32 +41,59 @@
                   </template>          
               </v-text-field>
 
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-icon class="pl-1 pr-3 pb-4" v-on="on" v-bind="attrs">mdi-help-circle-outline</v-icon>
-                </template>
-                Please keep in mind
-                <ul class="caption">
-                  <li>URL must be the exact address of your competitor's product page.</li>
-                  <li>At least, Code, Name and Price fields should be displayed on the page it refers.</li>
-                  <li>It must start with either http:// or https://</li>
-                  <li>It cannot be less than 10 chars.</li>
-                  <li>You can save it by pressing Enter or click Save icon on the right.</li>
-                  <li>Or cancel by pressing Esc or click Cancel icon on the most right.</li>
-                  <li>You can add consecutive URLs without cancelling.</li>
-                  <li>Valid examples
-                    <ul>
-                      <li>https://www.amazon.com/dp/754</li>
-                      <li>https://www.ebay.com/itm/754</li>
-                      <li>https://www.argos.co.uk/product/754</li>
-                    </ul>
-                  </li>
-                </ul>
-              </v-tooltip>
+              <v-btn icon small class="ma-2 mt-3" elevation="1" @click="helperDialog = true">
+                <v-icon>mdi-help-circle-outline</v-icon>
+              </v-btn>
             </div>
           </v-scroll-x-transition>
 
         </v-form>
+
+        <v-dialog
+          v-model="helperDialog"
+          :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+        >
+          <v-card>
+            <v-card-title class="headline">
+              Rules for urls
+            </v-card-title>
+
+            <v-divider class="mb-2"></v-divider>
+
+            <v-card-text>
+              <ul>
+                <li>URL must be the exact address of your competitor's product page.</li>
+                <li>At least, Code, Name and Price fields should be displayed on the page it refers.</li>
+                <li>It must start with either http:// or https://</li>
+                <li>It cannot be less than 10 chars.</li>
+                <li>You can save it by pressing Enter or click Save icon on the right.</li>
+                <li>Or cancel by pressing Esc or click Cancel icon on the most right.</li>
+                <li>You can add consecutive URLs without cancelling.</li>
+                <li>Valid examples
+                  <ul>
+                    <li>https://www.amazon.com/dp/754</li>
+                    <li>https://www.ebay.com/itm/754</li>
+                    <li>https://www.argos.co.uk/product/754</li>
+                  </ul>
+                </li>
+              </ul>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="helperDialog = false"
+              >
+                Close
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>        
+
       </div>
       <div v-else>
         Invalid product!
@@ -159,6 +186,7 @@ export default {
       url: '',
       isUrlValid: false,
       loading: false,
+      helperDialog: false,
       showAddNewBar: false,
       rules: {},
       rows: [],

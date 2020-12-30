@@ -19,7 +19,7 @@ export default {
     value: { },
     valueClass: {
       default: 'col'
-    }
+    },
   }
 
 }

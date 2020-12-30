@@ -28,7 +28,7 @@
       <!-- ------------------------------- -->
       <v-card class="col" v-if="report && report.products && report.products.positionDists">
         <v-card-title class="pb-2">
-          <v-icon class="mr-4">mdi-layers</v-icon>
+          <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
           <div class="col pa-0">
             <div>Product positions</div>
             <div class="caption">The positions of your products.</div>
@@ -46,7 +46,7 @@
       <!-- -------------------------------- -->
       <v-card class="col" v-if="report && report.links && report.links.statusDists">
         <v-card-title class="pb-2">
-          <v-icon class="mr-4">mdi-layers-outline</v-icon>
+          <v-icon class="mr-4 hidden-xs-only">mdi-layers-outline</v-icon>
           <div class="col pa-0">
             <div>Link statuses</div>
             <div class="caption">The statuses of your competitors.</div>
@@ -66,9 +66,9 @@
     <!-- ------------------------------------ -->
     <v-card class="mt-3">
       <v-card-title class="pa-2">
-        <v-icon class="mr-4">mdi-arrow-down-circle-outline</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-arrow-down-circle-outline</v-icon>
         <div>
-          <div>10 products with low prices</div>
+          <div>Top 10 with low prices</div>
           <div class="caption">Your 10 products having the lowest prices.</div>
         </div>
       </v-card-title>
@@ -117,9 +117,9 @@
     <!-- ------------------------------------- -->
     <v-card class="mt-3">
       <v-card-title class="pa-2">
-        <v-icon class="mr-4">mdi-arrow-up-circle-outline</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-arrow-up-circle-outline</v-icon>
         <div>
-          <div>10 Products with high prices</div>
+          <div>Top 10 with high prices</div>
           <div class="caption">Your 10 products having the highest prices.</div>
         </div>
       </v-card-title>
@@ -168,7 +168,7 @@
     <!-- ------------------ -->
     <v-card class="mt-2">
       <v-card-title class="pa-2 d-flex">
-        <v-icon class="mr-4">mdi-account-search-outline</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-account-search-outline</v-icon>
         <div>
           <div>Competitors</div>
           <div class="caption">Most recently updated 25 competitors.</div>

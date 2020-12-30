@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-center">
     <div>{{ formatted }}</div>
-    <v-icon class="ml-1" :color="color">mdi-{{ dir }}-circle</v-icon>
+    <v-icon class="ml-1" :style="$vuetify.breakpoint.name == 'xs' ? 'font-size: 90%' : ''" :color="color">mdi-{{ dir }}-circle</v-icon>
   </div>
 </template>
 

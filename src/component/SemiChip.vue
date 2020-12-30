@@ -42,7 +42,6 @@ export default {
 <style scoped>
   .whole {
     border: 1px #ccc solid; 
-    border-radius: 3px;
   }
   .tag-section {
     font-weight: 500;

@@ -2,67 +2,34 @@
   <div>
 
     <v-card class="pb-2">
-      <div class="d-flex justify-space-between pa-4">
-        <div class="my-auto"><v-icon class="mr-2">mdi-clipboard-edit-outline</v-icon> {{ prod.name }}</div>
+      <div class="my-auto pa-4"><v-icon class="mr-2">mdi-clipboard-edit-outline</v-icon> {{ prod.name }}</div>
+
+      <v-divider></v-divider>
+
+      <v-simple-table class="property-table pt-3 pb-1" dense>
+        <template v-slot:default>
+          <tbody>
+            <property :valueClass="RESPROPS.properties.code" name="Code" :value="prod.code" />
+            <property :valueClass="RESPROPS.properties.price" name="Price" :value="prod.price | toCurrency" />
+            <property :valueClass="RESPROPS.properties.position" name="Position" :value="prod.position | toPosition" />
+            <property :valueClass="RESPROPS.properties.tags" name="Tags" :value="prod.tags.length ? prod.tags.join(', ') : 'NA'" />
+          </tbody>
+        </template>
+
+      </v-simple-table>
+
+      <v-divider class="my-2"></v-divider>
+ 
+      <div class="py-2 d-flex">
         <v-btn 
           :disabled="$store.get('session/isViewer')"
           small 
-          class="my-auto"
+          class="mx-auto"
           color="success"
           @click="$emit('edit')">
             Edit
         </v-btn>
       </div>
-
-      <v-divider></v-divider>
-
-      <v-simple-table class="property-table pt-3 pb-1" dense v-if="prod">
-        <template v-slot:default>
-          <tbody>
-            <property valueClass="col-4" name="Code" :value="prod.code" />
-            <property valueClass="col-10" name="Name" :value="prod.name" />
-            <property valueClass="col-3" name="Price" :value="prod.price | toCurrency" />
-            <property valueClass="col-3" name="Ranking">
-              <div class="d-flex">
-                <v-card elevation="1" class="prop-value col-3">{{ prod.ranking || 'NA' }}</v-card>
-                <v-tooltip right>
-                  <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" class="ml-1">mdi-help-circle-outline</v-icon>
-                  </template>
-                  <span>
-                    Indicates your rank among your competitors. <br>
-                  </span>
-                </v-tooltip>
-              </div>
-            </property>
-
-            <property valueClass="col-3" name="Position">
-              <td class="d-flex">
-                <v-card elevation="1" class="prop-value col-3">{{ prod.position | toPosition }}</v-card>
-                <v-tooltip right>
-                  <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" class="ml-1">mdi-help-circle-outline</v-icon>
-                  </template>
-                  <span>
-                    Indicates your position among your competitors.
-                    <div class="ml-4" :class="markPosition(1)">Lowest</div>
-                    <div class="ml-4" :class="markPosition(2)">Lower</div>
-                    <div class="ml-4" :class="markPosition(3)">Average</div>
-                    <div class="ml-4" :class="markPosition(4)">Higher</div>
-                    <div class="ml-4" :class="markPosition(5)">Highest</div>
-                  </span>
-                </v-tooltip>
-              </td>
-            </property>
-
-            <property valueClass="col-6" name="Tags" :value="prod.tags.length ? prod.tags.join(', ') : 'NA'" />
-          </tbody>
-        </template>
-      </v-simple-table>
-
-      <p v-else>
-        Invalid product info!
-      </p>
 
     </v-card>
 
@@ -72,6 +39,27 @@
 <script>
 export default {
   props: ['prod'],
+  computed: {
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': {
+          return {
+            properties: { code: 'col-8', price: 'col-5', position: 'col-5', tags: 'col-11 text-truncate' },
+          };
+        }
+        case 'sm': {
+          return {
+            properties: { code: 'col-5', price: 'col-3', position: 'col-3', tags: 'col-10 text-truncate' },
+          };
+        }
+        default: {
+          return {
+            properties: { code: 'col-3', price: 'col-2', position: 'col-2', tags: 'col-10 text-truncate' },
+          };
+        }
+      }
+    }
+  },
   methods: {
     markPosition(pos) {
       if (pos == this.prod.position)

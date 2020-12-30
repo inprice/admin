@@ -8,33 +8,29 @@
 
           <v-card @click="edit(row.id)" class="mt-3 pa-1 pb-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
 
-            <div class="d-flex justify-space-between caption px-2">
-              <span>#{{ row.code }}</span>
-              <span>{{ row.position | toPosition }}</span>
-            </div>
-
-            <div class="d-flex justify-space-between subtitle px-2 pb-2 font-weight-medium">
+            <div class="d-flex justify-space-between subtitle pa-2 font-weight-medium">
               <div>{{ row.name }}</div>
-              <div class="my-auto" style="color: #33afff">{{ row.price | toPrice }}</div>
+              <div class="blue--text lighten-1">{{ row.price | toPrice }}</div>
             </div>
 
             <v-divider class="mb-2"></v-divider>
 
             <div class="caption px-2 d-flex justify-space-between">
-              <div>
+              <div style="line-height: 22px">
                 Ranking: <span class="font-weight-bold">{{ row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA' }}</span>
+                <span class="ml-1 blue--text lighten-1 font-weight-bold">({{ row.position | toPosition }})</span>
                 <div>
                 </div>
-                  Tags: <span class="font-weight-medium">{{ row.tags.length ? row.tags.join(', ') : 'NA' }}</span>
-                <div>
                   Updated: <ago :date="row.updatedAt || row.createdAt" class="d-inline font-weight-medium" />
+                <div>
+                  Tags: <span class="font-weight-medium">{{ row.tags.length ? row.tags.join(', ') : 'NA' }}</span>
                 </div>
               </div>
 
-              <div v-if="row.minSeller" class="font-weight-bold ">
+              <div v-if="row.minSeller" class="font-weight-bold">
                 <semi-chip 
                   bgColor="#eee" 
-                  fgColor="teal" 
+                  fgColor="green" 
                   tag="MIN"
                   :value="row.minPrice | toPrice" 
                   :title="row.minSeller + ' (' + row.minPlatform + ')'" />
@@ -47,11 +43,12 @@
 
                 <semi-chip 
                   bgColor="#eee" 
-                  fgColor="tomato" 
+                  fgColor="#c70040" 
                   tag="MAX" 
                   :value="row.maxPrice | toPrice" 
                   :title="row.maxSeller + ' (' + row.maxPlatform + ')'" />
               </div>
+
               <div class="caption px-2" v-else>
                 Not classified yet!
               </div>

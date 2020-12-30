@@ -23,7 +23,7 @@
 
     <v-dialog
       v-model="warning.show"
-      :max-width="350"
+      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
       :style="{ zIndex: 200 }"
       @keydown.esc="warning.show = false"
       overlay-opacity="0.2"

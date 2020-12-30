@@ -9,7 +9,7 @@
 
     <v-card class="mt-3">
       <v-card-title class="pb-2">
-        <v-icon class="mr-4 my-auto">mdi-ticket-confirmation-outline</v-icon>
+        <v-icon class="mr-4 my-auto hidden-xs-only">mdi-ticket-confirmation-outline</v-icon>
         <div>
           <div>Coupons</div>
           <div class="caption">A combined list of coupons that assigned, applied and created by you</div>

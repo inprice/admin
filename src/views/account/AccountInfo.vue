@@ -1,7 +1,10 @@
 <template>
   <div class="d-flex justify-center">
 
-    <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
+    <v-dialog 
+      v-model="opened" 
+      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      overlay-opacity="0.2">
       <v-card>
         <v-card-title>{{ isInsert ? 'New account' : 'Account info' }}</v-card-title>
 

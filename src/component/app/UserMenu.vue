@@ -4,7 +4,7 @@
       v-model="menu"
       offset-y
       :nudge-width="200"
-      max-width="350"
+      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
       :close-on-content-click="false"
     >
       <template v-slot:activator="{ on }">
