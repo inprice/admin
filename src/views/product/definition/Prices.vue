@@ -65,7 +65,7 @@
 
       </v-row>
 
-      <div class="caption pb-2 pl-3">
+      <div class="caption text-center pb-2 pl-3">
         Last update <ago :date="prod.updatedAt" class="d-inline font-weight-medium" />
       </div>
 

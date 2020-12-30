@@ -60,7 +60,8 @@
 
             <v-divider class="mb-2"></v-divider>
 
-            <v-card-text>
+            <v-card-text class="">
+              <span class="font-weight-medium">Please keep in mind when adding new url</span>
               <ul>
                 <li>URL must be the exact address of your competitor's product page.</li>
                 <li>At least, Code, Name and Price fields should be displayed on the page it refers.</li>
@@ -102,16 +103,22 @@
 
     <div v-if="rows && rows.length">
       <div class="title ml-2 mt-3">Competitors</div>
+      <div class="caption ml-2 mb-2">
+        <span class="font-weight-bold orange--text">Tip:</span>
+        Click/Touch on the card to toggle details panel!
+      </div>
 
       <v-hover v-for="(row, index) in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card class="mt-1 mb-3 pa-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+          <v-card class="mt-1 mb-5 pa-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
             <div @click="toggleDetails(index)" style="cursor: pointer">
-              <div class="d-flex justify-space-between subtitle font-weight-medium">
-                <div>{{ row.name || (row.status == 'TOBE_CLASSIFIED' ? 'WILL BE SET SOON' : row.problem) }}</div>
-                <div>{{ row.price | toPrice }}</div>
+              <div class="d-flex justify-space-between subtitle font-weight-normal">
+                <div :class="row.name ? '' : 'font-italic text-lowercase pink--text'">{{ row.name || (row.status == 'TOBE_CLASSIFIED' ? 'WILL BE SET SOON' : row.problem) }}</div>
+                <div class="pl-2 blue--text">{{ row.price | toPrice }}</div>
               </div>
+
+              <v-divider class="my-2"></v-divider>
 
               <div class="d-flex justify-space-between caption">
                 <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
@@ -129,8 +136,7 @@
 
             <v-divider class="my-2" />
 
-            <div class="row mr-0">
-              <v-spacer></v-spacer>
+            <div class="row mx-0 d-flex" :class="$vuetify.breakpoint.xsOnly ? 'justify-center' : 'justify-end'">
               <div>
                 <v-btn 
                   :disabled="$store.get('session/isViewer')"
@@ -153,6 +159,7 @@
             <link-details
               :data="row"
               :key="row.detailsRefreshCount"
+              :class="{ 'mt-2' : $vuetify.breakpoint.xsOnly }"
               v-if="showingIndex==index && showDetails==true"
             />
 
@@ -160,11 +167,6 @@
 
         </template>
       </v-hover>
-
-      <div class="caption mt-3">
-        <span class="font-weight-bold orange--text">Tip:</span>
-        Click on the card to toggle details panel!
-      </div>
 
     </div>
     <confirm ref="confirm"></confirm>
@@ -314,6 +316,7 @@ export default {
 </script>
 
 <style scoped>
+/*
   .bordered {
     border: 1px solid #ddd;
   }
@@ -327,4 +330,5 @@ export default {
   .v-data-table td, .v-data-table th {
     padding: 0 8px;
   }
-</style>
+ */
+ </style>

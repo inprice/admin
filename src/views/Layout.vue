@@ -5,15 +5,20 @@
       v-model="drawer"
       :temporary="$vuetify.breakpoint.smAndDown">
 
-      <v-list dense nav class="text-uppercase font-weight-light">
+      <template v-slot:prepend>
+        <v-list dense v-if="$vuetify.breakpoint.xsOnly" class="pa-0">
+          <v-list-item class="pa-0 ma-0 hidden-md-and-up" @click.stop="drawer = !drawer">
+            <v-btn
+              icon
+              class="mx-auto">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-list-item>
+        </v-list>
+        <v-divider v-if="$vuetify.breakpoint.xsOnly"></v-divider>
+      </template>
 
-        <v-list-item class="pa-0 ma-0 hidden-md-and-up" @click.stop="drawer = !drawer">
-          <v-btn
-            icon
-            class="mx-auto">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-list-item>
+      <v-list dense nav class="text-uppercase font-weight-light">
 
         <v-list-item link :to="{name: 'dashboard'}">
           <v-list-item-action>
@@ -101,7 +106,7 @@
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Add a New Account</v-list-item-title>
+            <v-list-item-title>Create a New Account</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -130,7 +135,7 @@
       <template v-slot:append>
         <v-divider />
 
-        <v-list v-if="CURSTAT">
+        <v-list v-if="CURSTAT" class="pa-0">
           <v-list-item class="text-center black--text text-truncate">
             <v-list-item-content>
               <div class="subtitle font-weight-bold">{{ CURSTAT.account }}</div>

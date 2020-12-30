@@ -124,9 +124,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .av-window-item {
-    padding-bottom: 0 !important;
-  }
-</style>

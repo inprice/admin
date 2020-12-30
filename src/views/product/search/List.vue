@@ -6,11 +6,11 @@
       <v-hover v-for="row in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card @click="edit(row.id)" class="mt-3 pa-1 pb-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+          <v-card @click="edit(row.id)" class="mt-3 pa-1 pb-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
 
             <div class="d-flex justify-space-between subtitle pa-2 font-weight-medium">
               <div>{{ row.name }}</div>
-              <div class="blue--text lighten-1">{{ row.price | toPrice }}</div>
+              <div class="blue--text pl-2">{{ row.price | toPrice }}</div>
             </div>
 
             <v-divider class="mb-2"></v-divider>
@@ -27,27 +27,31 @@
                 </div>
               </div>
 
-              <div v-if="row.minSeller" class="font-weight-bold">
-                <semi-chip 
-                  bgColor="#eee" 
-                  fgColor="green" 
-                  tag="MIN"
-                  :value="row.minPrice | toPrice" 
-                  :title="row.minSeller + ' (' + row.minPlatform + ')'" />
-
-                <semi-chip 
-                  bgColor="#eee" 
-                  fgColor="black" 
-                  tag="AVG" 
-                  :value="row.avgPrice | toPrice" />
-
-                <semi-chip 
-                  bgColor="#eee" 
-                  fgColor="#c70040" 
-                  tag="MAX" 
-                  :value="row.maxPrice | toPrice" 
-                  :title="row.maxSeller + ' (' + row.maxPlatform + ')'" />
-              </div>
+              <table class="pricesTable caption body-2" v-if="row.minSeller" :style="RESPROPS.priceTable.table">
+                <tr>
+                  <td width="10%" class="text-center">O</td>
+                  <th width="20%">Price</th>
+                  <th v-if="$vuetify.breakpoint.smAndUp" width="40%">Seller</th>
+                  <th v-if="$vuetify.breakpoint.smAndUp" width="30%">Platform</th>
+                </tr>
+                <tr>
+                  <th>Min</th>
+                  <td class="text-right">{{ row.minPrice | toPrice }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.minSeller }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.minPlatform }}</td>
+                </tr>
+                <tr>
+                  <th>Avg</th>
+                  <td class="text-right">{{ row.avgPrice | toPrice }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp" colspan="2"></td>
+                </tr>
+                <tr>
+                  <th>Max</th>
+                  <td class="text-right">{{ row.maxPrice | toPrice }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.maxSeller }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.maxPlatform }}</td>
+                </tr>
+              </table>
 
               <div class="caption px-2" v-else>
                 Not classified yet!
@@ -72,6 +76,27 @@
 <script>
 export default {
   props: ['rows', 'isLoading'],
+  computed: {
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': {
+          return {
+            priceTable: { table: 'max-width: 35%' },
+          };
+        }
+        case 'sm': {
+          return {
+            priceTable: { table: 'max-width: 50%' },
+          };
+        }
+        default: {
+          return {
+            priceTable: { table: '' },
+          };
+        }
+      }
+    },
+  },
   data() {
     return {
       updated: false,
@@ -83,7 +108,6 @@ export default {
     },
   },
   components: {
-    SemiChip: () => import('@/component/SemiChip.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   updated() {
@@ -93,12 +117,23 @@ export default {
 </script>
 
 <style scoped>
-  tr {
-    cursor: pointer;
+  .pricesTable {
+    border-collapse: collapse;
+    border-radius: 4px;
+    border-style: hidden;
+    box-shadow: 0 0 0 1px #bbb;
   }
-  td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .pricesTable tr {
+    max-height: 25px; 
+  }
+  .pricesTable th {
+    padding: 0 4px;
+    font-weight: 550;
+    background-color: rgba(220, 220, 220, 0.3);
+    border: 1px solid #ccc;
+  }
+  .pricesTable td {
+    padding: 0 4px;
+    border: 1px solid #ccc; 
   }
 </style>
