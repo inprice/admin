@@ -10,7 +10,7 @@
 
             <div class="d-flex justify-space-between subtitle pa-2 font-weight-medium">
               <div>{{ row.name }}</div>
-              <div class="blue--text pl-2">{{ row.price | toPrice }}</div>
+              <div class="pl-2 cyan--text font-weight-bold">{{ row.price | toPrice }}</div>
             </div>
 
             <v-divider class="mb-2"></v-divider>
@@ -18,7 +18,7 @@
             <div class="caption px-2 d-flex justify-space-between">
               <div style="line-height: 22px">
                 Ranking: <span class="font-weight-bold">{{ row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA' }}</span>
-                <span class="ml-1 blue--text lighten-1 font-weight-bold">({{ row.position | toPosition }})</span>
+                <span class="ml-1 blue--text font-weight-bold">({{ row.position | toPosition }})</span>
                 <div>
                 </div>
                   Updated: <ago :date="row.updatedAt || row.createdAt" class="d-inline font-weight-medium" />
@@ -27,7 +27,7 @@
                 </div>
               </div>
 
-              <table class="pricesTable caption body-2" v-if="row.minSeller" :style="RESPROPS.priceTable.table">
+              <table class="featuresTable caption" v-if="row.minSeller" :style="RESPROPS.priceTable.table">
                 <tr>
                   <td width="10%" class="text-center">O</td>
                   <th width="20%">Price</th>
@@ -115,25 +115,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  .pricesTable {
-    border-collapse: collapse;
-    border-radius: 4px;
-    border-style: hidden;
-    box-shadow: 0 0 0 1px #bbb;
-  }
-  .pricesTable tr {
-    max-height: 25px; 
-  }
-  .pricesTable th {
-    padding: 0 4px;
-    font-weight: 550;
-    background-color: rgba(220, 220, 220, 0.3);
-    border: 1px solid #ccc;
-  }
-  .pricesTable td {
-    padding: 0 4px;
-    border: 1px solid #ccc; 
-  }
-</style>

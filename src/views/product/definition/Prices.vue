@@ -21,7 +21,7 @@
           <v-divider class="pb-2"></v-divider>
 
           <div class="text-h5 text-sm-h4">{{ prod.minPrice | toPrice }}</div>
-          <diff-line :diff="prod.minDiff"></diff-line>
+          <diff-line class="ml-1" :diff="prod.minDiff"></diff-line>
 
           <v-divider class="my-2"></v-divider>
 
@@ -37,7 +37,7 @@
           <v-divider class="pb-2"></v-divider>
 
           <div class="text-h5 text-sm-h4">{{ prod.avgPrice | toPrice }}</div>
-          <diff-line :diff="prod.avgDiff"></diff-line>
+          <diff-line class="ml-1" :diff="prod.avgDiff"></diff-line>
 
           <v-divider class="my-2"></v-divider>
 

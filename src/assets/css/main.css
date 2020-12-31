@@ -20,6 +20,28 @@
   border-bottom: none !important;
 }
 
+.featuresTable {
+  border-collapse: collapse;
+  border-radius: 4px;
+  border-style: hidden;
+  box-shadow: 0 0 0 1px #bbb;
+}
+
+.featuresTable tr {
+  max-height: 25px; 
+}
+
+.featuresTable th {
+  padding: 0 4px;
+  font-weight: 550;
+  background-color: rgba(220, 220, 220, 0.3);
+  border: 1px solid #ccc;
+}
+.featuresTable td {
+  padding: 0 4px;
+  border: 1px solid #ccc; 
+}
+
 .v-tabs-bar {
   display: none;
 }

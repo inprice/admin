@@ -111,18 +111,18 @@
       <v-hover v-for="(row, index) in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card class="mt-1 mb-5 pa-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+          <v-card class="mt-1 mb-5 pa-2 pb-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
             <div @click="toggleDetails(index)" style="cursor: pointer">
               <div class="d-flex justify-space-between subtitle font-weight-normal">
                 <div :class="row.name ? '' : 'font-italic text-lowercase pink--text'">{{ row.name || (row.status == 'TOBE_CLASSIFIED' ? 'WILL BE SET SOON' : row.problem) }}</div>
-                <div class="pl-2 blue--text">{{ row.price | toPrice }}</div>
+                <div class="pl-2 cyan--text font-weight-bold">{{ row.price | toPrice }}</div>
               </div>
 
               <v-divider class="my-2"></v-divider>
 
               <div class="d-flex justify-space-between caption">
                 <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
-                <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
+                <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'NOT SET') }}</div>
                 <div>{{ row.position | toPosition }}</div>
               </div>
 

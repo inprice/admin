@@ -15,7 +15,6 @@
             <property :valueClass="RESPROPS.properties.tags" name="Tags" :value="prod.tags.length ? prod.tags.join(', ') : 'NA'" />
           </tbody>
         </template>
-
       </v-simple-table>
 
       <v-divider class="my-2"></v-divider>

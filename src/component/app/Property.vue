@@ -2,10 +2,10 @@
   <tr>
     <td class="prop-name">{{ name }}</td>
     <td>
-      <v-card elevation="1" class="prop-value" :class="valueClass" v-if="value">
+      <v-card elevation="1" class="prop-value" :class="valueClass">
         {{ value }}
+        <slot></slot>
       </v-card>
-      <slot></slot>
     </td>
   </tr>
 </template>

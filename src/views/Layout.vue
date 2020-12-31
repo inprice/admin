@@ -141,7 +141,7 @@
               <div class="subtitle font-weight-bold">{{ CURSTAT.account }}</div>
               <span class="caption">{{ CURSTAT.email }}</span>
               <v-chip label outlined class="caption d-flex justify-center">
-                <span class="font-weight-bold red--text darken-4">{{ CURSTAT.role }}</span>
+                <span class="font-weight-medium">{{ CURSTAT.role }}</span>
                 <span class="mx-2">|</span>
                 <span class="font-weight-medium green--text text-uppercase darken-2">{{ CURSTAT.isActive ? CURSTAT.planName : CURSTAT.status }}</span>
               </v-chip>

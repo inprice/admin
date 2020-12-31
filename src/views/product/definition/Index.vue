@@ -67,7 +67,7 @@ export default {
     },
   },
   created() {
-    this.findProduct();
+    this.$nextTick(() => this.findProduct());
   },
   components: {
     Info: () => import('./Info'),
