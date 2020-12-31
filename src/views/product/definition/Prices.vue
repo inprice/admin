@@ -4,13 +4,18 @@
 
     <v-card>
       
-      <v-card-title class="pb-2">
-        <v-icon class="mr-4 hidden-xs-only">mdi-finance</v-icon>
-        <div>
-          <div>Prices</div>
+        <div class="px-4 pt-4">
+          <div class="d-flex justify-space-between">
+            <div class="title">
+              <v-icon class="mr-4 hidden-xs-only">mdi-finance</v-icon>
+              <span>Prices</span>
+            </div>
+            <span class="caption my-auto">
+              Last update <ago :date="prod.updatedAt" class="d-inline font-weight-medium" />
+            </span>
+          </div>
           <div class="caption">The difference indicators under the prices are calculated according to your price</div>
         </div>
-      </v-card-title>
 
       <v-row class="mx-1 py-2">
 
@@ -64,10 +69,6 @@
         </v-card>
 
       </v-row>
-
-      <div class="caption text-center pb-2 pl-3">
-        Last update <ago :date="prod.updatedAt" class="d-inline font-weight-medium" />
-      </div>
 
     </v-card>
 

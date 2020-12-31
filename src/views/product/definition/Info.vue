@@ -2,7 +2,7 @@
   <div>
 
     <v-card class="pb-2">
-      <div class="my-auto pa-4"><v-icon class="mr-2">mdi-clipboard-edit-outline</v-icon> {{ prod.name }}</div>
+      <div class="my-auto pa-4"><v-icon class="mr-2 hidden-xs-only">mdi-clipboard-edit-outline</v-icon> {{ prod.name }}</div>
 
       <v-divider></v-divider>
 

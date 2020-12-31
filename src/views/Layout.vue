@@ -155,7 +155,7 @@
     <v-app-bar app clipped-left color="blue-grey"  dark>
 
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      {{ $vuetify.breakpoint.name }}
+      <span v-if="IS_DEV" class="mx-1 yellow--text font-weight-medium">{{ $vuetify.breakpoint.name }}</span>
 
       <div class="hidden-sm-and-down ml-4 mt-2">
         <img :src="brandNameW" :width="150" />
@@ -230,6 +230,9 @@ import { get } from 'vuex-pathify'
 export default {
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
+    IS_DEV() {
+      return process.env.NODE_ENV == 'development';
+    }
   },
   data() {
     return {
