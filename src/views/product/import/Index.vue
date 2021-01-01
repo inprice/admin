@@ -19,7 +19,7 @@
             v-on="on"
             class="my-auto"
           >
-            Select a Method
+            Options
           </v-btn>
         </template>
 
@@ -81,30 +81,36 @@
     <v-divider class="mt-2"></v-divider>
 
     <v-card class="mt-3" v-if="CURSTAT.isActive">
-      <div v-if="rows.length">
-        <v-divider></v-divider>
-        <v-simple-table>
-          <template v-slot:default>
+
+
+      <div 
+        v-if="rows.length"
+        class="v-data-table theme--light put-behind">
+        <div class="v-data-table__wrapper">
+
+          <v-divider></v-divider>
+
+          <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
             <thead>
               <tr>
-                <th class="text-center">Type</th>
-                <th class="text-center">Successes</th>
-                <th class="text-center">Fails</th>
-                <th class="text-center">Created At</th>
+                <th :width="RESPROPS.table.type">Type</th>
+                <th class="text-center" :width="RESPROPS.table.successes">Success</th>
+                <th class="text-center" :width="RESPROPS.table.fails">Fail</th>
+                <th :width="RESPROPS.table.date">Created</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="row in rows" :key="row.id" link @click="$router.push({name: 'import-details', params: { id: row.id}})">
-                <td class="text-center">{{ row.type }} {{ row.isFile ? 'File' : 'List' }}</td>
+              <tr v-for="row in rows" :key="row.id" link @click="$router.push({name: 'import-details', params: { id: row.id}})" style="cursor: pointer">
+                <td>{{ row.type }} {{ row.isFile ? 'File' : 'List' }}</td>
                 <td class="text-center">{{ row.successCount }}</td>
                 <td class="text-center">{{ row.problemCount }}</td>
-                <td class="text-center">
+                <td>
                   <ago :date="row.createdAt" />
                 </td>
               </tr>
             </tbody>
-          </template>
-        </v-simple-table>
+          </table>
+        </div>
       </div>
 
       <v-card v-else >
@@ -137,6 +143,24 @@ import { get } from 'vuex-pathify'
 export default {
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'md':
+        case 'lg':
+        case 'xl': {
+          return {
+            'table-layout': '',
+            table: { type: '', successes: '10%', fails: '10%', date: '18%' }
+          };
+        }
+        default: {
+          return {
+            'table-layout': 'fixed',
+            table: { type: '250px', successes: '100px', fails: '100px', date: '180px' }
+          };
+        }
+      }
+    }
   },
   data() {
     return {

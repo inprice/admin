@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="5" lg="3">
+      <v-col cols="12" sm="8" md="5" lg="2">
 
         <div class="text-center mb-8">
           <img :src="verticalBrand" :width="140" />
@@ -91,7 +91,7 @@ export default {
     activateRules() {
       this.rules = {
         email: [
-          v => !!v || "E-mail is required",
+          v => !!v || "E-mail required",
           v => (v.length >= 9 && v.length <= 100) || "Email must be between 9-100 chars",
           v => Utility.verifyEmail(v) || "E-mail must be valid"
         ],

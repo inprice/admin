@@ -28,7 +28,7 @@
                   </td>
                   <td>{{ row.price | toPrice }}</td>
                   <td>
-                    <span class="font-weight-medium">{{ row.diffAmount | toPrice }}</span>
+                    <span>{{ row.diffAmount | toPrice }}</span>
                     <span v-if="row.diffAmount" class="d-inline-flex ml-1" style="background-color: #ff3">
                       [<diff-line smallicon class="mx-1" :diff="row.diffRate"></diff-line>]
                     </span>
@@ -109,13 +109,13 @@
           style="width: 100%">
           <thead>
             <tr>
-              <th width="30%">Feature</th>
-              <th width="70%">Value</th>
+              <th width="35%">Feature</th>
+              <th width="65%">Value</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in data.specList" :key="row.id">
-              <td class="font-weight-medium">{{ row.key }}</td>
+              <td>{{ row.key }}</td>
               <td>{{ row.value }}</td>
             </tr>
           </tbody>
@@ -171,7 +171,7 @@ export default {
 }
 </script>
 
-<style scopped>
+<style scoped>
   .featuresTable tr {
     height: 30px; 
   }

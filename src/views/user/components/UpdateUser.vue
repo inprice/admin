@@ -108,7 +108,7 @@ export default {
           v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
         ],
         timezone: [
-          v => !!v || "Timezone is required",
+          v => !!v || "Timezone required",
         ],
       }
     },

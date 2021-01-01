@@ -1,6 +1,6 @@
 .property-table .prop-name {
   text-align: right !important;
-  width: 20% !important;
+  width: 30% !important;
   padding: 8px !important;
 }
 
@@ -71,4 +71,16 @@
 .put-behind {
   z-index: 0;
   position: relative;
+}
+
+.sample-data {
+  white-space: nowrap;
+  overflow-x: auto;
+  padding: 5px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 800;
+}
+
+div, span {
+  word-break: initial;
 }

@@ -8,27 +8,15 @@
     </v-btn>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
+      <v-card-title class="py-2">
+        <v-icon class="mr-4 hidden-xs-only">mdi-cloud-upload-outline</v-icon>
         <div>
           <div>CSV File Import</div>
           <div class="caption">Please upload your CSV file considering the rules in the following sections</div>
         </div>
-
-        <v-spacer></v-spacer>
-
-        <v-btn 
-          color="success" 
-          :class="{'white--text': valid }"
-          :disabled="!valid" 
-          :loading="loading" 
-          @click="submit"
-        >
-          Import
-        </v-btn>
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text class="pb-2">
         <v-form ref="form" v-model="valid">
           <v-file-input
             autofocus
@@ -41,17 +29,28 @@
             :rules="rules"
             :loading="loading"
             accept=".csv" 
-            label="Please click here to select a CSV file"
+            label="Please click/touch here to select a CSV file"
             prepend-icon=""
             append-icon="">
           </v-file-input>
         </v-form>
       </v-card-text>
+
+      <div class="d-flex justify-center pb-4">
+        <v-btn 
+          color="success" 
+          :disabled="!valid" 
+          :loading="loading" 
+          @click="submit"
+        >
+          Import
+        </v-btn>
+      </div>
     </v-card>
 
     <v-card>
       <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-playlist-check</v-icon>
+        <v-icon class="mr-2 hidden-xs-only">mdi-playlist-check</v-icon>
         <div>File Rules</div>
       </v-card-title>
 
@@ -82,7 +81,7 @@ export default {
       valid: false,
       file: {},
       rules: [
-        v => !!v || "File is required",
+        v => !!v || "File required",
         v => (!v || v.type == 'text/csv') || "File type should be CSV",
         v => (!v || v.size > 32) || 'File size should be greater than 32 byte!',
         v => (!v || v.size < 1024001) || 'File size should be less than 1 MB!',

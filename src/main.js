@@ -9,16 +9,17 @@ dotenv.config();
 import vuetify from './plugins/vuetify';
 import Filters from './filters';
 
-
 Vue.config.productionTip = false
 
 Filters(Vue);
 
 import './assets/css/main.css';
 
-import Chart from 'chart.js'
 /* eslint-disable no-unused-vars */
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+//import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+import Chart from 'chart.js'
+Chart.defaults.global.defaultFontFamily = 'Ubuntu';
 
 import VueMask from 'v-mask'
 Vue.use(VueMask);

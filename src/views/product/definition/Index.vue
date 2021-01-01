@@ -1,26 +1,37 @@
 <template>
   <div v-if="data.product">
 
-    <div class="d-flex justify-space-between mt-2">
+    <div class="d-flex mt-2">
       <v-btn 
         small
         @click="$router.go(-1)">
           <v-icon class="mr-2">mdi-arrow-left-circle-outline</v-icon>
           Go Back
       </v-btn>
+
+      <v-spacer></v-spacer>
+
       <v-btn 
         small
+        class="mr-2"
         :disabled="$store.get('session/isViewer')"
         @click="remove">
-          <v-icon class="mr-2">mdi-close-circle-outline</v-icon>
           Delete
+      </v-btn>
+
+      <v-btn 
+        small 
+        :disabled="$store.get('session/isViewer')"
+        color="success"
+        @click="edit">
+          Edit
       </v-btn>
     </div>
 
-    <info :prod="data.product" @edit="edit" @remove="remove" class="mt-3" />
-    <prices :prod="data.product" v-if="data.product.avgPrice > 0"  class="mt-3" />
+    <info :prod="data.product" @edit="edit" @remove="remove" class="mt-2" />
+    <prices :prod="data.product" v-if="data.product.avgPrice > 0" />
 
-    <links :prodId="data.product.id" :links="data.links" class="mt-3" @deleted="findProduct" @statusToggled="findProduct" />
+    <links :prodId="data.product.id" :links="data.links" class="mt-2" @deleted="findProduct" @statusToggled="findProduct" />
 
     <edit ref="editDialog" @saved="findProduct" />
     <confirm ref="confirm" />

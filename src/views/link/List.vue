@@ -19,7 +19,7 @@
               <div class="d-flex justify-space-between caption">
                 <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
                 <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
-                <div class="blue--text">{{ row.position | toPosition }}</div>
+                <div>{{ row.position | toPosition }}</div>
               </div>
 
               <div class="d-flex justify-space-between caption">

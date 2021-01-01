@@ -27,8 +27,8 @@ export default {
         legend: {
           display: false,
         },
-        },
-        plugins: {
+      },
+      plugins: {
         datalabels: {
           color: 'black',
           textAlign: 'center',

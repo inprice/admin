@@ -2,8 +2,8 @@
   <div>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-format-columns</v-icon>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-format-columns</v-icon>
         <div>The rules each row in your content must match</div>
       </v-card-title>
 
@@ -22,21 +22,21 @@
     </v-card>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>A valid URL list</div>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-emoticon-outline</v-icon>
+        <div>Valid list</div>
       </v-card-title>
 
       <v-divider/>
 
-      <v-card-text>
-<pre>
-https://www.amazon.com/AmazonBasics-High-Speed-HDMI-Cable-1-Pack/dp/B014I8T0YQ
-https://www.ebay.com/itm/Xiaomi10-Pro-5G-12GB-256GB-12GB-512GB-Duel-Sim-Global-version-Google-store/133356161760
-https://www.debenhams.com/webapp/wcs/stores/servlet/prod_10701_10001_123010030399_-1
-https://www.zalando.co.uk/zign-polo-shirt-black-zi122p006-q11.html
-https://www.mediamarkt.de/de/product/_samsung-galaxy-tab-a-10-1-wi-fi-2586325.html
-</pre>
+      <v-card-text class="py-2">
+        <div class="sample-data">
+          <div>https://www.amazon.com/AmazonBasics-High-Speed-HDMI-Cable-1-Pack/dp/B014I8T0YQ</div>
+          <div>https://www.ebay.com/itm/Xiaomi10-Pro-5G-12GB-256GB-12GB-512GB-Duel-Sim-Global-version-Google-store/133356161760</div>
+          <div>https://www.debenhams.com/webapp/wcs/stores/servlet/prod_10701_10001_123010030399_-1</div>
+          <div>https://www.zalando.co.uk/zign-polo-shirt-black-zi122p006-q11.html</div>
+          <div>https://www.mediamarkt.de/de/product/_samsung-galaxy-tab-a-10-1-wi-fi-2586325.html</div>
+        </div>
       </v-card-text>
     </v-card>
 
@@ -60,9 +60,9 @@ https://www.mediamarkt.de/de/product/_samsung-galaxy-tab-a-10-1-wi-fi-2586325.ht
     margin-top: 15px;
   }
   .v-card__title {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
   }
   .v-card__text {
-    padding-left: 10px;
+    padding-left: 5px;
   }
 </style>

@@ -1,117 +1,107 @@
 <template>
   <div>
 
-    <v-card class="pb-2">
-      <v-card-title>
-        <v-icon class="mr-4 hidden-xs-only">mdi-vector-link</v-icon>
-        <div>
-          <div>Binding Competitor</div>
-          <div class="caption">Bind the url address of your competitor's product page.</div>
-        </div>
-        <v-spacer class="hidden-xs-only"></v-spacer>
-        <v-btn 
-          :disabled="$store.get('session/isViewer')"
-          small
-          v-if="!showAddNewBar"
-          color="info"
-          class="mt-4 mx-auto white--text"
-          @click="openAddNewBar">
-            <v-icon>mdi-plus</v-icon>Add a new Url
-        </v-btn>
-      </v-card-title>
+    <div class="d-flex justify-space-between ml-2 mt-3">
+      <span class="title">
+        Competitors
+      </span>
+      <v-btn 
+        :disabled="$store.get('session/isViewer')"
+        small
+        v-if="!showAddNewBar"
+        color="info"
+        @click="openAddNewBar">
+          <v-icon>mdi-plus</v-icon>Add new
+      </v-btn>
+    </div>
 
-      <div v-if="prodId">
-        <v-form ref="addNewForm" v-model="isUrlValid" @submit.prevent>
-          <v-scroll-x-transition leave-absolute>
-            <div v-if="showAddNewBar" class="d-flex">
-              <v-text-field 
-                autofocus
-                v-model="url"
-                :rules="rules.url"
-                label="URL of competitor's product page"
-                @keyup.enter.native="addNew"
-                @keyup.esc.native="clearAddNewBar(true)"
-                dense outlined light
-                class="col pl-3 pt-2"
-                maxlength="1024"
-                placeholder="https://www.amazon.com/dp/754">
-                  <template slot="append">
-                    <v-icon class="mr-2" @click="addNew">mdi-check</v-icon>
-                    <v-icon @click="clearAddNewBar(true)">mdi-window-close</v-icon>
-                  </template>          
-              </v-text-field>
+    <div v-if="prodId">
+      <v-form ref="addNewForm" v-model="isUrlValid" @submit.prevent>
+        <v-scroll-x-transition leave-absolute>
+          <div v-if="showAddNewBar" class="d-flex">
+            <v-text-field 
+              autofocus
+              v-model="url"
+              :rules="rules.url"
+              label="URL of competitor's product page"
+              @keyup.enter.native="addNew"
+              @keyup.esc.native="clearAddNewBar(true)"
+              dense outlined light
+              class="col pl-2 pt-2"
+              maxlength="1024"
+              placeholder="https://www.amazon.com/dp/754">
+                <template slot="append">
+                  <v-icon class="mr-2" @click="addNew">mdi-check</v-icon>
+                  <v-icon @click="clearAddNewBar(true)">mdi-window-close</v-icon>
+                </template>          
+            </v-text-field>
 
-              <v-btn icon small class="ma-2 mt-3" elevation="1" @click="helperDialog = true">
-                <v-icon>mdi-help-circle-outline</v-icon>
-              </v-btn>
-            </div>
-          </v-scroll-x-transition>
+            <v-btn icon small class="ma-2 mt-3" elevation="1" @click="helperDialog = true">
+              <v-icon>mdi-help-circle-outline</v-icon>
+            </v-btn>
+          </div>
+        </v-scroll-x-transition>
 
-        </v-form>
+      </v-form>
 
-        <v-dialog
-          v-model="helperDialog"
-          :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
-        >
-          <v-card>
-            <v-card-title class="headline">
-              Rules for urls
-            </v-card-title>
+      <v-dialog
+        v-model="helperDialog"
+        transition="dialog-top-transition"
+        :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      >
+        <v-card>
+          <v-card-title class="headline">
+            Rules for urls
+          </v-card-title>
 
-            <v-divider class="mb-2"></v-divider>
+          <v-divider class="mb-2"></v-divider>
 
-            <v-card-text class="">
-              <span class="font-weight-medium">Please keep in mind when adding new url</span>
-              <ul>
-                <li>URL must be the exact address of your competitor's product page.</li>
-                <li>At least, Code, Name and Price fields should be displayed on the page it refers.</li>
-                <li>It must start with either http:// or https://</li>
-                <li>It cannot be less than 10 chars.</li>
-                <li>You can save it by pressing Enter or click Save icon on the right.</li>
-                <li>Or cancel by pressing Esc or click Cancel icon on the most right.</li>
-                <li>You can add consecutive URLs without cancelling.</li>
-                <li>Valid examples
-                  <ul>
-                    <li>https://www.amazon.com/dp/754</li>
-                    <li>https://www.ebay.com/itm/754</li>
-                    <li>https://www.argos.co.uk/product/754</li>
-                  </ul>
-                </li>
-              </ul>
-            </v-card-text>
+          <v-card-text class="">
+            <span class="font-weight-medium">Please keep in mind when adding new url</span>
+            <ul>
+              <li>URL must be the exact address of your competitor's product page.</li>
+              <li>At least, Code, Name and Price fields should be displayed on the page it refers.</li>
+              <li>It must start with either http:// or https://</li>
+              <li>It cannot be less than 10 chars.</li>
+              <li>You can save it by pressing Enter or click Save icon on the right.</li>
+              <li>Or cancel by pressing Esc or click Cancel icon on the most right.</li>
+              <li>You can add consecutive URLs without cancelling.</li>
+              <li>Valid examples
+                <ul>
+                  <li>https://www.amazon.com/dp/754</li>
+                  <li>https://www.ebay.com/itm/754</li>
+                  <li>https://www.argos.co.uk/product/754</li>
+                </ul>
+              </li>
+            </ul>
+          </v-card-text>
 
-            <v-divider></v-divider>
+          <v-divider></v-divider>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="green darken-1"
-                text
-                @click="helperDialog = false"
-              >
-                Close
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>        
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="helperDialog = false"
+            >
+              Close
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>        
 
-      </div>
-      <div v-else>
-        Invalid product!
-      </div>
-    </v-card>
+    </div>
+    <div v-else>
+      Invalid product!
+    </div>
 
-    <div v-if="rows && rows.length">
-      <div class="title ml-2 mt-3">Competitors</div>
-      <div class="caption ml-2 mb-2">
-        <span class="font-weight-bold orange--text">Tip:</span>
-        Click/Touch on the card to toggle details panel!
-      </div>
+    <div v-if="rows && rows.length" :class="{ 'mt-4': !showAddNewBar }">
 
       <v-hover v-for="(row, index) in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card class="mt-1 mb-5 pa-2 pb-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+          <v-card class="mb-5 pa-2 pb-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
             <div @click="toggleDetails(index)" style="cursor: pointer">
               <div class="d-flex justify-space-between subtitle font-weight-normal">
                 <div :class="row.name ? '' : 'font-italic text-lowercase pink--text'">{{ row.name || (row.status == 'TOBE_CLASSIFIED' ? 'WILL BE SET SOON' : row.problem) }}</div>

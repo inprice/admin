@@ -76,6 +76,13 @@ export default {
       this.resolve(false)
       this.dialog = false
     }
+  },
+  created() {
+    if (this.$vuetify.breakpoint.smAndDown) {
+      this.options.width = 350;
+    } else {
+      this.options.width = 600;
+    }
   }
 }
 </script>

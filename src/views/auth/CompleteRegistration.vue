@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="5" lg="3">
+      <v-col cols="12" sm="8" md="5" lg="2">
 
         <div class="text-center mb-8">
           <img :src="verticalBrand" :width="140" />

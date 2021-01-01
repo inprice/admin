@@ -16,16 +16,32 @@
             <v-divider class="mb-2"></v-divider>
 
             <div class="caption px-2 d-flex justify-space-between">
-              <div style="line-height: 22px">
-                Ranking: <span class="font-weight-bold">{{ row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA' }}</span>
-                <span class="ml-1 blue--text font-weight-bold">({{ row.position | toPosition }})</span>
-                <div>
-                </div>
-                  Updated: <ago :date="row.updatedAt || row.createdAt" class="d-inline font-weight-medium" />
-                <div>
-                  Tags: <span class="font-weight-medium">{{ row.tags.length ? row.tags.join(', ') : 'NA' }}</span>
-                </div>
-              </div>
+              <table class="my-auto">
+                <tr>
+                  <td>Ranking</td>
+                  <td>:</td>
+                  <th class="text-left">
+                    <span class="teal--text">{{ row.position | toPosition }}</span>
+                    (<span class="red--text">
+                      {{ row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA' }}
+                    </span>)
+                  </th>
+                </tr>
+                <tr>
+                  <td>Updated</td>
+                  <td>:</td>
+                  <th class="text-left">
+                    <ago :date="row.updatedAt || row.createdAt" />
+                  </th>
+                </tr>
+                <tr>
+                  <td>Tags</td>
+                  <td>:</td>
+                  <td class="text-left">
+                    {{ row.tags.length ? row.tags.join(', ') : 'NA' }}
+                  </td>
+                </tr>
+              </table>
 
               <table class="featuresTable caption" v-if="row.minSeller" :style="RESPROPS.priceTable.table">
                 <tr>

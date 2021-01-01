@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="5" lg="3">
+      <v-col cols="12" sm="8" md="5" lg="2">
 
         <div class="text-center mb-8">
           <img :src="verticalBrand" :width="140" />
@@ -122,20 +122,20 @@ export default {
     activateRules() {
       this.rules = {
         accountName: [
-          v => !!v || "Account name is required",
+          v => !!v || "Account name required",
           v => (v.length >= 3 && v.length <= 70) || "Account name must be between 3-70 chars"
         ],
         email: [
-          v => !!v || "E-mail is required",
+          v => !!v || "E-mail required",
           v => (v.length >= 9 && v.length <= 100) || "Email must be between 9-100 chars",
           v => Utility.verifyEmail(v) || "E-mail must be valid"
         ],
         password: [
-          v => !!v || "Password is required",
+          v => !!v || "Password required",
           v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
         ],
         repeatPassword: [
-          v => !!v || "Repeat Password is required",
+          v => !!v || "Repeat Password required",
           v => v === this.form.password || "Passwords must be the same"
         ]
       }

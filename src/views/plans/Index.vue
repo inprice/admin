@@ -157,7 +157,7 @@
 
       <div class="pa-4">
         Do you need something special than the plans we offer? We will be happy to assist you.
-        <a href="mailto:support@inprice.io?subject=Request for additional features">Please click here to send an email</a> us explaining your needs.
+        <a href="mailto:support@inprice.io?subject=Request for additional features">Please click/touch here to send an email</a> us explaining your needs.
       </div>
     </v-card>
 

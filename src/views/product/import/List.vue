@@ -21,8 +21,7 @@
     <v-card class="mt-2">
 
       <v-card-title class="pb-2">
-        <v-icon class="mr-4">mdi-format-list-bulleted</v-icon>
-        <div>The import details of your upload.</div>
+        Details
       </v-card-title>
 
       <v-divider></v-divider>
@@ -30,48 +29,39 @@
       <v-simple-table class="property-table pt-3 pb-1" dense v-if="data && data.import">
         <template v-slot:default>
           <tbody>
-            <property valueClass="col-3" name="Type" :value="data.import.type + (data.import.is_file ? ' File' : ' List')" />
-            <property valueClass="col-3" name="Date" :value="data.import.createdAt" />
-            <property valueClass="col-2" name="Successes" :value="data.import.successCount" />
-            <property valueClass="col-2" name="Failures" :value="data.import.problemCount || '0'" />
+            <property :valueClass="RESPROPS.properties.type" name="Type" :value="data.import.type + (data.import.is_file ? ' File' : ' List')" />
+            <property :valueClass="RESPROPS.properties.date" name="Date" :value="data.import.createdAt" />
+            <property :valueClass="RESPROPS.properties.success" name="Success" :value="data.import.successCount || '0'" />
+            <property :valueClass="RESPROPS.properties.fail" name="Fail" :value="data.import.problemCount || '0'" />
           </tbody>
         </template>
       </v-simple-table>
 
+      <v-divider class="my-2"></v-divider>
+
+      <div class="title ma-4 mb-2">Rows</div>
+
       <v-divider></v-divider>
 
-      <div v-if="data && data.list && data.list.length">
-        <v-simple-table>
-          <template v-slot:default>
+      <div 
+        class="v-data-table v-data-table--dense theme--light put-behind" 
+        v-if="data && data.list && data.list.length">
+        <div class="v-data-table__wrapper">
+          <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
             <thead>
               <tr>
-                <th>Data</th>
-                <th>Looks</th>
-                <!--
-                <th class="text-center">Status</th>
-                 -->
+                <th :width="RESPROPS.table.data">Data</th>
+                <th :width="RESPROPS.table.looks">Looks</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in data.list" :key="row.id">
-                <td width="80%">{{ row.data }}</td>
-                <td width="20%">{{ row.problem || (data.import.type != 'CSV' ? 'Looks ' : '') + 'Fine' }}</td>
-                <!--
-                <td class="text-center">
-                  <div class="d-inline-flex">
-                    <div title="Eligible?">
-                      <v-checkbox hide-details="true" class="mt-1" :input-value="row.eligible" disabled value/>
-                    </div>
-                    <div title="Imported?">
-                      <v-checkbox hide-details="true" class="mt-1" :input-value="row.imported" disabled value/>
-                    </div>
-                  </div>
-                </td>
-                 -->
+                <td class="text-truncate">{{ row.data }}</td>
+                <td>{{ row.problem || (data.import.type != 'CSV' ? 'Looks ' : '') + 'Fine' }}</td>
               </tr>
             </tbody>
-          </template>
-        </v-simple-table>
+          </table>
+        </div>
       </div>
 
       <div v-else class="ma-2 pa-2">
@@ -92,6 +82,26 @@ export default {
     return {
       data: {}
     };
+  },
+  computed: {
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': {
+          return {
+            'table-layout': 'fixed',
+            properties: { type: 'col-8', date: 'col-8', success: 'col-3', fail: 'col-3' },
+            table: { data: '800px', looks: '300px' },
+          };
+        }
+        default: {
+          return {
+            'table-layout': '',
+            properties: { type: 'col-5', date: 'col-5', success: 'col-2', fail: 'col-2' },
+            table: { data: '', looks: '15%' },
+          };
+        }
+      }
+    },
   },
   methods: {
     remove() {

@@ -162,11 +162,11 @@ export default {
     activateRules() {
       this.rules = {
         code: [
-          v => !!v || "Code is required",
+          v => !!v || "Code required",
           v => (v.length >= 3 && v.length <= 50) || "Code must be between 3-50 chars"
         ],
         name: [
-          v => !!v || "Name is required",
+          v => !!v || "Name required",
           v => (v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
         ],
         price: [

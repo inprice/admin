@@ -46,9 +46,12 @@
 
           <v-divider class="my-2"></v-divider>
 
-          <div class="caption teal--text">Your Rank</div>
-          <div label outlined class="caption mx-auto" :class="{ 'font-weight-bold': $vuetify.breakpoint.smAndUp }">
-            {{ (prod.ranking && prod.linkCount ? prod.ranking + '/' + (prod.linkCount+1) : '') }}
+          <div class="caption">Your Rank</div>
+          <div class="caption mx-auto font-weight-bold">
+            <span class="teal--text">{{ prod.position | toPosition }}</span>
+            (<span class="red--text">
+              {{ prod.ranking && prod.linkCount ? prod.ranking + '/' + (prod.linkCount+1) : 'NA' }}
+            </span>)
           </div>
 
         </v-card>

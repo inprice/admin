@@ -9,23 +9,11 @@
 
     <v-card class="mt-4">
       <v-card-title class="pb-2">
-        <v-icon class="mr-4">mdi-cloud-upload-outline</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-cloud-upload-outline</v-icon>
         <div>
           <div>Amazon ASIN List Import</div>
           <div class="caption">Please copy-paste your asin list in the text area below. Please consider the rules in the following sections</div>
         </div>
-
-        <v-spacer></v-spacer>
-
-        <v-btn 
-          color="success" 
-          :class="{'white--text': valid }"
-          :disabled="!valid" 
-          :loading="loading" 
-          @click="submit"
-        >
-          Import
-        </v-btn>
       </v-card-title>
 
       <v-card-text class="pb-0">
@@ -45,6 +33,17 @@
           </v-textarea>
         </v-form>
       </v-card-text>
+
+      <div class="d-flex justify-center pb-4">
+        <v-btn 
+          color="success" 
+          :disabled="!valid" 
+          :loading="loading" 
+          @click="submit"
+        >
+          Import
+        </v-btn>
+      </div>
     </v-card>
 
     <AmazonRules />
@@ -62,7 +61,7 @@ export default {
       valid: false,
       content: '',
       rules: [
-        v => !!v || "Content is required",
+        v => !!v || "Content required",
         v => this.checkContentRowLimit(v) || "Content is out of limit. Max: 1024kb or 1mb and/or 100 rows",
       ],
     };
