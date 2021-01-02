@@ -6,42 +6,70 @@
       <v-hover v-for="row in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card @click="edit(row.id)" class="mt-3 pa-1 pb-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
-            <div class="d-flex justify-space-between subtitle px-3 pt-1 font-weight-medium">
+          <v-card @click="edit(row.id)" class="mt-3 pa-1 pb-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+
+            <div class="d-flex justify-space-between subtitle pa-2 font-weight-medium">
               <div>{{ row.name }}</div>
-              <div>{{ row.price | toCurrency }}</div>
-            </div>
-            <div class="d-flex justify-space-between px-3 caption">
-              <ago :date="row.updatedAt || row.createdAt" />
-              <div class="blue--text">{{ row.position | toPosition }}</div>
+              <div class="pl-2 cyan--text font-weight-bold">{{ row.price | toPrice }}</div>
             </div>
 
-            <div class="d-flex justify-space-between mt-1">
-              <div class="ml-2" v-if="row.tags && row.tags.length">
-                <v-chip
-                  class="mr-1"
-                  outlined label small
-                  v-for="(tag, index) in row.tags" :key="index"
-                >
-                  {{ tag }}
-                </v-chip>
-              </div>
-              <div class="caption ml-3 green--text font-weight-medium" v-else>
-                #{{ row.code }}
-              </div>
+            <v-divider class="mb-2"></v-divider>
 
-              <div class="caption px-2" v-if="row.minSeller">
-                <v-chip class="ml-1" outlined label small :title="row.minSeller + ' (' + row.minPlatform + ')'">
-                  Min: <span class="ml-2 font-weight-bold green--text">{{ row.minPrice }}</span>
-                </v-chip>
-                <v-chip class="ml-1" outlined label small>
-                  Avg: <span class="ml-2 font-weight-bold">{{ row.avgPrice }}</span>
-                </v-chip>
-                <v-chip class="ml-1" outlined label small :title="row.maxSeller + ' (' + row.maxPlatform + ')'">
-                  Max: <span class="ml-2 font-weight-bold red--text">{{ row.maxPrice }}</span>
-                </v-chip>
-              </div>
-              <div class="caption px-3" v-else>
+            <div class="caption px-2 d-flex justify-space-between">
+              <table class="my-auto">
+                <tr>
+                  <td>Ranking</td>
+                  <td>:</td>
+                  <th class="text-left">
+                    <span class="teal--text">{{ row.position | toPosition }}</span>
+                    (<span class="red--text">
+                      {{ row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA' }}
+                    </span>)
+                  </th>
+                </tr>
+                <tr>
+                  <td>Updated</td>
+                  <td>:</td>
+                  <th class="text-left">
+                    <ago :date="row.updatedAt || row.createdAt" />
+                  </th>
+                </tr>
+                <tr>
+                  <td>Tags</td>
+                  <td>:</td>
+                  <td class="text-left">
+                    {{ row.tags.length ? row.tags.join(', ') : 'NA' }}
+                  </td>
+                </tr>
+              </table>
+
+              <table class="featuresTable caption" v-if="row.minSeller" :style="RESPROPS.priceTable.table">
+                <tr>
+                  <td width="10%" class="text-center">O</td>
+                  <th width="20%">Price</th>
+                  <th v-if="$vuetify.breakpoint.smAndUp" width="40%">Seller</th>
+                  <th v-if="$vuetify.breakpoint.smAndUp" width="30%">Platform</th>
+                </tr>
+                <tr>
+                  <th>Min</th>
+                  <td class="text-right">{{ row.minPrice | toPrice }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.minSeller }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.minPlatform }}</td>
+                </tr>
+                <tr>
+                  <th>Avg</th>
+                  <td class="text-right">{{ row.avgPrice | toPrice }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp" colspan="2"></td>
+                </tr>
+                <tr>
+                  <th>Max</th>
+                  <td class="text-right">{{ row.maxPrice | toPrice }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.maxSeller }}</td>
+                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.maxPlatform }}</td>
+                </tr>
+              </table>
+
+              <div class="caption px-2" v-else>
                 Not classified yet!
               </div>
             </div>
@@ -54,7 +82,7 @@
     </div>
 
     <v-card v-else >
-      <block-message :message="'No product found! You can add a new one or change your criteria.'" />
+      <block-message v-if="updated" :message="'No product found! You can add a new one or change your criteria.'" />
     </v-card>
 
   </div>
@@ -64,24 +92,42 @@
 <script>
 export default {
   props: ['rows', 'isLoading'],
+  computed: {
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': {
+          return {
+            priceTable: { table: 'max-width: 35%' },
+          };
+        }
+        case 'sm': {
+          return {
+            priceTable: { table: 'max-width: 50%' },
+          };
+        }
+        default: {
+          return {
+            priceTable: { table: '' },
+          };
+        }
+      }
+    },
+  },
+  data() {
+    return {
+      updated: false,
+    }
+  },
   methods: {
     edit(id) {
       this.$emit('edit', id);
     },
   },
   components: {
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
+  updated() {
+    this.$nextTick(() => this.updated = true);
+  }
 };
 </script>
-
-<style scoped>
-  tr {
-    cursor: pointer;
-  }
-  td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-</style>

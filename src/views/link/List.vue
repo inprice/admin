@@ -6,18 +6,20 @@
       <v-hover v-for="(row, index) in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card class="mb-3 pa-3 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+          <v-card class="mt-3 pa-3 pb-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
 
             <div @click="toggleDetails(row.id)" style="cursor: pointer">
               <div class="d-flex justify-space-between subtitle font-weight-medium">
                 <div>{{ row.name || row.problem || 'NOT YET' }}</div>
-                <div>{{ row.price | toPrice }}</div>
+                <div class="pl-2 cyan--text font-weight-bold">{{ row.price | toPrice }}</div>
               </div>
+
+              <v-divider class="my-2"></v-divider>
 
               <div class="d-flex justify-space-between caption">
                 <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
                 <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
-                <div class="blue--text">{{ row.position | toPosition }}</div>
+                <div>{{ row.position | toPosition }}</div>
               </div>
 
               <div class="d-flex justify-space-between caption">
@@ -28,10 +30,9 @@
               </div>
             </div>
 
-            <v-divider class="my-2" />
+            <v-divider class="mt-2 mb-3" />
 
-            <div class="row mr-0">
-              <v-spacer></v-spacer>
+            <div class="row mx-0 d-flex" :class="$vuetify.breakpoint.xsOnly ? 'justify-center' : 'justify-end'">
               <div>
                 <v-btn class="mx-1" small @click="toggleStatus(index, row.id)" :disabled="$store.get('session/isViewer')">
                   <span v-if="row.status=='PAUSED'">Resume</span>
@@ -45,6 +46,7 @@
             <link-details
               :data="openedDetail"
               :key="detailsRefreshCount"
+              class="mt-2"
               v-if="showDetails==true && openedDetail && openedDetail.id==row.id"
             />
 

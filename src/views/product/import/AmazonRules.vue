@@ -2,8 +2,8 @@
   <div>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-format-columns</v-icon>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-format-columns</v-icon>
         <div>The rules each row in your content must match</div>
       </v-card-title>
 
@@ -18,44 +18,47 @@
     </v-card>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>A valid ASIN list</div>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-emoticon-outline</v-icon>
+        <div>Valid ASIN list</div>
       </v-card-title>
 
       <v-divider/>
 
-      <v-card-text>
-<pre>
-B00LH3DTYA
-B005GIQPCU
-BT0L2OMPNK
-BT0178MP0K
-</pre>
+      <v-card-text class="py-2">
+        <div class="sample-data">
+          <div>B00LH3DTYA</div>
+          <div>B005GIQPCU</div>
+          <div>BT0L2OMPNK</div>
+          <div>BT0178MP0K</div>
+        </div>
       </v-card-text>
     </v-card>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>Another valid ASIN list with description and empty lines</div>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-emoticon-outline</v-icon>
+        <div>
+          <div>Another one</div>
+          <div class="caption">With description lines</div>
+        </div>
       </v-card-title>
 
       <v-divider/>
 
-      <v-card-text>
-<pre>
-# -----------------------------------------
-# ASIN CODE LIST
-# -----------------------------------------
-B00LH3DTYA
-B005GIQPCU
-# -----------------------------------------
-# here is another description line
-# -----------------------------------------
-BT0L2OMPNK
-BT0178MP0K
-</pre>
+      <v-card-text class="py-2">
+        <div class="sample-data">
+          <div># -------------------------</div>
+          <div># ASIN CODE LIST</div>
+          <div># -------------------------</div>
+          <div>B00LH3DTYA</div>
+          <div>B005GIQPCU</div>
+          <div># -------------------------</div>
+          <div># another description line</div>
+          <div># -------------------------</div>
+          <div>BT0L2OMPNK</div>
+          <div>BT0178MP0K</div>
+        </div>
       </v-card-text>
     </v-card>
 
@@ -79,9 +82,9 @@ BT0178MP0K
     margin-top: 15px;
   }
   .v-card__title {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
   }
   .v-card__text {
-    padding-left: 10px;
+    padding-left: 5px;
   }
 </style>

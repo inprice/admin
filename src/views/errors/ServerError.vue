@@ -18,7 +18,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <span class="mx-auto font-weight-bold "> <span class="blue--text">inprice</span> @ info@inprice.io</span>
+    <a class="mx-auto font-weight-bold" :href="'mailto:support@inprice.io?subject='+message">support@inprice.io</a>
   </v-container>
 </template>
 
@@ -41,7 +41,7 @@ export default {
     text-decoration: underline overline 8px;
   }
   .first-row, .second-row {
-    color: #555;
+    color: #444;
   }
   i {
     font-size: 50px !important;

@@ -1,7 +1,10 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
+    <v-dialog 
+      v-model="opened" 
+      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      overlay-opacity="0.2">
       <v-card>
         <v-card-title>Update info</v-card-title>
         <v-card-subtitle class="pb-2">for {{ CURSTAT.email }}</v-card-subtitle>
@@ -105,7 +108,7 @@ export default {
           v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
         ],
         timezone: [
-          v => !!v || "Timezone is required",
+          v => !!v || "Timezone required",
         ],
       }
     },

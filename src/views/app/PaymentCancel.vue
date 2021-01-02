@@ -39,7 +39,7 @@
 import SubsService from '@/service/subscription';
 
 export default {
-  mounted() {
+  created() {
     this.$nextTick(() => {
       const hash = this.$route.params.hash;
       if (hash) {

@@ -2,7 +2,7 @@
   <div class="mt-3">
     <v-card class="pb-2">
       <v-card-title class="pb-2">
-        <v-icon class="mr-4">mdi-home-city-outline</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-home-city-outline</v-icon>
         <div>
           <div>Profile</div>
           <div class="caption">Profile info of your account.</div>
@@ -16,19 +16,18 @@
           @click="openAccountInfoDialog">
             Edit
         </v-btn>
-       </v-card-title>
+      </v-card-title>
 
       <v-divider></v-divider>
 
-      <v-simple-table class="property-table pt-3 pb-1">
+      <v-simple-table class="property-table pt-3 pb-2" dense>
         <template v-slot:default>
           <tbody>
-            <property valueClass="col-6" name="Title" :value="CURSTAT.account" />
-            <property valueClass="col-4" name="Format" :value="CURSTAT.currencyFormat" />
+            <property :valueClass="RESPROPS.properties.title" name="Title" :value="CURSTAT.account" />
+            <property :valueClass="RESPROPS.properties.format" name="Format" :value="CURSTAT.currencyFormat" />
           </tbody>
         </template>
       </v-simple-table>
-
     </v-card>
 
     <AccountInfoDialog ref="accountInfoDialog"/>
@@ -41,7 +40,21 @@ import AccountService from '@/service/account';
 
 export default {
   computed: {
-    CURSTAT: get('session/getCurrentStatus')
+    CURSTAT: get('session/getCurrentStatus'),
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': {
+          return {
+            properties: { title: 'col-11', format: 'col-6' },
+          };
+        }
+        default: {
+          return {
+            properties: { title: 'col-8', format: 'col-5' },
+          };
+        }
+      }
+    },
   },
   methods: {
     async openAccountInfoDialog() {

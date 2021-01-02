@@ -1,11 +1,25 @@
 <template>
   <v-app>
     <v-navigation-drawer 
-      app clipped
-      v-model="drawerStatus" 
-      :mini-variant="drawerStatus == 1" 
-      :expand-on-hover="drawerStatus == 1">
+      app clipped 
+      v-model="drawer"
+      :temporary="$vuetify.breakpoint.smAndDown">
+
+      <template v-slot:prepend>
+        <v-list dense v-if="$vuetify.breakpoint.xsOnly" class="pa-0">
+          <v-list-item class="pa-0 ma-0 hidden-md-and-up" @click.stop="drawer = !drawer">
+            <v-btn
+              icon
+              class="mx-auto">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-list-item>
+        </v-list>
+        <v-divider v-if="$vuetify.breakpoint.xsOnly"></v-divider>
+      </template>
+
       <v-list dense nav class="text-uppercase font-weight-light">
+
         <v-list-item link :to="{name: 'dashboard'}">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -87,14 +101,23 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-divider inset></v-divider>
-
         <v-list-item @click="openCreateAccount">
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Add a New Account</v-list-item-title>
+            <v-list-item-title>Create a New Account</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider inset></v-divider>
+
+        <v-list-item @click="$store.dispatch('session/logout', false)">
+          <v-list-item-action>
+            <v-icon>mdi-exit-to-app</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -103,11 +126,16 @@
       <template v-slot:append>
         <v-divider />
 
-        <v-list v-if="drawerStatus == 2 && CURSTAT">
-          <v-list-item>
+        <v-list v-if="CURSTAT" class="pa-0">
+          <v-list-item class="text-center black--text text-truncate">
             <v-list-item-content>
               <div class="subtitle font-weight-bold">{{ CURSTAT.account }}</div>
-              <span class="black--text caption">{{ CURSTAT.email }}</span>
+              <span class="caption">{{ CURSTAT.email }}</span>
+              <v-chip label outlined class="caption d-flex justify-center">
+                <span class="font-weight-medium">{{ CURSTAT.role }}</span>
+                <span class="mx-2">|</span>
+                <span class="font-weight-medium green--text text-uppercase darken-2">{{ CURSTAT.isActive ? CURSTAT.planName : CURSTAT.status }}</span>
+              </v-chip>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -117,7 +145,8 @@
 
     <v-app-bar app clipped-left color="blue-grey"  dark>
 
-      <v-app-bar-nav-icon @click.stop="changeDrawerPosition"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+
       <div class="hidden-sm-and-down ml-4 mt-2">
         <img :src="brandNameW" :width="150" />
       </div>
@@ -131,8 +160,8 @@
       >
         <template v-slot:activator="{ on, attr }">
           <v-text-field 
-            v-on="on" v-bind="attr"
-            class="searchBox"
+            v-on="on" 
+            v-bind="attr"
             ref="searchTerm"
             v-model="searchTerm"
             placeholder="Search for products by name"
@@ -147,7 +176,7 @@
           <template v-slot:default>
             <tbody v-if="products && products.length">
               <tr v-for="prod in products" :key="prod.id" class="searchTable" @click="openProductPage(prod.id, prod.name)">
-                <td>{{ prod.name }}</td>
+                <td class="text-truncate" >{{ prod.name }}</td>
                 <td class="text-right">{{ prod.code }}</td>
               </tr>
             </tbody>
@@ -170,13 +199,11 @@
     </v-app-bar>
 
     <v-main>
-
-      <!-- v-responsive class="mx-auto overflow-visible" :style="this.$route.name != 'dashboard' ? 'max-width: 1024px' : ''">
-        <v-container :fluid="this.$route.name == 'dashboard'" -->
-
       <v-responsive class="mx-auto overflow-visible" max-width="1024">
         <v-container>
-          <router-view></router-view>
+          <vue-page-transition name="fade">
+            <router-view></router-view>
+          </vue-page-transition>
         </v-container>
       </v-responsive>
     </v-main>
@@ -199,8 +226,7 @@ export default {
       searching: false,
       searchTerm: null,
       products: [],
-      drawerToLeft: true,
-      drawerStatus: 2,
+      drawer: (this.$vuetify.breakpoint.mdAndUp),
       brandNameW: require('@/assets/app/brand-horWR.svg')
     };
   },
@@ -220,23 +246,6 @@ export default {
     },
   },
   methods: {
-    changeDrawerPosition() {
-      if (this.drawerToLeft) {
-        if (this.drawerStatus == 0) {
-          this.drawerToLeft = false;
-          this.drawerStatus = 1;
-        } else {
-          this.drawerStatus--;
-        }
-      } else {
-        if (this.drawerStatus == 2) {
-          this.drawerToLeft = true;
-          this.drawerStatus = 1;
-        } else {
-          this.drawerStatus++;
-        }
-      }
-    },
     openCreateAccount() {
       this.$refs.accountInfoDialog.edit(null, true);
     },
@@ -266,11 +275,6 @@ export default {
     margin-left: 2px !important;
     max-width: 100% !important;
   }
-
-  .searchBox {
-    max-width: 500px;
-  }
-
   .searchTable {
     cursor: pointer;
   }

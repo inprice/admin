@@ -1,7 +1,10 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="500" overlay-opacity="0.2">
+    <v-dialog 
+      v-model="opened" 
+       :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+       overlay-opacity="0.2">
       <v-card>
         <v-card-title>Product details</v-card-title>
         <v-card-subtitle>{{ form.name }}</v-card-subtitle>
@@ -159,11 +162,11 @@ export default {
     activateRules() {
       this.rules = {
         code: [
-          v => !!v || "Code is required",
+          v => !!v || "Code required",
           v => (v.length >= 3 && v.length <= 50) || "Code must be between 3-50 chars"
         ],
         name: [
-          v => !!v || "Name is required",
+          v => !!v || "Name required",
           v => (v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
         ],
         price: [

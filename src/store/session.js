@@ -29,14 +29,14 @@ const actions = {
           commit('snackbar/setMessage', { text: 'You have been successfully logged out!' }, { root: true });
       });
     }
-    localStorage.removeItem(SystemConsts.keys.SESSIONS);
+    localStorage.removeItem(SystemConsts.KEYS.SESSIONS);
     logoutChannel.postMessage();
     commit('RESET');
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   },
 
   create({ state, commit }, res) {
-    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(res.data.sessions));
+    localStorage.setItem(SystemConsts.KEYS.SESSIONS, JSON.stringify(res.data.sessions));
     state.no = res.data.sessionNo;
     state.list[state.no] = res.data.sessions[state.no];
     commit('SET_LIST', res.data);
@@ -59,7 +59,7 @@ const mutations = {
   SET_CURRENT(state, ses) {
     state.current = ses;
     state.list[state.no] = ses;
-    localStorage.setItem(SystemConsts.keys.SESSIONS, JSON.stringify(state.list));
+    localStorage.setItem(SystemConsts.KEYS.SESSIONS, JSON.stringify(state.list));
     loginChannel.postMessage(state.list);
   },
 
@@ -153,7 +153,7 @@ const getters = {
 
 const loginChannel = new BroadcastChannel('login');
 loginChannel.onmessage = (e) => {
-  mutations.SET_LIST(state, e);
+  mutations.list(state, e);
 };
 
 const logoutChannel = new BroadcastChannel('logout');

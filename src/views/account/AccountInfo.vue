@@ -1,7 +1,10 @@
 <template>
-  <v-row justify="center">
+  <div class="d-flex justify-center">
 
-    <v-dialog v-model="opened" max-width="450" overlay-opacity="0.2">
+    <v-dialog 
+      v-model="opened" 
+      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      overlay-opacity="0.2">
       <v-card>
         <v-card-title>{{ isInsert ? 'New account' : 'Account info' }}</v-card-title>
 
@@ -37,21 +40,6 @@
             maxlength="16"
           />
 
-          <div class="d-flex">
-            <v-select class="mx-5"
-              label="Sample"
-              v-model="sampleAmount"
-              :items="sampleAmounts"
-              :menu-props="{ auto: true, overflowY: true }"
-              @change="setCurrencyFormat"
-            />
-
-            <v-text-field class="mx-5"
-              readonly
-              label="Result"
-              :value="formatCurrency(sampleAmount)"
-            />
-          </div>
         </v-form>
 
         <v-card-actions>
@@ -71,14 +59,15 @@
 
       </v-card>
     </v-dialog>
-  </v-row>
+
+  </div>
 </template>
 
 <script>
 import ApiService from '@/service/api';
 import AccountService from '@/service/account';
 
-import numFormatter from 'number-format.js';
+//import numFormatter from 'number-format.js';
 import currencyNames from '@/data/currency-names';
 import currencyFormats from '@/data/currency-formats';
 
@@ -170,9 +159,11 @@ export default {
       this.opened = false;
       this.loading = false;
     },
+    /*
     formatCurrency(value) {
       return numFormatter(this.form.currencyFormat, value);
     }
+    */
   }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4" lg="3" xl="2">
+      <v-col cols="12" sm="8" md="5" lg="2">
 
         <div class="text-center mb-8">
           <img :src="verticalBrand" :width="140" />
@@ -10,7 +10,7 @@
         <v-card class="pa-3 mb-10 body-2" color="yellow lighten-5">
 
           <div>
-            <div class="title text-center mb-2">Please check your email account</div>
+            <div class="title text-center mb-2">Please check your email</div>
             <v-divider></v-divider>
             <p class="ma-4">
               We have just sent an email with activation code to your email address.

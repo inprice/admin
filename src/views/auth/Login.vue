@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4" lg="3" xl="2">
+      <v-col cols="12" sm="8" md="5" lg="2">
 
         <div class="text-center mb-8">
           <img :src="verticalBrand" :width="140" />
@@ -71,6 +71,7 @@
         <div class="text-center font-weight-light mt-6">
           Don't have an account yet? <router-link to="request-registration">Sign Up</router-link>
         </div>
+
       </v-col>
     </v-row>
   </v-container>
@@ -125,18 +126,18 @@ export default {
     activateRules() {
       this.rules = {
         email: [
-          v => !!v || "E-mail is required",
+          v => !!v || "E-mail required",
           v => (v.length >= 9 && v.length <= 100) || "Email must be between 9-100 chars",
           v => Utility.verifyEmail(v) || "E-mail must be valid"
         ],
         password: [
-          v => !!v || "Password is required",
+          v => !!v || "Password required",
           v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
         ],
       }
     }
   },
-  mounted() {
+  created() {
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
 
     this.infoMessage = null;

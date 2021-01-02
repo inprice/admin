@@ -8,29 +8,40 @@
 
       <!-- PRICES -->
       <v-tab-item>
-        <v-simple-table dense v-if="data && data.priceList && data.priceList.length" class="pb-1">
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-center" width="20%">Date</th>
-                <th class="text-center">Price</th>
-                <th class="text-center">Position</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in data.priceList" :key="row.id">
-                <td class="text-center" width="20%">
-                  <ago :date="row.createdAt" />
-                </td>
-                <td class="text-center">{{ row.price | toPrice }}</td>
-                <td class="text-center">{{ row.position | toPosition }}</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <div 
+          class="v-data-table v-data-table--dense theme--light put-behind" 
+          v-if="data && data.priceList && data.priceList.length">
+          <div class="v-data-table__wrapper">
+            <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
+              <thead>
+                <tr>
+                  <th :width="RESPROPS.priceTable.date">Date</th>
+                  <th :width="RESPROPS.priceTable.price">Price</th>
+                  <th :width="RESPROPS.priceTable.diff">Diff</th>
+                  <th :width="RESPROPS.priceTable.position">Position</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in data.priceList" :key="row.id">
+                  <td>
+                    <ago :date="row.createdAt" />
+                  </td>
+                  <td>{{ row.price | toPrice }}</td>
+                  <td>
+                    <span>{{ row.diffAmount | toPrice }}</span>
+                    <span v-if="row.diffAmount" class="d-inline-flex ml-1" style="background-color: #ff3">
+                      [<diff-line smallicon class="mx-1" :diff="row.diffRate"></diff-line>]
+                    </span>
+                  </td>
+                  <td>{{ row.position | toPosition }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         <block-message 
-          v-else 
+          v-else dense
           :message="'No data.'"
         />
 
@@ -41,10 +52,16 @@
         <v-simple-table class="property-table pt-3 pb-2" dense v-if="data">
           <template v-slot:default>
             <tbody>
-              <property valueClass="col-5" name="Brand" :value="data.brand || 'NA'" />
-              <property valueClass="col-5" name="Shipment" :value="data.shipment || 'NA'" />
-              <property valueClass="col-4" name="Last Check" :value="data.lastCheck || 'NA'" />
-              <property valueClass="col-4" name="Last Update" :value="data.lastUpdate | formatDate" />
+              <property :valueClass="RESPROPS.properties.brand" name="Brand" :value="data.brand" />
+              <property :valueClass="RESPROPS.properties.shipment" name="Shipment" :value="data.shipment" />
+              <property :valueClass="RESPROPS.properties.lastCheck" name="Checked">
+                <ago v-if="data.lastCheck" :date="data.lastCheck" />
+                <span v-else>NA</span>
+              </property>
+              <property :valueClass="RESPROPS.properties.lastUpdate" name="Updated">
+                <ago v-if="data.lastCheck" :date="data.lastUpdate" />
+                <span v-else>NA</span>
+              </property>
             </tbody>
           </template>
         </v-simple-table>
@@ -52,54 +69,60 @@
 
       <!-- HISTORY -->
       <v-tab-item>
-        <v-simple-table dense v-if="data && data.historyList && data.historyList.length" class="pb-1">
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-center" width="20%">Date</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Problem</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, index) in data.historyList" :key="index">
-                <td class="text-center" width="20%">
-                  <ago :date="row.createdAt" />
-                </td>
-                <td class="text-center">{{ row.status }}</td>
-                <td class="text-center">{{ row.problem }}</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <div 
+          class="v-data-table v-data-table--dense theme--light put-behind" 
+          v-if="data && data.historyList && data.historyList.length">
+          <div class="v-data-table__wrapper">
+            <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
+              <thead>
+                <tr>
+                  <th :width="RESPROPS.historyTable.date">Date</th>
+                  <th :width="RESPROPS.historyTable.status">Status</th>
+                  <th :width="RESPROPS.historyTable.problem">Problem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in data.historyList" :key="row.id">
+                  <td>
+                    <ago :date="row.createdAt" />
+                  </td>
+                  <td>{{ row.status.replaceAll('_', ' ') }}</td>
+                  <td>{{ row.problem }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         <block-message 
-          v-else 
+          v-else dense
           :message="'No data.'"
         />
       </v-tab-item>
 
       <!-- SPECS -->
       <v-tab-item>
-        <v-simple-table dense v-if="data && data.specList && data.specList.length" class="pb-1">
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-center">Key</th>
-                <th class="text-center">Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in data.specList" :key="row.id">
-                <td class="text-center">{{ row.key }}</td>
-                <td class="text-center">{{ row.value }}</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+
+        <table 
+          class="featuresTable body-2 mt-2" 
+          v-if="data && data.specList && data.specList.length" 
+          style="width: 100%">
+          <thead>
+            <tr>
+              <th width="35%">Feature</th>
+              <th width="65%">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in data.specList" :key="row.id">
+              <td>{{ row.key }}</td>
+              <td>{{ row.value }}</td>
+            </tr>
+          </tbody>
+        </table>
 
         <block-message 
-          v-else 
+          v-else dense
           :message="'No data.'"
         />
 
@@ -112,6 +135,28 @@
 <script>
 export default {
   props: ["data"],
+  computed: {
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': {
+          return {
+            'table-layout': 'fixed',
+            priceTable: { date: '200px', price: '100px', diff: '150px', position: '150px' },
+            historyTable: { date: '200px', status: '300px', problem: '400px' },
+            properties: { brand: 'col-11', shipment: 'col-11', lastCheck: 'col-8', lastUpdate: 'col-8' },
+          };
+        }
+        default: {
+          return {
+            'table-layout': '',
+            priceTable: { date: '25%', price: '15%', diff: '20%', position: '' },
+            historyTable: { date: '25%', status: '25%', problem: '50%' },
+            properties: { brand: 'col-7', shipment: 'col-7', lastCheck: 'col-4', lastUpdate: 'col-4' },
+          };
+        }
+      }
+    },
+  },
   data() {
     return {
       tabs: ['Prices', 'Properties', 'History', 'Specs'],
@@ -120,13 +165,20 @@ export default {
   },
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
-    Property: () => import('@/component/app/Property.vue')
+    Property: () => import('@/component/app/Property.vue'),
+    DiffLine: () => import('@/component/utility/DiffLine.vue'),
   }
 }
 </script>
 
 <style scoped>
-  .av-window-item {
-    padding-bottom: 0 !important;
+  .featuresTable tr {
+    height: 30px; 
+  }
+  th, td {
+    padding: 0 8px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>

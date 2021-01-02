@@ -77,7 +77,7 @@ export default {
       this.$router.push({ name: 'products' });
     }
   },
-  mounted() {
+  created() {
     let retry = 0;
     this.overlay = true;
     const refreshId = setInterval(() => {

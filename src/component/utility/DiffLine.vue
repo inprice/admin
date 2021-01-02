@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-center">
     <div>{{ formatted }}</div>
-    <v-icon class="ml-1" :color="color">mdi-{{ dir }}-circle</v-icon>
+    <v-icon :style="$vuetify.breakpoint.name == 'xs' || smallicon ? 'font-size: 95%' : ''" :color="color">mdi-{{ dir }}-circle</v-icon>
   </div>
 </template>
 
@@ -9,7 +9,16 @@
 import numFormatter from 'number-format.js';
 
 export default {
-  props: ['diff'],
+  props: {
+    diff: {
+      type: Number,
+      default: 0
+    },
+    smallicon: {
+      type: Boolean,
+      default: false
+    }
+  },
   computed: {
     dir() {
       if (this.diff != 0) {
@@ -31,7 +40,3 @@ export default {
   }
 }
 </script>
-
-<style scopped>
-
-</style>

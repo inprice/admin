@@ -1,7 +1,10 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog v-model="opened" max-width="350" overlay-opacity="0.2">
+    <v-dialog 
+      v-model="opened" 
+      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      overlay-opacity="0.2">
       <v-card>
         <v-card-title>Change password</v-card-title>
         <v-card-subtitle class="pb-2">for {{ title }}</v-card-subtitle>
@@ -122,16 +125,16 @@ export default {
     activateRules() {
       this.rules = {
         oldPassword: [
-          v => !!v || "Old password is required",
+          v => !!v || "Old password required",
           v => (v && v.length >= 4 && v.length <= 16) || "Old password must be between 4-16 chars",
         ],
         password: [
-          v => !!v || "New password is required",
+          v => !!v || "New password required",
           v => (v && v.length >= 4 && v.length <= 16) || "New password must be between 4-16 chars",
           v => (v && v != this.form.oldPassword) || "Old and New passwords must be different",
         ],
         repeatPassword: [
-          v => !!v || "Repeat Password is required",
+          v => !!v || "Repeat Password required",
           v => (v && v.length >= 4 && v.length <= 16) || "Repeat password must be between 4-16 chars",
           v => (v && v == this.form.password) || "Passwords must be the same"
         ],

@@ -1,45 +1,40 @@
 <template>
   <div class="mt-3">
     <v-card class="pb-2">
-      <v-card-title class="pb-2">
-        <v-icon class="mr-4">mdi-account-circle-outline</v-icon>
-        <div>
-          <div>Profile</div>
-          <div class="caption">Your profile info</div>
+      <v-card-title class="d-block pb-2">
+        <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
+          <div class="d-flex">
+            <v-icon class="mr-4 hidden-xs-only">mdi-account-circle-outline</v-icon>
+            <div class="d-inline">
+              <div>Profile</div>
+              <div class="caption">Your profile info</div>
+            </div>
+          </div>
+
+          <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
+            <v-btn small color="warning" class="mx-2" @click="openChangePasswordDialog">
+              Change Password
+            </v-btn>
+
+            <v-btn small class="mx-2" @click="openUpdateUserDialog">
+              Edit User
+            </v-btn>
+          </div>
         </div>
-
-        <v-spacer></v-spacer>
-
-        <v-btn 
-          small 
-          class="mx-1"
-          color="warning"
-          @click="openChangePasswordDialog">
-            Change Password
-        </v-btn>
-
-        <v-btn 
-          small 
-          class="mx-1"
-          color="info"
-          @click="openUpdateUserDialog">
-            Edit User
-        </v-btn>
-       </v-card-title>
+      </v-card-title>
 
       <v-divider></v-divider>
 
-      <v-simple-table class="property-table pt-3 pb-1">
+      <v-simple-table class="property-table pt-3 pb-2" dense>
         <template v-slot:default>
           <tbody>
-            <property valueClass="col-6" name="Name" :value="CURSTAT.user" />
-            <property valueClass="col-6" name="Timezone" :value="CURSTAT.timezone" />
-            <property valueClass="col-3" name="Role" :value="CURSTAT.role" />
-            <property valueClass="col-3" name="Password" value="****" />
+            <property :valueClass="RESPROPS.properties.name" name="Name" :value="CURSTAT.user" />
+            <property :valueClass="RESPROPS.properties.timezone" name="Timezone" :value="CURSTAT.timezone" />
+            <property :valueClass="RESPROPS.properties.role" name="Role" :value="CURSTAT.role" />
+            <property :valueClass="RESPROPS.properties.password" name="Password" value="****" />
           </tbody>
         </template>
       </v-simple-table>
-
     </v-card>
 
     <UpdateUserDialog ref="updateUserDialog"/>
@@ -52,7 +47,21 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
-    CURSTAT: get('session/getCurrentStatus')
+    CURSTAT: get('session/getCurrentStatus'),
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': {
+          return {
+            properties: { name: 'col-10', timezone: 'col-8', role: 'col-6', password: 'col-6' },
+          };
+        }
+        default: {
+          return {
+            properties: { name: 'col-7', timezone: 'col-6', role: 'col-4', password: 'col-4' },
+          };
+        }
+      }
+    },
   },
   methods: {
     openChangePasswordDialog() {
@@ -69,15 +78,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .v-list-item {
-    padding: 0 6px;
-  }
-  .v-list,
-  .v-list-item__content,
-  .v-list-item__content div {
-    padding: 0;
-  }
-
-</style>

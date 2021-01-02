@@ -1,8 +1,9 @@
-const system = {
+const LIMITS = {
+  DAYS_FOR_FREE_USE: 15,
   ROW_LIMIT_FOR_LISTS: 25,
 };
 
-const keys = {
+const KEYS = {
   SESSIONS: 'INPRICE_CS',
   SESSION_NO: 'Session'
 };
@@ -45,8 +46,8 @@ const IMPORT_STATUSES = [
 ];
 
 export default {
-  system,
-  keys,
+  LIMITS,
+  KEYS,
   POSITIONS,
   POSITION_NAMES,
   STATUSES,

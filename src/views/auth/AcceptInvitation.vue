@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4" lg="3" xl="2">
+      <v-col cols="12" sm="8" md="5" lg="2">
 
         <div class="text-center mb-8">
           <img :src="verticalBrand" :width="140" />
@@ -61,6 +61,7 @@
         <div class="text-center font-weight-light mt-6">
           By clicking "Accept", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
         </div>
+
       </v-col>
     </v-row>
   </v-container>
@@ -108,17 +109,17 @@ export default {
     activateRules() {
       this.rules = {
         password: [
-          v => !!v || "Password is required",
+          v => !!v || "Password required",
           v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
         ],
         repeatPassword: [
-          v => !!v || "Repeat Password is required",
+          v => !!v || "Repeat Password required",
           v => v === this.form.password || "Passwords must be the same"
         ],
       }
     }
   },
-  mounted() {
+  created() {
     this.form.token = this.$route.query.token;
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
   }

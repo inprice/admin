@@ -2,8 +2,8 @@
   <div>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-format-columns</v-icon>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-format-columns</v-icon>
         <div>The rules each row in your content must match</div>
       </v-card-title>
 
@@ -18,44 +18,47 @@
     </v-card>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>A valid SKU list</div>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-emoticon-outline</v-icon>
+        <div>Valid SKU list</div>
       </v-card-title>
 
       <v-divider/>
 
-      <v-card-text>
-<pre>
-183767351247
-16034214202
-26363095820
-191732626551
-</pre>
+      <v-card-text class="py-2">
+        <div class="sample-data">
+          <div>183767351247</div>
+          <div>16034214202</div>
+          <div>26363095820</div>
+          <div>191732626551</div>
+        </div>
       </v-card-text>
     </v-card>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>Another valid SKU list with description and empty lines</div>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-emoticon-outline</v-icon>
+        <div>
+          <div>Another one</div>
+          <div class="caption">With description lines</div>
+        </div>
       </v-card-title>
 
       <v-divider/>
 
-      <v-card-text>
-<pre>
-# -----------------------------------------
-# SKU CODE LIST
-# -----------------------------------------
-183767351247
-16034214202
-# -----------------------------------------
-# here is another description line
-# -----------------------------------------
-26363095820
-191732626551
-</pre>
+      <v-card-text class="py-2">
+        <div class="sample-data">
+          <div># -------------------------</div>
+          <div># SKU CODE LIST</div>
+          <div># -------------------------</div>
+          <div>183767351247</div>
+          <div>16034214202</div>
+          <div># -------------------------</div>
+          <div># another description line</div>
+          <div># -------------------------</div>
+          <div>26363095820</div>
+          <div>191732626551</div>
+        </div>
       </v-card-text>
     </v-card>
 
@@ -79,9 +82,9 @@
     margin-top: 15px;
   }
   .v-card__title {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
   }
   .v-card__text {
-    padding-left: 10px;
+    padding-left: 5px;
   }
 </style>

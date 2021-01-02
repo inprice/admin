@@ -1,10 +1,9 @@
 <template>
-  <v-alert type="error" icon="mdi-information-outline" color="blue lighten-2" text :value="true" :dense="dense" :elevation="dense ? 2 : 0" class="mb-0">
-    <div class="black--text">
-      {{ message }}
-      <slot></slot>
-    </div>
-  </v-alert>
+  <v-card :style="'background-color: ' +(dense ? '#f0f8ff' : 'lightyellow')" outlined :class="(dense ? 'body-2 pa-3' : 'body-1 pa-4 px-3 elevation-1')">
+    <v-icon class="mr-1" :color="dense ? 'blue' : 'cyan'">mdi-information{{dense ? '-outline' : ''}}</v-icon>
+    {{ message }}
+    <slot></slot>
+  </v-card>
 </template>
 
 <script>

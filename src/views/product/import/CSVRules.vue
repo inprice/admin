@@ -2,8 +2,8 @@
   <div>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-format-columns</v-icon>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-format-columns</v-icon>
         <div>The rules each row in your content must match</div>
       </v-card-title>
 
@@ -21,8 +21,8 @@
     </v-card>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-table-column</v-icon>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-table-column</v-icon>
         <div>Column rules</div>
       </v-card-title>
 
@@ -38,38 +38,41 @@
     </v-card>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>A valid CSV content</div>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-emoticon-outline</v-icon>
+        <div>Valid content</div>
       </v-card-title>
 
       <v-divider/>
 
-      <v-card-text>
-<pre>
-0001,12-PIECE STAMPED STAINLESS-STEEL CUTLERY SET,19.99
-0002,FISH KNIFE AND FORK 12 PIECES,30.50
-0003,MASTERCHIEF GOURMET ROBOT,1199.99
-</pre>
+      <v-card-text class="py-2">
+        <div class="sample-data">
+          <div>0001,12-PIECE STAMPED STAINLESS-STEEL CUTLERY SET,19.99</div>
+          <div>0002,FISH KNIFE AND FORK 12 PIECES,30.50</div>
+          <div>0003,MASTERCHIEF GOURMET ROBOT,1199.99</div>
+        </div>
       </v-card-text>
     </v-card>
 
     <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-emoticon-outline</v-icon>
-        <div>Another valid CSV content with description and empty lines</div>
+      <v-card-title class="pt-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-emoticon-outline</v-icon>
+        <div>
+          <div>Another one</div>
+          <div class="caption">With description and empty lines</div>
+        </div>
       </v-card-title>
 
       <v-divider/>
 
-      <v-card-text>
-<pre>
-# CODE, NAME, PRICE
-0001,12-PIECE STAMPED STAINLESS-STEEL CUTLERY SET,19.99
-
-0002,FISH KNIFE AND FORK 12 PIECES,30.50
-0003,MASTERCHIEF GOURMET ROBOT,1199.99
-</pre>
+      <v-card-text class="py-2">
+        <div class="sample-data">
+          <div># CODE, NAME, PRICE</div>
+          <div>0001,12-PIECE STAMPED STAINLESS-STEEL CUTLERY SET,19.99</div>
+          <br>
+          <div>0002,FISH KNIFE AND FORK 12 PIECES,30.50</div>
+          <div>0003,MASTERCHIEF GOURMET ROBOT,1199.99</div>
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -92,9 +95,9 @@
     margin-top: 15px;
   }
   .v-card__title {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
   }
   .v-card__text {
-    padding-left: 10px;
+    padding-left: 5px;
   }
 </style>

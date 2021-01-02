@@ -1,37 +1,36 @@
 <template>
-  <div>
+  <div class="mt-3">
     <v-card>
       <v-card-title>
-        <v-icon color="red" class="mr-4">mdi-alert-decagram-outline</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-alert-decagram-outline</v-icon>
         <div>
-          <div>Delete this account</div>
+          <div>Delete account!</div>
         </div>
        </v-card-title>
 
       <v-divider></v-divider>
 
       <v-card-text>
-        <div class="d-flex justify-space-between">
-
-          <div class="black--text">
-            <span class="body-1">Please keep in mind the followings</span>
-            <ul class="mt-2">
-              <li>Are you absolutely sure? If so, in opening dialog, please provide your password to delete this account.</li>
-              <li>Once you delete a account, there is no going back. All your data is permanently deleted. Please be certain.</li>
-              <li>You cannot delete your account while you have an active subscription. To proceed, you need to cancel your subscription first.</li>
-            </ul>
-          </div>
-
-          <v-btn 
-            small
-            color="error" 
-            class="my-auto"
-            @click="openPasswordConfirmDialog"
-            :loading="loading" 
-            :disabled="loading && CURSTAT.isSubscriber == false">Delete Account</v-btn>
-
+        <div class="black--text">
+          <span class="body-1">Please keep in mind the followings</span>
+          <ul class="mt-2">
+            <li>Are you absolutely sure? If so, in opening dialog, please provide your password to delete this account.</li>
+            <li>Once you delete a account, there is no going back. All your data is permanently deleted. Please be certain.</li>
+            <li>You cannot delete your account while you have an active subscription. To proceed, you need to cancel your subscription first.</li>
+          </ul>
         </div>
       </v-card-text>
+
+      <v-divider></v-divider>
+
+      <div class="text-center py-3">
+        <v-btn 
+          small
+          color="error" 
+          @click="openPasswordConfirmDialog"
+          :loading="loading" 
+          :disabled="loading && CURSTAT.isSubscriber == false">Delete Account</v-btn>
+      </div>
 
     </v-card>
 

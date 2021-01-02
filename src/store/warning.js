@@ -2,19 +2,7 @@ const state = {
   title: 'Warning',
   text: '',
   action: '',
-  counter: 0
-};
-
-const actions = {
-
-  youMustBeEditor({ state }, action) {
-    state.text = `You are not allowed to ${action}!`
-  },
-
-  youMustBeAdmin({ state }, action) {
-    state.text = `Only admin is allowed to ${action}!`
-  },
-
+  counter: 0,
 };
 
 const mutations = {
@@ -39,6 +27,5 @@ const mutations = {
 export default {
   namespaced: true,
   state,
-  actions,
   mutations
 };

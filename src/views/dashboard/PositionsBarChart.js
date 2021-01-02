@@ -4,7 +4,7 @@ import SystemConsts from '@/data/system';
 export default {
   extends: Bar,
   props: ['series'],
-  mounted () {
+  mounted() {
     this.renderChart({
       labels: SystemConsts.POSITION_NAMES,
       datasets: [
@@ -27,8 +27,8 @@ export default {
         legend: {
           display: false,
         },
-        },
-        plugins: {
+      },
+      plugins: {
         datalabels: {
           color: 'black',
           textAlign: 'center',

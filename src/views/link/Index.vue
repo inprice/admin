@@ -31,8 +31,6 @@
       <v-menu
         v-model="menu"
         :close-on-content-click="false"
-        offset-y
-        bottom left
         :nudge-width="100"
         transition="slide-x-transition"
       >
@@ -74,7 +72,7 @@
 
     </div>
 
-    <div class="col px-0 pt-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
       <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
 
       <div class="mt-3">
@@ -83,19 +81,18 @@
     </div>
 
     <v-card v-else>
-      <block-message 
-        class="mt-2"
-        :message="'You are not allowed to manage your products until activate your account!'">
-
-        <v-btn 
-          :disabled="$store.get('session/isViewer')"
-          small
-          color="success"
-          class="my-auto float-right"
-          @click="$router.push( { name: 'plans' })">
-            See Plans
-        </v-btn>
-
+      <block-message class="mt-2">
+        You are not allowed to manage your products until activate your account!
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+          <v-btn 
+            :disabled="$store.get('session/isViewer')"
+            small
+            color="success"
+            class="my-auto"
+            @click="$router.push( { name: 'plans' })">
+              See Plans
+          </v-btn>
+        </div>
       </block-message>
     </v-card>
 
@@ -151,7 +148,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.triggerSearch();
   },
   watch: {
@@ -184,7 +181,7 @@ export default {
               this.searchResult = [];
             }
             if (res) {
-              this.isLoadMoreDisabled = (res.length < SystemConsts.system.ROW_LIMIT_FOR_LISTS);
+              this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
             }
         });
       },
@@ -223,4 +220,4 @@ export default {
     font-weight: 400 !important;
     color: rgba(0, 0, 0, 0.87) !important;
   }
-</style>
+ </style>

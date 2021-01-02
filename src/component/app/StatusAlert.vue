@@ -2,7 +2,6 @@
   <div>
 
     <block-message v-if="CURSTAT.isFree && CURSTAT.daysToRenewal <= 7" dense>
-      <div class="d-flex justify-space-between">
         <span v-if="CURSTAT.daysToRenewal == 0 || CURSTAT.daysToRenewal == 1">
           Your {{ freeIndicator() }} is ending <strong>{{ CURSTAT.daysToRenewal == 0 ? 'TODAY' : 'TOMORROW' }}</strong>.
         </span>
@@ -10,29 +9,28 @@
           You've started {{ freeIndicator() }} period <ago class="d-inline font-weight-bold" :date="CURSTAT.renewalAt" />.
           There are only <strong>{{ CURSTAT.daysToRenewal }} days</strong> left to end.
         </span>
-        <v-btn 
-          small
-          color="primary"
-          class="ml-3 my-auto"
-          @click="$router.push( { name: 'plans' })">
-            See Plans
-        </v-btn>
-      </div>
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">        
+          <v-btn 
+            small
+            color="primary"
+            class="ml-2"
+            @click="$router.push( { name: 'plans' })">
+              See Plans
+          </v-btn>
+        </div>
     </block-message>
 
     <block-message v-if="CURSTAT.isSubscriber && CURSTAT.hasTime && CURSTAT.daysToRenewal < 2" dense>
       Your subscription will be renewed <strong>{{ CURSTAT.daysToRenewal == 0 ? 'TODAY' : 'TOMORROW'}}</strong>.
     </block-message>
 
-    <block-message v-if="!CURSTAT.isActive" dense>
-      <div class="d-flex justify-space-between">
-        <span>
-          You have no active subscription right now. {{ infoForPassiveAccount() }}
-        </span>
+    <block-message v-if="!CURSTAT.isActive">
+      You have no active subscription right now. {{ infoForPassiveAccount() }}
+      <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
         <v-btn 
           small
           color="success"
-          class="ml-3 my-auto"
+          class="ml-2"
           @click="$router.push( { name: 'plans' })">
             See Plans
         </v-btn>
@@ -43,6 +41,7 @@
 </template>
 
 <script>
+import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -52,7 +51,7 @@ export default {
   methods: {
     freeIndicator() {
       if (this.CURSTAT.status == 'FREE') {
-        return '30 days free trial';
+        return SystemConsts.LIMITS.DAYS_FOR_FREE_USE + ' days free trial';
       } else {
         return 'coupon';
       }
@@ -62,9 +61,9 @@ export default {
         return "You need to start a subscription to continue monitoring.";
       } else {
         if (this.CURSTAT == 'CREATED') {
-          return "You can start with a free trial perid for 30 days.";
+          return "You can start with a free trial perid for "+SystemConsts.LIMITS.DAYS_FOR_FREE_USE+" days.";
         } else {
-          return "Would you like to subscribe a plan?";
+          return "Would you like to subscribe to a plan?";
         }
       } 
     }

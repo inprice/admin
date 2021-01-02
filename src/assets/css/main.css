@@ -1,6 +1,6 @@
 .property-table .prop-name {
   text-align: right !important;
-  width: 20% !important;
+  width: 25% !important;
   padding: 8px !important;
 }
 
@@ -8,6 +8,9 @@
   max-height: 30px;
   background-color: #f9f9f9 !important;
   padding: 3px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .property-table tr:hover {
@@ -18,6 +21,32 @@
   padding: 0 !important;
   height: 30px !important;
   border-bottom: none !important;
+}
+
+.property-table td:nth-child(2) {
+  display: grid;
+}
+
+.featuresTable {
+  border-collapse: collapse;
+  border-radius: 4px;
+  border-style: hidden;
+  box-shadow: 0 0 0 1px #bbb;
+}
+
+.featuresTable tr {
+  max-height: 25px; 
+}
+
+.featuresTable th {
+  padding: 0 4px;
+  font-weight: 550;
+  background-color: rgba(220, 220, 220, 0.3);
+  border: 1px solid #ccc;
+}
+.featuresTable td {
+  padding: 0 4px;
+  border: 1px solid #ccc; 
 }
 
 .v-tabs-bar {
@@ -44,4 +73,21 @@
 .password-wo-help input {
   font-family: 'dotsfont';
   letter-spacing: -4px;
+}
+
+.put-behind {
+  z-index: 0;
+  position: relative;
+}
+
+.sample-data {
+  white-space: nowrap;
+  overflow-x: auto;
+  padding: 5px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 800;
+}
+
+div, span {
+  word-break: initial;
 }

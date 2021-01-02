@@ -29,8 +29,9 @@
 
         <v-btn 
           :disabled="$store.get('session/isViewer')"
+          title="Add new product"
           fab small
-          elevation="3"
+          elevation="2"
           class="ml-2"
           style="height: 100%"
           @click="addNew">
@@ -41,22 +42,23 @@
       <v-menu
         v-model="menu"
         :close-on-content-click="false"
-        offset-y
-        bottom left
         :nudge-width="100"
         transition="slide-x-transition"
       >
 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
-            class="col-1 my-auto"
+            title="Filtering options"
+            fab small
+            elevation="2"
+            class="my-auto"
             v-bind="attrs"
             v-on="on"
           >
-            Filters
+            <v-icon>mdi-filter-outline</v-icon>
           </v-btn>
-        </template>        
-
+        </template>
+  
         <v-card class="altlik-card">
           <!-- Positions -->
           <v-card class="ma-2" tile>
@@ -103,7 +105,7 @@
 
     </div>
 
-    <div class="col px-0 pt-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
       <list :rows="searchResult" @edit="edit" :isLoading="isListLoading" />
 
       <div class="mt-3">
@@ -114,17 +116,17 @@
     </div>
 
     <v-card v-else>
-      <block-message 
-        class="mt-2"
-        :message="'You are not allowed to manage your products until activate your account!'">
-
-        <v-btn 
-          small
-          color="success"
-          class="my-auto float-right"
-          @click="$router.push( { name: 'plans' })">
-            See Plans
-        </v-btn>
+      <block-message class="mt-2">
+        You are not allowed to manage your products until pick a plan!
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+          <v-btn 
+            small
+            color="success"
+            class="my-auto"
+            @click="$router.push( { name: 'plans' })">
+              See Plans
+          </v-btn>
+        </div>
 
       </block-message>
     </v-card>
@@ -228,14 +230,14 @@ export default {
               this.searchResult = [];
             }
             if (res) {
-              this.isLoadMoreDisabled = (res.length < SystemConsts.system.ROW_LIMIT_FOR_LISTS);
+              this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
             }
         });
       },
       deep: true
     },
   },
-  mounted() {
+  created() {
     this.refreshAll();
   },
   components: {
@@ -271,4 +273,4 @@ export default {
     font-weight: 400 !important;
     color: rgba(0, 0, 0, 0.87) !important;
   }
-</style>
+ </style>

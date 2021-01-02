@@ -3,7 +3,7 @@
 
     <v-snackbar 
       v-model="snackbar.show" 
-      :timeout="4500" 
+      :timeout="4000" 
       :color="snackbar.color"
       top
     >
@@ -14,7 +14,7 @@
           text
           color="white"
           v-bind="attrs"
-          @click="closeSnackBar"
+          @click="snackbar.show = false"
         >
           Close
         </v-btn>
@@ -23,9 +23,9 @@
 
     <v-dialog
       v-model="warning.show"
-      :max-width="350"
+      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
       :style="{ zIndex: 200 }"
-      @keydown.esc="closeWarning"
+      @keydown.esc="warning.show = false"
       overlay-opacity="0.2"
     >
       <v-card>
@@ -44,7 +44,7 @@
 
         <v-card-actions class="pt-0">
           <v-spacer></v-spacer>
-          <v-btn @click.native="closeWarning" text class="mt-2">OK</v-btn>
+          <v-btn @click.native="warning.show = false" text class="mt-2">OK</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -88,19 +88,6 @@ export default {
         this.$store.commit('warning/setMessage', { text: '' });
       }
     });
-  },
-  methods: {
-    closeSnackBar() {
-      this.snackbar.show = false;
-    },
-    closeWarning() {
-      this.warning.show = false;
-    }
-  },
-  watch: {
-    '$route.path' () {
-      typeof window !== 'undefined' && window.scrollTo(0, 0)
-    }
   },
 }
 </script>
