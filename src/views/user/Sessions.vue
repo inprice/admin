@@ -1,49 +1,57 @@
 <template>
   <div class="mt-3">
-    <v-card>
-      <v-card-title class="pb-2">
-        <v-icon class="mr-4">mdi-book-open</v-icon>
-        <div>
-          <div>Sessions</div>
-          <div class="caption">All your opened session.</div>
-          <div class="caption">Please note that, if you click Close All button, you will terminate this session as well.</div>
+    <v-card class="pb-2">
+      <v-card-title class="d-block pb-2">
+        <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
+          <div class="d-flex">
+            <v-icon class="mr-4 hidden-xs-only">mdi-book-open</v-icon>
+            <div class="d-inline">
+              <div>Sessions</div>
+              <div class="caption">All your opened session.</div>
+              <div class="caption">
+                <strong>Please note</strong>, if you click Close All button, you will terminate this session as well.
+              </div>
+            </div>
+          </div>
+
+          <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
+            <v-btn
+              small
+              :loading="loading.closeall" 
+              :disabled="loading.closeall"
+              @click="closeAllSessions"
+            >
+              Close sessions
+            </v-btn>
+          </div>
         </div>
-
-        <v-spacer></v-spacer>
-
-        <v-btn
-          small
-          class="mr-3"
-          :loading="loading.closeall" 
-          :disabled="loading.closeall"
-          @click="closeAllSessions"
-        >
-          Close all sessions
-        </v-btn>
       </v-card-title>
 
-      <v-divider></v-divider>
+      <div v-if="sesList.length">
+        <v-divider></v-divider>
 
-      <v-simple-table dense v-if="sesList.length">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th>IP</th>
-              <th>System</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(ses, index) in sesList" :key="index">
-              <td>{{ ses.ip }}</td>
-              <td>{{ ses.browser }} on {{ ses.os }}</td>
-              <td>
-                <ago :date="ses.accessedAt" />
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
+        <div 
+          class="v-data-table v-data-table--dense theme--light put-behind">
+          <div class="v-data-table__wrapper">
+            <table :style="{'table-layout': RESPROPS['table-layout']}">
+              <thead>
+                <tr>
+                  <th :width="RESPROPS.table.ip">IP</th>
+                  <th :width="RESPROPS.table.system">System</th>
+                  <th :width="RESPROPS.table.date">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, index) in sesList" :key="index">
+                  <td>{{ row.ip }}</td>
+                  <td>{{ row.browser }} on {{ row.os }}</td>
+                  <td><ago :date="row.accessedAt" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
       <block-message 
         v-else dense
@@ -58,6 +66,25 @@
 import UserService from '@/service/user';
 
 export default {
+  computed: {
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case 'sm': {
+          return {
+            'table-layout': 'fixed',
+            table: { ip: '170px', system: '300px', date: '200px' },
+          };
+        }
+        default: {
+          return {
+            'table-layout': '',
+            table: { ip: '15%', system: '', date: '25%' },
+          };
+        }
+      }
+    },
+  },
   data() {
     return {
       loading: {

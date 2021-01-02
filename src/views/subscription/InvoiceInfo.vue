@@ -14,12 +14,12 @@
       </template>
     </v-simple-table>
     <div class="text-center pb-3">
-        <v-btn 
-          small 
-          color="success"
-          @click="openInvoiceInfoDialog">
-            Edit
-        </v-btn>
+      <v-btn 
+        small 
+        color="success"
+        @click="openInvoiceInfoDialog">
+          Edit
+      </v-btn>
     </div>
 
     <InvoiceInfoDialog ref="invoiceInfoDialog" @saved="invoiceInfoUpdated" :countries="countries" />
