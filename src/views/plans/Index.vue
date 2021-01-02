@@ -9,7 +9,7 @@
 
     <v-card class="mt-3" v-if="CURSTAT.status == 'CREATED'">
       <v-card-title class="pb-2">
-        <v-icon class="mr-2">mdi-arrow-right-thin-circle-outline</v-icon>
+        <v-icon class="mr-2 hidden-xs-only">mdi-arrow-right-thin-circle-outline</v-icon>
         <div>
           <div>Free use</div>
         </div>
@@ -36,17 +36,19 @@
 
     <v-card class="my-3">
       <v-card-title class="d-block pb-2">
-        <div class="d-flex justify-space-between">
+        <div :class="($vuetify.breakpoint.smAndDown ? 'mb-2' : 'd-flex justify-space-between')">
           <div class="d-flex">
-            <v-icon class="mr-4">mdi-format-list-bulleted</v-icon>
+            <v-icon class="mr-4 hidden-xs-only">mdi-format-list-bulleted</v-icon>
             <div class="d-inline">
               <div>Table</div>
               <div class="caption"><strong>Please note that</strong> all the prices in this table are monthly basis and in US dollar currency!</div>
             </div>
           </div>
-          <v-btn small class="my-auto" @click="refreshSession">
-            Refresh Session
-          </v-btn>
+          <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right')">
+            <v-btn small class="my-auto" @click="refreshSession">
+              Refresh Session
+            </v-btn>
+          </div>
         </div>
       </v-card-title>
 
@@ -57,14 +59,16 @@
           :message="'Your actual status is ' + CURSTAT.status + '. It\'s ending ' + prettyRemainingDaysForFree()"
         >
           You can subscribe to any plan below
-          <v-btn 
-            small
-            color="error"
-            class="float-right d-inline white--text"
-            @click="cancel()"
-          >
-            Or Cancel
-          </v-btn>
+          <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+            <v-btn 
+              small
+              color="error"
+              class="d-inline"
+              @click="cancel()"
+            >
+              Or Cancel
+            </v-btn>
+          </div>
         </block-message>
 
         <block-message
@@ -78,76 +82,79 @@
 
       <v-divider></v-divider>
 
-      <template v-for="(plansSet, ix) in plansSets">
-        <div class="pt-4 px-1 text-center d-flex" :class="{'pb-4': ix==plansSets.length-1}" :key="ix">
-          <v-hover v-for="plan in plansSet" :key="plan.id">
-            <template v-slot="{ hover }">
-              <v-card class="mx-2 transition-swing col" :class="`elevation-${hover ? 10 : 3} ${isThisSelected(plan.id) ? 'rainbow pa-0' : 'pa-2'}`">
-                <div class="headline grey lighten-4 elevation-1 py-2 ">
-                  <div class="title teal--text darken-5 text-uppercase">
-                    {{ plan.name.replace(' Plan', '') }}
-                  </div>
+      <div class="d-flex flex-wrap justify-space-around pa-1">
+        <v-hover v-for="plan in plansSets" :key="plan.id">
+          <template v-slot="{ hover }">
+            <v-card 
+              :style="{ 'min-width': findMinWidthForPlans }"
+              class="transition-swing text-center ma-2" 
+              :class="`elevation-${hover ? 10 : 3} ${isThisSelected(plan.id) ? 'rainbow pa-0' : 'pa-2'}`">
 
-                  <v-divider class="my-2"></v-divider>
-                  <div class="text-h5">
-                    {{ firstTitleRow(plan) }}
-                  </div>
-                  <div class="caption">
-                    {{ secondTitleRow(plan) }}
-                  </div>
+              <div class="headline grey lighten-4 elevation-1 py-2 ">
+                <div class="title teal--text darken-5 text-uppercase">
+                  {{ plan.name.replace(' Plan', '') }}
                 </div>
 
-                <v-divider></v-divider>
+                <v-divider class="my-2"></v-divider>
+                <div class="text-h5">
+                  {{ firstTitleRow(plan) }}
+                </div>
+                <div class="caption">
+                  {{ secondTitleRow(plan) }}
+                </div>
+              </div>
 
-                <ul class="my-2 pr-1">
-                  <div class="caption mt-1 pl-" v-for="(feature, index) in plan.features" :key="index">
-                    <span :class="{'font-weight-medium': index==0||index==3, 'blue--text darken-2': index==3}" >{{ feature }}</span>
-                  </div>
-                </ul>
+              <v-divider></v-divider>
 
-                <v-divider class="mb-4"></v-divider>
+              <ul class="my-2 pr-1">
+                <div class="caption mt-1 pl-" v-for="(feature, index) in plan.features" :key="index">
+                  <span :class="{'font-weight-medium': index==0||index==3, 'blue--text darken-2': index==3}" >{{ feature }}</span>
+                </div>
+              </ul>
 
+              <v-divider class="mb-4"></v-divider>
+
+              <v-btn
+                :disabled="$store.get('session/isNotAdmin')" 
+                v-if="CURSTAT.isSubscriber == false"
+                color="success"
+                class="mb-2"
+                @click="subscribe(plan.id)"
+              >
+                Subscribe
+              </v-btn>
+
+              <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
                 <v-btn
                   :disabled="$store.get('session/isNotAdmin')" 
-                  v-if="CURSTAT.isSubscriber == false"
-                  color="success"
-                  class="mx-auto mb-2 white--text"
-                  @click="subscribe(plan.id)"
+                  v-if="plan.id == CURSTAT.planId"
+                  color="error"
+                  class="mb-2"
+                  @click="cancel()"
                 >
-                  Subscribe
+                  Cancel
                 </v-btn>
+                <v-btn 
+                  v-else
+                  :disabled="$store.get('session/isNotAdmin')"
+                  :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
+                  class="mb-2"
+                  @click="changeTo(plan.id)"
+                >
+                  {{ plan.id > CURSTAT.planId ? 'UPGRADE' : 'DOWNGRADE' }}
+                </v-btn>
+              </div>
 
-                <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
-                  <v-btn
-                    :disabled="$store.get('session/isNotAdmin')" 
-                    v-if="plan.id == CURSTAT.planId"
-                    color="error"
-                    class="mx-auto mb-2 white--text"
-                    @click="cancel()"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn 
-                    v-else
-                    :disabled="$store.get('session/isNotAdmin')"
-                    :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
-                    class="mx-auto mb-2 white--text"
-                    @click="changeTo(plan.id)"
-                  >
-                    {{ plan.id > CURSTAT.planId ? 'UPGRADE' : 'DOWNGRADE' }}
-                  </v-btn>
-                </div>
+            </v-card>
 
-              </v-card>
-            </template>
-          </v-hover>
-        </div>
-      </template>
+          </template>
+        </v-hover>
+      </div>
     </v-card>
 
     <v-card class="mt-4">
       <v-card-title>
-        <v-icon class="mr-2">mdi-email-edit-outline</v-icon>
+        <v-icon class="mr-2 hidden-xs-only">mdi-email-edit-outline</v-icon>
         <div>
           <div>Contact us</div>
         </div>
@@ -163,7 +170,7 @@
 
     <v-card class="mt-4">
       <v-card-title>
-        <v-icon class="mr-2">mdi-alert-circle-outline</v-icon>
+        <v-icon class="mr-2 hidden-xs-only">mdi-alert-circle-outline</v-icon>
         <div>
           <div>Please keep in mind</div>
           <div class="subtitle-2">For only subscribers!</div>
@@ -253,6 +260,16 @@ export default {
   computed: {
     plansSets: get('system/plansSets'),
     CURSTAT: get('session/getCurrentStatus'),
+    findMinWidthForPlans() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return '95%'
+        case 'sm':
+          return '47.3%'
+        default:
+          return '31.58%'
+      }
+    }
   },
   methods: {
     async startFreeUse() {
@@ -396,8 +413,9 @@ export default {
 
 <style scoped>
   .rainbow {
-    border: 7px solid transparent;
-    border-image: linear-gradient(to top left, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);  
-    border-image-slice: 1;
+    border: 5px solid transparent;
+    border-radius: 5px;
+    border-image-source: linear-gradient(to bottom right, darkorange 0%, yellow 100%); 
+    border-image-slice: 5;
   }
 </style>

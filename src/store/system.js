@@ -10,6 +10,7 @@ const actions = {
   async fetchPlans({ commit }) {
     SystemService.fetchPlans()
       .then((res) => {
+        /*
         let plansSets = [];
         if (res && res.data) {
           let cell = 0;
@@ -29,6 +30,8 @@ const actions = {
           }
         }
         commit('SET_PLANS', plansSets);
+        */
+       commit('SET_PLANS', res.data);
       });
   },
 
