@@ -41,7 +41,7 @@
         </div>
 
         <block-message 
-          v-else 
+          v-else dense
           :message="'No data.'"
         />
 
@@ -52,8 +52,8 @@
         <v-simple-table class="property-table pt-3 pb-2" dense v-if="data">
           <template v-slot:default>
             <tbody>
-              <property :valueClass="RESPROPS.properties.brand" name="Brand" :value="data.brand || 'NA'" />
-              <property :valueClass="RESPROPS.properties.shipment" name="Shipment" :value="data.shipment || 'NA'" />
+              <property :valueClass="RESPROPS.properties.brand" name="Brand" :value="data.brand" />
+              <property :valueClass="RESPROPS.properties.shipment" name="Shipment" :value="data.shipment" />
               <property :valueClass="RESPROPS.properties.lastCheck" name="Checked">
                 <ago v-if="data.lastCheck" :date="data.lastCheck" />
                 <span v-else>NA</span>
@@ -95,7 +95,7 @@
         </div>
 
         <block-message 
-          v-else 
+          v-else dense
           :message="'No data.'"
         />
       </v-tab-item>
@@ -122,7 +122,7 @@
         </table>
 
         <block-message 
-          v-else 
+          v-else dense
           :message="'No data.'"
         />
 

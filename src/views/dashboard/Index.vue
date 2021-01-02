@@ -106,7 +106,7 @@
       </div>
 
       <block-message 
-        v-else 
+        v-else dense
         class="mb-0"
         :message="'No data.'"
       />
@@ -157,7 +157,7 @@
       </div>
 
       <block-message 
-        v-else 
+        v-else dense
         class="mb-0"
         :message="'No data.'"
       />
@@ -203,7 +203,7 @@
       </div>
 
       <block-message 
-        v-else 
+        v-else dense
         class="mb-0"
         :message="'No data.'"
       />

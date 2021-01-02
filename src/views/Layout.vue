@@ -112,15 +112,6 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item :href="`/login?m=addNew`" target="_blank">
-          <v-list-item-action>
-            <v-icon>mdi-folder-multiple-plus-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Login to another</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
         <v-list-item @click="$store.dispatch('session/logout', false)">
           <v-list-item-action>
             <v-icon>mdi-exit-to-app</v-icon>

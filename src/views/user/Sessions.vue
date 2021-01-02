@@ -46,7 +46,7 @@
       </v-simple-table>
 
       <block-message 
-        v-else 
+        v-else dense
         :message="'You have no active session other than this.'"
       />
 

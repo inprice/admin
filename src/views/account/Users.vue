@@ -108,7 +108,7 @@
       </div>
 
       <block-message 
-        v-else 
+        v-else dense
         :message="'You have no user right now.'"
       />
 

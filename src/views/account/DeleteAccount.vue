@@ -11,17 +11,16 @@
       <v-divider></v-divider>
 
       <v-card-text>
-        <div class="d-flex justify-space-between">
+        <div class="black--text">
+          <span class="body-1">Please keep in mind the followings</span>
+          <ul class="mt-2">
+            <li>Are you absolutely sure? If so, in opening dialog, please provide your password to delete this account.</li>
+            <li>Once you delete a account, there is no going back. All your data is permanently deleted. Please be certain.</li>
+            <li>You cannot delete your account while you have an active subscription. To proceed, you need to cancel your subscription first.</li>
+          </ul>
+        </div>
 
-          <div class="black--text">
-            <span class="body-1">Please keep in mind the followings</span>
-            <ul class="mt-2">
-              <li>Are you absolutely sure? If so, in opening dialog, please provide your password to delete this account.</li>
-              <li>Once you delete a account, there is no going back. All your data is permanently deleted. Please be certain.</li>
-              <li>You cannot delete your account while you have an active subscription. To proceed, you need to cancel your subscription first.</li>
-            </ul>
-          </div>
-
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn 
             small
             color="error" 
@@ -29,7 +28,6 @@
             @click="openPasswordConfirmDialog"
             :loading="loading" 
             :disabled="loading && CURSTAT.isSubscriber == false">Delete Account</v-btn>
-
         </div>
       </v-card-text>
 

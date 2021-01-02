@@ -17,20 +17,20 @@
 
       <v-divider></v-divider>
 
-      <div class="d-flex justify-space-between pa-4">
-        <div>
-          You have a Free-Use right! You are highly advised to start with a 30-day free trial period.
+      <div class="pa-4">
+        You have a Free-Use right! You are highly advised to start with a 15-day free trial period.
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+          <v-btn
+            small 
+            color="success"
+            class="my-auto ml-3"
+            :loading="loading.tryFreeUse" 
+            :disabled="loading.tryFreeUse || $store.get('session/isNotAdmin')"
+            @click="startFreeUse"
+          >
+            Let me try
+          </v-btn>
         </div>
-        <v-btn
-          small 
-          color="success"
-          class="my-auto ml-3"
-          :loading="loading.tryFreeUse" 
-          :disabled="loading.tryFreeUse || $store.get('session/isNotAdmin')"
-          @click="startFreeUse"
-        >
-          Let me try
-        </v-btn>
       </div>
     </v-card>
 
@@ -44,8 +44,8 @@
               <div class="caption"><strong>Please note that</strong> all the prices in this table are monthly basis and in US dollar currency!</div>
             </div>
           </div>
-          <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right')">
-            <v-btn small class="my-auto" @click="refreshSession">
+          <div :class="'my-auto text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right')">
+            <v-btn small @click="refreshSession">
               Refresh Session
             </v-btn>
           </div>
@@ -55,15 +55,14 @@
       <v-card>
         <block-message 
           class="mb-0"
-          v-if="CURSTAT.isFree && $store.get('session/isAdmin')"
-          :message="'Your actual status is ' + CURSTAT.status + '. It\'s ending ' + prettyRemainingDaysForFree()"
-        >
+          v-if="CURSTAT.isFree && $store.get('session/isAdmin')">
+          Your actual status is {{ CURSTAT.status }}. It's ending {{ prettyRemainingDaysForFree }}
           You can subscribe to any plan below
           <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
             <v-btn 
               small
               color="error"
-              class="d-inline"
+              class="my-auto"
               @click="cancel()"
             >
               Or Cancel
@@ -273,7 +272,7 @@ export default {
   },
   methods: {
     async startFreeUse() {
-      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 30 days free plan').then(async (confirm) => {
+      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 15 days free plan').then(async (confirm) => {
         if (confirm == true) {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
@@ -415,7 +414,7 @@ export default {
   .rainbow {
     border: 5px solid transparent;
     border-radius: 5px;
-    border-image-source: linear-gradient(to bottom right, darkorange 0%, yellow 100%); 
+    border-image-source: linear-gradient(to bottom right, yellow 0%, darkorange 100%); 
     border-image-slice: 5;
   }
 </style>

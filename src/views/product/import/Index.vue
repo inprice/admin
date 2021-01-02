@@ -13,7 +13,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            :disabled="$store.get('session/isViewer')"
+            :disabled="$store.get('session/isViewer') || CURSTAT.isActive == false"
             small
             v-bind="attrs"
             v-on="on"
@@ -114,21 +114,22 @@
       </div>
 
       <v-card v-else >
-        <block-message :message="'No import found!'" />
+        <block-message dense :message="'No import found!'" />
       </v-card>
     </v-card>
 
     <v-card v-else class="mt-3">
-      <block-message 
-        :message="'You are not allowed to import new products until activate your account!'">
-
-        <v-btn 
-          small
-          color="success"
-          class="my-auto float-right"
-          @click="$router.push( { name: 'plans' })">
-            See Plans
-        </v-btn>
+      <block-message>
+        You are not allowed to import new products until activate your account!
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+          <v-btn 
+            small
+            color="success"
+            class="my-auto"
+            @click="$router.push( { name: 'plans' })">
+              See Plans
+          </v-btn>
+        </div>
 
       </block-message>
     </v-card>

@@ -116,17 +116,17 @@
     </div>
 
     <v-card v-else>
-      <block-message 
-        class="mt-2"
-        :message="'You are not allowed to manage your products until activate your account!'">
-
-        <v-btn 
-          small
-          color="success"
-          class="my-auto float-right"
-          @click="$router.push( { name: 'plans' })">
-            See Plans
-        </v-btn>
+      <block-message class="mt-2">
+        You are not allowed to manage your products until pick a plan!
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+          <v-btn 
+            small
+            color="success"
+            class="my-auto"
+            @click="$router.push( { name: 'plans' })">
+              See Plans
+          </v-btn>
+        </div>
 
       </block-message>
     </v-card>

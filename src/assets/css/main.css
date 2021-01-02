@@ -1,6 +1,6 @@
 .property-table .prop-name {
   text-align: right !important;
-  width: 30% !important;
+  width: 22% !important;
   padding: 8px !important;
 }
 
@@ -8,6 +8,9 @@
   max-height: 30px;
   background-color: #f9f9f9 !important;
   padding: 3px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .property-table tr:hover {
@@ -18,6 +21,10 @@
   padding: 0 !important;
   height: 30px !important;
   border-bottom: none !important;
+}
+
+.property-table td:nth-child(2) {
+  display: grid;
 }
 
 .featuresTable {

@@ -3,8 +3,8 @@
     <td class="prop-name">{{ name }}</td>
     <td>
       <v-card elevation="1" class="prop-value" :class="valueClass">
-        {{ value }}
-        <slot></slot>
+        <slot v-if="$slots !== {}"></slot>
+        {{ value || ' ' }}
       </v-card>
     </td>
   </tr>
