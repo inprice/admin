@@ -1,7 +1,7 @@
 .property-table .prop-name {
   text-align: right !important;
   width: 25% !important;
-  padding: 8px !important;
+  padding: 0 8px !important;
 }
 
 .property-table .prop-value {
@@ -19,12 +19,21 @@
 
 .property-table td {
   padding: 0 !important;
-  height: 30px !important;
+  height: 32px !important;
   border-bottom: none !important;
 }
 
 .property-table td:nth-child(2) {
   display: grid;
+}
+
+.property-table .v-card {
+  margin: 2px 0 !important;
+}
+
+.property-table table {
+  border-collapse: separate;
+  border-spacing: 3px !important;
 }
 
 .featuresTable {

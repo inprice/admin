@@ -1,87 +1,87 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="5" lg="2">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '10' : '0')">
+    <div :style="'width: ' + findWidth">
 
-        <div class="text-center mb-8">
-          <img :src="verticalBrand" :width="140" />
-        </div>
+      <div class="text-center mb-8">
+        <img :src="verticalBrand" :width="140" />
+      </div>
 
-        <v-card>
-          <v-card-title>Register</v-card-title>
+      <v-card>
+        <v-card-title>Register</v-card-title>
 
-          <v-divider></v-divider>
+        <v-divider></v-divider>
 
-          <v-card-text>
-            <v-form 
-              ref="form"
-              v-model="valid"
-              onSubmit="return false"
-              @keyup.native.enter="valid && submit($event)"
-            >
-              <v-text-field
-                autofocus
-                label="Account Name"
-                v-model="form.accountName"
-                :rules="rules.accountName"
-                type="text"
-                maxlength="70"
-              />
+        <v-card-text>
+          <v-form 
+            ref="form"
+            v-model="valid"
+            onSubmit="return false"
+            @keyup.native.enter="valid && submit($event)"
+          >
+            <v-text-field
+              autofocus
+              label="Account Name"
+              v-model="form.accountName"
+              :rules="rules.accountName"
+              type="text"
+              maxlength="70"
+            />
 
-              <v-text-field
-                label="E-mail"
-                v-model="form.email"
-                type="email"
-                :rules="rules.email"
-                maxlength="100"
-              />
+            <v-text-field
+              label="E-mail"
+              v-model="form.email"
+              type="email"
+              :rules="rules.email"
+              maxlength="100"
+            />
 
-              <v-text-field
-                label="Password"
-                v-model="form.password"
-                :rules="rules.password"
-                :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPass1 ? 'text' : 'password'"
-                @click:append="showPass1 = !showPass1"
-                maxlength="16"
-              />
+            <v-text-field
+              label="Password"
+              v-model="form.password"
+              :rules="rules.password"
+              :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass1 ? 'text' : 'password'"
+              @click:append="showPass1 = !showPass1"
+              maxlength="16"
+            />
 
-              <v-text-field
-                label="Repeat Password"
-                v-model="form.repeatPassword"
-                :rules="rules.repeatPassword"
-                :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPass2 ? 'text' : 'password'"
-                @click:append="showPass2 = !showPass2"
-                maxlength="16"
-              />
+            <v-text-field
+              label="Repeat Password"
+              v-model="form.repeatPassword"
+              :rules="rules.repeatPassword"
+              :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass2 ? 'text' : 'password'"
+              @click:append="showPass2 = !showPass2"
+              maxlength="16"
+            />
 
-            </v-form>
-          </v-card-text>
+          </v-form>
+        </v-card-text>
 
-          <v-card-actions>
-            <div class="font-weight-light">
-              Already have an account? 
-              <router-link to="login">Sign In</router-link>
-            </div>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="info"
-              @click="submit"
-              :loading="loading" 
-              :disabled="loading">
-              Sign Up
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+        <v-card-actions class="pt-0">
+          <div>
+            <div>Already have an account?</div>
+            <router-link to="login">Sign In</router-link>
+          </div>
 
-        <div class="text-center font-weight-light mt-6">
-          By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
-        </div>
+          <v-spacer></v-spacer>
 
-      </v-col>
-    </v-row>
-  </v-container>
+          <v-btn
+            color="info"
+            @click="submit"
+            :loading="loading" 
+            :disabled="loading">
+            Sign Up
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+
+      <div class="text-center font-weight-light mt-6">
+        By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
+      </div>
+
+    </div>
+  </div>
 </template>
 
 <script>
@@ -104,6 +104,17 @@ export default {
       },
       verticalBrand: require('@/assets/app/brand-verC.svg')
     };
+  },
+  computed: {
+    findWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '90%';
+        case 'sm': return '60%';
+        case 'md': return '45%';
+        case 'lg': return '25%';
+        default: return '20%';
+      }
+    }
   },
   methods: {
     async submit() {

@@ -1,61 +1,59 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="5" lg="2">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '10' : '0')">
+    <div :style="'width: ' + findWidth">
 
-        <div class="text-center mb-8">
-          <img :src="verticalBrand" :width="140" />
+      <div class="text-center mb-8">
+        <img :src="verticalBrand" :width="140" />
+      </div>
+
+      <v-card class="pa-3 mb-10 body-2" color="yellow lighten-5">
+
+        <div>
+          <div class="title text-center mb-2">Please check your email</div>
+          <v-divider></v-divider>
+          <p class="ma-4">
+            We have just sent an email with activation code to your email address.
+            Please copy and paste in the input below to complete your registration.
+          </p>
         </div>
 
-        <v-card class="pa-3 mb-10 body-2" color="yellow lighten-5">
+      </v-card>
 
-          <div>
-            <div class="title text-center mb-2">Please check your email</div>
-            <v-divider></v-divider>
-            <p class="ma-4">
-              We have just sent an email with activation code to your email address.
-              Please copy and paste in the input below to complete your registration.
-            </p>
-          </div>
+      <v-form 
+        ref="form"
+        v-model="valid"
+        onSubmit="return false"
+        @keyup.native.enter="valid && submit($event)"
+      >
 
-        </v-card>
+        <div class="text-center">Activation Code</div>
+        <v-text-field
+          autofocus
+          outlined
+          x-large
+          v-model="form.code"
+          :rules="rules.code"
+          v-mask="'###-###'"
+          type="text"
+          class="display-1 centered-input"
+          maxlength="7"
+        />
+      </v-form>
 
-        <v-form 
-          ref="form"
-          v-model="valid"
-          onSubmit="return false"
-          @keyup.native.enter="valid && submit($event)"
-        >
+      <v-card-actions class="px-0">
+        <router-link to="login" :disabled="loading">Back to Login</router-link>
+        <v-spacer></v-spacer>
+        <v-btn 
+          color="info"
+          @click="submit" 
+          :loading="loading" 
+          :disabled="loading">
+          Sign Up
+        </v-btn>
+      </v-card-actions>
 
-          <div class="text-center">Activation Code</div>
-          <v-text-field
-            autofocus
-            outlined
-            x-large
-            v-model="form.code"
-            :rules="rules.code"
-            v-mask="'###-###'"
-            type="text"
-            class="display-1 centered-input"
-            maxlength="7"
-          />
-        </v-form>
-
-        <v-card-actions class="px-0">
-          <router-link to="login" :disabled="loading">Back to Login</router-link>
-          <v-spacer></v-spacer>
-          <v-btn 
-            color="info"
-            @click="submit" 
-            :loading="loading" 
-            :disabled="loading">
-            Sign Up
-          </v-btn>
-        </v-card-actions>
-
-      </v-col>
-    </v-row>
-  </v-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -72,6 +70,17 @@ export default {
       },
       verticalBrand: require('@/assets/app/brand-verC.svg')
     };
+  },
+  computed: {
+    findWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '90%';
+        case 'sm': return '60%';
+        case 'md': return '45%';
+        case 'lg': return '25%';
+        default: return '20%';
+      }
+    }
   },
   methods: {
     async submit() {
@@ -102,6 +111,6 @@ export default {
 
 <style scoped>
   .centered-input >>> input {
-    text-align: center
+    text-align: center;
 }
 </style>

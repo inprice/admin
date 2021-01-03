@@ -1,64 +1,62 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="5" lg="2">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '10' : '0')">
+    <div :style="'width: ' + findWidth">
 
-        <div class="text-center mb-8">
-          <img :src="verticalBrand" :width="140" />
+      <div class="text-center mb-8">
+        <img :src="verticalBrand" :width="140" />
+      </div>
+
+      <v-card class="pa-3 mb-10 body-2" :color="successful ? 'green lighten-5' : 'yellow lighten-5'">
+
+        <div v-if="successful">
+          <div class="title text-center mb-2">Please check your email</div>
+          <v-divider></v-divider>
+          <p class="ma-4">
+            An email with password reset instructions has been sent to the email address below.
+          </p>
+        </div>
+        <div v-else>
+          <div class="title text-center mb-2">Forgot password</div>
+          <v-divider></v-divider>
+          <p class="ma-4">
+            Please provide your email address that you used when you signed up for your inprice account. We will send
+            you an email that will allow you to reset your password.
+          </p>
         </div>
 
-        <v-card class="pa-3 mb-10 body-2" :color="successful ? 'green lighten-5' : 'yellow lighten-5'">
+      </v-card>
 
-          <div v-if="successful">
-            <div class="title text-center mb-2">Please check your email</div>
-            <v-divider></v-divider>
-            <p class="ma-4">
-              An email with password reset instructions has been sent to the email address below.
-            </p>
-          </div>
-          <div v-else>
-            <div class="title text-center mb-2">Forgot password</div>
-            <v-divider></v-divider>
-            <p class="ma-4">
-              Please provide your email address that you used when you signed up for your inprice account. We will send
-              you an email that will allow you to reset your password.
-            </p>
-          </div>
+      <v-form 
+        ref="form"
+        v-model="valid"
+        onSubmit="return false"
+        @keyup.native.enter="valid && submit($event)"
+      >
+        <v-text-field
+          autofocus
+          outlined dense
+          v-model="form.email"
+          :rules="rules.email"
+          label="E-mail"
+          type="email"
+          maxlength="100"
+        />
+      </v-form>
 
-        </v-card>
+      <v-btn 
+        block
+        color="info"
+        class="mt-2"
+        @click="submit" 
+        :loading="loading" 
+        :disabled="loading">Submit</v-btn>
 
-        <v-form 
-          ref="form"
-          v-model="valid"
-          onSubmit="return false"
-          @keyup.native.enter="valid && submit($event)"
-        >
-          <v-text-field
-            autofocus
-            outlined dense
-            v-model="form.email"
-            :rules="rules.email"
-            label="E-mail"
-            type="email"
-            maxlength="100"
-          />
-        </v-form>
+      <div class="text-center font-weight-light mt-4">
+        Remember your password? <router-link to="login">Sign In</router-link>
+      </div>
 
-        <v-btn 
-          block
-          color="info"
-          class="mt-2"
-          @click="submit" 
-          :loading="loading" 
-          :disabled="loading">Submit</v-btn>
-
-        <div class="text-center font-weight-light mt-4">
-          Remember your password? <router-link to="login">Sign In</router-link>
-        </div>
-
-      </v-col>
-    </v-row>
-  </v-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -77,6 +75,17 @@ export default {
       },
       verticalBrand: require('@/assets/app/brand-verC.svg')
     };
+  },
+  computed: {
+    findWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '90%';
+        case 'sm': return '60%';
+        case 'md': return '45%';
+        case 'lg': return '25%';
+        default: return '20%';
+      }
+    }
   },
   methods: {
     async submit() {

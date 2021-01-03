@@ -1,67 +1,65 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="5" lg="2">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '10' : '0')">
+    <div :style="'width: ' + findWidth">
 
-        <div class="text-center mb-8">
-          <img :src="verticalBrand" :width="140" />
-        </div>
+      <div class="text-center mb-8">
+        <img :src="verticalBrand" :width="140" />
+      </div>
 
-        <v-card>
-          <v-card-title>Reset Password</v-card-title>
+      <v-card>
+        <v-card-title>Reset Password</v-card-title>
 
-          <v-divider></v-divider>
+        <v-divider></v-divider>
 
-          <v-card-text>
+        <v-card-text>
 
-            <v-form 
-              ref="form"
-              v-model="valid"
-              onSubmit="return false"
-              @keyup.native.enter="valid && submit($event)"
-            >
-              <v-text-field
-                autofocus
-                label="Password"
-                v-model="form.password"
-                :rules="rules.password"
-                :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPass1 ? 'text' : 'password'"
-                @click:append="showPass1 = !showPass1"
-                maxlength="16"
-              />
+          <v-form 
+            ref="form"
+            v-model="valid"
+            onSubmit="return false"
+            @keyup.native.enter="valid && submit($event)"
+          >
+            <v-text-field
+              autofocus
+              label="Password"
+              v-model="form.password"
+              :rules="rules.password"
+              :append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass1 ? 'text' : 'password'"
+              @click:append="showPass1 = !showPass1"
+              maxlength="16"
+            />
 
-              <v-text-field
-                label="Repeat Password"
-                v-model="form.repeatPassword"
-                :rules="rules.repeatPassword"
-                :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPass2 ? 'text' : 'password'"
-                @click:append="showPass2 = !showPass2"
-                maxlength="16"
-              />
+            <v-text-field
+              label="Repeat Password"
+              v-model="form.repeatPassword"
+              :rules="rules.repeatPassword"
+              :append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass2 ? 'text' : 'password'"
+              @click:append="showPass2 = !showPass2"
+              maxlength="16"
+            />
 
-            </v-form>
+          </v-form>
 
-            <v-card-actions>
-              <v-btn 
-                block
-                color="info"
-                class="mt-2"
-                @click="submit" 
-                :loading="loading" 
-                :disabled="loading">Submit</v-btn>
-            </v-card-actions>
-          </v-card-text>
-        </v-card>
-        
-        <div class="text-center font-weight-light mt-6">
-          Remember your password? <router-link to="/login">Sign In</router-link>
-        </div>
+          <v-card-actions>
+            <v-btn 
+              block
+              color="info"
+              class="mt-2"
+              @click="submit" 
+              :loading="loading" 
+              :disabled="loading">Submit</v-btn>
+          </v-card-actions>
+        </v-card-text>
+      </v-card>
+      
+      <div class="text-center font-weight-light mt-6">
+        Remember your password? <router-link to="/login">Sign In</router-link>
+      </div>
 
-      </v-col>
-    </v-row>
-  </v-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -82,6 +80,17 @@ export default {
       },
       verticalBrand: require('@/assets/app/brand-verC.svg')
     };
+  },
+  computed: {
+    findWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '90%';
+        case 'sm': return '60%';
+        case 'md': return '45%';
+        case 'lg': return '25%';
+        default: return '20%';
+      }
+    }
   },
   methods: {
     async submit() {

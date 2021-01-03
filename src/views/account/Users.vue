@@ -15,11 +15,11 @@
           </div>
 
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn small color="success" class="mx-2" @click="openSendDialog">
-              Invite a user
+            <v-btn small color="success" class="mr-1" @click="openSendDialog">
+              Invite
             </v-btn>
 
-            <v-btn small class="mx-2" @click="refreshMembers">
+            <v-btn small class="ml-1" @click="refreshMembers">
               Refresh
             </v-btn>
           </div>

@@ -50,7 +50,7 @@ export default {
         }
         default: {
           return {
-            properties: { title: 'col-8', format: 'col-5' },
+            properties: { title: 'col-8', format: 'col-4' },
           };
         }
       }
