@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '10' : '0')">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
     <div :style="'width: ' + findWidth">
 
       <div class="text-center mb-8">
@@ -24,10 +24,8 @@
         {{ errorMessage }}
       </v-alert>
 
-      <v-card class="pa-0">
-        <v-card-title>Login</v-card-title>
-
-        <v-divider></v-divider>
+      <v-card>
+        <v-card-title class="form-title elevation-1 mb-2">Login</v-card-title>
 
         <v-card-text>
           <v-form 
@@ -56,7 +54,7 @@
             />
           </v-form>
 
-          <v-card-actions>
+          <v-card-actions class="px-0">
             <router-link class="font-weight-light" to="forgot-password" tabindex="-1">Forgot Password?</router-link>
             <v-spacer></v-spacer>
             <v-btn 
@@ -67,6 +65,7 @@
           </v-card-actions>
         </v-card-text>
       </v-card>
+
       <div class="text-center font-weight-light mt-6">
         Don't have an account yet? <router-link to="request-registration">Sign Up</router-link>
       </div>
@@ -168,3 +167,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .form-title {
+    padding: 0 10px;
+    height: 50px;
+    background-color: #f3f3f3;
+  }
+</style>

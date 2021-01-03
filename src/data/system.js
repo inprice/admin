@@ -1,5 +1,5 @@
 const LIMITS = {
-  DAYS_FOR_FREE_USE: 15,
+  DAYS_FOR_FREE_USE: 14,
   ROW_LIMIT_FOR_LISTS: 25,
 };
 

@@ -38,7 +38,7 @@ const actions = {
   create({ state, commit }, res) {
     localStorage.setItem(SystemConsts.KEYS.SESSIONS, JSON.stringify(res.data.sessions));
     state.no = res.data.sessionNo;
-    state.list[state.no] = res.data.sessions[state.no];
+    state.current = state.list[state.no];
     commit('SET_LIST', res.data);
     loginChannel.postMessage(res.data);
   },
@@ -58,16 +58,19 @@ const mutations = {
 
   SET_CURRENT(state, ses) {
     state.current = ses;
-    state.list[state.no] = ses;
+    state.list[state.no] = state.current;
     localStorage.setItem(SystemConsts.KEYS.SESSIONS, JSON.stringify(state.list));
     loginChannel.postMessage(state.list);
   },
 
   SET_LIST(state, data) {
-    //persisting list into localstorage is alredy done by caller function!
+    //persisting list into localstorage is already done by caller function!
     if (data.sessions) {
       state.list = data.sessions;
-      state.current = data.sessions[state.no];
+    }
+    if (data.no !== undefined && data.no > -1 && data.no <= state.list.length) {
+      state.no = data.no;
+      state.current = state.list[state.no];
     }
   },
 
@@ -86,6 +89,10 @@ const ACTIVE_ACCOUNT_STATUSES = [
 ];
 
 const getters = {
+
+  getCurrent: (state) => {
+    return state.current;
+  },
 
   getSessionList: (state) => {
     return state.list;
@@ -130,7 +137,7 @@ const getters = {
       }
       return stat;
     }
-    return null;
+    return { };
   },
 
   isAdmin: (state) => {
@@ -153,7 +160,7 @@ const getters = {
 
 const loginChannel = new BroadcastChannel('login');
 loginChannel.onmessage = (e) => {
-  mutations.list(state, e);
+  mutations.SET_LIST(state, e);
 };
 
 const logoutChannel = new BroadcastChannel('logout');

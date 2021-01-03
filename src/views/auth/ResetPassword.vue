@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '10' : '0')">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
     <div :style="'width: ' + findWidth">
 
       <div class="text-center mb-8">
@@ -7,12 +7,9 @@
       </div>
 
       <v-card>
-        <v-card-title>Reset Password</v-card-title>
-
-        <v-divider></v-divider>
+        <v-card-title class="form-title elevation-1 mb-2">Reset Password</v-card-title>
 
         <v-card-text>
-
           <v-form 
             ref="form"
             v-model="valid"
@@ -42,7 +39,7 @@
 
           </v-form>
 
-          <v-card-actions>
+          <v-card-actions class="px-0">
             <v-btn 
               block
               color="info"
@@ -129,3 +126,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .form-title {
+    padding: 0 10px;
+    height: 50px;
+    background-color: #f3f3f3;
+  }
+</style>

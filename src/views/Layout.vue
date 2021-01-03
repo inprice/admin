@@ -155,9 +155,10 @@
 
       <v-menu
         offset-y
-        v-model="searching"
-        v-if="$route.path.indexOf('/products') < 1"
-      >
+        v-model="searching">
+
+        <!-- v-if="$route.path.indexOf('/products') < 1"> -->
+
         <template v-slot:activator="{ on, attr }">
           <v-text-field 
             v-on="on" 

@@ -195,8 +195,6 @@ const router = new VueRouter({
 import store from './store';
 import SystemConsts from '@/data/system';
 
-const SESSION = 'session/current';
-
 router.beforeEach((to, from, next) => {
   if (to.name) NProgress.start();
 
@@ -209,7 +207,8 @@ router.beforeEach((to, from, next) => {
   if (!sesList || !sesList.length) {
     sesList = JSON.parse(localStorage.getItem(SystemConsts.KEYS.SESSIONS));
     if (sesList && sesList.length > 0) {
-      store.set('session/list', sesList);
+      const suitableData = { sessions: sesList, no: to.params.sid };
+      store.set('session/list', suitableData);
     }
   }
 
@@ -218,13 +217,13 @@ router.beforeEach((to, from, next) => {
 
       const sid = to.params.sid;
       if (sid == undefined || sid < 0 || sid >= sesList.length) {
-        store.set(SESSION, sesList[0]);
+        store.set('session/CURRENT', sesList[0]);
         const newPath = to.path.replace(`/${to.params.sid}/`, '/0/');
         return next(newPath);
       } else {
-        const session = store.get(SESSION);
+        const session = store.get('session/getCurrent');
         if (!session || Object.keys(session).length == 0) {
-          store.set(SESSION, sesList[sid]);
+          store.set('session/CURRENT', sesList[sid]);
         }
       }
     } else {

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '10' : '0')">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
     <div :style="'width: ' + findWidth">
 
       <div class="text-center mb-8">

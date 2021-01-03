@@ -2,7 +2,7 @@ import store from './store';
 import moment from 'moment-timezone';
 import numFormatter from 'number-format.js';
 
-const SESSION = 'session/current';
+const SESSION = 'session/getCurrentStatus';
 
 export default (Vue) => {
   Vue.filter('toPosition', (value) => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '10' : '0')">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
     <div :style="'width: ' + findWidth">
 
       <div class="text-center mb-8">
@@ -7,9 +7,7 @@
       </div>
 
       <v-card>
-        <v-card-title>Register</v-card-title>
-
-        <v-divider></v-divider>
+        <v-card-title class="form-title elevation-1 mb-2">Register</v-card-title>
 
         <v-card-text>
           <v-form 
@@ -56,24 +54,24 @@
             />
 
           </v-form>
+
+          <v-card-actions class="px-0">
+            <div>
+              <div>Already have an account?</div>
+              <router-link to="login">Sign In</router-link>
+            </div>
+
+            <v-spacer></v-spacer>
+
+            <v-btn
+              color="info"
+              @click="submit"
+              :loading="loading" 
+              :disabled="loading">
+              Sign Up
+            </v-btn>
+          </v-card-actions>
         </v-card-text>
-
-        <v-card-actions class="pt-0">
-          <div>
-            <div>Already have an account?</div>
-            <router-link to="login">Sign In</router-link>
-          </div>
-
-          <v-spacer></v-spacer>
-
-          <v-btn
-            color="info"
-            @click="submit"
-            :loading="loading" 
-            :disabled="loading">
-            Sign Up
-          </v-btn>
-        </v-card-actions>
       </v-card>
 
       <div class="text-center font-weight-light mt-6">
@@ -157,3 +155,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .form-title {
+    padding: 0 10px;
+    height: 50px;
+    background-color: #f3f3f3;
+  }
+</style>
