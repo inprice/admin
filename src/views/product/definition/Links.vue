@@ -304,21 +304,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-/*
-  .bordered {
-    border: 1px solid #ddd;
-  }
-  th {
-    width: 10%;
-    background-color: #eee;
-  }
-  tr:hover {
-    background: #fff !important;
-  }
-  .v-data-table td, .v-data-table th {
-    padding: 0 8px;
-  }
- */
- </style>

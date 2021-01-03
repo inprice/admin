@@ -17,8 +17,8 @@
 
       <v-divider></v-divider>
 
-      <div class="pa-4">
-        You have a Free-Use right! You are highly advised to start with a 15-day free trial period.
+      <div class="pa-4" style="background-color: lightyellow">
+        You have a <b>Free-Use</b> right! You are highly advised to start with a <b>14-day free</b> trial period.
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn
             small 
@@ -56,7 +56,7 @@
         <block-message 
           class="mb-0"
           v-if="CURSTAT.isFree && $store.get('session/isAdmin')">
-          Your actual status is {{ CURSTAT.status }}. It's ending {{ prettyRemainingDaysForFree }}
+          Your actual status is {{ CURSTAT.status }}. It's ending {{ prettyRemainingDaysForFree() }}
           You can subscribe to any plan below
           <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
             <v-btn 
@@ -73,8 +73,8 @@
         <block-message
           class="mb-0" 
           v-if="CURSTAT.isActive == false"
-          :message="'This account has been ' + CURSTAT.status.toLowerCase()"
         >
+          This account has been {{ CURSTAT.status }}
           <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
         </block-message>
       </v-card>
@@ -272,12 +272,12 @@ export default {
   },
   methods: {
     async startFreeUse() {
-      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 15 days free plan').then(async (confirm) => {
+      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 14 days free plan').then(async (confirm) => {
         if (confirm == true) {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
           if (result.status == true) {
-            this.$store.commit('session/current', result.data.session);
+            this.$store.commit('session/SET_CURRENT', result.data.session);
           } else {
             this.$store.dispatch('session/refresh');
           }
@@ -345,7 +345,7 @@ export default {
           this.loading.overlay = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
-            this.$store.commit('session/current', res.data.session);
+            this.$store.commit('session/SET_CURRENT', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been cancelled.' });
           }
           this.loading.overlay = false;

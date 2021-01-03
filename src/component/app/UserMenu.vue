@@ -15,10 +15,10 @@
 
       <v-card class="text-center">
         <v-icon large class="pt-4">mdi-account-check</v-icon>
-        <v-list-item two-line class="pt-0">
-          <v-list-item-content class="pt-2">
+        <v-list-item two-line>
+          <v-list-item-content class="pa-0 mx-auto">
             <v-list-item-title class="title">{{ CURSTAT.account }}</v-list-item-title>
-            <v-list-item-subtitle class="my-2 py-2">
+            <v-list-item-subtitle class="mb-2 py-2">
               <v-chip outlined class="font-weight-medium" v-if="CURSTAT.isActive">
                 {{ CURSTAT.planName }} |
                 <span class="green--text px-2">{{ CURSTAT.status }}</span>
@@ -33,7 +33,6 @@
                 outlined
                 color="info"
                 :to="{ name: 'plans' }"
-                :disabled="$route.name == 'plans'"
                 @click="menu=false"
               >
                 Please select a plan!
@@ -168,5 +167,8 @@ export default {
 <style scoped>
   .v-sheet.v-card {
     border-radius: 0;
+  }
+  .v-list-item__content {
+    max-width: 250px;
   }
 </style>

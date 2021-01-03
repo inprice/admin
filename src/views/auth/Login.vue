@@ -1,80 +1,77 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="5" lg="2">
+  <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
+    <div :style="'width: ' + findWidth">
 
-        <div class="text-center mb-8">
-          <img :src="verticalBrand" :width="140" />
-        </div>
+      <div class="text-center mb-8">
+        <img :src="verticalBrand" :width="140" />
+      </div>
 
-        <v-alert dense dismissible color="cyan lighten-2" border="left" elevation="2" colored-border type="success"
-          v-if="successMessage"
-        >
-          {{ successMessage }}
-        </v-alert>
+      <v-alert dense dismissible color="cyan lighten-2" border="left" elevation="2" colored-border type="success"
+        v-if="successMessage"
+      >
+        {{ successMessage }}
+      </v-alert>
 
-        <v-alert dense dismissible color="purple lighten-2" border="left" elevation="2" colored-border type="info"
-          v-if="infoMessage"
-        >
-          {{ infoMessage }}
-        </v-alert>
+      <v-alert dense dismissible color="purple lighten-2" border="left" elevation="2" colored-border type="info"
+        v-if="infoMessage"
+      >
+        {{ infoMessage }}
+      </v-alert>
 
-        <v-alert dense dismissible color="orange" border="left" elevation="2" colored-border type="warning"
-          v-if="errorMessage"
-        >
-          {{ errorMessage }}
-        </v-alert>
+      <v-alert dense dismissible color="orange" border="left" elevation="2" colored-border type="warning"
+        v-if="errorMessage"
+      >
+        {{ errorMessage }}
+      </v-alert>
 
-        <v-card>
-          <v-card-title>Login</v-card-title>
+      <v-card>
+        <v-card-title class="form-title elevation-1 mb-2">Login</v-card-title>
 
-          <v-divider></v-divider>
+        <v-card-text>
+          <v-form 
+            ref="form"
+            v-model="valid"
+            onSubmit="return false"
+            @keyup.native.enter="valid && submit($event)"
+          >
+            <v-text-field
+              autofocus
+              label="E-mail"
+              v-model="form.email"
+              :rules="rules.email"
+              type="email"
+              maxlength="100"
+            />
 
-          <v-card-text>
-            <v-form 
-              ref="form"
-              v-model="valid"
-              onSubmit="return false"
-              @keyup.native.enter="valid && submit($event)"
-            >
-              <v-text-field
-                autofocus
-                label="E-mail"
-                v-model="form.email"
-                :rules="rules.email"
-                type="email"
-                maxlength="100"
-              />
+            <v-text-field
+              label="Password"
+              v-model="form.password"
+              :rules="rules.password"
+              :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass ? 'text' : 'password'"
+              @click:append="showPass = !showPass"
+              maxlength="16"
+            />
+          </v-form>
 
-              <v-text-field
-                label="Password"
-                v-model="form.password"
-                :rules="rules.password"
-                :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPass ? 'text' : 'password'"
-                @click:append="showPass = !showPass"
-                maxlength="16"
-              />
-            </v-form>
+          <v-card-actions class="px-0">
+            <router-link class="font-weight-light" to="forgot-password" tabindex="-1">Forgot Password?</router-link>
+            <v-spacer></v-spacer>
+            <v-btn 
+              color="info" 
+              @click="submit" 
+              :loading="loading" 
+              :disabled="loading">Sign In</v-btn>
+          </v-card-actions>
+        </v-card-text>
+      </v-card>
 
-            <v-card-actions>
-              <router-link class="font-weight-light" to="forgot-password" tabindex="-1">Forgot Password?</router-link>
-              <v-spacer></v-spacer>
-              <v-btn 
-                color="info" 
-                @click="submit" 
-                :loading="loading" 
-                :disabled="loading">Sign In</v-btn>
-            </v-card-actions>
-          </v-card-text>
-        </v-card>
-        <div class="text-center font-weight-light mt-6">
-          Don't have an account yet? <router-link to="request-registration">Sign Up</router-link>
-        </div>
+      <div class="text-center font-weight-light mt-6">
+        Don't have an account yet? <router-link to="request-registration">Sign Up</router-link>
+      </div>
 
-      </v-col>
-    </v-row>
-  </v-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -101,6 +98,15 @@ export default {
   },
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
+    findWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '90%';
+        case 'sm': return '60%';
+        case 'md': return '45%';
+        case 'lg': return '25%';
+        default: return '20%';
+      }
+    }
   },
   methods: {
     async submit() {
@@ -151,12 +157,6 @@ export default {
       case 'plfw':
         this.successMessage = 'We have just sent an activation link to your email address. Please check it.';
         break;
-      // case 'ax37':
-      //   this.successMessage = "Your registration is successfully completed. Please login.";
-      //   break;
-      // case 'qb41':
-      //   this.infoMessage = "Your registration link is invalid or expired. Please try again.";
-      //   break;
       case 'ap17':
         this.successMessage = "You have successfully activated your member. Please login.";
         break;
@@ -167,3 +167,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .form-title {
+    padding: 0 10px;
+    height: 50px;
+    background-color: #f3f3f3;
+  }
+</style>

@@ -1,15 +1,15 @@
 <template>
   <div class="mt-3">
-    <v-card class="pb-2">
+    <v-card>
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
           <div class="d-flex">
             <v-icon class="mr-4 hidden-xs-only">mdi-book-open</v-icon>
             <div class="d-inline">
               <div>Sessions</div>
-              <div class="caption">All your opened session.</div>
+              <div class="caption">Your opened session.</div>
               <div class="caption">
-                <strong>Please note</strong>, if you click Close All button, you will terminate this session as well.
+                <strong>Please note</strong>, if you click Close Sessions button, this session will be terminated too.
               </div>
             </div>
           </div>

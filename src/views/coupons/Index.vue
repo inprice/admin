@@ -165,7 +165,7 @@ export default {
       this.loading.apply = true;
       const result = await CouponService.applyCoupon(code);
       if (result && result.status == true) {
-        this.$store.commit('session/current', result.data.session);
+        this.$store.commit('session/SET_CURRENT', result.data.session);
         this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been successfully applied.' });
         this.getCoupons();
       }
@@ -177,7 +177,7 @@ export default {
           this.loading.apply = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
-            this.$store.commit('session/current', res.data.session);
+            this.$store.commit('session/SET_CURRENT', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been cancelled.' });
           }
           this.loading.apply = false;

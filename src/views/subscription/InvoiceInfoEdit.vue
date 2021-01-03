@@ -82,8 +82,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn @click="close">Close</v-btn>
+          <v-btn small @click="close">Close</v-btn>
           <v-btn
+            small
             @click="submit"
             color="primary"
             :loading="loading" 
