@@ -3,7 +3,7 @@
 
     <v-dialog 
       v-model="opened" 
-      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      :max-width="findDialogWidth"
       overlay-opacity="0.2">
       <v-card>
         <v-card-title>Invite a user</v-card-title>
@@ -55,6 +55,18 @@ import { get } from 'vuex-pathify'
 import Utility from '@/helpers/utility';
 
 export default {
+  computed: {
+    findDialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '80%';
+        case 'sm': return '50%';
+        case 'md': return '35%';
+        case 'lg': return '27%';
+        default: return '20%';
+      }
+    },
+    currentEmail: get('session/getCurrentStatus@email')
+  },
   data() {
     return {
       opened: false,
@@ -70,9 +82,6 @@ export default {
         'VIEWER'
       ]
     };
-  },
-  computed: {
-    currentEmail: get('session/getCurrentStatus@email')
   },
   methods: {
     async submit() {

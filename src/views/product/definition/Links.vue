@@ -47,7 +47,7 @@
       <v-dialog
         v-model="helperDialog"
         transition="dialog-top-transition"
-        :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+        :max-width="findDialogWidth"
       >
         <v-card>
           <v-card-title class="headline">
@@ -173,6 +173,17 @@ import moment from 'moment-timezone';
 
 export default {
   props: ["prodId", "links"],
+  computed: {
+    findDialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '80%';
+        case 'sm': return '50%';
+        case 'md': return '35%';
+        case 'lg': return '27%';
+        default: return '20%';
+      }
+    },
+  },
   data() {
     return {
       url: '',

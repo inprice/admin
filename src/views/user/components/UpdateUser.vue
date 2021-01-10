@@ -3,7 +3,7 @@
 
     <v-dialog 
       v-model="opened" 
-      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      :max-width="findDialogWidth"
       overlay-opacity="0.2">
       <v-card>
         <v-card-title>Update info</v-card-title>
@@ -58,6 +58,15 @@ import { get } from 'vuex-pathify'
 
 export default {
   computed: {
+    findDialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '80%';
+        case 'sm': return '50%';
+        case 'md': return '35%';
+        case 'lg': return '27%';
+        default: return '20%';
+      }
+    },
     CURSTAT: get('session/getCurrentStatus')
   },
   data() {

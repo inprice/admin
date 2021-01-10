@@ -3,7 +3,7 @@
 
     <v-dialog 
       v-model="opened" 
-      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      :max-width="findDialogWidth"
       overlay-opacity="0.2">
       <v-card>
         <v-card-title>Invoice info</v-card-title>
@@ -108,6 +108,17 @@ export default {
     countries: {
       type: Array
     }
+  },
+  computed: {
+    findDialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '80%';
+        case 'sm': return '50%';
+        case 'md': return '35%';
+        case 'lg': return '27%';
+        default: return '20%';
+      }
+    },
   },
   data() {
     return {

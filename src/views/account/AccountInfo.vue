@@ -3,7 +3,7 @@
 
     <v-dialog 
       v-model="opened" 
-      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      :max-width="findDialogWidth"
       overlay-opacity="0.2">
       <v-card>
         <v-card-title>{{ isInsert ? 'New account' : 'Account info' }}</v-card-title>
@@ -68,11 +68,21 @@
 import ApiService from '@/service/api';
 import AccountService from '@/service/account';
 
-//import numFormatter from 'number-format.js';
 import currencyNames from '@/data/currency-names';
 import currencyFormats from '@/data/currency-formats';
 
 export default {
+  computed: {
+    findDialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '80%';
+        case 'sm': return '50%';
+        case 'md': return '35%';
+        case 'lg': return '27%';
+        default: return '20%';
+      }
+    }
+  },
   data() {
     return {
       isInsert: true,

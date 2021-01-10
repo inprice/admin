@@ -13,7 +13,7 @@
           <v-divider></v-divider>
           <p class="ma-4">
             We have just sent an email with activation code to your email address.
-            Please copy and paste in the input below to complete your registration.
+            Please copy and paste the code in the input below to complete your registration.
           </p>
         </div>
 
@@ -77,8 +77,8 @@ export default {
         case 'xs': return '90%';
         case 'sm': return '60%';
         case 'md': return '45%';
-        case 'lg': return '25%';
-        default: return '20%';
+        case 'lg': return '27%';
+        default: return '17%';
       }
     }
   },

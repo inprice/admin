@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     v-model="show"
-    :max-width="options.width"
+    :max-width="findDialogWidth"
     :style="{ zIndex: options.zIndex }"
     @keydown.esc="cancel"
     overlay-opacity="0.2"
@@ -31,6 +31,28 @@
 <script>
 export default {
   name: 'confirm',
+  computed: {
+    show: {
+      get() {
+        return this.dialog
+      },
+      set(value) {
+        this.dialog = value
+        if (value === false) {
+          this.cancel()
+        }
+      }
+    },
+    findDialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '80%';
+        case 'sm': return '50%';
+        case 'md': return '35%';
+        case 'lg': return '27%';
+        default: return '20%';
+      }
+    },
+  },
   data: () => ({
     dialog: false,
     resolve: null,
@@ -43,19 +65,6 @@ export default {
       zIndex: 200
     }
   }),
-  computed: {
-    show: {
-      get() {
-        return this.dialog
-      },
-      set(value) {
-        this.dialog = value
-        if (value === false) {
-          this.cancel()
-        }
-      }
-    }
-  },
   methods: {
     open(title, message, important, options) {
       this.dialog = true
@@ -77,12 +86,5 @@ export default {
       this.dialog = false
     }
   },
-  created() {
-    if (this.$vuetify.breakpoint.smAndDown) {
-      this.options.width = 350;
-    } else {
-      this.options.width = 600;
-    }
-  }
 }
 </script>

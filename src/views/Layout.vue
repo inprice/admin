@@ -101,6 +101,8 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-divider inset></v-divider>
+
         <v-list-item @click="openCreateAccount">
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
@@ -109,8 +111,6 @@
             <v-list-item-title>Create a New Account</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
-        <v-divider inset></v-divider>
 
         <v-list-item @click="$store.dispatch('session/logout', false)">
           <v-list-item-action>

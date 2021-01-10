@@ -23,7 +23,7 @@
 
     <v-dialog
       v-model="warning.show"
-      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
+      :max-width="findDialogWidth"
       :style="{ zIndex: 200 }"
       @keydown.esc="warning.show = false"
       overlay-opacity="0.2"
@@ -56,6 +56,17 @@
 
 <script>
 export default {
+  computed: {
+    findDialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': return '80%';
+        case 'sm': return '50%';
+        case 'md': return '35%';
+        case 'lg': return '27%';
+        default: return '20%';
+      }
+    },
+  },
   data() {
     return {
       snackbar: {

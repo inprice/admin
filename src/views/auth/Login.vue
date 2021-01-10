@@ -101,10 +101,10 @@ export default {
     findWidth() {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs': return '90%';
-        case 'sm': return '60%';
-        case 'md': return '45%';
-        case 'lg': return '25%';
-        default: return '20%';
+        case 'sm': return '50%';
+        case 'md': return '35%';
+        case 'lg': return '27%';
+        default: return '17%';
       }
     }
   },
