@@ -100,11 +100,7 @@ export default {
 
         const result = await ImportService.uploadURLFile(formData);
         if (result.status == true) {
-          if (result.data.successes) {
-            this.$router.push({ name: 'products' });
-          } else {
-            this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
-          }
+          this.$router.push({ name: 'import-details', params: { id: result.data.importId } });
         }
         this.loading = false;
       }

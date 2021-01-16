@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div class="d-flex justify-space-between ml-2 mt-3">
+    <div class="d-flex justify-space-between ml-2 mt-5">
       <span class="title">
         Competitors
       </span>
@@ -96,7 +96,7 @@
       Invalid product!
     </div>
 
-    <div v-if="rows && rows.length" :class="{ 'mt-4': !showAddNewBar }">
+    <div v-if="rows && rows.length > 0" :class="{ 'mt-4': !showAddNewBar }">
 
       <v-hover v-for="(row, index) in rows" :key="row.id">
         <template v-slot="{ hover }">
@@ -159,6 +159,13 @@
       </v-hover>
 
     </div>
+
+    <div v-else class="mt-1">
+      <block-message v-if="!showAddNewBar" dense>
+        You can add your competitors using the button just above.
+      </block-message>
+    </div>
+
     <confirm ref="confirm"></confirm>
 
   </div>
@@ -302,6 +309,7 @@ export default {
   components: {
     Confirm: () => import('@/component/Confirm.vue'),
     LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   created() {
     this.$nextTick(() => {

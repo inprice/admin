@@ -75,7 +75,6 @@
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
 import Utility from '@/helpers/utility';
 
 export default {
@@ -97,7 +96,6 @@ export default {
     };
   },
   computed: {
-    CURSTAT: get('session/getCurrentStatus'),
     findWidth() {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs': return '90%';
@@ -116,8 +114,11 @@ export default {
         this.loading = true;
         const result = await this.$store.dispatch('session/login', this.form);
         if (result != null) {
-          if (this.CURSTAT.hasTime) {
-            if (this.CURSTAT.productCount > 0) {
+          const ses = result.sessions[result.sessionNo];
+          console.log('ses.planName', ses.planName);
+          console.log('ses.productCount', ses.productCount);
+          if (ses.planName) {
+            if (ses.productCount > 0) {
               this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
             } else {
               this.$router.push({ name: 'products', params: { sid: result.sessionNo } });

@@ -56,7 +56,7 @@
             </thead>
             <tbody>
               <tr v-for="row in data.list" :key="row.id">
-                <td class="text-truncate">{{ row.data }}</td>
+                <td>{{ row.data }}</td>
                 <td>{{ row.problem || (data.import.type != 'CSV' ? 'Looks ' : '') + 'Fine' }}</td>
               </tr>
             </tbody>

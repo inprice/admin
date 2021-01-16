@@ -15,7 +15,8 @@
 
             <v-divider class="mb-2"></v-divider>
 
-            <div class="caption px-2 d-flex justify-space-between">
+            <div class="caption px-1" :class="{ 'd-flex justify-space-between' : $vuetify.breakpoint.smAndUp }">
+
               <table class="my-auto">
                 <tr>
                   <td>Ranking</td>
@@ -41,36 +42,41 @@
                     {{ row.tags.length ? row.tags.join(', ') : 'NA' }}
                   </td>
                 </tr>
+                <tr v-if="!row.minSeller && $vuetify.breakpoint.xsOnly">
+                  <td colspan="3" class="font-weight-bold">
+                    Not classified since has no active competitor!
+                  </td>
+                </tr>
               </table>
 
               <table class="featuresTable caption" v-if="row.minSeller" :style="RESPROPS.priceTable.table">
                 <tr>
                   <td width="10%" class="text-center">O</td>
                   <th width="20%">Price</th>
-                  <th v-if="$vuetify.breakpoint.smAndUp" width="40%">Seller</th>
-                  <th v-if="$vuetify.breakpoint.smAndUp" width="30%">Platform</th>
+                  <th>Seller</th>
+                  <th>Platform</th>
                 </tr>
                 <tr>
                   <th>Min</th>
                   <td class="text-right">{{ row.minPrice | toPrice }}</td>
-                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.minSeller }}</td>
-                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.minPlatform }}</td>
+                  <td>{{ row.minSeller }}</td>
+                  <td>{{ row.minPlatform }}</td>
                 </tr>
                 <tr>
                   <th>Avg</th>
                   <td class="text-right">{{ row.avgPrice | toPrice }}</td>
-                  <td v-if="$vuetify.breakpoint.smAndUp" colspan="2"></td>
+                  <td colspan="2"></td>
                 </tr>
                 <tr>
                   <th>Max</th>
                   <td class="text-right">{{ row.maxPrice | toPrice }}</td>
-                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.maxSeller }}</td>
-                  <td v-if="$vuetify.breakpoint.smAndUp">{{ row.maxPlatform }}</td>
+                  <td>{{ row.maxSeller }}</td>
+                  <td>{{ row.maxPlatform }}</td>
                 </tr>
               </table>
 
-              <div class="caption px-2" v-else>
-                Not classified yet!
+              <div v-if="!row.minSeller && $vuetify.breakpoint.smAndUp" class="font-weight-bold">
+                Not classified since has no active competitor!
               </div>
             </div>
 
@@ -95,11 +101,6 @@ export default {
   computed: {
     RESPROPS() {
       switch (this.$vuetify.breakpoint.name) {
-        case 'xs': {
-          return {
-            priceTable: { table: 'max-width: 35%' },
-          };
-        }
         case 'sm': {
           return {
             priceTable: { table: 'max-width: 50%' },
