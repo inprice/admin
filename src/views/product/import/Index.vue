@@ -94,16 +94,12 @@
             <thead>
               <tr>
                 <th :width="RESPROPS.table.type">Type</th>
-                <th class="text-center" :width="RESPROPS.table.successes">Success</th>
-                <th class="text-center" :width="RESPROPS.table.fails">Fail</th>
                 <th :width="RESPROPS.table.date">Created</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in rows" :key="row.id" link @click="$router.push({name: 'import-details', params: { id: row.id}})" style="cursor: pointer">
                 <td>{{ row.type }} {{ row.isFile ? 'File' : 'List' }}</td>
-                <td class="text-center">{{ row.successCount }}</td>
-                <td class="text-center">{{ row.problemCount }}</td>
                 <td>
                   <ago :date="row.createdAt" />
                 </td>
@@ -151,13 +147,13 @@ export default {
         case 'xl': {
           return {
             'table-layout': '',
-            table: { type: '', successes: '10%', fails: '10%', date: '18%' }
+            table: { type: '', successes: '10%', fails: '10%', date: '20%' }
           };
         }
         default: {
           return {
             'table-layout': 'fixed',
-            table: { type: '250px', successes: '100px', fails: '100px', date: '180px' }
+            table: { type: '250px', successes: '100px', fails: '100px', date: '200px' }
           };
         }
       }

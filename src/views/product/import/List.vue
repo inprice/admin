@@ -31,8 +31,8 @@
           <tbody>
             <property :valueClass="RESPROPS.properties.type" name="Type" :value="data.import.type + (data.import.is_file ? ' File' : ' List')" />
             <property :valueClass="RESPROPS.properties.date" name="Date" :value="data.import.createdAt" />
-            <property :valueClass="RESPROPS.properties.success" name="Success" :value="data.import.successCount || '0'" />
-            <property :valueClass="RESPROPS.properties.fail" name="Fail" :value="data.import.problemCount || '0'" />
+            <property :valueClass="RESPROPS.properties.success" name="Eligible?" :value="(data.import.successCount || '0') + ' / ' + (data.import.problemCount || '0')" />
+            <property :valueClass="RESPROPS.properties.fail" name="Imported?" :value="(importCount || '0') + ' / ' + (failCount || '')" />
           </tbody>
         </template>
       </v-simple-table>
@@ -47,17 +47,26 @@
         class="v-data-table v-data-table--dense theme--light put-behind" 
         v-if="data && data.list && data.list.length">
         <div class="v-data-table__wrapper">
-          <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
+          <table :style="'table-layout:' + ($vuetify.breakpoint.xsOnly ? '' : 'fixed')" class="pb-2">
             <thead>
               <tr>
-                <th :width="RESPROPS.table.data">Data</th>
-                <th :width="RESPROPS.table.looks">Looks</th>
+                <th>Data</th>
+                <th width="25%">Status</th>
+                <th width="7%">Del</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in data.list" :key="row.id">
-                <td>{{ row.data }}</td>
-                <td>{{ row.problem || (data.import.type != 'CSV' ? 'Looks ' : '') + 'Fine' }}</td>
+                <td class="text-truncate" :title="row.data">{{ row.data }}</td>
+                <td class="text-truncate" :class="{ 'font-weight-bold green--text': row.imported }" :title="row.status">{{ row.status }}</td>
+                <td>
+                  <v-btn 
+                    small icon elevation="2"
+                    :disabled="row.status == 'IMPORTED'"
+                    @click="removeRow(row)">
+                      <v-icon>mdi-trash-can-outline</v-icon>
+                  </v-btn>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -80,7 +89,9 @@ import ImportService from '@/service/imbort';
 export default {
   data() {
     return {
-      data: {}
+      data: {},
+      importCount: 0,
+      failCount: 0,
     };
   },
   computed: {
@@ -88,16 +99,12 @@ export default {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs': {
           return {
-            'table-layout': 'fixed',
             properties: { type: 'col-8', date: 'col-8', success: 'col-3', fail: 'col-3' },
-            table: { data: '800px', looks: '300px' },
           };
         }
         default: {
           return {
-            'table-layout': '',
             properties: { type: 'col-5', date: 'col-5', success: 'col-2', fail: 'col-2' },
-            table: { data: '', looks: '15%' },
           };
         }
       }
@@ -115,10 +122,30 @@ export default {
         }
       });
     },
+    removeRow(row) {
+      if (row && row.id && row.status != 'IMPORTED') {
+        this.$refs.confirm.open('Delete Row', 'This row will be deleted. Are you sure?').then(async (confirm) => {
+          if (confirm == true) {
+            const result = await ImportService.removeRow(row.id);
+            if (result == true) {
+              this.findDetails();
+            }
+          }
+        });
+      }
+    },
     findDetails() {
       ImportService.getDetailsList(this.$route.params.id).then(res => {
         if (res && res.status == true) {
           this.data = res.data;
+          if (this.data && this.data.list && this.data.list.length) {
+            for (let i=0; i<this.data.list.length; ++i) {
+              if (this.data.list[i].imported == true)
+                this.importCount++;
+              else
+                this.failCount++;
+            }
+          }
         }
       });
     }

@@ -116,7 +116,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '20%';
+        default: return '16%';
       }
     },
   },

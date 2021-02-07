@@ -102,7 +102,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '17%';
+        default: return '16%';
       }
     }
   },
@@ -115,8 +115,6 @@ export default {
         const result = await this.$store.dispatch('session/login', this.form);
         if (result != null) {
           const ses = result.sessions[result.sessionNo];
-          console.log('ses.planName', ses.planName);
-          console.log('ses.productCount', ses.productCount);
           if (ses.planName) {
             if (ses.productCount > 0) {
               this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });

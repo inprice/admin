@@ -72,7 +72,7 @@
 
         <block-message
           class="mb-0" 
-          v-if="CURSTAT.isActive == false"
+          v-if="CURSTAT.isActive == false && CURSTAT.status != 'CREATED'"
         >
           This account has been {{ CURSTAT.status }}
           <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />

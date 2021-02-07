@@ -27,6 +27,13 @@ export default {
     return res.status;
   },
 
+  async removeRow(id) {
+    if (store.get('session/isViewer')) return;
+
+    const res = await Helper.call('Delete Row', { method: 'delete', url: baseURL + '/detail/' + id });
+    return res.status;
+  },
+
   async uploadCSVFile(formData) {
     if (store.get('session/isViewer')) return;
 
