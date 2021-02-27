@@ -32,7 +32,7 @@
             <property :valueClass="RESPROPS.properties.type" name="Type" :value="data.import.type + (data.import.is_file ? ' File' : ' List')" />
             <property :valueClass="RESPROPS.properties.date" name="Date" :value="data.import.createdAt" />
             <property :valueClass="RESPROPS.properties.success" name="Eligible?" :value="(data.import.successCount || '0') + ' / ' + (data.import.problemCount || '0')" />
-            <property :valueClass="RESPROPS.properties.fail" name="Imported?" :value="(importCount || '0') + ' / ' + (failCount || '')" />
+            <property :valueClass="RESPROPS.properties.fail" name="Imported?" :value="(importCount || '0') + (failCount ? ' / ' + failCount : '')" />
           </tbody>
         </template>
       </v-simple-table>
@@ -52,7 +52,7 @@
               <tr>
                 <th>Data</th>
                 <th width="25%">Status</th>
-                <th width="7%">Del</th>
+                <th width="7%" class="text-center">Del</th>
               </tr>
             </thead>
             <tbody>
@@ -61,8 +61,8 @@
                 <td class="text-truncate" :class="{ 'font-weight-bold green--text': row.imported }" :title="row.status">{{ row.status }}</td>
                 <td>
                   <v-btn 
-                    small icon elevation="2"
-                    :disabled="row.status == 'IMPORTED'"
+                    small text
+                    :disabled="row.status.indexOf('TOBE') < 0"
                     @click="removeRow(row)">
                       <v-icon>mdi-trash-can-outline</v-icon>
                   </v-btn>
