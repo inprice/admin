@@ -6,7 +6,7 @@
         <img :src="verticalBrand" :width="140" />
       </div>
 
-      <v-card class="pa-3 mb-10 body-2" color="yellow lighten-5">
+      <v-card class="pa-3 mb-8 body-2" color="yellow lighten-5">
 
         <div>
           <div class="title text-center mb-2">Please check your email</div>
@@ -41,9 +41,8 @@
       </v-form>
 
       <v-card-actions class="px-0">
-        <router-link to="login" :disabled="loading">Back to Login</router-link>
-        <v-spacer></v-spacer>
         <v-btn 
+          block
           color="info"
           @click="submit" 
           :loading="loading" 
@@ -51,7 +50,7 @@
           Sign Up
         </v-btn>
       </v-card-actions>
-
+      <router-link class="d-flex justify-center mt-4" to="login" :disabled="loading">Back to Login</router-link>
     </div>
   </div>
 </template>

@@ -49,9 +49,9 @@
         class="mt-10"
         color="primary"
         outlined
-        @click="gotoProductsPage"
+        @click="$router.push({ name: 'groups' })"
       >
-        Go to products page
+        Go to groups page
       </v-btn>
     </div>
 
@@ -71,11 +71,6 @@ export default {
     return {
       overlay: false,
     };
-  },
-  methods: {
-    gotoProductsPage() {
-      this.$router.push({ name: 'products' });
-    }
   },
   created() {
     let retry = 0;

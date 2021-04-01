@@ -24,20 +24,20 @@
 
     <div class="px-2 row">
       <!-- ------------------------------- -->
-      <!-- Products position statuses -->
+      <!-- Groups' position statuses -->
       <!-- ------------------------------- -->
-      <v-card class="col" v-if="report && report.products && report.products.positionDists">
+      <v-card class="col" v-if="report && report.groups && report.groups.positionDists">
         <v-card-title class="pb-2">
           <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
           <div class="col pa-0">
-            <div>Product positions</div>
-            <div class="caption">The positions of your products.</div>
+            <div>Group positions</div>
+            <div class="caption">The positions of your groups.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
         <positions-bar-chart 
           :width="300" :height="300"
-          :series="report.products.positionDists" 
+          :series="report.groups.positionDists" 
         />
       </v-card>
 
@@ -62,40 +62,39 @@
 
 
     <!-- ------------------------------------ -->
-    <!-- 10 Products having the lowest prices -->
+    <!-- 10 Groups having the lowest prices -->
     <!-- ------------------------------------ -->
     <v-card class="mt-3">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-down-circle-outline</v-icon>
         <div>
           <div>Top 10 with low prices</div>
-          <div class="caption">Your 10 products having the lowest prices.</div>
+          <div class="caption">Your 10 groups having the lowest prices.</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
 
       <div 
         class="v-data-table v-data-table--dense theme--light put-behind" 
-        v-if="report && report.products && report.products.extremePrices.lowest && report.products.extremePrices.lowest.length">
+        v-if="report && report.groups && report.groups.extremePrices.lowest && report.groups.extremePrices.lowest.length">
         <div class="v-data-table__wrapper">
           <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
             <thead>
               <tr>
                 <th :width="RESPROPS.priceTable.name">Name</th>
                 <th :width="RESPROPS.priceTable.price" class="text-right">Price</th>
-                <th :width="RESPROPS.priceTable.ranking" class="text-center">Ranking</th>
+                <th :width="RESPROPS.priceTable.links" class="text-center">Links</th>
                 <th :width="RESPROPS.priceTable.date" class="text-center">Date</th>
               </tr>
             </thead>
             <tbody>
               <tr
                 style="cursor: pointer"
-                link @click="$router.push({ name: 'product', params: { id: row.id } })"
-                v-for="(row) in report.products.extremePrices.lowest" 
-                :key="row.id">
+                link @click="$router.push({ name: 'group', params: { id: row.id } })"
+                v-for="(row) in report.groups.extremePrices.lowest" :key="row.id">
                 <td>{{ row.name }}</td>
                 <td class="text-right">{{ row.price | toPrice }}</td>
-                <td class="text-center">{{ (row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA') }}</td>
+                <td class="text-center">{{ row.actives + '/' + row.passives }}</td>
                 <td class="text-center">
                   <ago :date="row.lastUpdate" />
                 </td>
@@ -113,40 +112,39 @@
     </v-card>
 
     <!-- ------------------------------------- -->
-    <!-- 10 Products having the highest prices -->
+    <!-- 10 Groups having the highest prices -->
     <!-- ------------------------------------- -->
     <v-card class="mt-3">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-up-circle-outline</v-icon>
         <div>
           <div>Top 10 with high prices</div>
-          <div class="caption">Your 10 products having the highest prices.</div>
+          <div class="caption">Your 10 groups having the highest prices.</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
 
       <div 
         class="v-data-table v-data-table--dense theme--light put-behind" 
-        v-if="report && report.products && report.products.extremePrices.highest && report.products.extremePrices.highest.length">
+        v-if="report && report.groups && report.groups.extremePrices.highest && report.groups.extremePrices.highest.length">
         <div class="v-data-table__wrapper">
           <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
             <thead>
               <tr>
                 <th :width="RESPROPS.priceTable.name">Name</th>
                 <th :width="RESPROPS.priceTable.price" class="text-right">Price</th>
-                <th :width="RESPROPS.priceTable.ranking" class="text-center">Ranking</th>
+                <th :width="RESPROPS.priceTable.links" class="text-center">Links</th>
                 <th :width="RESPROPS.priceTable.date" class="text-center">Date</th>
               </tr>
             </thead>
             <tbody>
               <tr 
                 style="cursor: pointer"
-                link @click="$router.push({ name: 'product', params: { id: row.id } })"
-                v-for="(row) in report.products.extremePrices.highest" 
-                :key="row.id">
+                link @click="$router.push({ name: 'group', params: { id: row.id } })"
+                v-for="(row) in report.groups.extremePrices.highest" :key="row.id">
                 <td>{{ row.name }}</td>
                 <td class="text-right">{{ row.price | toPrice }}</td>
-                <td class="text-center">{{ (row.ranking && row.linkCount ? row.ranking + '/' + (row.linkCount+1) : 'NA') }}</td>
+                <td class="text-center">{{ row.actives + '/' + row.passives }}</td>
                 <td class="text-center">
                   <ago :date="row.lastUpdate" />
                 </td>
@@ -188,7 +186,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, index) in report.links.mru25" :key="index" :title="row.productName">
+              <tr v-for="(row, index) in report.links.mru25" :key="index" :title="row.groupName">
                 <td v-if="row.seller">{{ (row.seller || 'NA') + (' ('+row.platform+')' || '') }}</td>
                 <td v-else class="font-italic">{{ row.url }}</td>
                 <td class="text-right">{{ row.price | toPrice }}</td>
@@ -223,7 +221,7 @@ export default {
     return {
       report: {},
       total: {
-        product: 0,
+        group: 0,
         link: 0
       }
     };
@@ -238,14 +236,14 @@ export default {
           return {
             'table-layout': '',
             linksTable: { seller: '', price: '15%', status: '18%', time: '18%' },
-            priceTable: { name: '', price: '15%', ranking: '10%', date: '18%', action: '10%' }
+            priceTable: { name: '', price: '15%', links: '10%', date: '18%', action: '10%' }
           };
         }
         default: {
           return {
             'table-layout': 'fixed',
             linksTable: { seller: '300px', price: '150px', status: '150px', time: '150px' },
-            priceTable: { name: '300px', price: '150px', ranking: '80px', date: '150px', action: '100px' }
+            priceTable: { name: '300px', price: '150px', links: '80px', date: '150px', action: '100px' }
           };
         }
       }
@@ -259,13 +257,13 @@ export default {
         this.report.account.daysToRenewal = moment(this.report.account.renewalAt).diff(moment(), 'days')+1;
       }
 
-      if (this.report && this.report.products && this.report.products.positionDists) {
-        let prodCount = 0;
-        for (var i = 0; i < this.report.products.positionDists.length; i++) {
-          const dist = this.report.products.positionDists[i];
-          prodCount += dist.count;
+      if (this.report && this.report.groups && this.report.groups.positionDists) {
+        let linkCount = 0;
+        for (var i = 0; i < this.report.groups.positionDists.length; i++) {
+          const dist = this.report.groups.positionDists[i];
+          linkCount += dist.count;
         }
-        this.total.product = prodCount;
+        this.total.group = linkCount;
 
         let compCount = 0;
         if (this.report.links.statusDists) {

@@ -11,7 +11,7 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="d-flex justify-space-between" v-if="CURSTAT.isActive || CURSTAT.linkCount > 0">
 
       <div class="col-10 pl-0 d-flex">
         <v-text-field 
@@ -72,7 +72,7 @@
 
     </div>
 
-    <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.productCount > 0">
+    <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.linkCount > 0">
       <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
 
       <div class="mt-3">

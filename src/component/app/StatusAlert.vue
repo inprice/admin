@@ -57,8 +57,8 @@ export default {
       }
     },
     infoForPassiveAccount() {
-      if (this.CURSTAT.hasProduct) {
-        return "You need to start a subscription to continue monitoring.";
+      if (this.CURSTAT.hasLink) {
+        return "You need to start a new subscription to continue monitoring.";
       } else {
         if (this.CURSTAT == 'CREATED') {
           return "You can start with a free trial perid for "+SystemConsts.LIMITS.DAYS_FOR_FREE_USE+" days.";

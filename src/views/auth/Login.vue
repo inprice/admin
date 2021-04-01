@@ -24,7 +24,7 @@
         {{ errorMessage }}
       </v-alert>
 
-      <v-card>
+      <v-card class="pb-0" tile>
         <v-card-title class="form-title elevation-1 mb-2">Login</v-card-title>
 
         <v-card-text>
@@ -55,20 +55,21 @@
           </v-form>
 
           <v-card-actions class="px-0">
-            <router-link class="font-weight-light" to="forgot-password" tabindex="-1">Forgot Password?</router-link>
-            <v-spacer></v-spacer>
             <v-btn 
+              block
               color="info" 
               @click="submit" 
               :loading="loading" 
               :disabled="loading">Sign In</v-btn>
           </v-card-actions>
+
+          <div class="d-flex mt-5">
+            <router-link to="forgot-password" tabindex="-1">Forgot Password?</router-link>
+            <v-spacer></v-spacer>
+            <router-link to="request-registration" tabindex="-1">Sign Up</router-link>
+          </div>
         </v-card-text>
       </v-card>
-
-      <div class="text-center font-weight-light mt-6">
-        Don't have an account yet? <router-link to="request-registration">Sign Up</router-link>
-      </div>
 
     </div>
   </div>
@@ -116,10 +117,10 @@ export default {
         if (result != null) {
           const ses = result.sessions[result.sessionNo];
           if (ses.planName) {
-            if (ses.productCount > 0) {
+            if (ses.linkCount > 0) {
               this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
             } else {
-              this.$router.push({ name: 'products', params: { sid: result.sessionNo } });
+              this.$router.push({ name: 'groups', params: { sid: result.sessionNo } });
             }
           } else {
             this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
@@ -171,6 +172,7 @@ export default {
   .form-title {
     padding: 0 10px;
     height: 50px;
-    background-color: #f3f3f3;
+    color: #606060;
+    background-color: #f8f8f8;
   }
 </style>

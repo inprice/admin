@@ -39,7 +39,7 @@
                   <span v-else>Pause</span>
                 </v-btn>
                 <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))" :disabled="$store.get('session/isViewer')">Delete</v-btn>
-                <v-btn class="mx-1" small @click="openProductPage(row.productId)">Product Page</v-btn>
+                <v-btn class="mx-1" small @click="openGroupPage(row.groupId)">Group Details</v-btn>
               </div>
             </div>
 
@@ -162,8 +162,8 @@ export default {
       }
       this.lastToggledLinkId = id;
     },
-    openProductPage(productId) {
-      this.$router.push({ name: 'product', params: { id: productId } });
+    openGroupPage(groupId) {
+      this.$router.push({ name: 'group', params: { id: groupId } });
     }
   },
   components: {

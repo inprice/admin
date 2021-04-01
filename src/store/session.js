@@ -111,7 +111,7 @@ const getters = {
         planId: state.current.planId,
         planName: state.current.planName,
         renewalAt: state.current.renewalAt,
-        hasProduct: state.current.productCount>0,
+        hasLink: state.current.linkCount>0,
         lastStatusUpdate: state.current.lastStatusUpdate,
         email: state.current.email,
         user: state.current.user,

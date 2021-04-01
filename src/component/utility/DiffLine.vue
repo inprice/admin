@@ -1,7 +1,7 @@
 <template>
-  <div class="d-flex justify-center">
-    <div>{{ formatted }}</div>
-    <v-icon :style="$vuetify.breakpoint.name == 'xs' || smallicon ? 'font-size: 95%' : ''" :color="color">mdi-{{ dir }}-circle</v-icon>
+  <div class="d-inline">
+    <span>{{ formatted }}</span>
+    <v-icon :style="$vuetify.breakpoint.name == 'xs'" :color="color">mdi-{{ dir }}-circle</v-icon>
   </div>
 </template>
 
@@ -13,10 +13,6 @@ export default {
     diff: {
       type: Number,
       default: 0
-    },
-    smallicon: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {

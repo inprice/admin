@@ -1,5 +1,5 @@
 <template>
-  <div v-if="data.product">
+  <div v-if="data.group">
 
     <div class="d-flex mt-2">
       <v-btn 
@@ -14,7 +14,7 @@
       <v-btn 
         small
         class="mr-2"
-        :disabled="$store.get('session/isViewer')"
+        :disabled="$store.get('session/isViewer') || !data.defauld"
         @click="remove">
           Delete
       </v-btn>
@@ -28,19 +28,19 @@
       </v-btn>
     </div>
 
-    <info :prod="data.product" @edit="edit" @remove="remove" class="mt-2" />
-    <prices :prod="data.product" v-if="data.product.avgPrice > 0" />
+    <info :group="data.group" @edit="edit" @remove="remove" class="mt-2" />
+    <prices :group="data.group" v-if="data.group.avgPrice > 0" />
 
-    <links :prodId="data.product.id" :links="data.links" class="mt-2" @deleted="findProduct" @statusToggled="findProduct" />
+    <links :groupId="data.group.id" :links="data.links" class="mt-2" @deleted="findGroup" @statusToggled="findGroup" />
 
-    <edit ref="editDialog" @saved="findProduct" />
+    <edit ref="editDialog" @saved="findGroup" />
     <confirm ref="confirm" />
 
   </div>
 </template>
 
 <script>
-import ProductService from '@/service/product';
+import GroupService from '@/service/group';
 
 export default {
   data() {
@@ -50,27 +50,27 @@ export default {
   },
   methods: {
     edit() {
-      let cloned = JSON.parse(JSON.stringify(this.data.product));
+      let cloned = JSON.parse(JSON.stringify(this.data.group));
       this.$refs.editDialog.open(cloned);
     },
     remove() {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.data.product.name).then(async (confirm) => {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.data.group.name).then(async (confirm) => {
         if (confirm == true) {
-          const result = await ProductService.remove(this.data.product.id);
+          const result = await GroupService.remove(this.data.group.id);
           if (result == true) {
-            this.$store.commit('snackbar/setMessage', { text: 'Product successfully deleted!' });
-            this.$router.push({ name: 'products' });
+            this.$store.commit('snackbar/setMessage', { text: 'Group successfully deleted!' });
+            this.$router.push({ name: 'groups' });
           }
         }
       });
     },
     openEditDialog() {
-      if (this.data.product) {
-        this.$refs.editDialog.open(this.data.product);
+      if (this.data.group) {
+        this.$refs.editDialog.open(this.data.group);
       }
     },
-    findProduct() {
-      ProductService.getLinks(this.$route.params.id).then(res => {
+    findGroup() {
+      GroupService.getLinks(this.$route.params.id).then(res => {
         if (res && res.status == true) {
           this.data = res.data;
         }
@@ -78,7 +78,7 @@ export default {
     },
   },
   created() {
-    this.$nextTick(() => this.findProduct());
+    this.$nextTick(() => this.findGroup());
   },
   components: {
     Info: () => import('./Info'),
@@ -89,7 +89,7 @@ export default {
   },
   watch: {
     '$route.path' () {
-      if (window.location.href.indexOf('/product/') > 0) this.findProduct();
+      if (window.location.href.indexOf('/group/') > 0) this.findGroup();
     }
   }
 };

@@ -11,7 +11,7 @@
               <span>Prices</span>
             </div>
             <span class="caption my-auto">
-              Last update <ago :date="prod.updatedAt" class="d-inline font-weight-medium" />
+              Last update <ago :date="group.updatedAt" class="d-inline font-weight-medium" />
             </span>
           </div>
           <div class="caption">The difference indicators under the prices are calculated according to your price</div>
@@ -25,13 +25,13 @@
 
           <v-divider class="pb-2"></v-divider>
 
-          <div class="text-h5 text-sm-h4">{{ prod.minPrice | toPrice }}</div>
-          <diff-line class="ml-1" :diff="prod.minDiff"></diff-line>
+          <div class="text-h5 text-sm-h4">{{ group.minPrice | toPrice }}</div>
+          <diff-line class="ml-1" :diff="group.diffMin"></diff-line>
 
           <v-divider class="my-2"></v-divider>
 
-          <div class="caption">{{ prod.minPlatform || 'NA' }}</div>
-          <div class="caption" :class="{ 'font-weight-bold': $vuetify.breakpoint.smAndUp }">{{ prod.minSeller || 'NA' }}</div>
+          <div class="caption">{{ group.minPlatform || 'NA' }}</div>
+          <div class="caption" :class="{ 'font-weight-bold': $vuetify.breakpoint.smAndUp }">{{ group.minSeller || 'NA' }}</div>
 
         </v-card>
 
@@ -41,16 +41,16 @@
 
           <v-divider class="pb-2"></v-divider>
 
-          <div class="text-h5 text-sm-h4">{{ prod.avgPrice | toPrice }}</div>
-          <diff-line class="ml-1" :diff="prod.avgDiff"></diff-line>
+          <div class="text-h5 text-sm-h4">{{ group.avgPrice | toPrice }}</div>
+          <diff-line class="ml-1" :diff="group.diffAvg"></diff-line>
 
           <v-divider class="my-2"></v-divider>
 
-          <div class="caption">Your Rank</div>
+          <div class="caption">Links</div>
           <div class="caption mx-auto font-weight-bold">
-            <span class="teal--text">{{ prod.position | toPosition }}</span>
+            <span class="teal--text">{{ group.position | toPosition }}</span>
             (<span class="red--text">
-              {{ prod.ranking && prod.linkCount ? prod.ranking + '/' + (prod.linkCount+1) : 'NA' }}
+              {{ group.actives + '/' + group.passives }}
             </span>)
           </div>
 
@@ -62,13 +62,13 @@
 
           <v-divider class="pb-2"></v-divider>
 
-          <div class="text-h5 text-sm-h4">{{ prod.maxPrice | toPrice }}</div>
-          <diff-line :diff="prod.maxDiff"></diff-line>
+          <div class="text-h5 text-sm-h4">{{ group.maxPrice | toPrice }}</div>
+          <diff-line :diff="group.diffMax"></diff-line>
 
           <v-divider class="my-2"></v-divider>
 
-          <div class="caption">{{ prod.maxPlatform || 'NA' }}</div>
-          <div class="caption" :class="{ 'font-weight-bold': $vuetify.breakpoint.smAndUp }">{{ prod.maxSeller || 'NA' }}</div>
+          <div class="caption">{{ group.maxPlatform || 'NA' }}</div>
+          <div class="caption" :class="{ 'font-weight-bold': $vuetify.breakpoint.smAndUp }">{{ group.maxSeller || 'NA' }}</div>
         </v-card>
 
       </v-row>
@@ -81,7 +81,7 @@
 
 <script>
 export default {
-  props: ['prod'],
+  props: ['group'],
   components: {
     DiffLine: () => import('@/component/utility/DiffLine.vue'),
   },

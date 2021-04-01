@@ -15,7 +15,7 @@
       </v-btn>
     </div>
 
-    <div v-if="prodId">
+    <div v-if="groupId">
       <v-form ref="addNewForm" v-model="isUrlValid" @submit.prevent>
         <v-scroll-x-transition leave-absolute>
           <div v-if="showAddNewBar" class="d-flex">
@@ -93,7 +93,7 @@
 
     </div>
     <div v-else>
-      Invalid product!
+      Invalid group!
     </div>
 
     <div v-if="rows && rows.length > 0" :class="{ 'mt-4': !showAddNewBar }">
@@ -179,7 +179,7 @@ import normalizeUrl from 'normalize-url';
 import moment from 'moment-timezone';
 
 export default {
-  props: ["prodId", "links"],
+  props: ["groupId", "links"],
   computed: {
     findDialogWidth() {
       switch (this.$vuetify.breakpoint.name) {
@@ -231,7 +231,7 @@ export default {
         }
 
         this.loading = true;
-        const result = await LinkService.insert({ url: this.url, productId: this.prodId });
+        const result = await LinkService.insert({ url: this.url, groupId: this.groupId });
         if (result.status == true) {
           this.clearAddNewBar();
           const createdAt = moment();

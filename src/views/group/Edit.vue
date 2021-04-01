@@ -6,24 +6,23 @@
        :max-width="findDialogWidth"
        overlay-opacity="0.2">
       <v-card>
-        <v-card-title>Product details</v-card-title>
+        <v-card-title>{{ form.id ? 'Edit' : 'New' }} Group </v-card-title>
+
         <v-divider class="mb-2"></v-divider>
 
-        <v-card-text class="pb-0">
+        <v-card-subtitle class="pb-2">
+          <span class="font-weight-medium text-decoration-underline">For competitive pricing</span>, please specify a price greater than zero!
+        </v-card-subtitle>
+
+        <v-divider class="mb-4"></v-divider>
+
+        <v-card-text>
 
           <v-form ref="form" v-model="valid">
             <input type="hidden" :value="form.id" >
 
             <v-text-field
               autofocus
-              label="Code"
-              v-model="form.code"
-              :rules="rules.code"
-              type="text"
-              maxlength="50"
-            />
-
-            <v-text-field
               label="Name"
               v-model="form.name"
               :rules="rules.name"
@@ -39,36 +38,14 @@
               maxlength="10"
             />
 
-            <v-combobox
-              v-model="form.tags"
-              :items="tagData.items"
-              :search-input.sync="tagData.search"
-              hide-selected
-              hint="Maximum of 5 tags"
-              label="Tags"
-              multiple
-              persistent-hint
-              small-chips
-            >
-              <template v-slot:block-message>
-                <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      To create "<strong>{{ tagData.search }}</strong>". Press <kbd>enter</kbd>
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
-            </v-combobox>
-
           </v-form>
+
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn @click="close">Close</v-btn>
           <v-btn
-            small
             @click="save"
             color="primary"
             :loading="loading" 
@@ -84,9 +61,7 @@
 </template>
 
 <script>
-import ProductService from '@/service/product';
-import TagService from '@/service/tag';
-import Utility from '@/helpers/utility';
+import GroupService from '@/service/group';
 
 export default {
   computed: {
@@ -107,17 +82,10 @@ export default {
       valid: false,
       rules: {},
       form: {
-        code: '',
         name: '',
         price: 0,
-        tags: [],
       },
-      tagData: {
-        items: [],
-        search: null,
-      },
-      oldTags: [],
-    };
+};
   },
   methods: {
     open(data) {
@@ -125,27 +93,13 @@ export default {
 
       if (data) {
         this.form.id = data.id;
-        this.form.code = data.code;
         this.form.name = data.name;
         this.form.price = data.price;
-        if (data.tags?.length) this.form.tags = data.tags;
-        this.oldTags = this.form.tags;
       }
 
       let self = this;
       this.$nextTick(() => {
         self.$refs.form.resetValidation();
-
-        TagService.getAll()
-          .then((res) => {
-            this.tagData.items = [];
-            if (res && res.data) {
-              for (let i=0; i<res.data.length; i++) {
-                this.tagData.items.push(res.data[i].name);
-              }
-            }
-        });
-
       });
     },
     async save() {
@@ -154,9 +108,8 @@ export default {
       if (this.valid) {
         this.loading = true;
         this.form.price = parseFloat(this.form.price);
-        this.form.tagsChanged = !Utility.arraysEqual(this.oldTags, this.form.tags);
 
-        const result = await ProductService.save(this.form);
+        const result = await GroupService.save(this.form);
         if (result == true) {
           this.close();
           this.$emit('saved');
@@ -172,29 +125,18 @@ export default {
     },
     activateRules() {
       this.rules = {
-        code: [
-          v => !!v || "Code required",
-          v => (v.length >= 3 && v.length <= 50) || "Code must be between 3-50 chars"
-        ],
         name: [
-          v => !!v || "Name required",
+          v => !!v || "Required",
           v => (v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
         ],
         price: [
-          v => (v && parseFloat(v) > 0) || "Price must be greater than 0"
+          v => (v && parseFloat(v) > 0) || "Base Price must be greater than 0"
         ],
       }
     },
     formatPrice() {
       this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);
     }
-  },
-  watch: {
-    'form.tags' (val) {
-      if (val.length > 5) {
-        this.$nextTick(() => this.form.tags.pop())
-      }
-    },
   },
 };
 </script>

@@ -12,8 +12,8 @@ export default {
     return res;
   },
 
-  async list(prodId) {
-    const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + prodId }, false);
+  async list(groupId) {
+    const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + groupId }, false);
     if (res.status == true && res.data) return res.data;
     return null;
   },
