@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import createPersistedState from 'vuex-persistedstate'
 import pathify from 'vuex-pathify'
+
+import SystemConsts from '@/data/system';
 
 import system from './system';
 import session from './session';
@@ -18,7 +21,11 @@ export default new Vuex.Store({
   },
 
   plugins: [
-    pathify.plugin
+    pathify.plugin,
+    createPersistedState({
+      key: SystemConsts.KEYS.SESSIONS,
+      paths: ['session']
+    })
   ],
 
   strict: process.env.DEV

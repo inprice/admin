@@ -2,13 +2,11 @@ import ApiService from '../service/api';
 import Helper from '../service/helper';
 import moment from 'moment-timezone';
 import router from '../router';
-import SystemConsts from '@/data/system';
 
 import { BroadcastChannel } from 'broadcast-channel';
 
 const state = {
   no: 0,
-  current: {},
   list: []
 };
 
@@ -27,18 +25,16 @@ const actions = {
       ApiService.post('/logout')
         .then(() => {
           commit('snackbar/setMessage', { text: 'You have been successfully logged out!' }, { root: true });
-      });
-    }
-    localStorage.removeItem(SystemConsts.KEYS.SESSIONS);
+        });
+      }
+    localStorage.clear();
     logoutChannel.postMessage();
     commit('RESET');
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   },
 
   create({ state, commit }, res) {
-    localStorage.setItem(SystemConsts.KEYS.SESSIONS, JSON.stringify(res.data.sessions));
     state.no = res.data.sessionNo;
-    state.current = state.list[state.no];
     commit('SET_LIST', res.data);
     loginChannel.postMessage(res.data);
   },
@@ -56,27 +52,37 @@ const actions = {
 
 const mutations = {
 
-  SET_CURRENT(state, ses) {
-    state.current = ses;
-    state.list[state.no] = state.current;
-    localStorage.setItem(SystemConsts.KEYS.SESSIONS, JSON.stringify(state.list));
+  SET_CURRENT(state, sid, ses) {
+    state.no = sid;
+    state.list[sid] = ses;
     loginChannel.postMessage(state.list);
   },
 
   SET_LIST(state, data) {
-    //persisting list into localstorage is already done by caller function!
     if (data.sessions) {
       state.list = data.sessions;
     }
     if (data.no !== undefined && data.no > -1 && data.no <= state.list.length) {
       state.no = data.no;
-      state.current = state.list[state.no];
+    }
+  },
+
+  SET_LINK_COUNT(state, count) {
+    if (state.list[state.no]) {
+      state.list[state.no].linkCount = count;
+      state.list[state.no].remainingLinkCount = (state.list[state.no].linkLimit-count);
+    }
+  },
+
+  CHANGE_LINK_COUNT(state, val) {
+    if (state.list[state.no]) {
+      state.list[state.no].linkCount += val;
+      state.list[state.no].remainingLinkCount = (state.list[state.no].linkLimit+val);
     }
   },
 
   RESET(state) {
     state.no = 0;
-    state.current = {};
     state.list = [];
   },
 
@@ -90,41 +96,41 @@ const ACTIVE_ACCOUNT_STATUSES = [
 
 const getters = {
 
-  getCurrent: (state) => {
-    return state.current;
-  },
-
   getSessionList: (state) => {
-    return state.list;
+    if (state) return state.list;
   },
 
+  //TODO: some fields like linkCount, isFree... must be refreshed somehow after state changed by user!
   getCurrentStatus: (state) => {
-    if (state.current) {
+    const selected = state.list[state.no];
+    if (selected) {
       const stat = {
         isActive : false,
         isSubscriber: false,
         isFree : false,
         hasTime : false,
         daysToRenewal : 0,
-        account: state.current.account,
-        status: state.current.accountStatus,
-        planId: state.current.planId,
-        planName: state.current.planName,
-        renewalAt: state.current.renewalAt,
-        hasLink: state.current.linkCount>0,
-        lastStatusUpdate: state.current.lastStatusUpdate,
-        email: state.current.email,
-        user: state.current.user,
-        role: state.current.role,
-        timezone: state.current.timezone,
-        currencyFormat: state.current.currencyFormat,
-        everSubscribed: state.current.everSubscribed,
+        account: selected.account,
+        status: selected.accountStatus,
+        planId: selected.planId,
+        planName: selected.planName,
+        renewalAt: selected.renewalAt,
+        linkLimit: selected.linkLimit,
+        linkCount: selected.linkCount,
+        remainingLinkCount: (selected.linkLimit-selected.linkCount),
+        lastStatusUpdate: selected.lastStatusUpdate,
+        email: selected.email,
+        user: selected.user,
+        role: selected.role,
+        timezone: selected.timezone,
+        currencyFormat: selected.currencyFormat,
+        everSubscribed: selected.everSubscribed,
       };
-      if (state.current.renewalAt) {
-        const renewal = moment(state.current.renewalAt, 'YYYY-MM-DD').tz(state.current.timezone);
+      if (selected.renewalAt) {
+        const renewal = moment(selected.renewalAt, 'YYYY-MM-DD').tz(selected.timezone);
         const dayDiff = renewal.diff(moment().startOf('day'), 'days');
-        const base = (state.current.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
-        const value = (dayDiff >= base && ACTIVE_ACCOUNT_STATUSES.includes(state.current.accountStatus));
+        const base = (selected.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
+        const value = (dayDiff >= base && ACTIVE_ACCOUNT_STATUSES.includes(selected.accountStatus));
         stat.isActive = value;
         stat.isSubscriber = (value && base < 0);
         stat.isFree = (value && stat.isSubscriber == false);
@@ -141,19 +147,19 @@ const getters = {
   },
 
   isAdmin: (state) => {
-    return state.current.role === 'ADMIN';
+    return (state.list[state.no] && state.list[state.no].role === 'ADMIN');
   },
 
   isNotAdmin: (state) => {
-    return state.current.role !== 'ADMIN';
+    return (state.list[state.no] && state.list[state.no].role !== 'ADMIN');
   },
 
   isEditor: (state) => {
-    return state.current.role === 'EDITOR' || getters.isAdmin(state);
+    return (state.list[state.no] && state.list[state.no].role === 'EDITOR') || getters.isAdmin(state);
   },
 
   isViewer: (state) => {
-    return state.current.role === 'VIEWER';
+    return (state.list[state.no] && state.list[state.no].role === 'VIEWER');
   },
 
 };

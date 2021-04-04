@@ -57,7 +57,7 @@ export default {
       }
     },
     infoForPassiveAccount() {
-      if (this.CURSTAT.hasLink) {
+      if (this.CURSTAT.linkCount > 0) {
         return "You need to start a new subscription to continue monitoring.";
       } else {
         if (this.CURSTAT == 'CREATED') {

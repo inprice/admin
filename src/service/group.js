@@ -28,6 +28,14 @@ export default {
     return res.status;
   },
 
+  async insertLinks(groupId, linksText) {
+    if (store.get('session/isViewer')) return;
+
+    const res = await Helper.call('Add Links', { url: baseURL + '/links/import', data: { groupId, linksText } });
+    if (res.status == true) return res.data;
+    return null;
+  },
+
   async search(term) {
     const res = await Helper.call('Group Search', { method: 'get', url: baseURL + 's/search/?term=' + term });
     if (res.status == true && res.data) return res.data;
@@ -45,7 +53,8 @@ export default {
     if (store.get('session/isViewer')) return;
 
     const res = await Helper.call('Group Delete', { method: 'delete', url: baseURL + '/' + id });
-    return res.status;
+    if (res.status == true) return res.data;
+    return null;
   }
 
 };

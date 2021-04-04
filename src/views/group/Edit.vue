@@ -6,17 +6,14 @@
        :max-width="findDialogWidth"
        overlay-opacity="0.2">
       <v-card>
-        <v-card-title>{{ form.id ? 'Edit' : 'New' }} Group </v-card-title>
+        <v-card-title class="pr-3">
+          {{ form.id ? 'Edit' : 'New' }} Group
+          <v-spacer></v-spacer>
+          <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+        </v-card-title>
+        <v-divider></v-divider>
 
-        <v-divider class="mb-2"></v-divider>
-
-        <v-card-subtitle class="pb-2">
-          <span class="font-weight-medium text-decoration-underline">For competitive pricing</span>, please specify a price greater than zero!
-        </v-card-subtitle>
-
-        <v-divider class="mb-4"></v-divider>
-
-        <v-card-text>
+        <v-card-text class="pb-0">
 
           <v-form ref="form" v-model="valid">
             <input type="hidden" :value="form.id" >
@@ -41,10 +38,14 @@
           </v-form>
 
         </v-card-text>
+        <v-card-subtitle class="mt-0">
+          <span class="font-weight-medium text-decoration-underline">For competitive pricing</span>, please specify a price greater than zero!
+        </v-card-subtitle>
 
-        <v-card-actions>
+        <v-divider></v-divider>
+
+        <v-card-actions class="py-4">
           <v-spacer></v-spacer>
-          <v-btn @click="close">Close</v-btn>
           <v-btn
             @click="save"
             color="primary"
@@ -127,7 +128,7 @@ export default {
       this.rules = {
         name: [
           v => !!v || "Required",
-          v => (v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
+          v => (v && v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
         ],
         price: [
           v => (v && parseFloat(v) > 0) || "Base Price must be greater than 0"

@@ -141,6 +141,7 @@
 
       <div class="hidden-sm-and-down ml-4 mt-2">
         <img :src="brandNameW" :width="150" />
+        {{ CURSTAT.linkLimit }} - {{ CURSTAT.linkCount }} - {{ CURSTAT.remainingLinkCount }}
       </div>
 
       <v-spacer></v-spacer>
@@ -161,6 +162,17 @@
 
     <AccountInfoDialog ref="accountInfoDialog"/>
 
+    <v-btn
+      v-scroll="onScroll"
+      v-show="fab"
+      fab dark
+      fixed bottom right
+      color="primary"
+      @click="toTop"
+    >
+      <v-icon>mdi-chevron-up</v-icon>
+    </v-btn>
+
   </v-app>
 </template>
 
@@ -173,18 +185,23 @@ export default {
   },
   data() {
     return {
+      brandNameW: require('@/assets/app/brand-horWR.svg'),
       drawer: (this.$vuetify.breakpoint.mdAndUp),
-      brandNameW: require('@/assets/app/brand-horWR.svg')
+      fab: false,
     };
   },
   methods: {
     openCreateAccount() {
       this.$refs.accountInfoDialog.edit(null, true);
     },
-    clearSearchTerm() {
-      this.searchTerm = '';
-      this.$refs.searchTerm.focus();
-    }
+    onScroll(e) {
+      if (typeof window === 'undefined') return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      this.fab = top > 20;
+    },
+    toTop () {
+      this.$vuetify.goTo(0)
+    },
   },
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),
