@@ -36,6 +36,12 @@ export default {
     return null;
   },
 
+  async list() {
+    const res = await Helper.call('Group List', { method: 'get', url: baseURL });
+    if (res.status == true && res.data) return res.data;
+    return null;
+  },
+
   async search(term) {
     const res = await Helper.call('Group Search', { method: 'get', url: baseURL + 's/search/?term=' + term });
     if (res.status == true && res.data) return res.data;

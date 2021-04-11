@@ -86,7 +86,7 @@ export default {
         name: '',
         price: 0,
       },
-};
+    };
   },
   methods: {
     open(data) {
@@ -101,6 +101,7 @@ export default {
       let self = this;
       this.$nextTick(() => {
         self.$refs.form.resetValidation();
+        self.formatPrice();
       });
     },
     async save() {
@@ -131,7 +132,7 @@ export default {
           v => (v && v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
         ],
         price: [
-          v => (v && parseFloat(v) > 0) || "Base Price must be greater than 0"
+          v => (parseFloat(v) > -1) || "Base Price must be greater or equal than 0"
         ],
       }
     },

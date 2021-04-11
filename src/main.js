@@ -24,8 +24,8 @@ Chart.defaults.global.defaultFontFamily = 'Ubuntu';
 import VueMask from 'v-mask'
 Vue.use(VueMask);
 
-import VuePageTransition from 'vue-page-transition'
- Vue.use(VuePageTransition)
+import VuePageTransition from 'vue-page-transition';
+Vue.use(VuePageTransition);
 
 Vue.component('ago', () => import('./component/simple/Ago.vue'));
 

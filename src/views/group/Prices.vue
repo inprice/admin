@@ -26,33 +26,12 @@
           <v-divider class="pb-2"></v-divider>
 
           <div class="text-h5 text-sm-h4">{{ group.minPrice | toPrice }}</div>
-          <diff-line class="ml-1" :diff="group.diffMin"></diff-line>
+          <diff-line class="ml-1" :diff="group.minDiff"></diff-line>
 
           <v-divider class="my-2"></v-divider>
 
           <div class="caption">{{ group.minPlatform || 'NA' }}</div>
           <div class="caption" :class="{ 'font-weight-bold': $vuetify.breakpoint.smAndUp }">{{ group.minSeller || 'NA' }}</div>
-
-        </v-card>
-
-        <!-- AVERAGE  -->
-        <v-card class="col pa-0 ma-1 pb-2 text-center text-uppercase">
-          <div class="caption py-2 teal--text">Average</div>
-
-          <v-divider class="pb-2"></v-divider>
-
-          <div class="text-h5 text-sm-h4">{{ group.avgPrice | toPrice }}</div>
-          <diff-line class="ml-1" :diff="group.diffAvg"></diff-line>
-
-          <v-divider class="my-2"></v-divider>
-
-          <div class="caption">Links</div>
-          <div class="caption mx-auto font-weight-bold">
-            <span class="teal--text">{{ group.position | toPosition }}</span>
-            (<span class="red--text">
-              {{ group.actives + '/' + group.passives }}
-            </span>)
-          </div>
 
         </v-card>
 
@@ -63,12 +42,32 @@
           <v-divider class="pb-2"></v-divider>
 
           <div class="text-h5 text-sm-h4">{{ group.maxPrice | toPrice }}</div>
-          <diff-line :diff="group.diffMax"></diff-line>
+          <diff-line :diff="group.maxDiff"></diff-line>
 
           <v-divider class="my-2"></v-divider>
 
           <div class="caption">{{ group.maxPlatform || 'NA' }}</div>
           <div class="caption" :class="{ 'font-weight-bold': $vuetify.breakpoint.smAndUp }">{{ group.maxSeller || 'NA' }}</div>
+        </v-card>
+
+        <!-- AVERAGE  -->
+        <v-card class="col pa-0 ma-1 pb-2 text-center text-uppercase">
+          <div class="caption py-2 teal--text">Average</div>
+
+          <v-divider class="pb-2"></v-divider>
+
+          <div class="text-h5 text-sm-h4">{{ group.avgPrice | toPrice }}</div>
+          <diff-line class="ml-1" :diff="group.avgDiff"></diff-line>
+
+          <v-divider class="my-2"></v-divider>
+
+          <div class="caption">Links</div>
+          <div class="caption mx-auto font-weight-bold">
+            <span class="teal--text">{{ group.position | toPosition }}</span>
+            (<span class="red--text">
+              {{ group.actives + '/' + group.passives }}
+            </span>)
+          </div>
         </v-card>
 
       </v-row>

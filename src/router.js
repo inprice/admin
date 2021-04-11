@@ -167,13 +167,13 @@ router.beforeEach((to, from, next) => {
 
       const sid = to.params.sid;
       if (sid == undefined || sid < 0 || sid >= sesList.length) {
-        store.set('session/CURRENT', 0, sesList[0]);
+        store.set('session/CURRENT', sesList[0]);
         const newPath = to.path.replace(`/${to.params.sid}/`, '/0/');
         return next(newPath);
       } else {
         const session = store.get('session/getCurrentStatus');
         if (!session || Object.keys(session).length == 0) {
-          store.set('session/CURRENT', sid, sesList[sid]);
+          store.set('session/CURRENT', sesList[sid], sid);
         }
       }
     } else {

@@ -1,12 +1,16 @@
 <template>
   <div v-if="data.group">
 
-    <div class="d-flex justify-space-between my-2">
-      <div class="title">
-        {{ data.group.name }} <span> - {{ data.group.price | toCurrency }}</span>
-      </div>
+    <v-card>
+      <v-card-title>
+        <span>{{ data.group.name }} </span>
+        <v-spacer></v-spacer>
+        <span class="blue--text" v-if="data.group.price"> {{ data.group.price | toCurrency }}</span>
+      </v-card-title>
 
-      <div>
+      <v-divider></v-divider>
+
+      <v-card-actions class="py-3">
         <v-btn 
           small
           :disabled="$store.get('session/isViewer')"
@@ -15,35 +19,49 @@
             Delete
         </v-btn>
 
-        <v-btn 
-          small
-          :disabled="$store.get('session/isViewer')"
-          class="mx-3"
-          style="min-width: 85px"
-          color="success"
-          @click="edit">
-            Edit
-        </v-btn>
+        <v-spacer></v-spacer>
 
-        <v-btn 
-          small
-          :disabled="$store.get('session/isViewer')"
-          style="min-width: 85px"
-          color="info"
-          @click="openAddLinkDialog()">
-            Add new
-        </v-btn>
+        <div>
+          <v-btn 
+            small
+            style="min-width: 85px"
+            @click="$router.go(-1)">
+              <v-icon>mdi-arrow-left-thin-circle-outline</v-icon> Go Back
+          </v-btn>
 
-      </div>
-    </div>
+          <v-btn 
+            small
+            :disabled="$store.get('session/isViewer')"
+            class="mx-3"
+            style="min-width: 85px"
+            color="success"
+            @click="edit">
+              Edit
+          </v-btn>
+
+          <v-btn 
+            small
+            :disabled="$store.get('session/isViewer')"
+            style="min-width: 85px"
+            color="info"
+            @click="openAddLinkDialog()">
+              Add New Links
+          </v-btn>
+        </div>
+      </v-card-actions>
+    </v-card>
+
+    <v-divider></v-divider>
 
     <prices :group="data.group" v-if="data.group.avgPrice > 0" />
 
-    <links class="mt-2" :groupId="data.group.id" :links="data.links" @deleted="findGroup" @statusToggled="findGroup" />
+    <div class="title pt-4">Links</div>
+
+    <links :groupId="data.group.id" :links="data.links" @deleted="linksDeleted" />
 
     <edit ref="editDialog" @saved="findGroup" />
 
-    <add-link ref="addLinkDialog" :groupId="data.group.id" :groupName="data.group.name" />
+    <add-link ref="addLinkDialog" :groupId="data.group.id" :groupName="data.group.name" @added="linksAdded" />
     <confirm ref="confirm" />
 
   </div>
@@ -68,7 +86,7 @@ export default {
         if (confirm == true) {
           const data = await GroupService.remove(this.data.group.id);
           if (data) {
-            this.$store.commit('snackbar/setMessage', { text: 'Group successfully deleted!' });
+            this.$store.commit('snackbar/setMessage', { text: this.data.group.name + ' successfully deleted!' });
             this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
             this.$router.push({ name: 'groups' });
           }
@@ -90,6 +108,16 @@ export default {
     openAddLinkDialog() {
       this.$refs.addLinkDialog.open();
     },
+    linksDeleted(data) {
+      this.$store.commit('snackbar/setMessage', { text: data.count + ' links have been successfully added.' });
+      this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
+      this.data.links = data.links;
+    },
+    linksAdded(data) {
+      this.$store.commit('snackbar/setMessage', { text: data.count + ' links have been successfully added.' });
+      this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
+      this.data.links = data.links;
+    }
   },
   created() {
     this.$nextTick(() => this.findGroup());

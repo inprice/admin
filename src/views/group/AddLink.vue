@@ -33,7 +33,7 @@
 
         <v-card-actions class="py-4">
           <v-icon class="mr-2">mdi-alert-circle-outline</v-icon>
-          <span class="font-weight-light">Please note that one url per row!</span>
+          <span class="font-weight-light">One url per row!</span>
           <v-spacer></v-spacer>
           <v-btn
             @click="save"
@@ -101,8 +101,7 @@ export default {
 
         const data = await GroupService.insertLinks(this.groupId, this.form.linksText);
         if (data) {
-          this.$store.commit('snackbar/setMessage', { text: data.count + ' links have been successfully added.' });
-          this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
+          this.$emit("added", data);
           this.close();
         }
         this.loading = false;
@@ -123,7 +122,7 @@ export default {
             const urls = v.split("\n");
             let problems = [];
             for (var i=0; i < urls.length; i++) {
-              if (! Utility.verifyURL(urls[i])) problems.push(i+1);
+              if (urls[i] && ! Utility.verifyURL(urls[i])) problems.push(i+1);
             }
             if (problems.length > 0) {
               return 'There are invalid URLs. Please check the rows at [ ' + problems + ' ]';

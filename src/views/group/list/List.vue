@@ -6,7 +6,7 @@
       <v-hover v-for="row in rows" :key="row.id">
         <template v-slot="{ hover }">
 
-          <v-card class="mt-3 pa-1" :class="`elevation-${hover ? 3 : 1}`" tile>
+          <v-card class="mt-3 pa-1 pb-2" :class="`elevation-${hover ? 3 : 1}`" tile>
 
             <div class="d-flex justify-space-between subtitle pa-2 font-weight-medium">
               <div>{{ row.name }}</div>
@@ -33,26 +33,14 @@
                     {{ row.minPrice | toCurrency }}
                   </span>
                 </div>
-                <div class="caption">
-                  <v-icon small>mdi-web</v-icon> {{ row.minSeller }} / {{ row.minPlatform }}
-                </div>
-              </v-card>
-
-              <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile :style="{ 'min-width': findMinWidthForCells }">
-                <div class="caption text-uppercase font-weight-light">
-                  Average Price
-                </div>
-                <div class="text-h6">
-                  <span v-if="$vuetify.breakpoint.smAndDown">
-                    {{ row.avgPrice | toPrice }}
-                  </span>
-                  <span v-else>
-                    {{ row.avgPrice | toCurrency }}
-                  </span>
-                </div>
-                <div>
-                  {{ row.actives }} <span class="caption">active links</span>
-                </div>
+                <semi-chip
+                  :tag="row.minPlatform"
+                  :value="row.minSeller"
+                  bgColor="#ccc"
+                  fgColor="black"
+                  tagColor="black"
+                  dense
+                ></semi-chip>
               </v-card>
 
               <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile :style="{ 'min-width': findMinWidthForCells }">
@@ -67,9 +55,36 @@
                     {{ row.maxPrice | toCurrency }}
                   </span>
                 </div>
-                <div class="caption">
-                  <v-icon small>mdi-web</v-icon> {{ row.maxSeller }} / {{ row.maxPlatform }}
+                <semi-chip
+                  :tag="row.maxPlatform"
+                  :value="row.maxSeller"
+                  bgColor="#ccc"
+                  fgColor="black"
+                  tagColor="black"
+                  dense
+                ></semi-chip>
+              </v-card>
+
+              <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile :style="{ 'min-width': findMinWidthForCells }">
+                <div class="caption text-uppercase font-weight-light">
+                  Average Price
                 </div>
+                <div class="text-h6">
+                  <span v-if="$vuetify.breakpoint.smAndDown">
+                    {{ row.avgPrice | toPrice }}
+                  </span>
+                  <span v-else>
+                    {{ row.avgPrice | toCurrency }}
+                  </span>
+                </div>
+                <semi-chip
+                  :tag="row.linkCount"
+                  value="active links"
+                  bgColor="#ccc"
+                  fgColor="black"
+                  tagColor="black"
+                  dense
+                ></semi-chip>
               </v-card>
 
               <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile v-if="!row.price" :style="{ 'min-width': findMinWidthForCells }">
@@ -84,11 +99,15 @@
                     {{ row.total | toCurrency }}
                   </span>
                 </div>
-                <div>
-                  {{ row.linkCount }} <span class="caption">total links</span>
-                </div>
+                <semi-chip
+                  :tag="row.linkCount"
+                  value="total links"
+                  bgColor="#ccc"
+                  fgColor="black"
+                  tagColor="black"
+                  dense
+                ></semi-chip>
               </v-card>
-
 
               <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile v-if="row.price" :style="{ 'min-width': findMinWidthForCells }">
                 <div class="caption text-uppercase font-weight-light">
@@ -162,7 +181,8 @@ export default {
     },
   },
   components: {
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    SemiChip: () => import('@/component/app/SemiChip.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   updated() {
     this.$nextTick(() => this.updated = true);

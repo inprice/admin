@@ -54,12 +54,12 @@
             <tbody>
               <property :valueClass="RESPROPS.properties.brand" name="Brand" :value="data.brand" />
               <property :valueClass="RESPROPS.properties.shipment" name="Shipment" :value="data.shipment" />
-              <property :valueClass="RESPROPS.properties.lastCheck" name="Checked">
-                <ago v-if="data.lastCheck" :date="data.lastCheck" />
+              <property :valueClass="RESPROPS.properties.checkedAt" name="Checked">
+                <ago v-if="data.checkedAt" :date="data.checkedAt" />
                 <span v-else>NA</span>
               </property>
-              <property :valueClass="RESPROPS.properties.lastUpdate" name="Updated">
-                <ago v-if="data.lastCheck" :date="data.lastUpdate" />
+              <property :valueClass="RESPROPS.properties.updatedAt" name="Updated">
+                <ago v-if="data.checkedAt" :date="data.updatedAt" />
                 <span v-else>NA</span>
               </property>
             </tbody>
@@ -87,7 +87,7 @@
                     <ago :date="row.createdAt" />
                   </td>
                   <td>{{ row.status.replaceAll('_', ' ') }}</td>
-                  <td>{{ row.problem }}</td>
+                  <td>{{ row.statusDescription }}</td>
                 </tr>
               </tbody>
             </table>
@@ -143,7 +143,7 @@ export default {
             'table-layout': 'fixed',
             priceTable: { date: '200px', price: '100px', diff: '150px', position: '150px' },
             historyTable: { date: '200px', status: '300px', problem: '400px' },
-            properties: { brand: 'col-11', shipment: 'col-11', lastCheck: 'col-8', lastUpdate: 'col-8' },
+            properties: { brand: 'col-11', shipment: 'col-11', checkedAt: 'col-8', updatedAt: 'col-8' },
           };
         }
         default: {
@@ -151,7 +151,7 @@ export default {
             'table-layout': '',
             priceTable: { date: '25%', price: '15%', diff: '20%', position: '' },
             historyTable: { date: '25%', status: '25%', problem: '50%' },
-            properties: { brand: 'col-7', shipment: 'col-7', lastCheck: 'col-4', lastUpdate: 'col-4' },
+            properties: { brand: 'col-7', shipment: 'col-7', checkedAt: 'col-4', updatedAt: 'col-4' },
           };
         }
       }

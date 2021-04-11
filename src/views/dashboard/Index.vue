@@ -96,7 +96,7 @@
                 <td class="text-right">{{ row.price | toPrice }}</td>
                 <td class="text-center">{{ row.actives + '/' + row.passives }}</td>
                 <td class="text-center">
-                  <ago :date="row.lastUpdate" />
+                  <ago :date="row.updatedAt" />
                 </td>
               </tr>
             </tbody>
@@ -146,7 +146,7 @@
                 <td class="text-right">{{ row.price | toPrice }}</td>
                 <td class="text-center">{{ row.actives + '/' + row.passives }}</td>
                 <td class="text-center">
-                  <ago :date="row.lastUpdate" />
+                  <ago :date="row.updatedAt" />
                 </td>
               </tr>
             </tbody>
@@ -192,7 +192,7 @@
                 <td class="text-right">{{ row.price | toPrice }}</td>
                 <td>{{ row.status | formatStatus }}</td>
                 <td>
-                  <ago :date="row.lastUpdate" />
+                  <ago :date="row.updatedAt" />
                 </td>
               </tr>
             </tbody>

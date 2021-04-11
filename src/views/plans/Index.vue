@@ -6,7 +6,7 @@
     </div>
 
     <v-divider class="mt-2"></v-divider>
-
+    <h1>{{CURSTAT.status}}</h1>
     <v-card class="mt-3" v-if="CURSTAT.status == 'CREATED'">
       <v-card-title class="pb-2">
         <v-icon class="mr-2 hidden-xs-only">mdi-arrow-right-thin-circle-outline</v-icon>
