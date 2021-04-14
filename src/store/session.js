@@ -52,7 +52,6 @@ const actions = {
 };
 
 function buildCurrent(state) {
-  console.log("HAAAAASSSAAAAAAB");
   let stat = { };
   const selected = state.list[state.no];
   if (selected) {

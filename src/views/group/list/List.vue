@@ -33,14 +33,9 @@
                     {{ row.minPrice | toCurrency }}
                   </span>
                 </div>
-                <semi-chip
-                  :tag="row.minPlatform"
-                  :value="row.minSeller"
-                  bgColor="#ccc"
-                  fgColor="black"
-                  tagColor="black"
-                  dense
-                ></semi-chip>
+                <div class="caption">
+                  {{ row.minPlatform }}, <b>{{ row.minSeller }}</b>
+                </div>
               </v-card>
 
               <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile :style="{ 'min-width': findMinWidthForCells }">
@@ -55,14 +50,9 @@
                     {{ row.maxPrice | toCurrency }}
                   </span>
                 </div>
-                <semi-chip
-                  :tag="row.maxPlatform"
-                  :value="row.maxSeller"
-                  bgColor="#ccc"
-                  fgColor="black"
-                  tagColor="black"
-                  dense
-                ></semi-chip>
+                <div class="caption">
+                  {{ row.maxPlatform }}, <b>{{ row.maxSeller }}</b>
+                </div>
               </v-card>
 
               <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile :style="{ 'min-width': findMinWidthForCells }">
@@ -77,14 +67,9 @@
                     {{ row.avgPrice | toCurrency }}
                   </span>
                 </div>
-                <semi-chip
-                  :tag="row.linkCount"
-                  value="active links"
-                  bgColor="#ccc"
-                  fgColor="black"
-                  tagColor="black"
-                  dense
-                ></semi-chip>
+                <div>
+                  <b>{{ row.actives }}</b> <span class="caption">active links</span>
+                </div>
               </v-card>
 
               <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile v-if="!row.price" :style="{ 'min-width': findMinWidthForCells }">
@@ -99,14 +84,9 @@
                     {{ row.total | toCurrency }}
                   </span>
                 </div>
-                <semi-chip
-                  :tag="row.linkCount"
-                  value="total links"
-                  bgColor="#ccc"
-                  fgColor="black"
-                  tagColor="black"
-                  dense
-                ></semi-chip>
+                <div>
+                  <b>{{ row.linkCount }}</b> <span class="caption">total links</span>
+                </div>
               </v-card>
 
               <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile v-if="row.price" :style="{ 'min-width': findMinWidthForCells }">
@@ -122,7 +102,7 @@
                   </span>
                 </div>
                 <div>
-                  {{ row.ranking }} <span class="caption">ranking</span>
+                  <b>{{ row.ranking }}</b>, <span class="caption">ranking</span>
                 </div>
               </v-card>
 
@@ -181,7 +161,6 @@ export default {
     },
   },
   components: {
-    SemiChip: () => import('@/component/app/SemiChip.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   updated() {
