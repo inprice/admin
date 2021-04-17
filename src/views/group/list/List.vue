@@ -34,7 +34,7 @@
                   </span>
                 </div>
                 <div class="caption">
-                  {{ row.minPlatform }}, <b>{{ row.minSeller }}</b>
+                  <span class="font-weight-medium">{{ row.minSeller }}</span> | {{ row.minPlatform }}
                 </div>
               </v-card>
 
@@ -51,7 +51,7 @@
                   </span>
                 </div>
                 <div class="caption">
-                  {{ row.maxPlatform }}, <b>{{ row.maxSeller }}</b>
+                  <span class="font-weight-medium">{{ row.maxSeller }}</span> | {{ row.maxPlatform }}
                 </div>
               </v-card>
 
@@ -68,7 +68,7 @@
                   </span>
                 </div>
                 <div>
-                  <b>{{ row.actives }}</b> <span class="caption">active links</span>
+                  <span class="font-weight-medium">{{ row.actives }}</span> <span class="caption">active links</span>
                 </div>
               </v-card>
 
@@ -85,13 +85,13 @@
                   </span>
                 </div>
                 <div>
-                  <b>{{ row.linkCount }}</b> <span class="caption">total links</span>
+                  <span class="font-weight-medium">{{ row.linkCount }}</span> <span class="caption">total links</span>
                 </div>
               </v-card>
 
               <v-card class="col elevation-1 mr-1 mt-1 py-1" outlined tile v-if="row.price" :style="{ 'min-width': findMinWidthForCells }">
                 <div class="caption text-uppercase font-weight-light">
-                  Price
+                  Your Price
                 </div>
                 <div class="text-h6">
                   <span v-if="$vuetify.breakpoint.smAndDown">
@@ -101,9 +101,9 @@
                     {{ row.price | toCurrency }}
                   </span>
                 </div>
-                <div>
-                  <b>{{ row.ranking }}</b>, <span class="caption">ranking</span>
-                </div>
+
+                <level :level="row.level" />
+
               </v-card>
 
             </div>
@@ -161,6 +161,7 @@ export default {
     },
   },
   components: {
+    Level: () => import('@/component/simple/Level.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   updated() {

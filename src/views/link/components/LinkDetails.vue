@@ -8,37 +8,64 @@
 
       <!-- PRICES -->
       <v-tab-item>
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind" 
-          v-if="data && data.priceList && data.priceList.length">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.priceTable.date">Date</th>
-                  <th :width="RESPROPS.priceTable.price">Price</th>
-                  <th :width="RESPROPS.priceTable.diff">Diff</th>
-                  <th :width="RESPROPS.priceTable.position">Position</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in data.priceList" :key="row.id">
-                  <td>
-                    <ago :date="row.createdAt" />
-                  </td>
-                  <td>{{ row.price | toPrice }}</td>
-                  <td>
+
+        <v-timeline
+          dense
+          class="py-2"
+          style="max-height: 200px; overflow-y: auto;"
+          v-if="data && data.priceList && data.priceList.length"
+        >
+          <v-timeline-item
+            small
+            class="pb-0"
+            v-for="row in data.priceList" :key="row.id"
+            :icon="findDiffIcon(row.diffAmount)"
+            :color="findDiffColor(row.diffAmount)"
+          >
+            <v-row class="pa-0 ma-0 py-1">
+              <v-col class="py-1" cols="3">
+                <div class="caption">
+                  Price
+                </div>
+                <span class="subtitle-2">{{ row.price | toPrice }}</span>
+              </v-col>
+              <v-col class="py-1" cols="3">
+                <div class="caption">
+                  When
+                </div>
+                <span class="subtitle-2"><ago :date="row.createdAt" /></span>
+              </v-col>
+              <v-col class="py-1">
+                <div 
+                  v-if="row.diffAmount" 
+                  class="subtitle-2 text-center d-flex justify-space-around"
+                  style="max-width: 150px"
+                >
+                  <div>
+                    <div class="caption">
+                      Diff
+                    </div>
                     <span>{{ row.diffAmount | toPrice }}</span>
-                    <span v-if="row.diffAmount" class="d-inline-flex ml-1" style="background-color: #ff3">
-                      [<diff-line smallicon class="mx-1" :diff="row.diffRate"></diff-line>]
-                    </span>
-                  </td>
-                  <td>{{ row.position | toPosition }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  </div>
+                  <div>
+                    <div class="caption">
+                      Rate
+                    </div>
+                    <v-chip 
+                      small 
+                      label 
+                      outlined
+                      :color="findDiffColor(row.diffAmount)"
+                      class="caption font-weight-medium ml-1"
+                    >
+                      {{ row.diffRate }}%
+                    </v-chip>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-timeline-item>
+        </v-timeline>
 
         <block-message 
           v-else dense
@@ -47,52 +74,51 @@
 
       </v-tab-item>
 
-      <!-- PROPERTIES -->
-      <v-tab-item>
-        <v-simple-table class="property-table pt-3 pb-2" dense v-if="data">
-          <template v-slot:default>
-            <tbody>
-              <property :valueClass="RESPROPS.properties.brand" name="Brand" :value="data.brand" />
-              <property :valueClass="RESPROPS.properties.shipment" name="Shipment" :value="data.shipment" />
-              <property :valueClass="RESPROPS.properties.checkedAt" name="Checked">
-                <ago v-if="data.checkedAt" :date="data.checkedAt" />
-                <span v-else>NA</span>
-              </property>
-              <property :valueClass="RESPROPS.properties.updatedAt" name="Updated">
-                <ago v-if="data.checkedAt" :date="data.updatedAt" />
-                <span v-else>NA</span>
-              </property>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-tab-item>
-
       <!-- HISTORY -->
       <v-tab-item>
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind" 
-          v-if="data && data.historyList && data.historyList.length">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.historyTable.date">Date</th>
-                  <th :width="RESPROPS.historyTable.status">Status</th>
-                  <th :width="RESPROPS.historyTable.problem">Problem</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in data.historyList" :key="row.id">
-                  <td>
-                    <ago :date="row.createdAt" />
-                  </td>
-                  <td>{{ row.status.replaceAll('_', ' ') }}</td>
-                  <td>{{ row.statusDescription }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+
+        <v-timeline
+          dense
+          class="py-2"
+          style="max-height: 200px; overflow-y: auto;"
+          v-if="data && data.historyList && data.historyList.length"
+        >
+          <v-timeline-item
+            small
+            class="pb-0"
+            v-for="row in data.historyList" :key="row.id"
+            :color="findStatusColor(row.statusGroup)"
+          >
+            <v-row class="pa-0 ma-0">
+              <v-col class="py-1" cols="3">
+                <div class="caption">
+                  When
+                </div>
+                <span class="subtitle-2"><ago :date="row.createdAt" /></span>
+              </v-col>
+              <v-col class="py-1" cols="3">
+                <div class="caption">
+                  Status
+                </div>
+                <v-chip
+                  small
+                  label
+                  outlined
+                  :color="findStatusColor(row.statusGroup)"
+                  class="subtitle-2"
+                >
+                  {{ row.statusGroup }}
+                </v-chip>
+              </v-col>
+              <v-col class="py-1">
+                <div class="caption">
+                  Description
+                </div>
+                <span class="subtitle-2">{{ row.statusDescription }}</span>
+              </v-col>
+            </v-row>
+          </v-timeline-item>
+        </v-timeline>
 
         <block-message 
           v-else dense
@@ -104,18 +130,13 @@
       <v-tab-item>
 
         <table 
-          class="featuresTable body-2 mt-2" 
+          class="subtitle-2 py-4" 
           v-if="data && data.specList && data.specList.length" 
-          style="width: 100%">
-          <thead>
-            <tr>
-              <th width="35%">Feature</th>
-              <th width="65%">Value</th>
-            </tr>
-          </thead>
+          style="width: 100%; max-height: 200px; overflow-y: auto;"
+        >
           <tbody>
             <tr v-for="row in data.specList" :key="row.id">
-              <td>{{ row.key }}</td>
+              <th class="text-right pr-3 py-1" width="25%">{{ row.key }} :</th>
               <td>{{ row.value }}</td>
             </tr>
           </tbody>
@@ -135,48 +156,55 @@
 <script>
 export default {
   props: ["data"],
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': {
-          return {
-            'table-layout': 'fixed',
-            priceTable: { date: '200px', price: '100px', diff: '150px', position: '150px' },
-            historyTable: { date: '200px', status: '300px', problem: '400px' },
-            properties: { brand: 'col-11', shipment: 'col-11', checkedAt: 'col-8', updatedAt: 'col-8' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            priceTable: { date: '25%', price: '15%', diff: '20%', position: '' },
-            historyTable: { date: '25%', status: '25%', problem: '50%' },
-            properties: { brand: 'col-7', shipment: 'col-7', checkedAt: 'col-4', updatedAt: 'col-4' },
-          };
-        }
-      }
-    },
-  },
   data() {
     return {
-      tabs: ['Prices', 'Properties', 'History', 'Specs'],
+      tabs: ['Prices', 'History', 'Specs'],
       selectedTab: 0,
+    }
+  },
+  methods: {
+    findDiffIcon(diffAmount) {
+      if (diffAmount < 0) return 'mdi-arrow-down';
+      if (diffAmount == 0) return 'mdi-arrow-minus';
+      return 'mdi-arrow-up';
+    },
+    findDiffColor(diffAmount) {
+      if (diffAmount < 0) return 'green';
+      if (diffAmount == 0) return 'blue';
+      return 'red';
+    },
+    findStatusColor(status) {
+      if (status == 'ACTIVE') return 'green';
+      if (status == 'TRYING') return 'cyan';
+      if (status == 'WAITING') return 'blue';
+      return 'red';
+    }
+  },
+  created() {
+    if (this.data.brand && this.data.sku) {
+      const brandProp = { key: 'Brand', value: this.data.brand };
+      const skuProp = { key: 'Code', value: this.data.sku };
+
+      if (this.data.specList.length == 0) {
+        this.data.specList = [brandProp, skuProp];
+      } else if (this.data.specList[0].value != skuProp.value && this.data.specList[0].value != brandProp.value) {
+        this.data.specList.unshift(brandProp);
+        this.data.specList.unshift(skuProp);
+      }
     }
   },
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
-    Property: () => import('@/component/app/Property.vue'),
-    DiffLine: () => import('@/component/utility/DiffLine.vue'),
   }
 }
 </script>
 
 <style scoped>
-  .featuresTable tr {
-    height: 30px; 
+  .v-timeline-item__body .row {
+    border-bottom: 1px solid #ddd !important;
   }
   th, td {
-    padding: 0 8px !important;
+    /* padding: 0 8px !important; */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

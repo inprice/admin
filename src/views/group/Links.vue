@@ -65,40 +65,59 @@
         @click="selectedTabIndex=index; selectedTabName=name;">
 
         <div v-if="data.links.length">
-          <v-card v-for="row in data.links" :key="row.id" class="pa-2" tile :style="(showingId==row.id && showDetails==true ? 'background-color: rgb(230, 230, 230, 0.3)' : '')">
 
-            <div class="d-flex align-center">
+          <v-card 
+            tile 
+            v-for="row in data.links" 
+            class="pa-2 elevation-1"
+            :key="row.id" 
+            :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important; background-color: rgb(230, 230, 230, 0.3)' : 'margin: 10px 0')"
+          >
+
+            <div 
+              class="d-flex align-center" 
+              @click="toggleDetails(row)" 
+              style="cursor: pointer"
+            >
 
               <v-checkbox
                 hide-details
                 class="mt-0 pt-0"
                 v-model="data.selected"
                 :value="row.id"
+                @click.stop=""
                 v-if="groups[selectedTabName].links.length > 1"
               ></v-checkbox>
 
-              <div class="subtitle text-truncate" @click="toggleDetails(row)" style="cursor: pointer; flex: 1" v-if="row.name">
-                {{ row.name }}
-              </div>
-              <div class="caption font-italic text-lowercase text-truncate" @click="toggleDetails(row)" style="cursor: pointer; flex: 1" v-else>
-                {{ row.url }}
+              <div style="cursor: pointer; flex: 1">
+                <div class="subtitle-1" v-if="row.name">
+                  {{ row.name }}
+                </div>
+                <div class="body-2 text-lowercase" v-else>
+                  {{ row.url }}
+                </div>
               </div>
 
               <div>
-                <span
-                  v-if="row.price"
-                  @click="toggleDetails(row)" style="cursor: pointer"
-                  class="pl-2 mr-1 cyan--text font-weight-bold">
-                    {{ row.price | toPrice }}
-                </span>
+                  <div v-if="row.price">
+                    <div 
+                      v-if="row.level != 'AVG'" 
+                      :class="findLevelColor(row.level) + '--text caption font-weight-bold text-center'"
+                    >
+                      {{ row.level }}
+                    </div>
+                    <span
+                      :class="findLevelColor(row.level) + '--text font-weight-medium'">
+                        {{ row.price | toPrice }}
+                    </span>
+                  </div>
 
-                <div      
-                  v-else
-                  @click="toggleDetails(row)" style="cursor: pointer"
-                  class="pl-2 mr-1 caption text-right">
-                    <div class="blue--text font-weight-medium">{{ row.checkedAt ? 'Checked' : 'Added' }}</div>
-                    <ago :date="row.checkedAt || row.createdAt" />
-                </div>
+                  <div      
+                    v-if="!row.price"
+                    class="caption text-right">
+                      <div class="blue--text font-weight-medium">{{ row.checkedAt ? 'Checked' : 'Added' }}</div>
+                      <ago :date="(row.checkedAt || row.createdAt)" />
+                  </div>
               </div>
 
               <div>
@@ -109,17 +128,18 @@
                       class="mx-1"
                       v-bind="attrs"
                       v-on="on"
+                      @click.stop=""
                     >
                       <v-icon>mdi-dots-vertical</v-icon>
                     </v-btn>
                   </template>
 
                   <v-list dense>
-                    <v-list-item link @click="toggleDetails(row)">
+                    <v-list-item link @click="toggleDetails(row)" v-if="row.name">
                       <v-list-item-title>{{ showingId==row.id && showDetails==true ? 'CLOSE' : 'SHOW' }} DETAILS</v-list-item-title>
                     </v-list-item>
 
-                    <v-divider></v-divider>
+                    <v-divider v-if="row.name"></v-divider>
 
                     <v-list-item link @click="removeOne(row)">
                       <v-list-item-title>DELETE THIS</v-list-item-title>
@@ -130,50 +150,48 @@
                     <v-list-item v-for="group in linkGroups" :key="group.id" link @click="moveOne(row, group)">
                       <v-list-item-title>{{ group.name }}</v-list-item-title>
                     </v-list-item>
+
+                    <v-divider v-if="row.name"></v-divider>
+                    <v-list-item link @click="copyToClipboard(row.url)">
+                      <v-list-item-title>COPY URL</v-list-item-title>
+                    </v-list-item>
+
+                    <v-list-item link target="_blank" :href="row.url">
+                      <v-list-item-title>OPEN NEW TAB</v-list-item-title>
+                    </v-list-item>
+
                   </v-list>
                 </v-menu>
               </div>
             </div>
 
-            <div class="caption" @click="toggleDetails(row)" style="cursor: pointer; flex: 1">
-              <div v-if="row.statusGroup == 'WAITING'">
-                <div class="d-inline">
-                  <span v-if="row.checkedAt">Checked </span>
-                  <ago :date="row.checkedAt" />
+            <div class="caption link-info-wrapper" @click="toggleDetails(row)">
+              <div class="link-info">
+                <div v-if="row.seller">
+                  <div class="caption">{{ row.platformName }}</div>
+                  <div class="caption font-weight-medium">{{ row.seller }}</div>
                 </div>
-              </div>
-
-              <div v-if="row.seller">
-                <b>Seller:</b> {{ row.seller }}
-              </div>
-
-              <div v-if="row.statusGroup == 'ACTIVE'">
-                <div>
-                  <b>Platform:</b> {{ row.platformName }}
+                <div v-if="row.shipment">
+                  <div class="caption">SHIPMENT</div>
+                  <div class="caption font-weight-medium">{{ row.shipment }}</div>
                 </div>
-              </div>
-
-              <div v-if="row.statusGroup == 'PROBLEM'">
-                <div>
-                  <b>Problem:</b> {{ row.statusProblem }}
+                <div v-if="row.checkedAt && row.statusGroup == 'ACTIVE'">
+                  <div class="caption">CHECKED AT</div>
+                  <div class="caption font-weight-medium">
+                    <ago :date="(row.checkedAt || row.createdAt)" />
+                  </div>
+                </div>
+                <div class="problem-cell" v-if="row.statusGroup == 'PROBLEM' || row.statusGroup == 'TRYING'">
+                  <div class="body-2">{{ row.statusDescription }}</div>
                 </div>
               </div>
             </div>
 
             <div v-if="showingId==row.id && showDetails==true" class="my-2">
               <v-divider class="mb-2"></v-divider>
-
-              <div class="d-flex justify-space-between caption">
-                <div v-if="row.seller">{{ row.seller }} ({{ row.platformName }})</div>
-                <!-- div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'NOT SET') }}</div -->
-                <div>{{ row.position | toPosition }}</div>
-              </div>
-
-              <div class="d-flex justify-space-between caption">
-                <div class="text-truncate">
-                  <a :href="row.url" target="_blank">{{ row.url }}</a>
-                </div>
-                <!-- div>{{ row.status.replaceAll('_', ' ') }}</div -->
+              <div>
+                <v-icon class="mr-1">mdi-link</v-icon>
+                <a class="caption" :href="row.url" target="_blank">{{ row.url }}</a>
               </div>
 
               <link-details
@@ -226,6 +244,7 @@ export default {
       rulesPopup: false,
       showingId: -1,
       showDetails: false,
+      showCopiedTT: false,
       groups: {
         ACTIVE: { links: [], selected: [] },
         PROBLEM: { links: [], selected: [] },
@@ -237,6 +256,7 @@ export default {
   },
   methods: {
     toggleDetails(row) {
+      if (!row.name) return;
       if (this.showingId == row.id) {
         this.showDetails = !this.showDetails;
       } else {
@@ -355,7 +375,7 @@ export default {
           }
         }
       }
-    }
+    },
   },
   created() {
     this.$nextTick(() => {
@@ -378,3 +398,23 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .link-info-wrapper {
+    cursor: pointer;
+  }
+  .link-info {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 32px;
+  }
+  .link-info > div {
+    flex-basis: 0;
+    flex-grow: 1;
+  }
+  .link-info > div:not(:last-child) {
+    margin-right: 10px;
+    border-right: 1px solid lightgrey;
+    max-width: 180px;
+  }
+</style>

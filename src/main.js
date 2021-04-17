@@ -29,6 +29,35 @@ Vue.use(VuePageTransition);
 
 Vue.component('ago', () => import('./component/simple/Ago.vue'));
 
+Vue.mixin({
+  methods: {
+    findLevelColor(level) {
+      switch (level) {
+        case 'LOWEST': case 'MIN': return 'blue';
+        case 'LOWER': return 'green';
+        case 'AVERAGE': return 'primary';
+        case 'HIGHER': return 'pink';
+        case 'HIGHEST': case 'MAX': return 'red';
+      }
+    },
+    async copyToClipboard(sourceText) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(sourceText);
+      } else {
+        let textArea = document.createElement("textarea");
+        textArea.value = sourceText;
+        textArea.style.position = "absolute";
+        textArea.style.opacity = 0;
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        await document.execCommand('copy');
+        textArea.remove();
+      }
+    }
+  },
+})
+
 Chart.defaults.global.legend.display = false;
 
 new Vue({
