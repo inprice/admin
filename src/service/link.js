@@ -12,8 +12,8 @@ export default {
     return res;
   },
 
-  async list(prodId) {
-    const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + prodId }, false);
+  async list(groupId) {
+    const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + groupId }, false);
     if (res.status == true && res.data) return res.data;
     return null;
   },
@@ -24,11 +24,20 @@ export default {
     return null;
   },
 
-  async remove(id) {
+  async remove(ids, from_group_id=null) {
     if (store.get('session/isViewer')) return;
 
-    const res = await Helper.call('Link Delete', { method: 'delete', url: baseURL + '/' + id });
-    return res.status;
+    const res = await Helper.call('Link Delete', { method: 'delete', url: baseURL, data: { fromGroupId: from_group_id, linkIdSet: ids } });
+    if (res.status == true && res.data) return res.data;
+    return null;
+  },
+
+  async moveTo(ids, to_group_id, from_group_id=null) {
+    if (store.get('session/isViewer')) return;
+
+    const res = await Helper.call('Link Move', { url: baseURL + '/move', data: { linkIdSet: ids, toGroupId: to_group_id, fromGroupId: from_group_id } });
+    if (res.status == true && res.data) return res.data;
+    return null;
   },
 
   async getDetails(id) {

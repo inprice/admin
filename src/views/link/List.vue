@@ -10,14 +10,14 @@
 
             <div @click="toggleDetails(row.id)" style="cursor: pointer">
               <div class="d-flex justify-space-between subtitle font-weight-medium">
-                <div>{{ row.name || row.problem || 'NOT YET' }}</div>
+                <div>{{ row.name || row.statusDescription || 'NOT YET' }}</div>
                 <div class="pl-2 cyan--text font-weight-bold">{{ row.price | toPrice }}</div>
               </div>
 
               <v-divider class="my-2"></v-divider>
 
               <div class="d-flex justify-space-between caption">
-                <div v-if="row.seller">{{ row.seller }} ({{ row.platform }})</div>
+                <div v-if="row.seller">{{ row.seller }} ({{ row.platformName }})</div>
                 <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
                 <div>{{ row.position | toPosition }}</div>
               </div>
@@ -39,7 +39,7 @@
                   <span v-else>Pause</span>
                 </v-btn>
                 <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))" :disabled="$store.get('session/isViewer')">Delete</v-btn>
-                <v-btn class="mx-1" small @click="openProductPage(row.productId)">Product Page</v-btn>
+                <v-btn class="mx-1" small @click="openGroupPage(row.groupId)">Group Details</v-btn>
               </div>
             </div>
 
@@ -148,8 +148,8 @@ export default {
       if (res && res.data) {
         this.openedDetail = {};
         this.openedDetail.id = id;
-        this.openedDetail.lastCheck = res.data.link.lastCheck;
-        this.openedDetail.lastUpdate = res.data.link.lastUpdate;
+        this.openedDetail.checkedAt = res.data.link.checkedAt;
+        this.openedDetail.updatedAt = res.data.link.updatedAt;
         this.openedDetail.brand = res.data.link.brand;
         this.openedDetail.shipment = res.data.link.shipment;
         this.openedDetail.historyList = res.data.historyList;
@@ -162,8 +162,8 @@ export default {
       }
       this.lastToggledLinkId = id;
     },
-    openProductPage(productId) {
-      this.$router.push({ name: 'product', params: { id: productId } });
+    openGroupPage(groupId) {
+      this.$router.push({ name: 'group', params: { id: groupId } });
     }
   },
   components: {

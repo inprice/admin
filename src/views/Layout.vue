@@ -29,12 +29,12 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link :to="{name: 'products'}">
+        <v-list-item link :to="{name: 'groups'}">
           <v-list-item-action>
             <v-icon>mdi-package-variant-closed</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Product Definitions</v-list-item-title>
+            <v-list-item-title>Groups</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -44,14 +44,6 @@
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Links' Statuses</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'import'}">
-          <v-list-item-action>
-            <v-icon>mdi-import</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Product Import</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -149,49 +141,8 @@
 
       <div class="hidden-sm-and-down ml-4 mt-2">
         <img :src="brandNameW" :width="150" />
+        {{ CURSTAT.linkLimit }} - {{ CURSTAT.linkCount }} - {{ CURSTAT.remainingLinkCount }}
       </div>
-
-      <v-spacer></v-spacer>
-
-      <v-menu
-        offset-y
-        v-model="searching">
-
-        <!-- v-if="$route.path.indexOf('/products') < 1"> -->
-
-        <template v-slot:activator="{ on, attr }">
-          <v-text-field 
-            v-on="on" 
-            v-bind="attr"
-            ref="searchTerm"
-            v-model="searchTerm"
-            placeholder="Search for products by name"
-            append-icon="mdi-close"
-            @click:append="clearSearchTerm"
-            dense solo light
-            hide-details
-          />
-        </template>
-
-        <v-simple-table>
-          <template v-slot:default>
-            <tbody v-if="products && products.length">
-              <tr v-for="prod in products" :key="prod.id" class="searchTable" @click="openProductPage(prod.id, prod.name)">
-                <td class="text-truncate" >{{ prod.name }}</td>
-                <td class="text-right">{{ prod.code }}</td>
-              </tr>
-            </tbody>
-            <div v-else style="margin:10px; font-size: 0.875rem;">
-              <p v-if="searchTerm && searchTerm.length">
-                No product found!
-              </p>
-              <p v-else>
-                Please enter a few chars to search!
-              </p>
-            </div>
-          </template>
-        </v-simple-table>
-      </v-menu>
 
       <v-spacer></v-spacer>
 
@@ -211,11 +162,21 @@
 
     <AccountInfoDialog ref="accountInfoDialog"/>
 
+    <v-btn
+      v-scroll="onScroll"
+      v-show="fab"
+      fab dark
+      fixed bottom right
+      color="primary"
+      @click="toTop"
+    >
+      <v-icon>mdi-chevron-up</v-icon>
+    </v-btn>
+
   </v-app>
 </template>
 
 <script>
-import ProductService from '@/service/product';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -224,45 +185,23 @@ export default {
   },
   data() {
     return {
-      searching: false,
-      searchTerm: null,
-      products: [],
+      brandNameW: require('@/assets/app/brand-horWR.svg'),
       drawer: (this.$vuetify.breakpoint.mdAndUp),
-      brandNameW: require('@/assets/app/brand-horWR.svg')
+      fab: false,
     };
-  },
-  watch: {
-    async searchTerm(val) {
-      if (!this.searching || this.searching == false) this.searching = true;
-      if (!val) {
-        this.products = [];
-        return;
-      }
-      const result = await ProductService.search(val);
-      if (result) {
-        this.products = result;
-      } else {
-        this.products = [];
-      }
-    },
   },
   methods: {
     openCreateAccount() {
       this.$refs.accountInfoDialog.edit(null, true);
     },
-    clearSearchTerm() {
-      this.searchTerm = '';
-      this.$refs.searchTerm.focus();
+    onScroll(e) {
+      if (typeof window === 'undefined') return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      this.fab = top > 20;
     },
-    openProductPage(id, name) {
-      this.searchTerm = name;
-      if (this.$route.params.id == id) return;
-      if (window.location.href.indexOf('/product/') > -1) {
-        this.$router.replace({ params: { id } });
-      } else {
-        this.$router.push({ name: 'product', params: { id } });
-      }
-    }
+    toTop () {
+      this.$vuetify.goTo(0)
+    },
   },
   components: {
     UserMenu: () => import('@/component/app/UserMenu.vue'),

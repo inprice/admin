@@ -6,7 +6,7 @@
         <img :src="verticalBrand" :width="140" />
       </div>
 
-      <v-card>
+      <v-card class="pb-0" tile>
         <v-card-title class="form-title elevation-1 mb-2">Register</v-card-title>
 
         <v-card-text>
@@ -56,21 +56,19 @@
           </v-form>
 
           <v-card-actions class="px-0">
-            <div>
-              <div>Already have an account?</div>
-              <router-link to="login">Sign In</router-link>
-            </div>
-
-            <v-spacer></v-spacer>
-
-            <v-btn
-              color="info"
-              @click="submit"
+            <v-btn 
+              block
+              color="info" 
+              @click="submit" 
               :loading="loading" 
-              :disabled="loading">
-              Sign Up
-            </v-btn>
+              :disabled="loading">Sign Up</v-btn>
           </v-card-actions>
+
+          <div class="d-flex mt-5">
+            <router-link to="forgot-password" tabindex="-1">Forgot Password?</router-link>
+            <v-spacer></v-spacer>
+            <router-link to="login" tabindex="-1">Sign In</router-link>
+          </div>
         </v-card-text>
       </v-card>
 
@@ -160,6 +158,7 @@ export default {
   .form-title {
     padding: 0 10px;
     height: 50px;
-    background-color: #f3f3f3;
+    color: #606060;
+    background-color: #f8f8f8;
   }
 </style>

@@ -71,64 +71,14 @@ const router = new VueRouter({
           component: () => import('./views/dashboard/Index.vue')
         },
         {
-          name: 'product',
-          path: 'product/:id',
-          component: () => import('./views/product/definition/Index.vue')
+          name: 'groups',
+          path: 'groups',
+          component: () => import('./views/group/list/Index.vue')
         },
         {
-          name: 'products',
-          path: 'products',
-          component: () => import('./views/product/search/Index.vue')
-        },
-        {
-          name: 'import',
-          path: 'import/product',
-          component: () => import('./views/product/import/Index.vue')
-        },
-        {
-          name: 'import-details',
-          path: 'import/details/:id',
-          component: () => import('./views/product/import/List.vue')
-        },
-        {
-          name: 'import-csv-file',
-          path: 'import/csv-file',
-          component: () => import('./views/product/import/CSVFile.vue')
-        },
-        {
-          name: 'import-csv-list',
-          path: 'import/csv-list',
-          component: () => import('./views/product/import/CSVList.vue')
-        },
-        {
-          name: 'import-url-file',
-          path: 'import/url-file',
-          component: () => import('./views/product/import/URLFile.vue')
-        },
-        {
-          name: 'import-url-list',
-          path: 'import/url-list',
-          component: () => import('./views/product/import/URLList.vue')
-        },
-        {
-          name: 'import-ebay-file',
-          path: 'import/ebay-file',
-          component: () => import('./views/product/import/EbayFile.vue')
-        },
-        {
-          name: 'import-ebay-list',
-          path: 'import/ebay-list',
-          component: () => import('./views/product/import/EbayList.vue')
-        },
-        {
-          name: 'import-amazon-file',
-          path: 'import/amazon-file',
-          component: () => import('./views/product/import/AmazonFile.vue')
-        },
-        {
-          name: 'import-amazon-list',
-          path: 'import/amazon-list',
-          component: () => import('./views/product/import/AmazonList.vue')
+          name: 'group',
+          path: 'group/:id',
+          component: () => import('./views/group/Index.vue')
         },
         {
           name: 'plans',
@@ -221,9 +171,9 @@ router.beforeEach((to, from, next) => {
         const newPath = to.path.replace(`/${to.params.sid}/`, '/0/');
         return next(newPath);
       } else {
-        const session = store.get('session/getCurrent');
+        const session = store.get('session/getCurrentStatus');
         if (!session || Object.keys(session).length == 0) {
-          store.set('session/CURRENT', sesList[sid]);
+          store.set('session/CURRENT', sesList[sid], sid);
         }
       }
     } else {

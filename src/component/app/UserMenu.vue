@@ -136,10 +136,10 @@ export default {
 
       let toPage = 'plans';
       if (hasTime) {
-        if (session.productCount > 0) {
+        if (session.linkCount > 0) {
           toPage = 'dashboard';
         } else {
-          toPage = 'products';
+          toPage = 'groups';
         }
       } else {
         toPage = 'plans';

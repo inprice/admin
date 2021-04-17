@@ -100,3 +100,7 @@
 div, span {
   word-break: initial;
 }
+
+.mdi-checkbox-blank-outline {
+  font-size: 20px !important;
+}

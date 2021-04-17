@@ -6,7 +6,7 @@
     </div>
 
     <v-divider class="mt-2"></v-divider>
-
+    <h1>{{CURSTAT.status}}</h1>
     <v-card class="mt-3" v-if="CURSTAT.status == 'CREATED'">
       <v-card-title class="pb-2">
         <v-icon class="mr-2 hidden-xs-only">mdi-arrow-right-thin-circle-outline</v-icon>
@@ -22,7 +22,6 @@
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn
             small 
-            color="success"
             class="my-auto ml-3"
             :loading="loading.tryFreeUse" 
             :disabled="loading.tryFreeUse || $store.get('session/isNotAdmin')"
@@ -81,16 +80,16 @@
 
       <v-divider></v-divider>
 
-      <div class="d-flex flex-wrap justify-space-around pa-1">
+      <div class="d-flex flex-wrap justify-space-around py-1">
         <v-hover v-for="plan in plansSets" :key="plan.id">
           <template v-slot="{ hover }">
             <v-card 
               :style="{ 'min-width': findMinWidthForPlans }"
-              class="transition-swing text-center ma-2" 
-              :class="`elevation-${hover ? 10 : 3} ${isThisSelected(plan.id) ? 'rainbow pa-0' : 'pa-2'}`">
+              class="transition-swing text-center ma-2 pb-1" 
+              :class="`elevation-${hover ? 10 : 3} ${isThisSelected(plan.id) ? 'rainbow' : ''}`">
 
-              <div class="headline grey lighten-4 elevation-1 py-2 ">
-                <div class="title teal--text darken-5 text-uppercase">
+              <div class="headline grey lighten-4 py-2 elevation-1 ">
+                <div class="title teal--text text-uppercase">
                   {{ plan.name.replace(' Plan', '') }}
                 </div>
 
@@ -111,12 +110,12 @@
                 </div>
               </ul>
 
-              <v-divider class="mb-4"></v-divider>
+              <v-divider class="mb-3"></v-divider>
 
               <v-btn
+                tile
                 :disabled="$store.get('session/isNotAdmin')" 
                 v-if="CURSTAT.isSubscriber == false"
-                color="success"
                 class="mb-2"
                 @click="subscribe(plan.id)"
               >
@@ -210,7 +209,7 @@
           <li>For upgrading, a proportional invoice (taking into the remaining days) will be created for the difference between two plans.</li>
           <li>For downgrading, 
             <ul>
-              <li>you will be allowed when your account's product count equal or less than new plan.</li>
+              <li>you will be allowed when your account's link count equal or less than new plan.</li>
               <li>if there are more than three days to renewal from your actual plan, we will issue a coupon to compensate those days.</li>
             </ul>
           </li>
@@ -264,9 +263,9 @@ export default {
         case 'xs':
           return '95%'
         case 'sm':
-          return '47.3%'
+          return '45%'
         default:
-          return '31.58%'
+          return '31%'
       }
     }
   },
