@@ -72,9 +72,9 @@ export default {
       this.important = important
       this.message = message
       this.options = Object.assign(this.options, options)
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
+      return new Promise((res, rej) => {
+        this.resolve = res;
+        this.reject = rej;
       })
     },
     agree() {

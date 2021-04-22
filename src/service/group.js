@@ -36,9 +36,9 @@ export default {
     return null;
   },
 
-  async list() {
-    const res = await Helper.call('Group List', { method: 'get', url: baseURL });
-    if (res.status == true && res.data) return res.data;
+  async getIdNameList(excludedId) {
+    const res = await Helper.call('Group List', { method: 'get', url: baseURL + '/pairs/' + (excludedId ? excludedId : 0) });
+    if (res.status == true && res.data) return res;
     return null;
   },
 

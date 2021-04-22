@@ -32,10 +32,10 @@ export default {
     return null;
   },
 
-  async moveTo(ids, to_group_id, from_group_id=null) {
+  async moveTo(form) {
     if (store.get('session/isViewer')) return;
 
-    const res = await Helper.call('Link Move', { url: baseURL + '/move', data: { linkIdSet: ids, toGroupId: to_group_id, fromGroupId: from_group_id } });
+    const res = await Helper.call('Link Move', { url: baseURL + '/move', data: form });
     if (res.status == true && res.data) return res.data;
     return null;
   },

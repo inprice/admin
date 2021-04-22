@@ -1,14 +1,17 @@
 <template>
-  <div v-if="data.group">
+  <div v-if="data.group" class="mt-2">
 
+    <span class="title">Info</span>
     <v-card>
-      <v-card-title>
+      <v-card-title class="py-1">
         <span>{{ data.group.name }} </span>
         <v-spacer></v-spacer>
         <span class="blue--text" v-if="data.group.price"> {{ data.group.price | toCurrency }}</span>
       </v-card-title>
 
-      <v-divider></v-divider>
+      <prices :group="data.group" v-if="data.group.avgPrice > 0" />
+
+      <v-divider class="mt-3"></v-divider>
 
       <v-card-actions class="py-3">
         <v-btn 
@@ -51,11 +54,14 @@
       </v-card-actions>
     </v-card>
 
-    <v-divider></v-divider>
+    <v-divider class="my-5"></v-divider>
 
-    <prices :group="data.group" v-if="data.group.avgPrice > 0" />
-
-    <div class="title pt-4">Links</div>
+    <div class="d-flex justify-space-between">
+      <span class="title">Links</span>
+      <v-btn small @click="findGroup(data.group.id)">
+          Refresh Links
+      </v-btn>
+    </div>
 
     <links :groupId="data.group.id" :links="data.links" @deleted="linksDeleted" />
 
@@ -98,12 +104,20 @@ export default {
         this.$refs.editDialog.open(this.data.group);
       }
     },
-    findGroup() {
-      GroupService.getLinks(this.$route.params.id).then(res => {
-        if (res && res.status == true) {
-          this.data = res.data;
-        }
-      });
+    findGroup(id) {
+      if (id) {
+        GroupService.getLinks(id).then(res => {
+          if (res && res.status == true) {
+            this.data = res.data;
+          }
+        });
+      } else {
+        GroupService.getLinks(this.$route.params.id).then(res => {
+          if (res && res.status == true) {
+            this.data = res.data;
+          }
+        });
+      }
     },
     openAddLinkDialog() {
       this.$refs.addLinkDialog.open();

@@ -18,11 +18,11 @@
           <v-timeline-item
             small
             class="pb-0"
-            v-for="row in data.priceList" :key="row.id"
+            v-for="(row, index) in data.priceList" :key="row.id"
             :icon="findDiffIcon(row.diffAmount)"
             :color="findDiffColor(row.diffAmount)"
           >
-            <v-row class="pa-0 ma-0 py-1">
+            <v-row class="pa-0 ma-0 py-1" :class="index == data.priceList.length-1 ? 'last-row' : ''">
               <v-col class="py-1" cols="3">
                 <div class="caption">
                   Price
@@ -86,10 +86,10 @@
           <v-timeline-item
             small
             class="pb-0"
-            v-for="row in data.historyList" :key="row.id"
+            v-for="(row, index) in data.historyList" :key="row.id"
             :color="findStatusColor(row.statusGroup)"
           >
-            <v-row class="pa-0 ma-0">
+            <v-row class="pa-0 ma-0 py-1" :class="index == data.historyList.length-1 ? 'last-row' : ''">
               <v-col class="py-1" cols="3">
                 <div class="caption">
                   When
@@ -130,14 +130,14 @@
       <v-tab-item>
 
         <table 
-          class="subtitle-2 py-4" 
+          class="py-4" 
           v-if="data && data.specList && data.specList.length" 
           style="width: 100%; max-height: 200px; overflow-y: auto;"
         >
           <tbody>
             <tr v-for="row in data.specList" :key="row.id">
-              <th class="text-right pr-3 py-1" width="25%">{{ row.key }} :</th>
-              <td>{{ row.value }}</td>
+              <th class="subtitle-2 text-right pr-2" width="20%">{{ row.key }} :</th>
+              <td class="body-2 text-truncate">{{ row.value }}</td>
             </tr>
           </tbody>
         </table>
@@ -200,11 +200,10 @@ export default {
 </script>
 
 <style scoped>
-  .v-timeline-item__body .row {
+  .v-timeline-item__body .row:not(.last-row) {
     border-bottom: 1px solid #ddd !important;
   }
   th, td {
-    /* padding: 0 8px !important; */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

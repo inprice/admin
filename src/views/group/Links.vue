@@ -11,6 +11,7 @@
             {{ `${name} (${data.links.length})` }}
         </v-btn>
       </v-btn-toggle>
+
       <v-card tile v-if="groups[selectedTabName].links.length > 1">
         <div class="d-flex">
           <v-checkbox
@@ -24,25 +25,14 @@
           ></v-checkbox>
 
           <div class="mt-2">
-            <v-menu offset-y v-if="linkGroups.length">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  small
-                  class="mx-1"
-                  :disabled="groups[selectedTabName].selected.length < 1"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  Move Under ...
-                </v-btn>
-              </template>
-
-              <v-list dense>
-                <v-list-item v-for="group in linkGroups" :key="group.id" link @click="moveMultiple(selectedTabName, group)">
-                  <v-list-item-title>{{ group.name }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+            <v-btn
+              small
+              class="mx-1"
+              :disabled="groups[selectedTabName].selected.length < 1"
+              @click="moveMultiple(selectedTabName)"
+            >
+              Move
+            </v-btn>
 
             <v-btn 
               small
@@ -62,18 +52,19 @@
       <v-tab-item 
         v-for="(data, name, index) in groups" :key="index" 
         :transition="false" :reverse-transition="false"
-        @click="selectedTabIndex=index; selectedTabName=name;">
+        @click="selectedTabIndex=index; selectedTabName=name;"
+      >
 
         <div v-if="data.links.length">
 
           <v-card 
             tile 
             v-for="row in data.links" 
-            class="pa-2 elevation-1"
+            class="pa-2"
+            :class="(showingId==row.id && showDetails==true ? 'elevation-5' : '')"
             :key="row.id" 
-            :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important; background-color: rgb(230, 230, 230, 0.3)' : 'margin: 10px 0')"
+            :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important' : 'margin: 10px 0')"
           >
-
             <div 
               class="d-flex align-center" 
               @click="toggleDetails(row)" 
@@ -115,7 +106,7 @@
                   <div      
                     v-if="!row.price"
                     class="caption text-right">
-                      <div class="blue--text font-weight-medium">{{ row.checkedAt ? 'Checked' : 'Added' }}</div>
+                      <div class="blue--text font-weight-medium">{{ row.statusGroup != 'WAITING' ? 'Checked' : 'Added' }}</div>
                       <ago :date="(row.checkedAt || row.createdAt)" />
                   </div>
               </div>
@@ -145,19 +136,18 @@
                       <v-list-item-title>DELETE THIS</v-list-item-title>
                     </v-list-item>
 
-                    <v-divider v-if="linkGroups.length"></v-divider>
-                    <v-subheader v-if="linkGroups.length">MOVE UNDER</v-subheader>
-                    <v-list-item v-for="group in linkGroups" :key="group.id" link @click="moveOne(row, group)">
-                      <v-list-item-title>{{ group.name }}</v-list-item-title>
-                    </v-list-item>
-
                     <v-divider v-if="row.name"></v-divider>
-                    <v-list-item link @click="copyToClipboard(row.url)">
+                    <v-list-item link @click="copyTheLink(row.url)">
                       <v-list-item-title>COPY URL</v-list-item-title>
                     </v-list-item>
 
                     <v-list-item link target="_blank" :href="row.url">
                       <v-list-item-title>OPEN NEW TAB</v-list-item-title>
+                    </v-list-item>
+
+                    <v-divider></v-divider>
+                    <v-list-item link @click="moveOne(row)">
+                      <v-list-item-title>MOVE</v-list-item-title>
                     </v-list-item>
 
                   </v-list>
@@ -168,7 +158,7 @@
             <div class="caption link-info-wrapper" @click="toggleDetails(row)">
               <div class="link-info">
                 <div v-if="row.seller">
-                  <div class="caption">{{ row.platformName }}</div>
+                  <div class="caption" v-if="row.platform">{{ row.platform.name }}</div>
                   <div class="caption font-weight-medium">{{ row.seller }}</div>
                 </div>
                 <div v-if="row.shipment">
@@ -212,6 +202,7 @@
     </v-tabs>
 
     <confirm ref="confirm"></confirm>
+    <group-select ref="groupSelect"></group-select>
 
   </div>
 
@@ -219,8 +210,6 @@
 
 <script>
 import LinkService from '@/service/link';
-import GroupService from '@/service/group';
-//import moment from 'moment-timezone';
 
 export default {
   props: ["groupId", "links"],
@@ -251,7 +240,6 @@ export default {
         TRYING: { links: [], selected: [] },
         WAITING: { links: [], selected: [] },
       },
-      linkGroups: []
     }
   },
   methods: {
@@ -304,11 +292,16 @@ export default {
         });
       }
     },
-    moveOne(row, to_group) {
-      this.$refs.confirm.open('Move', 'will be moved under '+to_group.name+'. Are you sure?', (row.name || row.url)).then(async (confirm) => {
-        if (confirm == true) {
-          const data = await LinkService.moveTo([ row.id ], to_group.id, this.groupId);
-          if (data) {
+    moveOne(row) {
+      this.$refs.groupSelect.open('For the selected link, please select a group to move', this.groupId).then(async (data) => {
+        if (data && (data.id || data.name)) {
+          const result = await LinkService.moveTo({
+            fromGroupId: this.groupId,
+            toGroupId: data.id,
+            toGroupName: data.name,
+            linkIdSet: [ row.id ],
+          });
+          if (result) {
             for (var i=0; i<this.groups[row.statusGroup].links.length; i++) {
               if (this.groups[row.statusGroup].links[i].id == row.id) {
                 this.groups[row.statusGroup].links.splice(i, 1);
@@ -321,21 +314,25 @@ export default {
         }
       });
     },
-    moveMultiple(groupName, to_group) {
+    moveMultiple(groupName) {
       const selected = this.groups[groupName].selected;
       if (selected && selected.length) {
-        const title = `${selected.length} ${groupName} links`;
-        this.$refs.confirm.open('Move', 'will be moved under '+to_group.name+'. Are you sure?', title).then(async (confirm) => {
-          if (confirm == true) {
-            const data = await LinkService.moveTo(selected, to_group.id, this.groupId);
-            if (data) {
+        this.$refs.groupSelect.open(`For selected ${selected.length} links, please select a group to move`, this.groupId).then(async (data) => {
+          if (data && (data.id || data.name)) {
+            const result = await LinkService.moveTo({
+              fromGroupId: this.groupId,
+              toGroupId: data.id,
+              toGroupName: data.name,
+              linkIdSet: selected,
+            });
+            if (result) {
               for (var i=0; i<this.groups[groupName].links.length; i++) {
                 if (selected.includes(this.groups[groupName].links[i].id)) {
                   this.groups[groupName].links.splice(i, 1);
                   i--;
                 }
               }
-              this.$store.commit('snackbar/setMessage', { text: title + ' successfully moved.' });
+              this.$store.commit('snackbar/setMessage', { text: `${selected.length} links successfully moved.` });
               this.spliceSelected(groupName, selected);
             }
           }
@@ -376,14 +373,14 @@ export default {
         }
       }
     },
+    copyTheLink(url) {
+      this.copyToClipboard(url);
+      this.$store.commit('snackbar/setMessage', { text: 'Url copied' });
+    }
   },
   created() {
     this.$nextTick(() => {
       this.convertLinksToStatusGroup();
-      GroupService.list()
-        .then((result) => {
-          this.linkGroups = result.filter(group => group.id !== this.groupId);
-        });
     });
   },
   watch: {
@@ -392,8 +389,9 @@ export default {
     }
   },
   components: {
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    GroupSelect: () => import('./GroupSelect.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
     LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
   }
 };

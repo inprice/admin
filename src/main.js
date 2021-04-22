@@ -33,11 +33,12 @@ Vue.mixin({
   methods: {
     findLevelColor(level) {
       switch (level) {
-        case 'LOWEST': case 'MIN': return 'blue';
-        case 'LOWER': return 'green';
+        case 'EQUAL': return 'blue';
+        case 'LOWEST': return 'green';
+        case 'LOWER': return 'cyan';
         case 'AVERAGE': return 'primary';
-        case 'HIGHER': return 'pink';
-        case 'HIGHEST': case 'MAX': return 'red';
+        case 'HIGHER': return 'red';
+        case 'HIGHEST': return 'pink';
       }
     },
     async copyToClipboard(sourceText) {
