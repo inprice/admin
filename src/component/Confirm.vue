@@ -7,11 +7,10 @@
     overlay-opacity="0.2"
   >
     <v-card>
-      <v-toolbar dense flat>
-        <v-toolbar-title>{{ title }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-icon>mdi-alert-circle-outline</v-icon>
-      </v-toolbar>
+      <div class="d-flex justify-space-between pa-4 pb-1">
+        <span class="title">{{ title }}</span>
+        <v-btn icon @click="cancel"><v-icon>mdi-close</v-icon></v-btn>
+      </div>
 
       <v-divider></v-divider>
 
@@ -19,10 +18,8 @@
 
       <v-divider></v-divider>
 
-      <v-card-actions class="pt-0">
-        <v-spacer></v-spacer>
-        <v-btn @click.native="agree" color="grey" text>Yes</v-btn>
-        <v-btn @click.native="cancel" color="primary darken-1" text>Cancel</v-btn>
+      <v-card-actions class="justify-end">
+        <v-btn @click.native="agree" text outlined>Yes</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

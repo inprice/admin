@@ -5,13 +5,6 @@ const baseURL = '/link';
 
 export default {
 
-  async insert(data) {
-    if (store.get('session/isViewer')) return;
-
-    const res = await Helper.call('Link Save', { method: 'post', url: baseURL, data });
-    return res;
-  },
-
   async list(groupId) {
     const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + groupId }, false);
     if (res.status == true && res.data) return res.data;

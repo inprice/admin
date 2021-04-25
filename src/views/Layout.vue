@@ -141,7 +141,6 @@
 
       <div class="hidden-sm-and-down ml-4 mt-2">
         <img :src="brandNameW" :width="150" />
-        {{ CURSTAT.linkLimit }} - {{ CURSTAT.linkCount }} - {{ CURSTAT.remainingLinkCount }}
       </div>
 
       <v-spacer></v-spacer>

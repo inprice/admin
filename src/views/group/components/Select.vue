@@ -7,26 +7,24 @@
     overlay-opacity="0.2"
   >
     <v-card>
-      <v-card-title class="pb-0">
-        <div class="subtitle-1">Group to move link(s)</div>
+      <v-card-title>
+        <div class="subtitle-1">Please select a group</div>
         <v-spacer></v-spacer>
         <v-btn icon @click.native="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
-      <v-card class="pa-2 ma-4 mt-1 body-2 font-weight-light" tile outlined>
-        <v-icon color="red" class="mx-2" >mdi-shield-alert-outline</v-icon>
-        You can either select or create a new one.
-      </v-card>
+      <v-divider></v-divider>
 
-      <div>
-        {{ title }}
+      <div class="body-2 mx-3 mb-2 mt-5 font-weight-light">
+        <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
+        You can either select or create a new group by typing.
       </div>
 
       <v-combobox
         autofocus
         dense
         outlined
-        class="pa-4 pb-1"
+        class="pa-4 mt-2 pb-1"
         label="Group"
         :items="groupNames"
         :messages="messages"
@@ -38,8 +36,7 @@
 
       <v-divider></v-divider>
 
-      <v-card-actions class="py-3">
-        <v-spacer></v-spacer>
+      <v-card-actions class="py-3 mr-2 justify-end">
         <v-btn @click="agree">OK</v-btn>
       </v-card-actions>
     </v-card>

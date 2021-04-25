@@ -44,6 +44,7 @@
       </v-form>
 
       <v-btn 
+        large
         block
         color="info"
         class="mt-2"

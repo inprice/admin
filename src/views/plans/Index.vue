@@ -243,8 +243,6 @@
 import SubsService from '@/service/subscription';
 import { get } from 'vuex-pathify'
 
-let stripe;
-
 export default {
   data() {
     return {
@@ -284,7 +282,9 @@ export default {
         }
       });
     },
-    async subscribe(planId) {
+    async subscribe() {
+    //async subscribe(planId) {
+      /*
       this.loading.overlay = true;
       const result = await SubsService.createCheckout(planId);
       if (result.status == true) {
@@ -311,6 +311,7 @@ export default {
         this.loading.overlay = false;
         this.currentCheckoutHash = null;
       }
+      */
     },
     async changeTo(planId) {
       const dir = (planId > this.CURSTAT.planId ? 'UPGRADED' : 'DOWNGRADED');

@@ -21,7 +21,7 @@
             :label="(!groups[selectedTabName].selected.length ? 'Select All' : 'Deselect All')"
             :value="groups[selectedTabName].selected.length == groups[selectedTabName].links.length"
             :indeterminate="groups[selectedTabName].selected.length > 0 && groups[selectedTabName].selected.length != groups[selectedTabName].links.length"
-            @click="changeSelection(groups[selectedTabName])"
+            @click="changeAllSelection(groups[selectedTabName])"
           ></v-checkbox>
 
           <div class="mt-2">
@@ -48,156 +48,38 @@
     </div>
 
     <v-tabs v-model="selectedTabIndex" class="v-card theme--light">
-
       <v-tab-item 
         v-for="(data, name, index) in groups" :key="index" 
         :transition="false" :reverse-transition="false"
         @click="selectedTabIndex=index; selectedTabName=name;"
       >
-
         <div v-if="data.links.length">
-
           <v-card 
             tile 
-            v-for="row in data.links" 
+            v-for="(row, index) in data.links" 
             class="pa-2"
             :class="(showingId==row.id && showDetails==true ? 'elevation-5' : '')"
             :key="row.id" 
             :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important' : 'margin: 10px 0')"
           >
-            <div 
-              class="d-flex align-center" 
-              @click="toggleDetails(row)" 
-              style="cursor: pointer"
-            >
-
-              <v-checkbox
-                hide-details
-                class="mt-0 pt-0"
-                v-model="data.selected"
-                :value="row.id"
-                @click.stop=""
-                v-if="groups[selectedTabName].links.length > 1"
-              ></v-checkbox>
-
-              <div style="cursor: pointer; flex: 1">
-                <div class="subtitle-1" v-if="row.name">
-                  {{ row.name }}
-                </div>
-                <div class="body-2 text-lowercase" v-else>
-                  {{ row.url }}
-                </div>
-              </div>
-
-              <div>
-                  <div v-if="row.price">
-                    <div 
-                      v-if="row.level != 'AVG'" 
-                      :class="findLevelColor(row.level) + '--text caption font-weight-bold text-center'"
-                    >
-                      {{ row.level }}
-                    </div>
-                    <span
-                      :class="findLevelColor(row.level) + '--text font-weight-medium'">
-                        {{ row.price | toPrice }}
-                    </span>
-                  </div>
-
-                  <div      
-                    v-if="!row.price"
-                    class="caption text-right">
-                      <div class="blue--text font-weight-medium">{{ row.statusGroup != 'WAITING' ? 'Checked' : 'Added' }}</div>
-                      <ago :date="(row.checkedAt || row.createdAt)" />
-                  </div>
-              </div>
-
-              <div>
-                <v-menu offset-y>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small icon
-                      class="mx-1"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click.stop=""
-                    >
-                      <v-icon>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                  </template>
-
-                  <v-list dense>
-                    <v-list-item link @click="toggleDetails(row)" v-if="row.name">
-                      <v-list-item-title>{{ showingId==row.id && showDetails==true ? 'CLOSE' : 'SHOW' }} DETAILS</v-list-item-title>
-                    </v-list-item>
-
-                    <v-divider v-if="row.name"></v-divider>
-
-                    <v-list-item link @click="removeOne(row)">
-                      <v-list-item-title>DELETE THIS</v-list-item-title>
-                    </v-list-item>
-
-                    <v-divider v-if="row.name"></v-divider>
-                    <v-list-item link @click="copyTheLink(row.url)">
-                      <v-list-item-title>COPY URL</v-list-item-title>
-                    </v-list-item>
-
-                    <v-list-item link target="_blank" :href="row.url">
-                      <v-list-item-title>OPEN NEW TAB</v-list-item-title>
-                    </v-list-item>
-
-                    <v-divider></v-divider>
-                    <v-list-item link @click="moveOne(row)">
-                      <v-list-item-title>MOVE</v-list-item-title>
-                    </v-list-item>
-
-                  </v-list>
-                </v-menu>
-              </div>
-            </div>
-
-            <div class="caption link-info-wrapper" @click="toggleDetails(row)">
-              <div class="link-info">
-                <div v-if="row.seller">
-                  <div class="caption" v-if="row.platform">{{ row.platform.name }}</div>
-                  <div class="caption font-weight-medium">{{ row.seller }}</div>
-                </div>
-                <div v-if="row.shipment">
-                  <div class="caption">SHIPMENT</div>
-                  <div class="caption font-weight-medium">{{ row.shipment }}</div>
-                </div>
-                <div v-if="row.checkedAt && row.statusGroup == 'ACTIVE'">
-                  <div class="caption">CHECKED AT</div>
-                  <div class="caption font-weight-medium">
-                    <ago :date="(row.checkedAt || row.createdAt)" />
-                  </div>
-                </div>
-                <div class="problem-cell" v-if="row.statusGroup == 'PROBLEM' || row.statusGroup == 'TRYING'">
-                  <div class="body-2">{{ row.statusDescription }}</div>
-                </div>
-              </div>
-            </div>
-
-            <div v-if="showingId==row.id && showDetails==true" class="my-2">
-              <v-divider class="mb-2"></v-divider>
-              <div>
-                <v-icon class="mr-1">mdi-link</v-icon>
-                <a class="caption" :href="row.url" target="_blank">{{ row.url }}</a>
-              </div>
-
-              <link-details
-                class="mt-2"
-                :data="row"
-                :key="row.detailsRefreshCount"
-              />
-            </div>
+            <link-row
+              :row="row"
+              :linksCount="data.links.length"
+              :showingId="showingId"
+              :showDetails="showDetails"
+              :isChecked="row.selected"
+              @rowSelected="changeRowSelection(data, index)"
+              @moveOne="moveOne"
+              @deleteOne="deleteOne"
+              @copyTheLink="copyTheLink"
+              @toggleDetails="toggleDetails"
+            />
           </v-card>
         </div>
-
         <block-message 
           v-else dense
           :message="`No ${selectedTabName.toLowerCase()} link.`"
         />
-
       </v-tab-item>
     </v-tabs>
 
@@ -209,6 +91,7 @@
 </template>
 
 <script>
+//import Vue from 'vue';
 import LinkService from '@/service/link';
 
 export default {
@@ -244,7 +127,6 @@ export default {
   },
   methods: {
     toggleDetails(row) {
-      if (!row.name) return;
       if (this.showingId == row.id) {
         this.showDetails = !this.showDetails;
       } else {
@@ -252,7 +134,7 @@ export default {
         this.showDetails = true;
       }
     },
-    removeOne(row) {
+    deleteOne(row) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', (row.name || row.url)).then(async (confirm) => {
         if (confirm == true) {
           const data = await LinkService.remove([ row.id ], this.groupId);
@@ -264,8 +146,8 @@ export default {
               }
             }
             this.$store.commit('snackbar/setMessage', { text: (row.name || row.url) + ' successfully deleted.' });
-            this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
             this.spliceSelected(row.statusGroup, [ row.id ]);
+            this.$emit("refreshGroup", data);
           }
         }
       });
@@ -285,8 +167,8 @@ export default {
                 }
               }
               this.$store.commit('snackbar/setMessage', { text: title + ' successfully deleted.' });
-              this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
               this.spliceSelected(groupName, selected);
+              this.$emit("refreshGroup", data);
             }
           }
         });
@@ -310,6 +192,7 @@ export default {
             }
             this.$store.commit('snackbar/setMessage', { text: (row.name || row.url) + ' successfully moved.' });
             this.spliceSelected(row.statusGroup, [ row.id ]);
+            this.$emit("refreshGroup", result);
           }
         }
       });
@@ -334,18 +217,31 @@ export default {
               }
               this.$store.commit('snackbar/setMessage', { text: `${selected.length} links successfully moved.` });
               this.spliceSelected(groupName, selected);
+              this.$emit("refreshGroup", result);
             }
           }
         });
       }
     },
-    changeSelection(data) {
-      if (data.selected.length > 0) {
-        data.selected = [];
+    changeRowSelection(data, index) {
+      const link = data.links[index];
+      if (link.selected) {
+        data.selected.push(link.id);
       } else {
-        data.links.forEach(link => {
-          data.selected.push(link.id);
-        });
+        for (let index = 0; index < data.selected.length; index++) {
+          if (data.selected[index] == link.id) {
+            data.selected.splice(index, 1);
+          }
+        }
+      }
+    },
+    changeAllSelection(data) {
+      let selectAll = (data.selected.length == 0);
+      if (!selectAll) data.selected = [];
+      for (let index = 0; index < data.links.length; index++) {
+        const link = data.links[index];
+        if (selectAll) data.selected.push(link.id);
+        link.selected = selectAll;
       }
     },
     convertLinksToStatusGroup() {
@@ -357,6 +253,7 @@ export default {
           WAITING: { links: [], selected: [] },
         };
         this.links.forEach(link => {
+          link.selected = false;
           this.groups[link.statusGroup].links.push(link);
         });
       }
@@ -375,7 +272,7 @@ export default {
     },
     copyTheLink(url) {
       this.copyToClipboard(url);
-      this.$store.commit('snackbar/setMessage', { text: 'Url copied' });
+      this.$store.commit('snackbar/setMessage', { text: 'Url copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
     }
   },
   created() {
@@ -389,10 +286,10 @@ export default {
     }
   },
   components: {
-    GroupSelect: () => import('./GroupSelect.vue'),
+    GroupSelect: () => import('./components/Select.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
-    LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
+    LinkRow: () => import('@/views/link/components/Row.vue'),
   }
 };
 </script>
@@ -400,19 +297,21 @@ export default {
 <style scoped>
   .link-info-wrapper {
     cursor: pointer;
+    margin-right: 15px;
+    margin-left: 32px;
+    border: 1px solid #ddd;
   }
   .link-info {
     display: flex;
     flex-wrap: wrap;
-    margin-left: 32px;
   }
   .link-info > div {
     flex-basis: 0;
     flex-grow: 1;
+    padding: 5px 10px;
   }
   .link-info > div:not(:last-child) {
-    margin-right: 10px;
-    border-right: 1px solid lightgrey;
     max-width: 180px;
+    border-right: 1px solid lightgrey;
   }
 </style>

@@ -4,24 +4,26 @@
     <v-dialog  v-model="opened" :max-width="findDialogWidth" overlay-opacity="0.2">
 
       <v-card>
-
         <v-card-title>
           <div>
-            <div class="caption">{{ this.groupName }}</div>
+            <div class="caption">For {{ this.groupName }}</div>
             Add New Links
           </div>
           <v-spacer></v-spacer>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
-        <v-divider></v-divider>
+        <div class="body-2 mx-4 pa-3" style="border: 1px solid #ddd">
+          <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
+          One url per row!
+        </div>
 
         <v-form ref="form" v-model="valid">
           <v-textarea
             autofocus
             outlined
             v-model="form.linksText"
-            :label="getTextareaLabel"
+            :label="`${rowLimit - lines} links can be added.`"
             class="pa-4 pb-0"
             rows="5"
             :rules="rules.linksText"
@@ -31,10 +33,7 @@
 
         <v-divider></v-divider>
 
-        <v-card-actions class="py-4">
-          <v-icon class="mr-2">mdi-alert-circle-outline</v-icon>
-          <span class="font-weight-light">One url per row!</span>
-          <v-spacer></v-spacer>
+        <v-card-actions class="py-3 mr-2 justify-end">
           <v-btn
             @click="save"
             color="primary"
@@ -51,17 +50,12 @@
 </template>
 
 <script>
-import GroupService from '@/service/group';
 import Utility from '@/helpers/utility';
-import { get } from 'vuex-pathify';
+import SystemService from '@/service/system';
 
 export default {
   props: ["groupId", "groupName"],
   computed: {
-    CURSTAT: get('session/getCurrentStatus'),
-    getTextareaLabel() {
-      return (this.rowLimit-this.lines) +' links can be added';
-    },
     findDialogWidth() {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs': return '90%';
@@ -70,10 +64,9 @@ export default {
     },
   },
   data() {
-    const CURSTAT = get('session/getCurrentStatus');
     return {
       lines: 0,
-      rowLimit: (CURSTAT.remainingLinkCount <= 100 ? CURSTAT.remainingLinkCount : 25),
+      rowLimit: 0,
       opened: false,
       loading: false,
       valid: false,
@@ -86,30 +79,45 @@ export default {
   },
   methods: {
     open() {
-      this.opened = true;
+      SystemService.getStatistics().then((res) => {
+        if (res && res.status) {
+          const result = res.data;
+          if (result.remainingLink) {
+            this.opened = true;
+            this.rowLimit = (result.remainingLink <= 100 ? result.remainingLink : 100);
 
-      let self = this;
-      this.$nextTick(() => {
-        self.$refs.form.resetValidation();
+            let self = this;
+            this.$nextTick(() => {
+              self.$refs.form.resetValidation();
+            });
+            this.$store.commit('session/SET_LINK_COUNT', result.linkCount);
+          } else {
+            this.$store.commit('snackbar/setMessage', 
+              { 
+                text: 'You have reached the limit of your plan. Please consider to subscribe a broader plan!', 
+                centered: true, 
+                closeButton: false, 
+                timeout: 2000 
+              }
+            );
+          }
+        }
       });
     },
     async save() {
-      this.activateRules();
-      await this.$refs.form.validate();
-      if (this.valid) {
-        this.loading = true;
-
-        const data = await GroupService.insertLinks(this.groupId, this.form.linksText);
-        if (data) {
-          this.$emit("added", data);
+      if (this.lines <= this.rowLimit) {
+        this.activateRules();
+        await this.$refs.form.validate();
+        if (this.valid) {
+          this.$emit("added", this.form.linksText);
           this.close();
         }
-        this.loading = false;
+      } else {
+        this.$store.commit('snackbar/setMessage', { text: 'You can add up to ' + this.rowLimit + ' links.' });
       }
     },
     close() {
       this.opened = false;
-      this.loading = false;
       this.rules = {};
       this.$refs.form.reset();
     },
@@ -138,7 +146,7 @@ export default {
         const newLines = this.form.linksText.split("\n").length;
         this.lines = newLines;
         if(e.keyCode == 13) {
-          if (this.CURSTAT.remainingLinkCount && newLines >= this.CURSTAT.remainingLinkCount)
+          if (newLines >= this.rowLimit)
           e.preventDefault();
           return false;
         }

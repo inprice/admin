@@ -37,9 +37,13 @@ export default (Vue) => {
     return 'NA';
   });
 
-  Vue.filter('toCurrency', (value) => {
+  Vue.filter('toCurrency', (value, format) => {
     try {
-      return numFormatter(store.get(SESSION+'@currencyFormat'), value);
+      if (format) {
+        return numFormatter(format, value);
+      } else {
+        return numFormatter(store.get(SESSION+'@currencyFormat'), value);
+      }
       /* eslint-disable no-empty */
     } catch (error) { }
   });

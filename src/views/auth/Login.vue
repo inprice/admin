@@ -56,8 +56,9 @@
 
           <v-card-actions class="px-0">
             <v-btn 
+              large
               block
-              color="info" 
+              color="info"
               @click="submit" 
               :loading="loading" 
               :disabled="loading">Sign In</v-btn>

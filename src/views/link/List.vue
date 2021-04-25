@@ -43,13 +43,14 @@
               </div>
             </div>
 
+<!-- 
             <link-details
               :data="openedDetail"
               :key="detailsRefreshCount"
               class="mt-2"
               v-if="showDetails==true && openedDetail && openedDetail.id==row.id"
             />
-
+ -->
           </v-card>
 
         </template>
@@ -168,7 +169,7 @@ export default {
   },
   components: {
     Confirm: () => import('@/component/Confirm.vue'),
-    LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
+    //LinkRow: () => import('@/views/link/components/LinkDetails.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 };
