@@ -18,17 +18,17 @@
             hide-details="true"
             class="ma-2"
             style="min-width: 120px;"
-            :label="(!groups[selectedTabName].selected.length ? 'Select All' : 'Deselect All')"
-            :value="groups[selectedTabName].selected.length == groups[selectedTabName].links.length"
-            :indeterminate="groups[selectedTabName].selected.length > 0 && groups[selectedTabName].selected.length != groups[selectedTabName].links.length"
-            @click="changeAllSelection(groups[selectedTabName])"
+            :label="(!groups[selectedTabName].selected ? 'Select All' : 'Deselect All')"
+            :value="groups[selectedTabName].selected == groups[selectedTabName].links.length"
+            :indeterminate="groups[selectedTabName].selected > 0 && groups[selectedTabName].selected != groups[selectedTabName].links.length"
+            @click="changeAllSelection(selectedTabName)"
           ></v-checkbox>
 
           <div class="mt-2">
             <v-btn
               small
               class="mx-1"
-              :disabled="groups[selectedTabName].selected.length < 1"
+              :disabled="!groups[selectedTabName].selected"
               @click="moveMultiple(selectedTabName)"
             >
               Move
@@ -37,9 +37,9 @@
             <v-btn 
               small
               class="mx-1"
-              :disabled="groups[selectedTabName].selected.length < 1"
-              @click="removeMultiple(selectedTabName)">
-                Delete ({{ groups[selectedTabName].selected.length }})
+              :disabled="!groups[selectedTabName].selected"
+              @click="deleteMultiple(selectedTabName)">
+                Delete ({{ groups[selectedTabName].selected }})
             </v-btn>
           </div>
 
@@ -67,11 +67,10 @@
               :linksCount="data.links.length"
               :showingId="showingId"
               :showDetails="showDetails"
-              :isChecked="row.selected"
+              :isChecked="row.selected == true"
               @rowSelected="changeRowSelection(data, index)"
               @moveOne="moveOne"
               @deleteOne="deleteOne"
-              @copyTheLink="copyTheLink"
               @toggleDetails="toggleDetails"
             />
           </v-card>
@@ -91,7 +90,6 @@
 </template>
 
 <script>
-//import Vue from 'vue';
 import LinkService from '@/service/link';
 
 export default {
@@ -111,17 +109,13 @@ export default {
     return {
       selectedTabIndex: 0,
       selectedTabName: 'ACTIVE',
-      loading: false,
-      helperDialog: false,
-      rulesPopup: false,
       showingId: -1,
       showDetails: false,
-      showCopiedTT: false,
       groups: {
-        ACTIVE: { links: [], selected: [] },
-        PROBLEM: { links: [], selected: [] },
-        TRYING: { links: [], selected: [] },
-        WAITING: { links: [], selected: [] },
+        ACTIVE: { links: [], selected: 0 },
+        PROBLEM: { links: [], selected: 0 },
+        TRYING: { links: [], selected: 0 },
+        WAITING: { links: [], selected: 0 },
       },
     }
   },
@@ -137,42 +131,12 @@ export default {
     deleteOne(row) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', (row.name || row.url)).then(async (confirm) => {
         if (confirm == true) {
-          const data = await LinkService.remove([ row.id ], this.groupId);
-          if (data) {
-            for (var i=0; i<this.groups[row.statusGroup].links.length; i++) {
-              if (this.groups[row.statusGroup].links[i].id == row.id) {
-                this.groups[row.statusGroup].links.splice(i, 1);
-                break;
-              }
-            }
-            this.$store.commit('snackbar/setMessage', { text: (row.name || row.url) + ' successfully deleted.' });
-            this.spliceSelected(row.statusGroup, [ row.id ]);
-            this.$emit("refreshGroup", data);
+          const result = await LinkService.remove([ row.id ], this.groupId);
+          if (result) {
+            this.clearSelectedLinks(row.statusGroup, [ row.id ], (row.name || row.url) + ' successfully deleted.', result.group);
           }
         }
       });
-    },
-    removeMultiple(groupName) {
-      const selected = this.groups[groupName].selected;
-      if (selected && selected.length) {
-        const title = `${selected.length} ${groupName} links`;
-        this.$refs.confirm.open('Delete', ' will be deleted. Are you sure?', title).then(async (confirm) => {
-          if (confirm == true) {
-            const data = await LinkService.remove(selected, this.groupId);
-            if (data) {
-              for (var i=0; i<this.groups[groupName].links.length; i++) {
-                if (selected.includes(this.groups[groupName].links[i].id)) {
-                  this.groups[groupName].links.splice(i, 1);
-                  i--;
-                }
-              }
-              this.$store.commit('snackbar/setMessage', { text: title + ' successfully deleted.' });
-              this.spliceSelected(groupName, selected);
-              this.$emit("refreshGroup", data);
-            }
-          }
-        });
-      }
     },
     moveOne(row) {
       this.$refs.groupSelect.open('For the selected link, please select a group to move', this.groupId).then(async (data) => {
@@ -184,64 +148,78 @@ export default {
             linkIdSet: [ row.id ],
           });
           if (result) {
-            for (var i=0; i<this.groups[row.statusGroup].links.length; i++) {
-              if (this.groups[row.statusGroup].links[i].id == row.id) {
-                this.groups[row.statusGroup].links.splice(i, 1);
-                break;
-              }
-            }
-            this.$store.commit('snackbar/setMessage', { text: (row.name || row.url) + ' successfully moved.' });
-            this.spliceSelected(row.statusGroup, [ row.id ]);
-            this.$emit("refreshGroup", result);
+            this.clearSelectedLinks(row.statusGroup, [ row.id ], (row.name || row.url) + ' successfully moved.', result.group);
           }
         }
       });
     },
-    moveMultiple(groupName) {
-      const selected = this.groups[groupName].selected;
-      if (selected && selected.length) {
-        this.$refs.groupSelect.open(`For selected ${selected.length} links, please select a group to move`, this.groupId).then(async (data) => {
-          if (data && (data.id || data.name)) {
-            const result = await LinkService.moveTo({
-              fromGroupId: this.groupId,
-              toGroupId: data.id,
-              toGroupName: data.name,
-              linkIdSet: selected,
-            });
+    deleteMultiple(groupName) {
+      let selection = this.findSelectedIds(groupName);
+      if (selection.length) {
+        const title = `${selection.length} ${groupName} links`;
+        this.$refs.confirm.open('Delete', ' will be deleted. Are you sure?', title).then(async (confirm) => {
+          if (confirm == true) {
+            const result = await LinkService.remove(selection, this.groupId);
             if (result) {
-              for (var i=0; i<this.groups[groupName].links.length; i++) {
-                if (selected.includes(this.groups[groupName].links[i].id)) {
-                  this.groups[groupName].links.splice(i, 1);
-                  i--;
-                }
-              }
-              this.$store.commit('snackbar/setMessage', { text: `${selected.length} links successfully moved.` });
-              this.spliceSelected(groupName, selected);
-              this.$emit("refreshGroup", result);
+              this.clearSelectedLinks(groupName, selection, title + ' successfully deleted.', result.group);
             }
           }
         });
       }
     },
-    changeRowSelection(data, index) {
-      const link = data.links[index];
-      if (link.selected) {
-        data.selected.push(link.id);
-      } else {
-        for (let index = 0; index < data.selected.length; index++) {
-          if (data.selected[index] == link.id) {
-            data.selected.splice(index, 1);
+    moveMultiple(groupName) {
+      let selection = this.findSelectedIds(groupName);
+      if (selection.length) {
+        const title = `${selection.length} ${groupName} links`;
+        this.$refs.groupSelect.open(`For selected ${title}, please select a group to move`, this.groupId).then(async (data) => {
+          if (data && (data.id || data.name)) {
+            const result = await LinkService.moveTo({
+              fromGroupId: this.groupId,
+              toGroupId: data.id,
+              toGroupName: data.name,
+              linkIdSet: selection,
+            });
+            if (result) {
+              this.clearSelectedLinks(groupName, selection, title + ' successfully moved.', result.group);
+            }
           }
-        }
+        });
       }
     },
-    changeAllSelection(data) {
-      let selectAll = (data.selected.length == 0);
-      if (!selectAll) data.selected = [];
-      for (let index = 0; index < data.links.length; index++) {
-        const link = data.links[index];
-        if (selectAll) data.selected.push(link.id);
-        link.selected = selectAll;
+    findSelectedIds(groupName) {
+      let selection = [];
+      for (var i=0; i<this.groups[groupName].links.length; i++) {
+        const link = this.groups[groupName].links;
+        if (link.selected) selection.push(link.id);
+      }
+      return selection;
+    },
+    clearSelectedLinks(groupName, selection, title, group) {
+      let decreaseByOne = (selection.length == 1 && this.groups[groupName].links[selection[0]]);
+      this.groups[groupName].links = this.groups[groupName].links.filter((link)=> selection.includes(link.id) == false);
+      if (decreaseByOne) {
+        this.groups[groupName].selected -= 1;
+      } else {
+        this.groups[groupName].selected = 0;
+      }
+      this.$store.commit('snackbar/setMessage', { text: title });
+      this.$emit("refreshGroup", group);
+    },
+    changeRowSelection(data, index) {
+      if (data.links[index].selected) {
+        data.selected += 1;
+      } else {
+        data.selected -= 1;
+      }
+    },
+    changeAllSelection(groupName) {
+      const data = this.groups[groupName];
+      let selectAll = (data.selected == 0);
+      data.links.forEach((link) => link.selected = selectAll);
+      if (selectAll == false) {
+        data.selected = 0;
+      } else {
+        data.selected = data.links.length;
       }
     },
     convertLinksToStatusGroup() {
@@ -258,22 +236,6 @@ export default {
         });
       }
     },
-    spliceSelected(statusGroup, selected) {
-      if (this.groups[statusGroup].selected.length == selected.length) {
-        this.groups[statusGroup].selected.length = 0;
-      } else {
-        for (var i=0; i<this.groups[statusGroup].selected.length; i++) {
-          if (selected.includes(this.groups[statusGroup].selected[i])) {
-            this.groups[statusGroup].selected.splice(i, 1);
-            i--;
-          }
-        }
-      }
-    },
-    copyTheLink(url) {
-      this.copyToClipboard(url);
-      this.$store.commit('snackbar/setMessage', { text: 'Url copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
-    }
   },
   created() {
     this.$nextTick(() => {
@@ -286,10 +248,10 @@ export default {
     }
   },
   components: {
-    GroupSelect: () => import('./components/Select.vue'),
+    GroupSelect: () => import('./Select.vue'),
+    LinkRow: () => import('@/views/link/components/Row.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
-    LinkRow: () => import('@/views/link/components/Row.vue'),
   }
 };
 </script>

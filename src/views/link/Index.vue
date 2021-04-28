@@ -3,7 +3,7 @@
   <div>
     <div>
       <div class="title">Links</div>
-      <div class="body-2">The list of your competitors linked to your products.</div>
+      <div class="body-2">The list of your competitors linked to your groups.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -73,7 +73,10 @@
     </div>
 
     <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.linkCount > 0">
-      <list :rows="searchResult" @deleted="rowDeleted" @statusToggled="statusToggled" />
+      <list
+        :rows="searchResult"
+        @refreshList="triggerSearch"
+      />
 
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
@@ -137,16 +140,6 @@ export default {
     triggerSearch() {
       ++this.search.counter; //triggers search call to the server
     },
-    rowDeleted(index) {
-      if (index < this.searchResult.length) {
-        this.searchResult.splice(index, 1);
-      }
-    },
-    statusToggled(data) {
-      if (data && data.index < this.searchResult.length) {
-        this.searchResult[data.index].status = data.status;
-      }
-    }
   },
   created() {
     this.triggerSearch();

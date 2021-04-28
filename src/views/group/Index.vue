@@ -148,8 +148,8 @@ export default {
     this.search();
   },
   components: {
-    Edit: () => import('./components/Edit.vue'),
-    Group: () => import('./components/Group.vue'),
+    Edit: () => import('./Edit.vue'),
+    Group: () => import('./Group.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
 }

@@ -5,11 +5,10 @@
     <!-- INFO   -->
     <!-- ------ -->
     <v-card-title class="py-1">
-      <router-link v-if="fromSearchPage" :to="{ name: 'group', params: {id: group.id} }">{{ group.name }}</router-link>
-      <span v-else>{{ group.name }}</span>
+      <span @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">{{ group.name }}</span>
       <v-spacer></v-spacer>
       <div>
-        <span class="blue--text" v-if="group.price"> {{ group.price | toCurrency }}</span>
+        <span v-if="group.price"> {{ group.price | toCurrency }}</span>
 
         <v-menu offset-y bottom left>
           <template v-slot:activator="{ on, attrs }">
@@ -25,7 +24,7 @@
           </template>
 
           <v-list dense>
-            <v-list-item link v-if="fromSearchPage" :to="{ name: 'group', params: {id: group.id} }">
+            <v-list-item link v-if="fromSearchPage"  @click="openDetails">
               <v-list-item-title>DETAILS</v-list-item-title>
             </v-list-item>
 
@@ -54,7 +53,7 @@
     <!-- ------ -->
     <!-- PRICES -->
     <!-- ------ -->
-    <div class="d-flex flex-wrap justify-start px-1">
+    <div class="d-flex flex-wrap justify-start px-1" @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
 
       <v-card
         v-if="group.minPrice"
@@ -267,6 +266,11 @@ export default {
     async addLinks(links) {
       const result = await GroupService.insertLinks(this.group.id, this.fromSearchPage, links);
       if (result && result.status) this.$emit('linksAdded', result.data);
+    },
+    openDetails() {
+      if (this.fromSearchPage) {
+        this.$router.push({ name: 'group', params: {id: this.group.id} });
+      }
     }
   },
   components: {

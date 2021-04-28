@@ -15,6 +15,7 @@
       />
 
       <div style="flex: 1">
+        <div v-if="fromSearchPage" class="overline" style="line-height: inherit">{{ row.groupName }}</div>
         <div v-if="row.name">
           {{ row.name }}
         </div>
@@ -23,7 +24,14 @@
         </div>
       </div>
 
-      <div>
+      <div class=" pt-2">
+          <div
+            v-if="fromSearchPage"
+            class="caption font-weight-medium text-center" 
+            style="border: 1px solid #ccc; border-radius: 3px"
+          >
+            {{ row.statusGroup }}
+          </div>
           <div v-if="row.price">
             <div 
               v-if="row.level != 'AVG'" 
@@ -37,11 +45,11 @@
             </span>
           </div>
 
-          <div      
+          <div
             v-if="!row.price"
-            class="caption text-right">
-              <div class="blue--text font-weight-medium">{{ row.statusGroup != 'WAITING' ? 'Checked' : 'Added' }}</div>
-              <ago :date="(row.checkedAt || row.createdAt)" />
+            class="caption text-right d-inline">
+              <span>{{ row.statusGroup != 'WAITING' ? 'Checked' : 'Added' }}</span>
+              <ago :class="{ 'd-inline' : fromSearchPage }" :date="(row.checkedAt || row.createdAt)" />
           </div>
       </div>
 
@@ -65,12 +73,12 @@
             </v-list-item>
 
             <v-divider v-if="row.name"></v-divider>
-            <v-list-item link @click="$emit('deleteOne', row)">
-              <v-list-item-title>DELETE THIS</v-list-item-title>
+            <v-list-item link v-if="fromSearchPage" @click="$router.push({ name: 'group', params: { id: row.groupId } })">
+              <v-list-item-title>OPEN GROUP PAGE</v-list-item-title>
             </v-list-item>
 
             <v-divider v-if="row.name"></v-divider>
-            <v-list-item link @click="$emit('copyTheLink', row.url)">
+            <v-list-item link @click="copyTheLink(row.url)">
               <v-list-item-title>COPY URL</v-list-item-title>
             </v-list-item>
 
@@ -79,6 +87,11 @@
             </v-list-item>
 
             <v-divider></v-divider>
+
+            <v-list-item link @click="$emit('deleteOne', row)">
+              <v-list-item-title>DELETE THIS</v-list-item-title>
+            </v-list-item>
+
             <v-list-item link @click="$emit('moveOne', row)">
               <v-list-item-title>MOVE</v-list-item-title>
             </v-list-item>
@@ -133,7 +146,13 @@
 
 <script>
 export default {
-  props: ['linksCount', 'row', 'showingId', 'showDetails', 'isChecked'],
+  props: ['linksCount', 'row', 'showingId', 'showDetails', 'isChecked', 'fromSearchPage'],
+  methods: {
+    copyTheLink(url) {
+      this.copyToClipboard(url);
+      this.$store.commit('snackbar/setMessage', { text: 'Url copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+    }
+  },
   components: {
     RowDetail: () => import('./RowDetail.vue'),
   },

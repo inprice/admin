@@ -58,8 +58,8 @@ export default {
         }
       });
     },
-    refreshGroup(result) {
-      this.data.group = result.group;
+    refreshGroup(group) {
+      this.data.group = group;
     },
     refreshWhole(result, message) {
       this.data.group = result.group;
@@ -73,8 +73,8 @@ export default {
     this.$nextTick(() => this.findGroup());
   },
   components: {
-    Links: () => import('./DetailLinkList'),
-    Group: () => import('./components/Group.vue'),
+    Group: () => import('./Group.vue'),
+    Links: () => import('./DetailLinks.vue'),
     Confirm: () => import('@/component/Confirm.vue')
   },
   watch: {
