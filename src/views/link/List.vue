@@ -44,7 +44,7 @@
         :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important' : 'margin: 10px 0')"
       >
         <template slot="progress">
-          <v-progress-linear color="red" indeterminate></v-progress-linear>
+          <v-progress-linear color="green" indeterminate></v-progress-linear>
         </template>
         <link-row
           :row="row"

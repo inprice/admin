@@ -158,3 +158,25 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+  .link-info {
+    display: flex;
+    margin-left: 32px;
+    margin-right: 15px;
+  }
+  .link-info > div {
+    min-width: 200px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+  }
+  .link-info > div:first-child {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+  .link-info > div:last-child {
+    flex-grow: 1;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+</style>
