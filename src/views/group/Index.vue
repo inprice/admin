@@ -1,152 +1,156 @@
 <template>
-  <div v-if="data.group" class="mt-2">
 
-    <span class="title">Info</span>
-    <v-card>
-      <v-card-title class="py-1">
-        <span>{{ data.group.name }} </span>
-        <v-spacer></v-spacer>
-        <span class="blue--text" v-if="data.group.price"> {{ data.group.price | toCurrency }}</span>
-      </v-card-title>
+  <div>
+    <div>
+      <div class="title">Groups</div>
+      <div class="body-2">Your groups.</div>
+    </div>
 
-      <prices :group="data.group" v-if="data.group.avgPrice > 0" />
+    <v-divider class="mt-2"></v-divider>
 
-      <v-divider class="mt-3"></v-divider>
+    <!-- --------------- -->
+    <!-- Filter and Rows -->
+    <!-- --------------- -->
+    <div class="d-flex justify-space-between">
 
-      <v-card-actions class="py-3">
+      <div class="col-10 pl-0">
+        <v-text-field 
+          autofocus
+          v-model="searchTerm"
+          @keyup.enter.native="search"
+          dense solo light
+          maxlength="100"
+          hide-details
+          placeholder="Search by Name">
+            <template slot="append">
+              <v-icon @click="clear">mdi-window-close</v-icon>
+            </template>
+        </v-text-field>
+      </div>
+
+      <div class="my-auto">
         <v-btn 
           small
           :disabled="$store.get('session/isViewer')"
-          style="min-width: 85px"
-          @click="remove">
-            Delete
+          @click="addNew">
+            Add new
         </v-btn>
-
-        <v-spacer></v-spacer>
-
-        <div>
-          <v-btn 
-            small
-            style="min-width: 85px"
-            @click="$router.go(-1)">
-              <v-icon>mdi-arrow-left-thin-circle-outline</v-icon> Go Back
-          </v-btn>
-
-          <v-btn 
-            small
-            :disabled="$store.get('session/isViewer')"
-            class="mx-3"
-            style="min-width: 85px"
-            color="success"
-            @click="edit">
-              Edit
-          </v-btn>
-
-          <v-btn 
-            small
-            :disabled="$store.get('session/isViewer')"
-            style="min-width: 85px"
-            color="info"
-            @click="openAddLinkDialog()">
-              Add New Links
-          </v-btn>
-        </div>
-      </v-card-actions>
-    </v-card>
-
-    <v-divider class="my-5"></v-divider>
-
-    <div class="d-flex justify-space-between">
-      <span class="title">Links</span>
-      <v-btn small @click="findGroup(data.group.id)">
-          Refresh Links
-      </v-btn>
+      </div>
     </div>
 
-    <links :groupId="data.group.id" :links="data.links" @deleted="linksDeleted" />
+    <div class="col pa-0">
+      <div v-if="searchResult && searchResult.length">
+        <group
+          :group="row"
+          :fromSearchPage="true"
+          v-for="(row, index) in searchResult" :key="row.id" 
+          @saved="refresh(index, $event)"
+          @linksAdded="refresh(index, $event)"
+          @removed="removed(index)"
+        />
+      </div>
 
-    <edit ref="editDialog" @saved="findGroup" />
+      <v-card v-else >
+        <block-message :message="'No group found! You can add a new one or change your criteria.'" />
+      </v-card>
 
-    <add-link ref="addLinkDialog" :groupId="data.group.id" :groupName="data.group.name" @added="linksAdded" />
-    <confirm ref="confirm" />
+      <div class="mt-3">
+        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+      </div>
+    </div>
+
+    <edit ref="editDialog" @saved="saveNew" />
 
   </div>
+
 </template>
 
 <script>
 import GroupService from '@/service/group';
+import SystemConsts from '@/data/system';
+import { get } from 'vuex-pathify'
 
 export default {
+  computed: {
+    CURSTAT: get('session/getCurrentStatus'),
+  },
   data() {
     return {
-      data: { },
+      searchTerm: '',
+      searchResult: [],
+      isListLoading: true,
+      isLoadMoreDisabled: true,
+      isLoadMoreClicked: false,
     };
   },
   methods: {
-    edit() {
-      let cloned = JSON.parse(JSON.stringify(this.data.group));
-      this.$refs.editDialog.open(cloned);
+    clear() {
+      this.searchTerm = '';
     },
-    remove() {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.data.group.name).then(async (confirm) => {
-        if (confirm == true) {
-          const data = await GroupService.remove(this.data.group.id);
-          if (data) {
-            this.$store.commit('snackbar/setMessage', { text: this.data.group.name + ' successfully deleted!' });
-            this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
-            this.$router.push({ name: 'groups' });
+    addNew() {
+      this.$refs.editDialog.open();
+    },
+    edit(id) {
+      this.$router.push({ name: 'group', params: { id } });
+    },
+    loadmore() {
+      this.isLoadMoreClicked = true;
+      this.search();
+    },
+    search() {
+      const loadMore = this.isLoadMoreClicked;
+      this.isListLoading = true;
+      this.isLoadMoreClicked = false;
+
+      GroupService.search(this.searchTerm)
+        .then((res) => {
+          this.isListLoading = false;
+          this.isLoadMoreDisabled = true;
+          if (res?.length) {
+            if (loadMore == true) {
+              this.searchResult = this.searchResult.concat(res);
+            } else {
+              this.searchResult = res;
+            }
+          } else {
+            this.searchResult = [];
           }
-        }
+          if (res) {
+            this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
+          }
       });
     },
-    openEditDialog() {
-      if (this.data.group) {
-        this.$refs.editDialog.open(this.data.group);
-      }
+    async saveNew(form) {
+      const result = await GroupService.save(form);
+      if (result && result.status) this.search();
     },
-    findGroup(id) {
-      if (id) {
-        GroupService.getLinks(id).then(res => {
-          if (res && res.status == true) {
-            this.data = res.data;
-          }
-        });
+    refresh(index, result) {
+      if (this.searchResult && result.group && this.searchResult.length > index) {
+        //Vue cannot sense of any change in array when we directly set the index or change the length!
+        this.$set(this.searchResult, index, result.group);
       } else {
-        GroupService.getLinks(this.$route.params.id).then(res => {
-          if (res && res.status == true) {
-            this.data = res.data;
-          }
-        });
+        this.search();
       }
     },
-    openAddLinkDialog() {
-      this.$refs.addLinkDialog.open();
+    removed(index) {
+      if (this.searchResult && this.searchResult.length > index) {
+        this.searchResult.splice(index, 1);
+        if (!this.searchResult || !this.searchResult.length) this.search();
+      }
     },
-    linksDeleted(data) {
-      this.$store.commit('snackbar/setMessage', { text: data.count + ' links have been successfully added.' });
-      this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
-      this.data.links = data.links;
-    },
-    linksAdded(data) {
-      this.$store.commit('snackbar/setMessage', { text: data.count + ' links have been successfully added.' });
-      this.$store.commit('session/SET_LINK_COUNT', data.linkCount);
-      this.data.links = data.links;
-    }
-  },
-  created() {
-    this.$nextTick(() => this.findGroup());
-  },
-  components: {
-    Edit: () => import('./Edit'),
-    Prices: () => import('./Prices'),
-    Links: () => import('./Links'),
-    AddLink: () => import('./AddLink'),
-    Confirm: () => import('@/component/Confirm.vue')
   },
   watch: {
-    '$route.path' () {
-      if (window.location.href.indexOf('/group/') > 0) this.findGroup();
-    }
-  }
-};
+    searchTerm() {
+      this.search();
+    },
+  },
+  created() {
+    this.search();
+  },
+  components: {
+    Edit: () => import('./Edit.vue'),
+    Group: () => import('./Group.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue')
+  },
+}
 </script>

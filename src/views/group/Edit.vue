@@ -11,7 +11,15 @@
           <v-spacer></v-spacer>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
+
         <v-divider></v-divider>
+
+        <div class="body-2 ma-3 pa-3" style="border: 1px solid #ddd">
+          <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
+          For competitiveness, please specify a price greater than zero!
+        </div>
+
+        <v-divider class="mb-3"></v-divider>
 
         <v-card-text class="pb-0">
 
@@ -38,9 +46,6 @@
           </v-form>
 
         </v-card-text>
-        <v-card-subtitle class="mt-0">
-          <span class="font-weight-medium text-decoration-underline">For competitive pricing</span>, please specify a price greater than zero!
-        </v-card-subtitle>
 
         <v-divider></v-divider>
 
@@ -48,9 +53,7 @@
           <v-spacer></v-spacer>
           <v-btn
             @click="save"
-            color="primary"
-            :loading="loading" 
-            :disabled="loading"
+            color="success"
           >
             Save
           </v-btn>
@@ -62,8 +65,6 @@
 </template>
 
 <script>
-import GroupService from '@/service/group';
-
 export default {
   computed: {
     findDialogWidth() {
@@ -79,7 +80,6 @@ export default {
   data() {
     return {
       opened: false,
-      loading: false,
       valid: false,
       rules: {},
       form: {
@@ -108,22 +108,14 @@ export default {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
-        this.loading = true;
         this.form.price = parseFloat(this.form.price);
-
-        const result = await GroupService.save(this.form);
-        if (result == true) {
-          this.close();
-          this.$emit('saved');
-        }
-        this.loading = false;
+        this.$emit('saved', this.form);
+        this.close();
       }
     },
     close() {
       this.opened = false;
-      this.loading = false;
       this.rules = {};
-      this.$refs.form.reset();
     },
     activateRules() {
       this.rules = {
@@ -132,6 +124,7 @@ export default {
           v => (v && v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
         ],
         price: [
+          v => !!v || "Required",
           v => (parseFloat(v) > -1) || "Base Price must be greater or equal than 0"
         ],
       }

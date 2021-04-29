@@ -97,15 +97,13 @@
                 <span class="subtitle-2"><ago :date="row.createdAt" /></span>
               </v-col>
               <v-col class="py-1" cols="3">
-                <div class="caption">
-                  Status
-                </div>
                 <v-chip
                   small
                   label
                   outlined
                   :color="findStatusColor(row.statusGroup)"
                   class="subtitle-2"
+                  style="min-width: 100px; text-align: center; display: inline-block; margin: 10px auto;"
                 >
                   {{ row.statusGroup }}
                 </v-chip>
@@ -160,37 +158,6 @@ export default {
     return {
       tabs: ['Prices', 'History', 'Specs'],
       selectedTab: 0,
-    }
-  },
-  methods: {
-    findDiffIcon(diffAmount) {
-      if (diffAmount < 0) return 'mdi-arrow-down';
-      if (diffAmount == 0) return 'mdi-arrow-minus';
-      return 'mdi-arrow-up';
-    },
-    findDiffColor(diffAmount) {
-      if (diffAmount < 0) return 'green';
-      if (diffAmount == 0) return 'blue';
-      return 'red';
-    },
-    findStatusColor(status) {
-      if (status == 'ACTIVE') return 'green';
-      if (status == 'TRYING') return 'cyan';
-      if (status == 'WAITING') return 'blue';
-      return 'red';
-    }
-  },
-  created() {
-    if (this.data.brand && this.data.sku) {
-      const brandProp = { key: 'Brand', value: this.data.brand };
-      const skuProp = { key: 'Code', value: this.data.sku };
-
-      if (this.data.specList.length == 0) {
-        this.data.specList = [brandProp, skuProp];
-      } else if (this.data.specList[0].value != skuProp.value && this.data.specList[0].value != brandProp.value) {
-        this.data.specList.unshift(brandProp);
-        this.data.specList.unshift(skuProp);
-      }
     }
   },
   components: {

@@ -66,9 +66,7 @@ function buildCurrent(state) {
       planId: selected.planId,
       planName: selected.planName,
       renewalAt: selected.renewalAt,
-      linkLimit: selected.linkLimit,
       linkCount: selected.linkCount,
-      remainingLinkCount: (selected.linkLimit-selected.linkCount),
       lastStatusUpdate: selected.lastStatusUpdate,
       email: selected.email,
       user: selected.user,
@@ -116,21 +114,10 @@ const mutations = {
     buildCurrent(state);
   },
 
-  SET_LINK_COUNT(state, count) {
+  SET_LINK_COUNT(state, val) {
     if (state.list[state.no]) {
-      state.list[state.no].linkCount = count;
-      state.list[state.no].remainingLinkCount = (state.list[state.no].linkLimit-count);
-      state.current.linkCount = count;
-      state.current.remainingLinkCount = (state.current.linkLimit-count);
-    }
-  },
-
-  CHANGE_LINK_COUNT(state, val) {
-    if (state.list[state.no]) {
-      state.list[state.no].linkCount += val;
-      state.list[state.no].remainingLinkCount = (state.list[state.no].linkLimit-state.list[state.no].linkCount);
-      state.current.linkCount += val;
-      state.current.remainingLinkCount = (state.current.linkLimit-state.current.linkCount);
+      state.list[state.no].linkCount = val;
+      state.current.linkCount = val;
     }
   },
 

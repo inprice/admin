@@ -41,6 +41,22 @@ Vue.mixin({
         case 'HIGHEST': return 'pink';
       }
     },
+    findDiffIcon(diffAmount) {
+      if (diffAmount < 0) return 'mdi-arrow-down';
+      if (diffAmount == 0) return 'mdi-arrow-minus';
+      return 'mdi-arrow-up';
+    },
+    findDiffColor(diffAmount) {
+      if (diffAmount < 0) return 'green';
+      if (diffAmount == 0) return 'blue';
+      return 'red';
+    },
+    findStatusColor(status) {
+      if (status == 'ACTIVE') return 'green';
+      if (status == 'TRYING') return 'orange';
+      if (status == 'WAITING') return 'blue';
+      return 'red';
+    },
     async copyToClipboard(sourceText) {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(sourceText);

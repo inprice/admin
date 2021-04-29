@@ -1,7 +1,7 @@
 <template>
   <div class="d-inline">
     <span>{{ formatted }}</span>
-    <v-icon :style="$vuetify.breakpoint.name == 'xs'" :color="color">mdi-{{ dir }}-circle</v-icon>
+    <v-icon :color="color">mdi-{{ dir }}-circle</v-icon>
   </div>
 </template>
 

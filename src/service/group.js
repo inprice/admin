@@ -25,15 +25,14 @@ export default {
 
     const res = await Helper.call('Group Save', { method, url: baseURL, data: form });
     if (res.status == true) store.commit('snackbar/setMessage', { text: `${form.name} has been successfully ${opType}` });
-    return res.status;
+    return res;
   },
 
-  async insertLinks(groupId, linksText) {
+  async insertLinks(groupId, fromSearchPage, linksText) {
     if (store.get('session/isViewer')) return;
 
-    const res = await Helper.call('Add Links', { url: baseURL + '/links/import', data: { groupId, linksText } });
-    if (res.status == true) return res.data;
-    return null;
+    const res = await Helper.call('Add Links', { url: baseURL + '/links/import', data: { groupId, fromSearchPage, linksText } });
+    return res;
   },
 
   async getIdNameList(excludedId) {
@@ -59,8 +58,7 @@ export default {
     if (store.get('session/isViewer')) return;
 
     const res = await Helper.call('Group Delete', { method: 'delete', url: baseURL + '/' + id });
-    if (res.status == true) return res.data;
-    return null;
+    return res;
   }
 
 };

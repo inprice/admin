@@ -1,174 +1,205 @@
 <template>
   <div>
 
-    <div v-if="rows && rows.length">
+    <div v-if="rows.length">
 
-      <v-hover v-for="(row, index) in rows" :key="row.id">
-        <template v-slot="{ hover }">
+      <div class="d-flex" style="align-items: end;" v-if="rows.length > 1">
+        <v-checkbox
+          hide-details="true"
+          class="mx-2"
+          style="min-width: 120px;"
+          :label="(!selected ? 'Select All' : 'Deselect All')"
+          :value="selected == rows.length"
+          :indeterminate="selected > 0 && selected != rows.length"
+          @click="changeAllSelection"
+        ></v-checkbox>
 
-          <v-card class="mt-3 pa-3 pb-2 transition-swing" :class="`elevation-${hover ? 6 : 2}`">
+        <div>
+          <v-btn
+            small
+            class="mx-1"
+            :disabled="!selected"
+            @click="moveMultiple"
+          >
+            Move
+          </v-btn>
 
-            <div @click="toggleDetails(row.id)" style="cursor: pointer">
-              <div class="d-flex justify-space-between subtitle font-weight-medium">
-                <div>{{ row.name || row.statusDescription || 'NOT YET' }}</div>
-                <div class="pl-2 cyan--text font-weight-bold">{{ row.price | toPrice }}</div>
-              </div>
-
-              <v-divider class="my-2"></v-divider>
-
-              <div class="d-flex justify-space-between caption">
-                <div v-if="row.seller">{{ row.seller }} ({{ row.platformName }})</div>
-                <div v-else>#{{ row.sku || (row.status == 'TOBE_CLASSIFIED' ? 'WAITING' : 'PROBLEM') }}</div>
-                <div>{{ row.position | toPosition }}</div>
-              </div>
-
-              <div class="d-flex justify-space-between caption">
-                <div class="text-truncate">
-                  <a :href="row.url" target="_blank">{{ row.url }}</a>
-                </div>
-                <div>{{ row.status.replaceAll('_', ' ') }}</div>
-              </div>
-            </div>
-
-            <v-divider class="mt-2 mb-3" />
-
-            <div class="row mx-0 d-flex" :class="$vuetify.breakpoint.xsOnly ? 'justify-center' : 'justify-end'">
-              <div>
-                <v-btn class="mx-1" small @click="toggleStatus(index, row.id)" :disabled="$store.get('session/isViewer')">
-                  <span v-if="row.status=='PAUSED'">Resume</span>
-                  <span v-else>Pause</span>
-                </v-btn>
-                <v-btn class="mx-1" small @click="remove(index, row.id, (row.name || row.url))" :disabled="$store.get('session/isViewer')">Delete</v-btn>
-                <v-btn class="mx-1" small @click="openGroupPage(row.groupId)">Group Details</v-btn>
-              </div>
-            </div>
-
-            <link-details
-              :data="openedDetail"
-              :key="detailsRefreshCount"
-              class="mt-2"
-              v-if="showDetails==true && openedDetail && openedDetail.id==row.id"
-            />
-
-          </v-card>
-
-        </template>
-      </v-hover>
-
-      <div class="caption mt-3">
-        <span class="font-weight-bold orange--text">Tip:</span>
-        Click on the card to toggle details panel!
+          <v-btn 
+            small
+            class="mx-1"
+            :disabled="!selected"
+            @click="deleteMultiple">
+              Delete ({{ selected }})
+          </v-btn>
+        </div>
       </div>
 
+      <v-card 
+        tile 
+        v-for="(row, index) in rows" 
+        class="pa-2 pt-0"
+        :key="row.id" 
+        :loading="detailLoading && showingId==row.id"
+        :class="(showingId==row.id && showDetails==true ? 'elevation-5' : '')"
+        :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important' : 'margin: 10px 0')"
+      >
+        <template slot="progress">
+          <v-progress-linear color="green" indeterminate></v-progress-linear>
+        </template>
+        <link-row
+          :row="row"
+          :linksCount="rows.length"
+          :showingId="showingId"
+          :showDetails="showDetails"
+          :isChecked="row.selected == true"
+          :fromSearchPage="true"
+          @rowSelected="changeRowSelection(index)"
+          @moveOne="moveOne"
+          @deleteOne="deleteOne"
+          @toggleDetails="toggleDetails"
+        />
+      </v-card>
     </div>
-
-    <v-card v-else >
-      <block-message :message="'No link found! Please change your criteria or add new competitors to your products.'" />
-    </v-card>
+    <block-message 
+      v-else dense
+      :message="`No link found.`"
+    />
 
     <confirm ref="confirm"></confirm>
+    <group-select ref="groupSelect"></group-select>
+
   </div>
 
 </template>
 
 <script>
 import LinkService from '@/service/link';
-import moment from 'moment-timezone';
 
 export default {
-  props: ['rows', 'isLoading'],
+  props: ['rows'],
   data() {
     return {
-      detailsRefreshCount: 0,
+      showingId: -1,
       showDetails: false,
-      openedDetail: null,
-      lastToggledLinkId: null,
+      detailLoading: false,
+      selected: 0
     }
   },
   methods: {
-    remove(index, id, name) {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', name).then(async (confirm) => {
+    toggleDetails(row) {
+      if (this.showingId == row.id) {
+        this.showDetails = !this.showDetails;
+      } else {
+        this.showingId = row.id;
+        this.detailLoading = true;
+        LinkService.getDetails(row.id).then((res) => {
+          this.detailLoading = false;
+          if (res && res.data) {
+            row.historyList = res.data.historyList;
+            row.priceList = res.data.priceList;
+            row.specList = res.data.specList;
+            this.showDetails = true;
+          } else {
+            this.showDetails = false;
+          }
+        });
+      }
+    },
+    deleteOne(row) {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', (row.name || row.url)).then(async (confirm) => {
         if (confirm == true) {
-          const result = await LinkService.remove(id);
-          if (result == true) {
+          const result = await LinkService.remove([ row.id ], this.groupId);
+          if (result) {
+            this.selected = 0;
             this.$store.commit('snackbar/setMessage', { text: 'Link successfully deleted.' });
-            this.$emit('deleted', index);
+            this.$emit('refreshList');
           }
         }
       });
     },
-    async toggleStatus(index, id) {
-      if (id != this.lastToggledLinkId) {
-        await this.toggleDetails(id);
-      }
-
-      let status = 'PAUSED';
-      if (this.openedDetail.historyList[0].status == status) {
-        status = this.openedDetail.historyList[1].status;
-      }
-
-      if (this.openedDetail.historyList.length > 2) {
-        const row0 = this.openedDetail.historyList[0];
-        const row2 = this.openedDetail.historyList[2];
-        if (row0.status == row2.status) {
-          const now = moment();
-          const diff0 = now.diff(row0.createdAt, 'days');
-          const diff2 = now.diff(row2.createdAt, 'days');
-          if (diff0 == 0 && diff2 == 0) {
-            this.$store.commit('snackbar/setMessage', { text: 'You are not allowed to Pause/Resume a link more than twice in the same day!' });
-            return;
+    moveOne(row) {
+      this.$refs.groupSelect.open('For the selected link, please select a group to move', this.groupId).then(async (data) => {
+        if (data && (data.id || data.name)) {
+          const result = await LinkService.moveTo({
+            fromGroupId: this.groupId,
+            toGroupId: data.id,
+            toGroupName: data.name,
+            linkIdSet: [ row.id ],
+          });
+          if (result) {
+            this.selected = 0;
+            this.$store.commit('snackbar/setMessage', { text: 'Link successfully moved.' });
+            this.$emit('refreshList');
           }
         }
-      }
-
-      await LinkService.toggleStatus(id);
-
-      this.$emit('statusToggled', { index, status });
-      if (this.openedDetail && this.openedDetail.id == id) {
-        const select = (status == 'PAUSED' ? 0 : 1);
-        const newOne = JSON.parse(JSON.stringify(this.openedDetail.historyList[select]));
-        newOne.status = status;
-        if (select == 0) {
-          newOne.problem = null;
-          newOne.httpStatus = 0;
-        }
-        newOne.createdAt = moment().format('YYYY-MM-DD HH:mm:ss');
-        this.openedDetail.historyList.unshift(newOne);
-        this.detailsRefreshCount++;
-      } else {
-        this.detailsRefreshCount = 0;
+      });
+    },
+    deleteMultiple() {
+      let selection = this.findSelectedIds();
+      if (selection.length) {
+        const title = `${selection.length} links`;
+        this.$refs.confirm.open('Delete', ' will be deleted. Are you sure?', title).then(async (confirm) => {
+          if (confirm == true) {
+            const result = await LinkService.remove(selection, this.groupId);
+            if (result) {
+              this.selected = 0;
+              this.$store.commit('snackbar/setMessage', { text: title + ' successfully deleted.' });
+              this.$emit('refreshList');
+            }
+          }
+        });
       }
     },
-    async toggleDetails(id) {
-      if (this.openedDetail && this.openedDetail.id == id) {
-        this.showDetails = !this.showDetails;
-        return;
+    moveMultiple() {
+      let selection = this.findSelectedIds();
+      if (selection.length) {
+        const title = `${selection.length} links`;
+        this.$refs.groupSelect.open(`For selected ${title}, please select a group to move`, this.groupId).then(async (data) => {
+          if (data && (data.id || data.name)) {
+            const result = await LinkService.moveTo({
+              fromGroupId: this.groupId,
+              toGroupId: data.id,
+              toGroupName: data.name,
+              linkIdSet: selection,
+            });
+            if (result) {
+              this.selected = 0;
+              this.$store.commit('snackbar/setMessage', { text: title + ' successfully moved.' });
+              this.$emit('refreshList');
+            }
+          }
+        });
       }
-      const res = await LinkService.getDetails(id);
-      if (res && res.data) {
-        this.openedDetail = {};
-        this.openedDetail.id = id;
-        this.openedDetail.checkedAt = res.data.link.checkedAt;
-        this.openedDetail.updatedAt = res.data.link.updatedAt;
-        this.openedDetail.brand = res.data.link.brand;
-        this.openedDetail.shipment = res.data.link.shipment;
-        this.openedDetail.historyList = res.data.historyList;
-        this.openedDetail.priceList = res.data.priceList;
-        this.openedDetail.specList = res.data.specList;
-        this.showDetails = true;
-      } else {
-        this.showDetails = false;
-        this.openedDetail = null;
-      }
-      this.lastToggledLinkId = id;
     },
-    openGroupPage(groupId) {
-      this.$router.push({ name: 'group', params: { id: groupId } });
-    }
+    findSelectedIds() {
+      let selection = [];
+      for (var i=0; i<this.rows.length; i++) {
+        const link = this.rows[i];
+        if (link.selected) selection.push(link.id);
+      }
+      return selection;
+    },
+    changeRowSelection(index) {
+      if (this.rows[index].selected) {
+        this.selected += 1;
+      } else {
+        this.selected -= 1;
+      }
+    },
+    changeAllSelection() {
+      let selectAll = (!this.selected || this.selected == 0);
+      this.rows.forEach((link) => link.selected = selectAll);
+      if (selectAll == false) {
+        this.selected = 0;
+      } else {
+        this.selected = this.rows.length;
+      }
+    },
   },
   components: {
+    LinkRow: () => import('./components/Row.vue'),
+    GroupSelect: () => import('@/views/group/Select.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
-    LinkDetails: () => import('@/views/link/components/LinkDetails.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 };

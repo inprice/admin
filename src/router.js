@@ -73,12 +73,12 @@ const router = new VueRouter({
         {
           name: 'groups',
           path: 'groups',
-          component: () => import('./views/group/list/Index.vue')
+          component: () => import('./views/group/Index.vue')
         },
         {
           name: 'group',
           path: 'group/:id',
-          component: () => import('./views/group/Index.vue')
+          component: () => import('./views/group/Detail.vue')
         },
         {
           name: 'plans',

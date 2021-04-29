@@ -3,13 +3,19 @@
 
     <v-snackbar 
       v-model="snackbar.show" 
-      :timeout="4000" 
+      :timeout="snackbar.timeout" 
       :color="snackbar.color"
-      top
+      :top="!snackbar.centered"
+      :centered="snackbar.centered"
     >
-      <v-icon left>mdi-shield-alert-outline</v-icon>
-      {{ snackbar.message }}
-      <template v-slot:action="{ attrs }">
+      <div v-if="snackbar.centered" class="text-center">
+        <v-icon>mdi-shield-alert-outline</v-icon>
+      </div>
+      <v-icon v-else>mdi-shield-alert-outline</v-icon>
+      <span class="font-weight-medium" :class="{'text-center d-block pt-3 pb-2': snackbar.centered}">
+        {{ snackbar.message }}
+      </span>
+      <template v-slot:action="{ attrs }" v-if="snackbar.closeButton">
         <v-btn
           text
           color="white"
@@ -71,9 +77,11 @@ export default {
     return {
       snackbar: {
         show: false,
-        level: 'info',
         color: 'info',
-        message: ''
+        message: '',
+        timeout: 3500,
+        centered: false,
+        closeButton: true,
       },
       warning: {
         show: false,
@@ -84,10 +92,14 @@ export default {
   },
   created() {
     this.$store.watch(state => state.snackbar.text, () => {
-      if (this.$store.state.snackbar.text !== '') {
+      const ref = this.$store.state.snackbar;
+      if (ref.text !== '') {
+        this.snackbar.message = ref.text;
+        this.snackbar.color = ref.color;
+        this.snackbar.timeout = ref.timeout;
+        this.snackbar.centered = ref.centered;
+        this.snackbar.closeButton = ref.closeButton;
         this.snackbar.show = true;
-        this.snackbar.message = this.$store.state.snackbar.text;
-        this.snackbar.color = this.$store.state.snackbar.color;
         this.$store.commit('snackbar/setMessage', { text: '' });
       }
     });

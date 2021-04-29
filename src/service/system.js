@@ -9,4 +9,9 @@ export default {
     return res;
   },
 
+  async getStatistics() {
+    const res = await Helper.call('Statistics', { method: 'get', url: baseURL + '/statistics' });
+    return res;
+  },
+
 };
