@@ -34,15 +34,15 @@
               max-width="400">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                  fab dark x-small
+                  fab x-small
                   v-bind="attrs"
                   v-on="on"
                   tabindex="-1"
                   elevation="1"
                   style="margin-top: 1px;"
-                  :color="deepEqual(searchForm, baseSearchForm) ? 'cyan darken-1' : 'pink darken-1'"
+                  :color="deepEqual(searchForm, baseSearchForm) ? 'green' : 'pink'"
                 >
-                  <v-icon>mdi-filter-menu</v-icon>
+                  <v-icon color="white">mdi-filter-menu-outline</v-icon>
                 </v-btn>
               </template>
 
@@ -99,6 +99,14 @@
                     v-model="searchForm.orderDir"
                     :items="orderDirItems"
                   ></v-select>
+
+                  <v-select
+                    dense
+                    outlined
+                    label="Row Limit"
+                    v-model="searchForm.rowLimit"
+                    :items="rowLimitItems"
+                  ></v-select>
                 </v-card-text>
 
                 <v-divider></v-divider>
@@ -123,6 +131,7 @@
 
     <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.linkCount > 0">
       <list
+        ref="list"
         :rows="searchResult"
         @refreshList="search"
       />
@@ -154,7 +163,6 @@
 
 <script>
 import LinkService from '@/service/link';
-import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
 const searchByItems = ['Name', 'Seller', 'Brand', 'SKU', 'Platform'];
@@ -162,14 +170,17 @@ const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL'];
 const statusItems = ['WAITING', 'ACTIVE', 'TRYING', 'PROBLEM'];
 const orderByItems = [...searchByItems, 'Level', 'Price', 'Last_Checked', 'Last_Updated'];
 const orderDirItems = ['Ascending', 'Descending'];
+const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  searchBy: searchByItems[0],
   levels: [],
   statuses: [],
+  searchBy: searchByItems[0],
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
+  rowLimit: rowLimitItems[0],
+  rowCount: 0,
 }
 
 export default {
@@ -189,6 +200,7 @@ export default {
       statusItems,
       orderByItems,
       orderDirItems,
+      rowLimitItems,
       baseSearchForm,
     };
   },
@@ -202,6 +214,9 @@ export default {
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
+      } else {
+        this.searchForm.rowCount = 0;
+        if (this.$refs.list) this.$refs.list.clearSelected();
       }
 
       const loadMore = this.isLoadMoreClicked;
@@ -222,7 +237,7 @@ export default {
             this.searchResult = [];
           }
           if (res) {
-            this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
+            this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
       });
     },

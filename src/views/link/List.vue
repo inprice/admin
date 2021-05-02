@@ -199,6 +199,9 @@ export default {
         this.selected = this.rows.length;
       }
     },
+    clearSelected() {
+      this.selected = 0;
+    }
   },
   components: {
     LinkRow: () => import('./components/Row.vue'),

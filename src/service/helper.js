@@ -41,7 +41,12 @@ export default {
         return { error: 'Network Error', status: false };
       }
     } catch (err) {
-      logoutCheck(err.message);
+      console.log(err.message);
+      if (err.message.includes("code 400")) {
+        store.commit('snackbar/setMessage', { text: 'Invalid data', level: 'error' });
+      } else {
+        logoutCheck(err.message);
+      }
       return { error: err.message, status: false };
     }
   }
