@@ -39,7 +39,7 @@
         v-for="(row, index) in rows" 
         class="pa-2 pt-0"
         :key="row.id" 
-        :loading="detailLoading && showingId==row.id"
+        :loading="detailLoading && loadingId==row.id"
         :class="(showingId==row.id && showDetails==true ? 'elevation-5' : '')"
         :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important' : 'margin: 10px 0')"
       >
@@ -48,6 +48,7 @@
         </template>
         <link-row
           :row="row"
+          :details="row.details"
           :linksCount="rows.length"
           :showingId="showingId"
           :showDetails="showDetails"
@@ -79,30 +80,33 @@ export default {
   props: ['rows'],
   data() {
     return {
-      showingId: -1,
+      showingId: 0,
       showDetails: false,
+      loadingId: 0,
       detailLoading: false,
       selected: 0
     }
   },
   methods: {
-    toggleDetails(row) {
-      if (this.showingId == row.id) {
-        this.showDetails = !this.showDetails;
-      } else {
-        this.showingId = row.id;
-        this.detailLoading = true;
-        LinkService.getDetails(row.id).then((res) => {
-          this.detailLoading = false;
+    async toggleDetails(row) {
+      if (this.showingId != row.id) {
+        if (!row.details) {
+          this.loadingId = row.id;
+          this.detailLoading = true;
+          const res = await LinkService.getDetails(row.id);
           if (res && res.data) {
-            row.historyList = res.data.historyList;
-            row.priceList = res.data.priceList;
-            row.specList = res.data.specList;
-            this.showDetails = true;
-          } else {
-            this.showDetails = false;
+            row.details = {
+              historyList: res.data.historyList,
+              priceList: res.data.priceList,
+              specList: res.data.specList
+            };
           }
-        });
+          this.detailLoading = false;
+        }
+        this.showingId = row.id;
+        this.showDetails = true;
+      } else {
+        this.showDetails = !this.showDetails;
       }
     },
     deleteOne(row) {
@@ -205,7 +209,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
   tr {
     cursor: pointer;
   }
@@ -213,5 +217,8 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  .v-card {
+    overflow-wrap: normal;
   }
 </style>

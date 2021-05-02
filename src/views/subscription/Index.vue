@@ -75,15 +75,13 @@ export default {
       this.$store.dispatch('session/refresh');
     }
   },
-  created() {
-    this.$nextTick(async () => {
-      SubsService.getTransactions()
-        .then((res) => {
-          if (res) {
-            this.allTrans = res.data.all;
-            this.invoiceTrans = res.data.invoice;
-          }
-      });
+  mounted() {
+    SubsService.getTransactions()
+      .then((res) => {
+        if (res) {
+          this.allTrans = res.data.all;
+          this.invoiceTrans = res.data.invoice;
+        }
     });
   },
   components: {

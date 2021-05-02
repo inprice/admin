@@ -112,10 +112,8 @@ export default {
       this.loading.closeall = false;
     }
   },
-  created() {
-    this.$nextTick(() => {
-      this.getOpenedSessions();
-    });
+  mounted() {
+    this.getOpenedSessions();
   },
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),

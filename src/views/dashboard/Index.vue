@@ -276,7 +276,7 @@ export default {
       }
     },  
   },
-  created() {
+  mounted() {
     this.refresh();
   },
   components: {

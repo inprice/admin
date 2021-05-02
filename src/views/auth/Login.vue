@@ -116,15 +116,21 @@ export default {
         this.loading = true;
         const result = await this.$store.dispatch('session/login', this.form);
         if (result != null) {
-          const ses = result.sessions[result.sessionNo];
-          if (ses.planName) {
-            if (ses.linkCount > 0) {
-              this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
+          let ses = result.sessions[result.sessionNo];
+          if (ses == undefined && result.sessionNo != 0 && result.sessions[0]) {
+            ses = result.sessions[0];
+            this.$store.commit('session/SET_CURRENT', ses, 0);
+          }
+          if (ses) {
+            if (ses.planName) {
+              if (ses.linkCount > 0) {
+                this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
+              } else {
+                this.$router.push({ name: 'groups', params: { sid: result.sessionNo } });
+              }
             } else {
-              this.$router.push({ name: 'groups', params: { sid: result.sessionNo } });
+              this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
             }
-          } else {
-            this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
           }
         }
         this.loading = false;
@@ -144,7 +150,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
 
     this.infoMessage = null;

@@ -144,7 +144,7 @@ export default {
       this.search();
     },
   },
-  created() {
+  mounted() {
     this.search();
   },
   components: {

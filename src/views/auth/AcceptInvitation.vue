@@ -127,7 +127,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.form.token = this.$route.query.token;
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
   }

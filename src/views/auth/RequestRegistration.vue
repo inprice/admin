@@ -149,7 +149,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
   }
 };

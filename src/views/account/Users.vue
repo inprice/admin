@@ -207,10 +207,8 @@ export default {
       }
     }
   },
-  created() {
-    this.$nextTick(() => {
-      this.refreshMembers();
-    });
+  mounted() {
+    this.refreshMembers();
   },
   components: {
     SendInvitation: () => import('./components/SendInvitation.vue'),

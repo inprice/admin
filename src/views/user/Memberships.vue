@@ -128,10 +128,8 @@ export default {
       });
     }
   },
-  created() {
-    this.$nextTick(() => {
-      this.refreshMembers();
-    });
+  mounted() {
+    this.refreshMembers();
   },
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),

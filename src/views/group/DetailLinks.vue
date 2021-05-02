@@ -18,7 +18,7 @@
             hide-details="true"
             class="ma-2"
             style="min-width: 120px;"
-            :label="(!groups[selectedTabName].selected ? 'Select All' : 'Deselect All')"
+            :label="(groups[selectedTabName].selected < 1 ? 'Select All' : 'Deselect All')"
             :value="groups[selectedTabName].selected == groups[selectedTabName].links.length"
             :indeterminate="groups[selectedTabName].selected > 0 && groups[selectedTabName].selected != groups[selectedTabName].links.length"
             @click="changeAllSelection(selectedTabName)"
@@ -28,7 +28,7 @@
             <v-btn
               small
               class="mx-1"
-              :disabled="!groups[selectedTabName].selected"
+              :disabled="groups[selectedTabName].selected < 1"
               @click="moveMultiple(selectedTabName)"
             >
               Move
@@ -37,9 +37,9 @@
             <v-btn 
               small
               class="mx-1"
-              :disabled="!groups[selectedTabName].selected"
+              :disabled="groups[selectedTabName].selected < 1"
               @click="deleteMultiple(selectedTabName)">
-                Delete ({{ groups[selectedTabName].selected }})
+                Delete ({{ groups[selectedTabName].selected > 0 ? groups[selectedTabName].selected : 0 }})
             </v-btn>
           </div>
 
@@ -58,12 +58,17 @@
             tile 
             v-for="(row, index) in data.links" 
             class="pa-2"
+            :key="row.id"
+            :loading="detailLoading && loadingId==row.id"
             :class="(showingId==row.id && showDetails==true ? 'elevation-5' : '')"
-            :key="row.id" 
             :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important' : 'margin: 10px 0')"
           >
+            <template slot="progress">
+              <v-progress-linear color="green" indeterminate></v-progress-linear>
+            </template>
             <link-row
               :row="row"
+              :details="row.details"
               :linksCount="data.links.length"
               :showingId="showingId"
               :showDetails="showDetails"
@@ -109,8 +114,10 @@ export default {
     return {
       selectedTabIndex: 0,
       selectedTabName: 'ACTIVE',
-      showingId: -1,
+      showingId: 0,
       showDetails: false,
+      loadingId: 0,
+      detailLoading: false,
       groups: {
         ACTIVE: { links: [], selected: 0 },
         PROBLEM: { links: [], selected: 0 },
@@ -120,12 +127,25 @@ export default {
     }
   },
   methods: {
-    toggleDetails(row) {
-      if (this.showingId == row.id) {
-        this.showDetails = !this.showDetails;
-      } else {
+    async toggleDetails(row) {
+      if (this.showingId != row.id) {
+        if (!row.details) {
+          this.loadingId = row.id;
+          this.detailLoading = true;
+          const res = await LinkService.getDetails(row.id);
+          if (res && res.data) {
+            row.details = {
+              historyList: res.data.historyList,
+              priceList: res.data.priceList,
+              specList: res.data.specList
+            };
+          }
+          this.detailLoading = false;
+        }
         this.showingId = row.id;
         this.showDetails = true;
+      } else {
+        this.showDetails = !this.showDetails;
       }
     },
     deleteOne(row) {
@@ -237,10 +257,8 @@ export default {
       }
     },
   },
-  created() {
-    this.$nextTick(() => {
-      this.convertLinksToStatusGroup();
-    });
+  mounted() {
+    this.convertLinksToStatusGroup();
   },
   watch: {
     links() {

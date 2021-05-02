@@ -90,7 +90,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.$store.watch(state => state.snackbar.text, () => {
       const ref = this.$store.state.snackbar;
       if (ref.text !== '') {

@@ -29,6 +29,14 @@ Vue.use(VuePageTransition);
 
 Vue.component('ago', () => import('./component/simple/Ago.vue'));
 
+function deepEqual(x, y) {
+  return (x && y && typeof x === 'object' && typeof y === 'object') ?
+    (Object.keys(x).length === Object.keys(y).length) &&
+      Object.keys(x).reduce(function(isEqual, key) {
+        return isEqual && deepEqual(x[key], y[key]);
+      }, true) : (x === y);
+}
+
 Vue.mixin({
   methods: {
     findLevelColor(level) {
@@ -57,6 +65,13 @@ Vue.mixin({
       if (status == 'WAITING') return 'blue';
       return 'red';
     },
+    findStatusBackColor(status) {
+      if (status == 'ACTIVE') return '#daffa6';
+      if (status == 'TRYING') return '#ffe069';
+      if (status == 'WAITING') return '#b4ffff';
+      return '#fffebe';
+    },
+    deepEqual,
     async copyToClipboard(sourceText) {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(sourceText);

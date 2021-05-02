@@ -69,8 +69,8 @@ export default {
       }
     },
   },
-  created() {
-    this.$nextTick(() => this.findGroup());
+  mounted() {
+    this.findGroup();
   },
   components: {
     Group: () => import('./Group.vue'),

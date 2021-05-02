@@ -194,10 +194,8 @@ export default {
       return coupon.code;
     }
   },
-  created() {
-    this.$nextTick(() => {
-      this.getCoupons();
-    });
+  mounted() {
+    this.getCoupons();
   },
   components: {
     ApplyCoupon: () => import('./Apply.vue'),

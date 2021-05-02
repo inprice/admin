@@ -25,19 +25,18 @@
             <v-row class="pa-0 ma-0 py-1" :class="index == data.priceList.length-1 ? 'last-row' : ''">
               <v-col class="py-1" cols="3">
                 <div class="caption">
-                  Price
-                </div>
-                <span class="subtitle-2">{{ row.price | toPrice }}</span>
-              </v-col>
-              <v-col class="py-1" cols="3">
-                <div class="caption">
                   When
                 </div>
                 <span class="subtitle-2"><ago :date="row.createdAt" /></span>
               </v-col>
+              <v-col class="py-1" cols="3">
+                <div class="caption">
+                  Price
+                </div>
+                <span class="subtitle-2">{{ row.price | toPrice }}</span>
+              </v-col>
               <v-col class="py-1">
                 <div 
-                  v-if="row.diffAmount" 
                   class="subtitle-2 text-center d-flex justify-space-around"
                   style="max-width: 150px"
                 >
@@ -96,7 +95,7 @@
                 </div>
                 <span class="subtitle-2"><ago :date="row.createdAt" /></span>
               </v-col>
-              <v-col class="py-1" cols="3">
+              <v-col class="py-1 hidden-xs-only" cols="3">
                 <v-chip
                   small
                   label
@@ -153,7 +152,7 @@
 
 <script>
 export default {
-  props: ["data"],
+  props: ['data'],
   data() {
     return {
       tabs: ['Prices', 'History', 'Specs'],

@@ -15,67 +15,116 @@
 
       <div class="col-10 pl-0 d-flex">
         <v-text-field 
+          ref="term"
           autofocus
-          v-model="search.term"
-          @keyup.enter.native="search"
-          dense solo light
-          maxlength="100"
+          outlined dense
           hide-details
-          placeholder="Search by Name">
-            <template slot="append">
-              <v-icon @click="clear">mdi-window-close</v-icon>
-            </template>
+          maxlength="100"
+          v-model="searchForm.term"
+          @keyup="isSearchable($event)"
+          :label="searchForm.searchBy"
+          :placeholder="'Search by ' + searchForm.searchBy"
+        >
+          <template v-slot:append>
+            <v-menu
+              offset-y
+              bottom left
+              v-model="menu"
+              :close-on-content-click="false"
+              max-width="400">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  fab dark x-small
+                  v-bind="attrs"
+                  v-on="on"
+                  tabindex="-1"
+                  elevation="1"
+                  style="margin-top: 1px;"
+                  :color="deepEqual(searchForm, baseSearchForm) ? 'cyan darken-1' : 'pink darken-1'"
+                >
+                  <v-icon>mdi-filter-menu</v-icon>
+                </v-btn>
+              </template>
+
+              <v-card>
+                <v-card-text class="pb-0">
+                  <div class="subtitle-1 pb-1 d-flex justify-space-between">
+                    <span>Search Options</span>
+                    <v-icon style="cursor: pointer" @click="menu = false">mdi-close</v-icon>
+                  </div>
+                  
+                  <v-divider class="py-2 pb-4"></v-divider>
+
+                  <v-select
+                    autofocus
+                    dense
+                    label="Search By"
+                    outlined
+                    v-model="searchForm.searchBy"
+                    :items="searchByItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    label="Levels"
+                    v-model="searchForm.levels"
+                    :items="levelItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    label="Statuses"
+                      v-model="searchForm.statuses"
+                    :items="statusItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    outlined
+                    label="Order By"
+                    v-model="searchForm.orderBy"
+                    :items="orderByItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    outlined
+                    label="Order Dir"
+                    v-model="searchForm.orderDir"
+                    :items="orderDirItems"
+                  ></v-select>
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn outlined text @click="resetForm" tabindex="-1">
+                    Reset
+                  </v-btn>
+                  <v-btn outlined text color="primary" @click="applyOptions">
+                    OK
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+
+            </v-menu>
+          </template>
         </v-text-field>
       </div>
-
-      <v-menu
-        v-model="menu"
-        :close-on-content-click="false"
-        :nudge-width="100"
-        transition="slide-x-transition"
-      >
-
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn 
-            class="col-1 my-auto" 
-            v-bind="attrs"
-            v-on="on"
-          >
-            Filters
-          </v-btn>
-        </template>        
-
-        <v-card class="altlik-card">
-          <!-- Statuses -->
-          <v-card class="ma-2" tile>
-            <v-list dense>  
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title class=" font-weight-bold">STATUSES</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item v-for="(status, index) in statuses" :key="index">
-                <v-checkbox 
-                  dense
-                  v-model="search.statuses"
-                  :label="status.text"
-                  :value="status.value"
-                >
-                </v-checkbox>
-              </v-list-item>
-            </v-list>
-          </v-card>
-
-        </v-card>
-
-      </v-menu>
 
     </div>
 
     <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.linkCount > 0">
       <list
         :rows="searchResult"
-        @refreshList="triggerSearch"
+        @refreshList="search"
       />
 
       <div class="mt-3">
@@ -108,78 +157,94 @@ import LinkService from '@/service/link';
 import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
+const searchByItems = ['Name', 'Seller', 'Brand', 'SKU', 'Platform'];
+const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL'];
+const statusItems = ['WAITING', 'ACTIVE', 'TRYING', 'PROBLEM'];
+const orderByItems = [...searchByItems, 'Level', 'Price', 'Last_Checked', 'Last_Updated'];
+const orderDirItems = ['Ascending', 'Descending'];
+
+const baseSearchForm = {
+  term: '',
+  searchBy: searchByItems[0],
+  levels: [],
+  statuses: [],
+  orderBy: orderByItems[0],
+  orderDir: orderDirItems[0],
+}
+
 export default {
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
-    statuses() {
-      return SystemConsts.STATUSES;
-    }
   },
   data() {
     return {
-      search: {
-        term: '',
-        statuses: [],
-        counter: 0 //used for trigger search mechanism when update or add a new product (look at edit tag above)
-      },
+      searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
       menu: false,
       searchResult: [],
       isListLoading: true,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
+      searchByItems,
+      levelItems,
+      statusItems,
+      orderByItems,
+      orderDirItems,
+      baseSearchForm,
     };
   },
   methods: {
-    clear() {
-      this.search.term = '';
+    applyOptions() {
+      this.menu = false;
+      this.search();
+      this.$refs.term.focus();
+    },
+    search() {
+      if (this.isLoadMoreClicked == true && this.searchResult.length) {
+        this.searchForm.rowCount = this.searchResult.length;
+        this.searchForm.loadMore = this.isLoadMoreClicked;
+      }
+
+      const loadMore = this.isLoadMoreClicked;
+      this.isListLoading = true;
+      this.isLoadMoreClicked = false;
+
+      LinkService.search(this.searchForm, true)
+        .then((res) => {
+          this.isListLoading = false;
+          this.isLoadMoreDisabled = true;
+          if (res?.length) {
+            if (loadMore == true) {
+              this.searchResult = this.searchResult.concat(res);
+            } else {
+              this.searchResult = res;
+            }
+          } else {
+            this.searchResult = [];
+          }
+          if (res) {
+            this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
+          }
+      });
+    },
+    resetForm() {
+      this.menu = false;
+      this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
+      this.search();
+      this.$refs.term.focus();
     },
     loadmore() {
       this.isLoadMoreClicked = true;
-      this.triggerSearch();
+      this.search();
     },
-    triggerSearch() {
-      ++this.search.counter; //triggers search call to the server
-    },
+    isSearchable(e) {
+      let char = e.keyCode || e.charCode; // Get the character
+      if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
+        return this.search(); // Match with regex
+      }
+    }
   },
-  created() {
-    this.triggerSearch();
-  },
-  watch: {
-    'search': {
-      handler: function (form) {
-        //we have to clone it since search form is sensitive for changes.
-        //any direct change on search form cause an endless loop for this method!
-        const cloneForm = JSON.parse(JSON.stringify(form));
-        //clicking load more is a different case
-        if (this.isLoadMoreClicked == true && this.searchResult.length) {
-          cloneForm.rowCount = this.searchResult.length;
-          cloneForm.loadMore = this.isLoadMoreClicked;
-        }
-
-        const loadMore = this.isLoadMoreClicked;
-        this.isListLoading = true;
-        this.isLoadMoreClicked = false;
-
-        LinkService.search(cloneForm, true)
-          .then((res) => {
-            this.isListLoading = false;
-            this.isLoadMoreDisabled = true;
-            if (res?.length) {
-              if (loadMore == true) {
-                this.searchResult = this.searchResult.concat(res);
-              } else {
-                this.searchResult = res;
-              }
-            } else {
-              this.searchResult = [];
-            }
-            if (res) {
-              this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
-            }
-        });
-      },
-      deep: true
-    },
+  mounted() {
+    this.search();
   },
   components: {
     List: () => import('./List'),
@@ -187,30 +252,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-  .v-subheader, .v-list-item {
-    height: 30px;
-    min-height: 30px;
-  }
-  .altlik-card {
-    --wekit-box-shadow: none !important;
-    box-shadow: none !important;
-    background-color: #EBF3FF;    
-  }
-  .v-radio {
-    padding: 0 16px;
-  }
-  .v-input--selection-controls {
-    margin-top: 0;
-  }
-  .v-menu__content {
-    background-color: #EBF3FF;
-  }
-  .v-radio >>> label,
-  .v-input--checkbox >>> label {
-    font-size: 14px;
-    font-weight: 400 !important;
-    color: rgba(0, 0, 0, 0.87) !important;
-  }
- </style>

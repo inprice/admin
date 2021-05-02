@@ -15,7 +15,7 @@
       />
 
       <div style="flex: 1">
-        <div v-if="fromSearchPage" class="overline" style="line-height: inherit">{{ row.groupName }}</div>
+        <div v-if="fromSearchPage" class="caption" style="color: #00748B; line-height: inherit">{{ row.groupName }}</div>
         <div v-if="row.name">
           {{ row.name }}
         </div>
@@ -28,7 +28,7 @@
           <div
             v-if="fromSearchPage"
             class="caption font-weight-medium text-center" 
-            style="border: 1px solid #ccc; border-radius: 3px"
+            style="color: #00748B; border: 1px solid #ccc; border-radius: 3px"
           >
             {{ row.statusGroup }}
           </div>
@@ -102,6 +102,7 @@
     </div>
 
     <div
+      style="cursor: pointer"
       class="caption link-info-wrapper"
       @click="$emit('toggleDetails', row)"
     >
@@ -110,13 +111,13 @@
           <div class="caption" v-if="row.platform">{{ row.platform.name }}</div>
           <div class="caption font-weight-medium">{{ row.seller }}</div>
         </div>
-        <div v-if="row.checkedAt">
+        <div v-if="row.checkedAt" class="hidden-xs-only">
           <div class="caption">LAST CHECKED</div>
           <div class="caption font-weight-medium">
             <ago :date="row.checkedAt" />
           </div>
         </div>
-        <div v-if="row.updatedAt">
+        <div v-if="row.updatedAt" class="hidden-xs-only">
           <div class="caption">LAST UPDATED</div>
           <div class="caption font-weight-medium">
             <ago :date="row.updatedAt" />
@@ -136,8 +137,8 @@
     </div>
 
     <row-detail
-      class="my-2"
-      :data="row"
+      class="mt-2"
+      :data="row.details"
       v-if="showingId==row.id && showDetails==true"
     />
 
@@ -166,8 +167,8 @@ export default {
     margin-right: 15px;
   }
   .link-info > div {
-    min-width: 200px;
-    padding: 5px 10px;
+    flex-grow: 0.25;
+    padding: 5px;
     border: 1px solid #ddd;
   }
   .link-info > div:first-child {

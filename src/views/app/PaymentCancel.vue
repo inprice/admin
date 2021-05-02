@@ -39,13 +39,11 @@
 import SubsService from '@/service/subscription';
 
 export default {
-  created() {
-    this.$nextTick(() => {
-      const hash = this.$route.params.hash;
-      if (hash) {
-        SubsService.cancelCheckout(hash);
-      }
-    });
+  mounted() {
+    const hash = this.$route.params.hash;
+    if (hash) {
+      SubsService.cancelCheckout(hash);
+    }
   }
 }
 </script>

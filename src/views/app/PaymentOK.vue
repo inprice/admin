@@ -72,7 +72,7 @@ export default {
       overlay: false,
     };
   },
-  created() {
+  mounted() {
     let retry = 0;
     this.overlay = true;
     const refreshId = setInterval(() => {

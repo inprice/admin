@@ -395,12 +395,10 @@ export default {
       this.$store.dispatch('session/refresh');
     }
   },
-  created() {
-    this.$nextTick(() => {
-      if (!this.plansSets || !this.plansSets.length) {
-        this.$store.dispatch('system/fetchPlans');
-      }
-    });
+  mounted() {
+    if (!this.plansSets || !this.plansSets.length) {
+      this.$store.dispatch('system/fetchPlans');
+    }
   },
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),

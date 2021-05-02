@@ -81,12 +81,12 @@ export default {
         });
     }
   },
+  mounted() {
+    this.fetchData();
+  },
   components: {
     InvoiceInfoDialog: () => import('./InvoiceInfoEdit.vue'),
     Property: () => import('@/component/app/Property.vue')
   },
-  created() {
-    this.fetchData();
-  }
 }
 </script>

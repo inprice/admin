@@ -146,10 +146,8 @@ export default {
       });
     }
   },
-  created() {
-    this.$nextTick(() => {
-      this.getInvitations();
-    });
+  mounted() {
+    this.getInvitations();
   },
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),

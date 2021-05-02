@@ -122,7 +122,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.form.token = this.$route.query.token;
   }
 };
