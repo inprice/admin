@@ -3,7 +3,7 @@
   <div>
     <div>
       <div class="title">Links</div>
-      <div class="body-2">The list of your competitors linked to your groups.</div>
+      <div class="body-2">The list of your links bound to your groups.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -84,21 +84,25 @@
                     :items="statusItems"
                   ></v-select>
 
-                  <v-select
-                    dense
-                    outlined
-                    label="Order By"
-                    v-model="searchForm.orderBy"
-                    :items="orderByItems"
-                  ></v-select>
+                  <div class="d-flex justify-space-around">
+                    <v-select
+                      class="col mr-2"
+                      dense
+                      outlined
+                      label="Order By"
+                      v-model="searchForm.orderBy"
+                      :items="orderByItems"
+                    ></v-select>
 
-                  <v-select
-                    dense
-                    outlined
-                    label="Order Dir"
-                    v-model="searchForm.orderDir"
-                    :items="orderDirItems"
-                  ></v-select>
+                    <v-select
+                      class="col mx-2"
+                      dense
+                      outlined
+                      label="Order Dir"
+                      v-model="searchForm.orderDir"
+                      :items="orderDirItems"
+                    ></v-select>
+                  </div>
 
                   <v-select
                     dense
@@ -252,9 +256,9 @@ export default {
       this.search();
     },
     isSearchable(e) {
-      let char = e.keyCode || e.charCode; // Get the character
+      let char = e.keyCode || e.charCode;
       if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
-        return this.search(); // Match with regex
+        return this.search();
       }
     }
   },

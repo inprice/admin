@@ -89,14 +89,4 @@ export default (Vue) => {
     return 'NA';
   });
 
-  Vue.filter('formatStatus', (value) => {
-    try {
-      if (value) {
-        return value.replaceAll('_', ' ');
-      }
-      /* eslint-disable no-empty */
-    } catch (error) { }
-    return 'NA';
-  });
-
 };

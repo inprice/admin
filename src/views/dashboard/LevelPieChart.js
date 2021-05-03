@@ -2,26 +2,19 @@ import { Doughnut } from "vue-chartjs";
 
 export default {
   extends: Doughnut,
-  props: ["series"],
+  props: ['series'],
   mounted() {
     this.renderChart(
       {
-        labels: [
-          "AVAILABLE",
-          "NOT AVAILABLE",
-          "TOBE IMPLEMENTED",
-          "NETWORK ERROR",
-          "OTHERS",
-        ],
+        labels: ['ACTIVES','TRYINGS','WAITINGS','PROBLEMS'],
         datasets: [
           {
             backgroundColor: [
-              'rgb(255, 205, 86)',
-              'rgb(75, 192, 192)',
-              'rgb(54, 162, 235)',
-              'rgb(255, 99, 132)',
-              'rgb(153, 102, 255)',
-            ],
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 205, 86, 0.5)',
+              'rgba(153, 102, 255, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
+              ],
             data: this.series,
           },
         ],
@@ -41,6 +34,9 @@ export default {
           datalabels: {
             color: 'black',
             textAlign: 'center',
+            font: {
+              weight: "500",
+            },
             formatter: (value, ctx) => {
               let sum = 0;
               let dataArr = ctx.chart.data.datasets[0].data;

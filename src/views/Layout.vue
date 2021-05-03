@@ -43,7 +43,7 @@
             <v-icon>mdi-link-variant</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Links' Statuses</v-list-item-title>
+            <v-list-item-title>Links</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

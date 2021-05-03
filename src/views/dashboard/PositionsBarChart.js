@@ -1,12 +1,11 @@
 import { Bar } from 'vue-chartjs'
-import SystemConsts from '@/data/system';
 
 export default {
   extends: Bar,
   props: ['series'],
   mounted() {
     this.renderChart({
-      labels: SystemConsts.POSITION_NAMES,
+      labels: ['LOWEST','HIGHEST','LOWER','AVERAGE','HIGHER','EQUAL','NA'],
       datasets: [
         {
           backgroundColor: [

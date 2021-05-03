@@ -15,8 +15,7 @@ Filters(Vue);
 
 import './assets/css/main.css';
 
-/* eslint-disable no-unused-vars */
-//import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartJsPluginDataLabels from 'chartjs-plugin-datalabels';
 
 import Chart from 'chart.js'
 Chart.defaults.global.defaultFontFamily = 'Ubuntu';
@@ -28,6 +27,7 @@ import VuePageTransition from 'vue-page-transition';
 Vue.use(VuePageTransition);
 
 Vue.component('ago', () => import('./component/simple/Ago.vue'));
+Vue.component(ChartJsPluginDataLabels);
 
 function deepEqual(x, y) {
   return (x && y && typeof x === 'object' && typeof y === 'object') ?

@@ -13,7 +13,7 @@
     <!-- --------------- -->
     <div class="d-flex justify-space-between">
 
-      <div class="col-10 pl-0">
+      <div class="col-8 pl-0">
         <v-text-field 
           autofocus
           v-model="searchTerm"

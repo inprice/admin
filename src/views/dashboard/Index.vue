@@ -24,59 +24,75 @@
 
     <div class="px-2 row">
       <!-- ------------------------------- -->
-      <!-- Groups' position statuses -->
+      <!-- Groups' position distributions   -->
       <!-- ------------------------------- -->
-      <v-card class="col" v-if="report && report.groups && report.groups.positionDists">
+      <v-card class="col" v-if="report && report.groups && report.groups.levelSeries">
         <v-card-title class="pb-2">
           <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
           <div class="col pa-0">
-            <div>Group positions</div>
-            <div class="caption">The positions of your groups.</div>
+            <div>Group levels</div>
+            <div class="caption">The levels of your groups.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
-        <positions-bar-chart 
+        <positions-bar-chart
           :width="300" :height="300"
-          :series="report.groups.positionDists" 
+          :series="report.groups.levelSeries" 
         />
       </v-card>
-
-      <!-- -------------------------------- -->
-      <!-- Links status distributions -->
-      <!-- -------------------------------- -->
-      <v-card class="col" v-if="report && report.links && report.links.statusDists">
+      <!-- ------------------------------- -->
+      <!-- Links' status distributions   -->
+      <!-- ------------------------------- -->
+      <v-card class="col" v-if="report && report.links && report.links.statusGroupSeries">
         <v-card-title class="pb-2">
-          <v-icon class="mr-4 hidden-xs-only">mdi-layers-outline</v-icon>
+          <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
           <div class="col pa-0">
-            <div>Link statuses</div>
-            <div class="caption">The statuses of your competitors.</div>
+            <div>Links statuses</div>
+            <div class="caption">The statuses of your links.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
-        <statuses-pie-chart
+        <level-pie-chart
           :width="300" :height="300"
-          :series="report.links.statusDists" 
+          :series="report.links.statusGroupSeries"
+        />
+      </v-card>
+      <!-- ------------------------------- -->
+      <!-- Links' position distributions   -->
+      <!-- ------------------------------- -->
+      <v-card class="col" v-if="report && report.links && report.links.levelSeries">
+        <v-card-title class="pb-2">
+          <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
+          <div class="col pa-0">
+            <div>Link levels</div>
+            <div class="caption">The levels of your links.</div>
+          </div>
+        </v-card-title>
+        <v-divider class="mb-2"></v-divider>
+        <positions-bar-chart
+          :width="300" :height="300"
+          :series="report.links.levelSeries" 
         />
       </v-card>
     </div>
 
 
     <!-- ------------------------------------ -->
-    <!-- 10 Groups having the lowest prices -->
+    <!-- N Groups having the lowest prices -->
     <!-- ------------------------------------ -->
     <v-card class="mt-3">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-down-circle-outline</v-icon>
         <div>
-          <div>Top 10 with low prices</div>
-          <div class="caption">Your 10 groups having the lowest prices.</div>
+          <div>Low prices</div>
+          <div class="caption">Top 5 groups with low prices</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
 
       <div 
         class="v-data-table v-data-table--dense theme--light put-behind" 
-        v-if="report && report.groups && report.groups.extremePrices.lowest && report.groups.extremePrices.lowest.length">
+        v-if="report && report.groups && report.groups.extremePrices.LOWEST && report.groups.extremePrices.LOWEST.length">
         <div class="v-data-table__wrapper">
           <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
             <thead>
@@ -84,17 +100,17 @@
                 <th :width="RESPROPS.priceTable.name">Name</th>
                 <th :width="RESPROPS.priceTable.price" class="text-right">Price</th>
                 <th :width="RESPROPS.priceTable.links" class="text-center">Links</th>
-                <th :width="RESPROPS.priceTable.date" class="text-center">Date</th>
+                <th :width="RESPROPS.priceTable.date" class="text-center">Updated</th>
               </tr>
             </thead>
             <tbody>
               <tr
                 style="cursor: pointer"
                 link @click="$router.push({ name: 'group', params: { id: row.id } })"
-                v-for="(row) in report.groups.extremePrices.lowest" :key="row.id">
+                v-for="(row) in report.groups.extremePrices.LOWEST" :key="row.id">
                 <td>{{ row.name }}</td>
                 <td class="text-right">{{ row.price | toPrice }}</td>
-                <td class="text-center">{{ row.actives + '/' + row.passives }}</td>
+                <td class="text-center">{{ row.actives + '/' + row.total }}</td>
                 <td class="text-center">
                   <ago :date="row.updatedAt" />
                 </td>
@@ -112,21 +128,21 @@
     </v-card>
 
     <!-- ------------------------------------- -->
-    <!-- 10 Groups having the highest prices -->
+    <!-- N Groups having the highest prices -->
     <!-- ------------------------------------- -->
     <v-card class="mt-3">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-up-circle-outline</v-icon>
         <div>
-          <div>Top 10 with high prices</div>
-          <div class="caption">Your 10 groups having the highest prices.</div>
+          <div>High prices</div>
+          <div class="caption">Top 5 groups with high prices</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
 
       <div 
         class="v-data-table v-data-table--dense theme--light put-behind" 
-        v-if="report && report.groups && report.groups.extremePrices.highest && report.groups.extremePrices.highest.length">
+        v-if="report && report.groups && report.groups.extremePrices.HIGHEST && report.groups.extremePrices.HIGHEST.length">
         <div class="v-data-table__wrapper">
           <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
             <thead>
@@ -134,17 +150,17 @@
                 <th :width="RESPROPS.priceTable.name">Name</th>
                 <th :width="RESPROPS.priceTable.price" class="text-right">Price</th>
                 <th :width="RESPROPS.priceTable.links" class="text-center">Links</th>
-                <th :width="RESPROPS.priceTable.date" class="text-center">Date</th>
+                <th :width="RESPROPS.priceTable.date" class="text-center">Updated</th>
               </tr>
             </thead>
             <tbody>
               <tr 
                 style="cursor: pointer"
                 link @click="$router.push({ name: 'group', params: { id: row.id } })"
-                v-for="(row) in report.groups.extremePrices.highest" :key="row.id">
+                v-for="(row) in report.groups.extremePrices.HIGHEST" :key="row.id">
                 <td>{{ row.name }}</td>
                 <td class="text-right">{{ row.price | toPrice }}</td>
-                <td class="text-center">{{ row.actives + '/' + row.passives }}</td>
+                <td class="text-center">{{ row.actives + '/' + row.total }}</td>
                 <td class="text-center">
                   <ago :date="row.updatedAt" />
                 </td>
@@ -168,8 +184,8 @@
       <v-card-title class="pa-2 d-flex">
         <v-icon class="mr-4 hidden-xs-only">mdi-account-search-outline</v-icon>
         <div>
-          <div>Competitors</div>
-          <div class="caption">Most recently updated 25 competitors.</div>
+          <div>Links</div>
+          <div class="caption">Most recently updated 25 links.</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
@@ -180,8 +196,8 @@
             <thead>
               <tr>
                 <th :width="RESPROPS.linksTable.seller" class="text-truncate">Seller & Platform | URL</th>
-                <th :width="RESPROPS.linksTable.price" class="text-right">Price</th>
-                <th :width="RESPROPS.linksTable.status">Status</th>
+                <th :width="RESPROPS.linksTable.price" class="text-right">Price | Problem</th>
+                <th :width="RESPROPS.linksTable.status" class="text-center">Status</th>
                 <th :width="RESPROPS.linksTable.time">Time</th>
               </tr>
             </thead>
@@ -189,8 +205,22 @@
               <tr v-for="(row, index) in report.links.mru25" :key="index" :title="row.groupName">
                 <td v-if="row.seller">{{ (row.seller || 'NA') + (' ('+row.platform+')' || '') }}</td>
                 <td v-else class="font-italic">{{ row.url }}</td>
-                <td class="text-right">{{ row.price | toPrice }}</td>
-                <td>{{ row.status | formatStatus }}</td>
+                <td class="text-right" v-if="row.price" >{{ row.price | toPrice }}</td>
+                <td
+                  colspan="2"
+                  class="text-center"
+                  v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')"
+                >
+                  {{ row.statusDesc }}
+                </td>
+                <td
+                  class="text-center"
+                  v-if="row.price && (row.status == 'ACTIVE' || row.level != 'NA')"
+                >
+                  <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
+                  {{ row.level }}
+                  <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
+                </td>
                 <td>
                   <ago :date="row.updatedAt" />
                 </td>
@@ -235,14 +265,14 @@ export default {
         case 'xl': {
           return {
             'table-layout': '',
-            linksTable: { seller: '', price: '15%', status: '18%', time: '18%' },
+            linksTable: { seller: '', price: '15%', status: '14%', time: '18%' },
             priceTable: { name: '', price: '15%', links: '10%', date: '18%', action: '10%' }
           };
         }
         default: {
           return {
             'table-layout': 'fixed',
-            linksTable: { seller: '300px', price: '150px', status: '150px', time: '150px' },
+            linksTable: { seller: '300px', price: '150px', status: '120px', time: '150px' },
             priceTable: { name: '300px', price: '150px', links: '80px', date: '150px', action: '100px' }
           };
         }
@@ -257,18 +287,18 @@ export default {
         this.report.account.daysToRenewal = moment(this.report.account.renewalAt).diff(moment(), 'days')+1;
       }
 
-      if (this.report && this.report.groups && this.report.groups.positionDists) {
+      if (this.report && this.report.groups && this.report.groups.positionSeries) {
         let linkCount = 0;
-        for (var i = 0; i < this.report.groups.positionDists.length; i++) {
-          const dist = this.report.groups.positionDists[i];
+        for (var i = 0; i < this.report.groups.positionSeries.length; i++) {
+          const dist = this.report.groups.positionSeries[i];
           linkCount += dist.count;
         }
         this.total.group = linkCount;
 
         let compCount = 0;
-        if (this.report.links.statusDists) {
-          for (var j = 0; j < this.report.links.statusDists.length; j++) {
-            const comp = this.report.links.statusDists[j];
+        if (this.report.links.statusSeries) {
+          for (var j = 0; j < this.report.links.statusSeries.length; j++) {
+            const comp = this.report.links.statusSeries[j];
             compCount += comp.count;
           }
         }
@@ -280,8 +310,8 @@ export default {
     this.refresh();
   },
   components: {
+    LevelPieChart: () => import('./LevelPieChart.js'),
     PositionsBarChart: () => import('./PositionsBarChart.js'),
-    StatusesPieChart: () => import('./StatusesPieChart.js'),
     StatusAlert: () => import('@/component/app/StatusAlert.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
