@@ -4,14 +4,22 @@
     <v-dialog 
       v-model="opened" 
       :max-width="findDialogWidth"
-      overlay-opacity="0.2">
+      @keydown.esc="close"
+      overlay-opacity="0.2"
+    >
       <v-card>
-        <v-card-title>Apply a coupon code</v-card-title>
-        <v-card-subtitle class="pb-2">Please enter your coupon code below</v-card-subtitle>
+
+        <div class="d-flex justify-space-between pa-4 pb-1">
+          <div>
+            <div class="title">Apply a coupon code</div>
+            <div class="subtitle pb-2">Please enter your coupon code below</div>
+          </div>
+          <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
+        </div>
 
         <v-divider></v-divider>
 
-        <v-card-text class="pt-2 pb-0">
+        <v-card-text class="py-2">
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
               autofocus
@@ -24,10 +32,12 @@
           </v-form>
         </v-card-text>
 
-        <v-card-actions>
+        <v-divider></v-divider>
+
+        <v-card-actions class="py-3">
           <v-spacer></v-spacer>
 
-          <v-btn small @click="close">Close</v-btn>
+          <v-btn small tabindex="-1" @click="close">Close</v-btn>
           <v-btn
             small
             @click="submit"

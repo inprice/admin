@@ -65,7 +65,7 @@ function buildCurrent(state) {
       status: selected.accountStatus,
       planId: selected.planId,
       planName: selected.planName,
-      renewalAt: selected.renewalAt,
+      subsRenewalAt: selected.subsRenewalAt,
       linkCount: selected.linkCount,
       lastStatusUpdate: selected.lastStatusUpdate,
       email: selected.email,
@@ -73,10 +73,10 @@ function buildCurrent(state) {
       role: selected.role,
       timezone: selected.timezone,
       currencyFormat: selected.currencyFormat,
-      everSubscribed: selected.everSubscribed,
+      everSubscribed: (selected.subsStartedAt != undefined),
     };
-    if (selected.renewalAt) {
-      const renewal = moment(selected.renewalAt, 'YYYY-MM-DD').tz(selected.timezone);
+    if (selected.subsRenewalAt) {
+      const renewal = moment(selected.subsRenewalAt, 'YYYY-MM-DD').tz(selected.timezone);
       const dayDiff = renewal.diff(moment().startOf('day'), 'days');
       const base = (selected.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
       const value = (dayDiff >= base && ACTIVE_ACCOUNT_STATUSES.includes(selected.accountStatus));
@@ -87,7 +87,7 @@ function buildCurrent(state) {
       stat.daysToRenewal = dayDiff;
       if (value == false && (stat.status != 'STOPPED' || stat.status != 'CANCELLED')) {
         stat.status = 'STOPPED';
-        stat.lastStatusUpdate = stat.renewalAt;
+        stat.lastStatusUpdate = stat.subsRenewalAt;
       }
     }
     state.current = stat;
@@ -140,7 +140,6 @@ const getters = {
     if (state) return state.list;
   },
 
-  //TODO: some fields like linkCount, isFree... must be refreshed somehow after state changed by user!
   getCurrentStatus: (state) => {
     return state.current;
   },

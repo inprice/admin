@@ -7,7 +7,7 @@
 
     <v-divider class="mt-2"></v-divider>
 
-    <v-card class="mt-3">
+    <v-card class="mt-5">
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
           <div class="d-flex">
@@ -93,13 +93,19 @@
 
       <block-message 
         v-else dense
-        :message="'No assigned or used coupon found for this account.'"
+        :message="'No assigned or used coupon in this account.'"
       />
 
     </v-card>
 
+    <p class="body-2 mt-2 ml-2">
+      <strong>* Please note:</strong> Available coupons can only be used when you have no active subscription or Free Use!
+    </p>
+
     <apply-coupon ref="applyCouponDialog" @applied="getCoupons" />
     <confirm ref="confirm"></confirm>
+
+    <overlay :show="overlay" />
     
   </div>
 
@@ -133,6 +139,7 @@ export default {
   },
   data() {
     return {
+      overlay: false,
       loading: {
         apply: false,
       },
@@ -174,13 +181,13 @@ export default {
     cancel() {
       this.$refs.confirm.open('Cancel Coupon', 'will be cancelled. Are you sure?', 'Your actual coupon use').then(async (confirm) => {
         if (confirm == true) {
-          this.loading.apply = true;
+          this.overlay = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
             this.$store.commit('session/SET_CURRENT', res.data.session);
             this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been cancelled.' });
           }
-          this.loading.apply = false;
+          this.overlay = false;
         }
       });
     },
@@ -201,6 +208,7 @@ export default {
     ApplyCoupon: () => import('./Apply.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    Overlay: () => import('@/component/app/Overlay.vue'),
   }
 }
 </script>

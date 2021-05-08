@@ -1,4 +1,4 @@
-export default [
+const list = [
   { value: '', text: 'Please select...', disabled: true },
   { value: 'GB', text: 'United Kingdom' },
   { value: 'US', text: 'United States' },
@@ -247,3 +247,17 @@ export default [
   { value: 'ZM', text: 'Zambia' },
   { value: 'ZW', text: 'Zimbabwe' }
 ];
+
+const mapCodeName = {};
+list.forEach(c => {
+  mapCodeName[c.value] = c.text;
+});
+
+function findByCode(code) {
+  return mapCodeName[code];
+}
+
+export default {
+  list,
+  findByCode
+}

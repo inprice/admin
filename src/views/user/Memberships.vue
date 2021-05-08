@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div class="mt-5">
     <v-card>
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">

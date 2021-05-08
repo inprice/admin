@@ -19,7 +19,7 @@
           <tbody>
             <property valueClass="col-4" name="Status" :value="CURSTAT.status" />
             <property valueClass="col-4" name="Plan Name" :value="CURSTAT.planName || 'Not selected!'" />
-            <property valueClass="col-4" name="Renewal At" :value="CURSTAT.renewalAt" />
+            <property valueClass="col-4" name="Renewal At" :value="CURSTAT.subsRenewalAt" />
           </tbody>
         </template>
       </v-simple-table>

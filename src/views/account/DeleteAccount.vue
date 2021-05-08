@@ -1,11 +1,18 @@
 <template>
-  <div class="mt-3">
+  <div class="mt-5">
     <v-card>
-      <v-card-title>
-        <v-icon class="mr-4 hidden-xs-only">mdi-alert-decagram-outline</v-icon>
+      <v-card-title class="justify-space-between">
         <div>
-          <div>Delete account!</div>
+          <v-icon color="red" class="mr-4 hidden-xs-only">mdi-alert-decagram-outline</v-icon>
+          Delete account!
         </div>
+        <v-btn 
+          small
+          color="error" 
+          class="my-auto"
+          @click="openPasswordConfirmDialog"
+          :loading="loading" 
+          :disabled="loading && CURSTAT.isSubscriber == false">Delete Account</v-btn>
        </v-card-title>
 
       <v-divider></v-divider>
@@ -21,20 +28,9 @@
         </div>
       </v-card-text>
 
-      <v-divider></v-divider>
-
-      <div class="text-center py-3">
-        <v-btn 
-          small
-          color="error" 
-          @click="openPasswordConfirmDialog"
-          :loading="loading" 
-          :disabled="loading && CURSTAT.isSubscriber == false">Delete Account</v-btn>
-      </div>
-
     </v-card>
 
-    <PasswordConfirmDialog ref="passwordConfirmDialog" @confirmed="confirmed"/>
+    <password-confirm-dialog ref="passwordConfirmDialog" @confirmed="confirmed"/>
 
   </div>
 </template>

@@ -9,6 +9,8 @@
       </div>
     </v-card-title>
 
+    <v-divider></v-divider>
+
     <v-btn-toggle :value="selectedTab" class="mt-2">
       <v-btn @click="selectedTab=0" small>
         All

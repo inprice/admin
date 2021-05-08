@@ -133,7 +133,7 @@
 
     </div>
 
-    <div class="col pa-0" v-if="CURSTAT.isActive || CURSTAT.linkCount > 0">
+    <div class="col pa-0" v-if="CURSTAT.planId">
       <list
         ref="list"
         :rows="searchResult"

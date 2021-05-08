@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div class="mt-5">
     <v-card>
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
@@ -15,12 +15,12 @@
           </div>
 
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn small color="success" class="mr-1" @click="openSendDialog">
-              Invite
+            <v-btn small class="mr-2" @click="refreshMembers">
+              Refresh
             </v-btn>
 
-            <v-btn small class="ml-1" @click="refreshMembers">
-              Refresh
+            <v-btn small color="success" @click="openSendDialog">
+              Invite
             </v-btn>
           </div>
         </div>

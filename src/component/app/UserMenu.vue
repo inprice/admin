@@ -3,8 +3,6 @@
     <v-menu
       v-model="menu"
       offset-y
-      :nudge-width="200"
-      :max-width="($vuetify.breakpoint.smAndDown ? '90%' : '30%')"
       :close-on-content-click="false"
     >
       <template v-slot:activator="{ on }">
@@ -18,13 +16,11 @@
         <v-list-item two-line>
           <v-list-item-content class="pa-0 mx-auto">
             <v-list-item-title class="title">{{ CURSTAT.account }}</v-list-item-title>
-            <v-list-item-subtitle class="mb-2 py-2">
+            <v-list-item-subtitle class="pa-3">
               <v-chip outlined class="font-weight-medium" v-if="CURSTAT.isActive">
-                {{ CURSTAT.planName }} |
-                <span class="green--text px-2">{{ CURSTAT.status }}</span>
-                <span>
-                  | {{ prettyRemainingDays() }}
-                </span>
+                <div>{{ CURSTAT.planName }} |</div>
+                <div class="green--text px-2">{{ CURSTAT.status }}</div>
+                <div>| {{ prettyRemainingDays() }}</div>
               </v-chip>
               <v-btn
                 v-else
@@ -96,9 +92,9 @@
         
          <div class="py-4">
           <div class="text-center">
-            <v-btn text small class="text-none">Privacy Policy</v-btn>
-            |
-            <v-btn text small class="text-none">Terms of Services</v-btn>
+            <v-btn text outlined small class="text-none">Privacy Policy</v-btn>
+            -
+            <v-btn text outlined small class="text-none">Terms of Services</v-btn>
           </div>
         </div>
 
@@ -129,7 +125,7 @@ export default {
     },
     findPath(sesNo) {
       const session = this.sesList[sesNo];
-      const renewal = moment(session.renewalAt, 'YYYY-MM-DD').tz(session.timezone);
+      const renewal = moment(session.subsRenewalAt, 'YYYY-MM-DD').tz(session.timezone);
       const dayDiff = renewal.diff(moment().startOf('day'), 'days');
       const base = (session.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
       const hasTime = (dayDiff >= base && session.accountStatus != 'CANCELLED' && session.accountStatus != 'STOPPED');
@@ -157,7 +153,7 @@ export default {
       else if (this.CURSTAT.daysToRenewal < 8) 
         res = this.CURSTAT.daysToRenewal + ' days left';
       else
-        res = this.$options.filters.formatUSDate(this.CURSTAT.renewalAt);
+        res = this.$options.filters.formatUSDate(this.CURSTAT.subsRenewalAt);
       return res;
     }
   }
@@ -169,6 +165,6 @@ export default {
     border-radius: 0;
   }
   .v-list-item__content {
-    max-width: 250px;
+    max-width: 350px;
   }
 </style>

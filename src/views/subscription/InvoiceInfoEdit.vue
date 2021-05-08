@@ -6,12 +6,17 @@
       :max-width="findDialogWidth"
       overlay-opacity="0.2">
       <v-card>
-        <v-card-title>Invoice info</v-card-title>
+        <div class="d-flex justify-space-between pa-4 pb-1">
+          <div class="title">Invoice info</div>
+          <v-btn icon @click="opened = false"><v-icon>mdi-close</v-icon></v-btn>
+        </div>
+
         <v-divider></v-divider>
 
         <v-form ref="form" v-model="valid" class="mt-5">
           <v-text-field class="mx-5"
             autofocus
+            outlined dense
             label="Title"
             v-model="form.title"
             :rules="rules.title"
@@ -21,6 +26,7 @@
 
           <v-text-field class="mx-5"
             label="Address 1"
+            outlined dense
             v-model="form.address1"
             :rules="rules.address1"
             type="text"
@@ -29,6 +35,7 @@
 
           <v-text-field class="mx-5"
             label="Address 2"
+            outlined dense
             v-model="form.address2"
             :rules="rules.address2"
             type="text"
@@ -38,7 +45,33 @@
           <v-row class="mx-2">
             <v-col class="py-0">
               <v-text-field
+                label="City"
+                outlined dense
+                v-model="form.city"
+                :rules="rules.city"
+                type="text"
+                maxlength="70"
+              />
+            </v-col>
+            <v-col class="py-0">
+              <v-select
+                label="Country"
+                outlined dense
+                v-model="form.country"
+                item-text="text"
+                item-value="value"
+                :rules="rules.country"
+                :items="list"
+                :menu-props="{ auto: true, overflowY: true }"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row class="mx-2">
+            <v-col class="py-0">
+              <v-text-field
                 label="Postcode"
+                outlined dense
                 v-model="form.postcode"
                 :rules="rules.postcode"
                 type="text"
@@ -47,42 +80,22 @@
             </v-col>
             <v-col class="py-0">
               <v-text-field
-                label="City"
-                v-model="form.city"
-                :rules="rules.city"
-                type="text"
-                maxlength="70"
-              />
-            </v-col>
-          </v-row>
-
-          <v-row class="mx-2">
-            <v-col class="py-0">
-              <v-text-field
                 label="State"
+                outlined dense
                 v-model="form.state"
                 :rules="rules.state"
                 type="text"
                 maxlength="70"
               />
             </v-col>
-            <v-col class="py-0">
-              <v-select
-                label="Country"
-                v-model="form.country"
-                :rules="rules.country"
-                :items="countries"
-                :menu-props="{ auto: true, overflowY: true }"
-              />
-            </v-col>
           </v-row>
           
         </v-form>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
+        <v-divider></v-divider>
 
-          <v-btn small @click="close">Close</v-btn>
+        <v-card-actions class="py-4 justify-end">
+          <v-btn small tabindex="-1" @click="close">Close</v-btn>
           <v-btn
             small
             @click="submit"
@@ -104,11 +117,7 @@
 import SubsService from '@/service/subscription';
 
 export default {
-  props: {
-    countries: {
-      type: Array
-    }
-  },
+  props: ['list'],
   computed: {
     findDialogWidth() {
       switch (this.$vuetify.breakpoint.name) {
@@ -126,10 +135,15 @@ export default {
       loading: false,
       valid: false,
       rules: {},
-      form: {}
+      form: {},
     };
   },
   methods: {
+    open(info) {
+      if (this.$refs && this.$refs.form) this.$refs.form.resetValidation();
+      this.form = info;
+      this.opened = true;
+    },
     async submit() {
       if (Object.keys(this.rules).length == 0) this.activateRules();
       await this.$refs.form.validate();
@@ -144,26 +158,6 @@ export default {
         this.loading = false;
       }
     },
-    fetchData() {
-      SubsService.getInfo()
-        .then((res) => {
-          if (res && res.data) {
-            this.form = res.data;
-            for (let i = 0; i < this.countries.length; i++) {
-              const country = this.countries[i];
-              if (country.value == this.country) {
-                this.country = country.text;
-                break;
-              }
-            }
-          }
-        });
-    },
-    open() {
-
-      this.fetchData();
-      this.opened = true;
-    },
     close() {
       this.$refs.form.resetValidation();
       this.opened = false;
@@ -173,24 +167,24 @@ export default {
       this.rules = {
         title: [
           v => !!v || "Required",
-          v => (v.length >= 3 && v.length <= 255) || "Must be between 3-255 chars"
+          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3-255 chars"
         ],
         address1: [
           v => !!v || "Required",
-          v => (v.length >= 3 && v.length <= 255) || "Must be between 3-255 chars"
+          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3-255 chars"
         ],
         address2: [
-          v => (v.length <= 255) || "Must be less than 256 chars"
+          v => (!v || v.length <= 255) || "Must be less than 256 chars"
         ],
         postcode: [
-          v => (v.length <= 8) || "Must be less than 9 chars"
+          v => (!v || v.length <= 8) || "Must be less than 9 chars"
         ],
         city: [
           v => !!v || "Required",
-          v => (v.length <= 70) || "Must be less than 71 chars"
+          v => (v && v.length <= 70) || "Must be less than 71 chars"
         ],
         state: [
-          v => (v.length <= 70) || "Must be less than 71 chars"
+          v => (!v || v.length <= 70) || "Must be less than 71 chars"
         ],
         country: [
           v => !!v || "Required"

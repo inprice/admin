@@ -5,9 +5,9 @@
       <div class="body-2">The plans and the rules for subscription.</div>
     </div>
 
-    <v-divider class="mt-2"></v-divider>
-    <h1>{{CURSTAT.status}}</h1>
-    <v-card class="mt-3" v-if="CURSTAT.status == 'CREATED'">
+    <v-divider class="my-2"></v-divider>
+    
+    <v-card v-if="CURSTAT.status == 'CREATED'">
       <v-card-title class="pb-2">
         <v-icon class="mr-2 hidden-xs-only">mdi-arrow-right-thin-circle-outline</v-icon>
         <div>
@@ -33,7 +33,7 @@
       </div>
     </v-card>
 
-    <v-card class="my-3">
+    <v-card class="my-5">
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.smAndDown ? 'mb-2' : 'd-flex justify-space-between')">
           <div class="d-flex">
@@ -105,8 +105,8 @@
               <v-divider></v-divider>
 
               <ul class="my-2 pr-1">
-                <div class="caption mt-1 pl-" v-for="(feature, index) in plan.features" :key="index">
-                  <span :class="{'font-weight-medium': index==0||index==3, 'blue--text darken-2': index==3}" >{{ feature }}</span>
+                <div class="caption mt-1 pl-">
+                  <span v-html="plan.features"></span>
                 </div>
               </ul>
 
@@ -114,6 +114,8 @@
 
               <v-btn
                 tile
+                small
+                color="success"
                 :disabled="$store.get('session/isNotAdmin')" 
                 v-if="CURSTAT.isSubscriber == false"
                 class="mb-2"
@@ -161,77 +163,12 @@
       <v-divider></v-divider>
 
       <div class="pa-4">
-        Do you need something special than the plans we offer? We will be happy to assist you.
-        <a href="mailto:support@inprice.io?subject=Request for additional features">Please click/touch here to send an email</a> us explaining your needs.
+        You need something special than the plans we offer? We will be more than happy to assist you.
+        <a href="mailto:support@inprice.io?subject=Request for additional features">Please click here to send an email</a> us explaining your needs.
       </div>
     </v-card>
 
-    <v-card class="mt-4">
-      <v-card-title>
-        <v-icon class="mr-2 hidden-xs-only">mdi-alert-circle-outline</v-icon>
-        <div>
-          <div>Please keep in mind</div>
-          <div class="subtitle-2">For only subscribers!</div>
-        </div>
-      </v-card-title>
-
-      <v-divider></v-divider>
-
-      <div class="pa-3">
-
-        <div class="my-2 teal--text font-weight-medium">Before choosing a plan</div>
-        <ul class="ml-4">
-          <li>Please select one of them which suits most your needs.</li>
-          <li>All the plans displaying in this page are in monthly subscription model.</li>
-          <li>And all the prices are in US dollar currency.</li>
-        </ul>
-
-        <v-divider class="my-3"></v-divider>
-
-        <div class="my-2 teal--text font-weight-medium">Want to change payment method</div>
-        <ul class="ml-4">
-          <li>Please cancel your actual plan first.</li>
-          <li>Then subscribe it again with your new payment instrument.</li>
-        </ul>
-
-        <v-divider class="my-3"></v-divider>
-
-        <div class="my-2 teal--text font-weight-medium">Want to change your actual plan</div>
-        <ol class="ml-4">
-          <li>You are completely free to either downgrade or upgrade whenever you want.</li>
-          <li>You see three types of buttons under each plan box above;
-            <ul>
-              <li><strong>DOWNGRADE</strong>: You can downgrade to this plan.</li>
-              <li><strong>CANCEL</strong>: You can cancel your actual subscription.</li>
-              <li><strong>UPGRADE</strong>: You can upgrade to this plan.</li>
-            </ul>
-          </li>
-          <li>For upgrading, a proportional invoice (taking into the remaining days) will be created for the difference between two plans.</li>
-          <li>For downgrading, 
-            <ul>
-              <li>you will be allowed when your account's link count equal or less than new plan.</li>
-              <li>if there are more than three days to renewal from your actual plan, we will issue a coupon to compensate those days.</li>
-            </ul>
-          </li>
-        </ol>
-
-        <v-divider class="my-3"></v-divider>
-
-        <div class="my-2 teal--text font-weight-medium">After cancelling</div>
-        <ul class="ml-4">
-          <li>Your feedbacks are always very important to us, please let us know the reason.</li>
-          <li>Please note that: there is <span class="red--text font-weight-bold">no refund for cancel!</span></li>
-          <li>If you have an active subscription and there is more than three days to renewal, 
-            <ul>
-              <li>Instead, we will issue a coupon for you to compensate those days.</li>
-              <li>You (or your friends) can use those coupons whenever you want.</li>
-            </ul>
-          </li>
-        </ul>
-
-      </div>
-    </v-card>
-
+    <info-dialog ref="info"></info-dialog>
     <confirm ref="confirm"></confirm>
     <overlay :show="loading.overlay" @cancelled="cancelCheckout" />
     
@@ -283,6 +220,7 @@ export default {
       });
     },
     async subscribe() {
+      this.$refs.info.open('Sorry!', 'We are working really hard to implement our payment gateway and it is about to be completed soon. Thank you for your interest.');
     //async subscribe(planId) {
       /*
       this.loading.overlay = true;
@@ -358,7 +296,7 @@ export default {
       this.currentCheckoutHash = null;
     },
     firstTitleRow(plan) {
-      if (this.CURSTAT.planName == plan.name) {
+      if (this.CURSTAT.planId == plan.id) {
         if (this.CURSTAT.isSubscriber) {
           return this.CURSTAT.status;
         } else if (this.CURSTAT.status == 'FREE') {
@@ -372,9 +310,9 @@ export default {
     secondTitleRow(plan) {
       if (this.isThisSelected(plan.id)) {
         if (this.CURSTAT.daysToRenewal > 0)
-          return this.$options.filters.formatUSDate(this.CURSTAT.renewalAt) + ' - ' + this.CURSTAT.daysToRenewal + ' days left';
+          return this.$options.filters.formatUSDate(this.CURSTAT.subsRenewalAt) + ' - ' + this.CURSTAT.daysToRenewal + ' days left';
         else
-          return this.$options.filters.formatUSDate(this.CURSTAT.renewalAt);
+          return this.$options.filters.formatUSDate(this.CURSTAT.subsRenewalAt);
       }
       return 'per month';
     },
@@ -403,7 +341,8 @@ export default {
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
-    Overlay: () => import('@/component/app/Overlay.vue'),
+    InfoDialog: () => import('@/component/InfoDialog.vue'),
+    Overlay: () => import('@/component/app/Overlay.vue')
   }
 };
 </script>

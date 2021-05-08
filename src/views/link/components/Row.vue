@@ -24,32 +24,43 @@
         </div>
       </div>
 
-      <div class=" pt-2">
-          <div
-            v-if="fromSearchPage"
-            class="caption font-weight-medium text-center" 
-            style="color: #00748B; border: 1px solid #ccc; border-radius: 3px"
-          >
-            {{ row.statusGroup }}
-          </div>
-          <div v-if="row.price">
-            <div 
-              v-if="row.level != 'AVG'" 
-              :class="findLevelColor(row.level) + '--text caption font-weight-bold text-center'"
+      <div :class="{'mt-2': fromSearchPage}">
+          <div class="caption text-right font-weight-medium text-right">
+            <v-chip
+              small
+              label
+              outlined
+              :color="findLevelColor(row.level)"
+              class="mr-1 px-1"
+              v-if="row.level != 'NA'" 
             >
+              <v-icon small :color="findLevelColor(row.level)" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
               {{ row.level }}
-            </div>
-            <span
-              :class="findLevelColor(row.level) + '--text font-weight-medium'">
-                {{ row.price | toCurrency(row.platform && row.platform.currencyFormat ? row.platform.currencyFormat : null) }}
-            </span>
+              <v-icon small :color="findLevelColor(row.level)" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
+            </v-chip>
+            <v-chip
+              small
+              label
+              outlined
+              :color="findStatusColor(row.statusGroup)"
+              class="ml-1 px-1"
+              v-if="fromSearchPage"
+            >
+              {{ row.statusGroup }}
+            </v-chip>
+          </div>
+          <div 
+            v-if="row.price"
+            class="text-right font-weight-medium"
+          >
+              {{ row.price | toCurrency(row.platform && row.platform.currencyFormat ? row.platform.currencyFormat : null) }}
           </div>
 
           <div
             v-if="!row.price"
             class="caption text-right d-inline">
               <span>{{ row.statusGroup != 'WAITING' ? 'Checked' : 'Added' }}</span>
-              <ago :class="{ 'd-inline' : fromSearchPage }" :date="(row.checkedAt || row.createdAt)" />
+              <ago :class="{ 'd-inline' : fromSearchPage || row.level == 'NA' }" :date="(row.checkedAt || row.createdAt)" />
           </div>
       </div>
 

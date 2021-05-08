@@ -9,7 +9,7 @@
 
     <v-card class="mt-3">
       <v-card-title class="d-block pb-2">
-        <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
+        <div class="d-flex justify-space-between">
           <div class="d-flex">
             <v-icon class="mr-4 hidden-xs-only">mdi-format-list-bulleted</v-icon>
             <div class="d-inline">
@@ -17,9 +17,16 @@
               <div class="caption">Your invoice header.</div>
             </div>
           </div>
-          <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn small @click="refreshSession">
+
+          <div class="my-auto">
+            <v-btn small class="mr-2" @click="refreshSession">
               Refresh Session
+            </v-btn>
+            <v-btn 
+              small 
+              color="success"
+              @click="openInvoiceInfo">
+                Edit
             </v-btn>
           </div>
         </div>
@@ -27,26 +34,26 @@
 
       <v-divider></v-divider>
 
-      <invoice-info v-if="CURSTAT.status == 'SUBSCRIBED'"/>
+      <v-simple-table class="property-table pa-3" dense>
+        <template v-slot:default>
+          <tbody>
+            <property :valueClass="RESPROPS.properties.title" name="Title" :value="info.title" />
+            <property :valueClass="RESPROPS.properties.title" name="Address1" :value="info.address1" />
+            <property :valueClass="RESPROPS.properties.title" name="2" :value="info.address2" />
+            <property :valueClass="RESPROPS.properties.postcode" name="Postcode" :value="info.postcode" />
+            <property :valueClass="RESPROPS.properties.city" name="City" :value="info.city" />
+            <property :valueClass="RESPROPS.properties.state" name="State" :value="info.state" />
+            <property :valueClass="RESPROPS.properties.country" name="Country" :value="info.countryName" />
+          </tbody>
+        </template>
+      </v-simple-table>
 
-      <block-message v-else>
-        In order to set your invoice header, you need to have an active subscription!
-        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
-          <v-btn 
-            :disabled="$store.get('session/isNotAdmin')"
-            small
-            color="success"
-            class="ml-3 my-auto"
-            @click="$router.push( { name: 'plans' })">
-              See Plans
-          </v-btn>
-        </div>
-      </block-message>
+      <invoice-info-dialog ref="invoiceInfoDialog" :list="countries.list" @saved="invoiceInfoSaved" />
 
     </v-card>
 
-    <div v-if="CURSTAT.status != 'CREATED'">
-      <transactions :all="allTrans" :invoices="invoiceTrans" />
+    <div v-if="CURSTAT.status != 'CREATED'" class="mt-5">
+      <transactions :all="transactions" :invoices="invoices" />
     </div>
 
     <confirm ref="confirm"></confirm>
@@ -56,39 +63,73 @@
 
 <script>
 import SubsService from '@/service/subscription';
+import countries from '@/data/countries';
 import { get } from 'vuex-pathify'
 
 export default {
   computed: {
     plans: get('system/plans'),
     CURSTAT: get('session/getCurrentStatus'),
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs': {
+          return {
+            properties: { title: 'col-10', postcode: 'col-6', city: 'col-9', state: 'col-9', country: 'col-9' },
+          };
+        }
+        case 'sm': {
+          return {
+            properties: { title: 'col-10', postcode: 'col-3', city: 'col-5', state: 'col-5', country: 'col-5' },
+          };
+        }
+        default: {
+          return {
+            properties: { title: 'col-9', postcode: 'col-2', city: 'col-3', state: 'col-3', country: 'col-3' },
+          };
+        }
+      }
+    },
   },
   data() {
     return {
-      allTrans: [],
-      invoiceTrans: [],
-      selectedTab: 0
+      info: {},
+      transactions: [],
+      invoices: [],
+      selectedTab: 0,
+      countries
     };
   },
   methods: {
+    openInvoiceInfo() {
+      const newInfo = JSON.parse(JSON.stringify(this.info));
+      this.$refs.invoiceInfoDialog.open(newInfo);
+    },
+    invoiceInfoSaved(newInfo) {
+      this.info = newInfo;
+      this.info.countryName = countries.findByCode(newInfo.country);
+    },
     refreshSession() {
       this.$store.dispatch('session/refresh');
     }
   },
   mounted() {
-    SubsService.getTransactions()
+    SubsService.getInfo()
       .then((res) => {
         if (res) {
-          this.allTrans = res.data.all;
-          this.invoiceTrans = res.data.invoice;
+          this.info = res.data.info;
+          this.transactions = res.data.transactions;
+          this.invoices = res.data.invoices;
+          if (this.info) {
+            this.info.countryName = countries.findByCode(this.info.country);
+          }
         }
     });
   },
   components: {
-    InvoiceInfo: () => import('./InvoiceInfo'),
     Transactions: () => import('./Transactions'),
     Confirm: () => import('@/component/Confirm.vue'),
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    InvoiceInfoDialog: () => import('./InvoiceInfoEdit.vue'),
+    Property: () => import('@/component/app/Property.vue')
   }
 };
 </script>

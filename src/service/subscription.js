@@ -5,15 +5,15 @@ const baseURL = '/subscription';
 
 export default {
 
-  getInfo() {
-    return Helper.call('Invoice Info', { method: 'get', url: baseURL }, false);
-  },
-
   async saveInfo(form) {
     if (store.get('session/isNotAdmin')) return;
 
-    const res = await Helper.call('Invoice Info', { url: baseURL + '/save-info', data: form });
+    const res = await Helper.call('Subs Info', { url: baseURL + '/save-info', data: form });
     return res.status;
+  },
+
+  getInfo() {
+    return Helper.call('Subs Info', { method: 'get', url: baseURL + '/get-info' }, false);
   },
 
   async cancel() {
@@ -21,10 +21,6 @@ export default {
 
     const res = await Helper.call('Cancel Subscription', { method: 'put', url: baseURL + '/cancel' });
     return res;
-  },
-
-  getTransactions() {
-    return Helper.call('Transactions', { method: 'get', url: baseURL + '/trans' }, false);
   },
 
   async startFreeUse() {

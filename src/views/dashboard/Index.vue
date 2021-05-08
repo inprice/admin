@@ -80,7 +80,7 @@
     <!-- ------------------------------------ -->
     <!-- N Groups having the lowest prices -->
     <!-- ------------------------------------ -->
-    <v-card class="mt-3">
+    <v-card class="mt-4">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-down-circle-outline</v-icon>
         <div>
@@ -130,7 +130,7 @@
     <!-- ------------------------------------- -->
     <!-- N Groups having the highest prices -->
     <!-- ------------------------------------- -->
-    <v-card class="mt-3">
+    <v-card class="mt-4">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-up-circle-outline</v-icon>
         <div>
@@ -180,7 +180,7 @@
     <!-- ------------------ -->
     <!-- MRU 25 Links -->
     <!-- ------------------ -->
-    <v-card class="mt-2">
+    <v-card class="mt-4">
       <v-card-title class="pa-2 d-flex">
         <v-icon class="mr-4 hidden-xs-only">mdi-account-search-outline</v-icon>
         <div>
@@ -283,8 +283,8 @@ export default {
     async refresh() {
       const result = await DashboardService.refresh();
       this.report = result.data;
-      if (this.report && this.report.account && this.report.account.renewalAt) {
-        this.report.account.daysToRenewal = moment(this.report.account.renewalAt).diff(moment(), 'days')+1;
+      if (this.report && this.report.account && this.report.account.subsRenewalAt) {
+        this.report.account.daysToRenewal = moment(this.report.account.subsRenewalAt).diff(moment(), 'days')+1;
       }
 
       if (this.report && this.report.groups && this.report.groups.positionSeries) {
