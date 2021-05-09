@@ -15,6 +15,9 @@
             <div class="d-inline">
               <div>The list</div>
               <div class="caption">A combined list of coupons that assigned, applied and created by you</div>
+              <div class="caption">
+                <strong>Please note:</strong> Available coupons can only be used when you have no active subscription or Free Use!
+              </div>
             </div>
           </div>
 
@@ -97,10 +100,6 @@
       />
 
     </v-card>
-
-    <p class="body-2 mt-2 ml-2">
-      <strong>* Please note:</strong> Available coupons can only be used when you have no active subscription or Free Use!
-    </p>
 
     <apply-coupon ref="applyCouponDialog" @applied="getCoupons" />
     <confirm ref="confirm"></confirm>

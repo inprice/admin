@@ -4,48 +4,56 @@
     <v-dialog 
       v-model="opened" 
       :max-width="findDialogWidth"
+      @keydown.esc="close"
       overlay-opacity="0.2">
       <v-card>
-        <v-card-title>{{ isInsert ? 'New account' : 'Account info' }}</v-card-title>
+        <div class="d-flex justify-space-between pa-3">
+          <div>
+            <div class="title">{{ isInsert ? 'New account' : 'Account info' }}</div>
+            <div class="caption" v-if="isInsert">
+              You will be able to see new account after sign in again.
+            </div>
+          </div>
+          <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
+        </div>
 
-        <v-card-subtitle class="pb-0" v-if="isInsert">
-          You will be able to see new account after sign in again.
-        </v-card-subtitle>
+        <v-divider></v-divider>
 
-        <v-divider class="my-2"></v-divider>
+        <v-card-text class="pb-2">
+          
+          <v-form ref="form" v-model="valid" class="mt-5">
+            <v-text-field
+              autofocus
+              label="Name"
+              v-model="form.name"
+              :rules="rules.name"
+              type="text"
+              maxlength="70"
+            />
 
-        <v-form ref="form" v-model="valid" class="mt-5">
-          <v-text-field class="mx-5"
-            autofocus
-            label="Name"
-            v-model="form.name"
-            :rules="rules.name"
-            type="text"
-            maxlength="70"
-          />
+            <v-select
+              label="Currency"
+              v-model="form.currencyCode"
+              :items="currencyNames"
+              :menu-props="{ auto: true, overflowY: true }"
+              @change="setCurrencyFormat"
+            />
 
-          <v-select class="mx-5"
-            label="Currency"
-            v-model="form.currencyCode"
-            :items="currencyNames"
-            :menu-props="{ auto: true, overflowY: true }"
-            @change="setCurrencyFormat"
-          />
+            <v-text-field
+              label="Currency Format"
+              v-model="form.currencyFormat"
+              :rules="rules.currencyFormat"
+              type="text"
+              maxlength="16"
+            />
 
-          <v-text-field class="mx-5"
-            label="Currency Format"
-            v-model="form.currencyFormat"
-            :rules="rules.currencyFormat"
-            type="text"
-            maxlength="16"
-          />
+          </v-form>
+        </v-card-text>
 
-        </v-form>
+        <v-divider></v-divider>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn small @click="close">Close</v-btn>
+        <v-card-actions class="justify-end py-3">
+          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
             small
             @click="submit"
@@ -55,7 +63,6 @@
           >
             Save
           </v-btn>
-
         </v-card-actions>
 
       </v-card>

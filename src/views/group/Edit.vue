@@ -14,14 +14,9 @@
 
         <v-divider></v-divider>
 
-        <div class="body-2 ma-3 pa-3" style="border: 1px solid #ddd">
-          <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
-          For competitiveness, please specify a price greater than zero!
-        </div>
-
         <v-divider class="mb-3"></v-divider>
 
-        <v-card-text class="pb-0">
+        <v-card-text>
 
           <v-form ref="form" v-model="valid">
             <input type="hidden" :value="form.id" >
@@ -41,7 +36,9 @@
               :rules="rules.price"
               @blur="formatPrice"
               maxlength="10"
-            />
+              messages="For competitive pricing, please specify a price greater than zero!"
+            >
+            </v-text-field>
 
           </v-form>
 
@@ -49,9 +46,10 @@
 
         <v-divider></v-divider>
 
-        <v-card-actions class="py-4">
-          <v-spacer></v-spacer>
+        <v-card-actions class="py-4 justify-end">
+          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
+            small
             @click="save"
             color="success"
           >

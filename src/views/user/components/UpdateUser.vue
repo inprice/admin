@@ -4,10 +4,17 @@
     <v-dialog 
       v-model="opened" 
       :max-width="findDialogWidth"
-      overlay-opacity="0.2">
+      @keydown.esc="close"
+      overlay-opacity="0.2"
+    >
       <v-card>
-        <v-card-title>Update info</v-card-title>
-        <v-card-subtitle class="pb-2">for {{ CURSTAT.email }}</v-card-subtitle>
+        <div class="d-flex justify-space-between pa-4 pb-1">
+          <div>
+            <div class="title">Update info</div>
+            <div class="body-2">for {{ title }}</div>
+          </div>
+          <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+        </div>
 
         <v-divider></v-divider>
 
@@ -31,10 +38,10 @@
           </v-form>
         </v-card-text>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
+        <v-divider></v-divider>
 
-          <v-btn small @click="close">Close</v-btn>
+        <v-card-actions class="justify-end py-3">
+          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
             small
             @click="submit"
@@ -44,7 +51,6 @@
           >
             Save
           </v-btn>
-
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -71,6 +77,7 @@ export default {
   },
   data() {
     return {
+      title: 'User Email',
       opened: false,
       loading: false,
       valid: false,
@@ -98,6 +105,7 @@ export default {
       }
     },
     open(data) {
+      this.title = data.email;
       this.opened = true;
       let self = this;
       this.$nextTick(() => {

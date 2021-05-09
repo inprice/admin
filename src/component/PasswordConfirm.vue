@@ -4,10 +4,18 @@
     <v-dialog 
       v-model="opened" 
       :max-width="findDialogWidth"
+      @keydown.esc="close"
       overlay-opacity="0.2">
       <v-card>
-        <v-card-title>Last confirmation</v-card-title>
-        <v-card-subtitle class="pb-2">Please enter your password</v-card-subtitle>
+        <div class="d-flex justify-space-between pa-3">
+          <div>
+            <div class="title">Last confirmation</div>
+            <div class="caption">
+              Please enter your password to continue
+            </div>
+          </div>
+          <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
+        </div>
 
         <v-divider></v-divider>
 
@@ -28,9 +36,10 @@
           </v-form>
         </v-card-text>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn small @click="close">Close</v-btn>
+        <v-divider></v-divider>
+
+        <v-card-actions class="justify-end py-3">
+          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
             small
             @click="submit"

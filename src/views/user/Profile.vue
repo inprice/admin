@@ -68,7 +68,7 @@ export default {
       this.$refs.changePasswordDialog.open(this.CURSTAT.email);
     },
     openUpdateUserDialog() {
-      this.$refs.updateUserDialog.open({ name: this.CURSTAT.user, timezone: this.CURSTAT.timezone });
+      this.$refs.updateUserDialog.open({ name: this.CURSTAT.user, email: this.CURSTAT.email, timezone: this.CURSTAT.timezone });
     },
   },
   components: {

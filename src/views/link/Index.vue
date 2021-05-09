@@ -34,15 +34,19 @@
               max-width="400">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                  fab x-small
+                  icon small
                   v-bind="attrs"
                   v-on="on"
                   tabindex="-1"
-                  elevation="1"
-                  style="margin-top: 1px;"
-                  :color="deepEqual(searchForm, baseSearchForm) ? 'green' : 'pink'"
+                  style="margin-top: 5px;"
                 >
-                  <v-icon color="white">mdi-filter-menu-outline</v-icon>
+                  <v-badge
+                    dot overlap
+                    color="red"
+                    :value="!deepEqual(searchForm, baseSearchForm)"
+                  >
+                    <v-icon>mdi-filter-menu-outline</v-icon>
+                  </v-badge>
                 </v-btn>
               </template>
 

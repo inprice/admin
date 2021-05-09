@@ -11,8 +11,8 @@
 
         <div class="d-flex justify-space-between pa-4 pb-1">
           <div>
-            <div class="title">Apply a coupon code</div>
-            <div class="subtitle pb-2">Please enter your coupon code below</div>
+            <div class="title">Apply coupon</div>
+            <div class="caption pb-2">Please enter your coupon code below</div>
           </div>
           <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
         </div>
