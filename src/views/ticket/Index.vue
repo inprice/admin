@@ -2,8 +2,8 @@
 
   <div>
     <div>
-      <div class="title">Groups</div>
-      <div class="body-2">Your groups.</div>
+      <div class="title">Tickets</div>
+      <div class="body-2">The tickets opened by your users.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -40,8 +40,8 @@
 
     <div class="col pa-0">
       <div v-if="searchResult && searchResult.length">
-        <group
-          :group="row"
+        <ticket
+          :ticket="row"
           :fromSearchPage="true"
           v-for="(row, index) in searchResult" :key="row.id" 
           @saved="refresh(index, $event)"
@@ -51,7 +51,7 @@
       </div>
 
       <v-card v-else >
-        <block-message :message="'No group found! You can add a new one or change your criteria.'" />
+        <block-message :message="'No ticket found! You can add a new one or change your criteria.'" />
       </v-card>
 
       <div class="mt-3">
@@ -66,14 +66,10 @@
 </template>
 
 <script>
-import GroupService from '@/service/group';
+import TicketService from '@/service/ticket';
 import SystemConsts from '@/data/system';
-import { get } from 'vuex-pathify'
 
 export default {
-  computed: {
-    CURSTAT: get('session/getCurrentStatus'),
-  },
   data() {
     return {
       searchTerm: '',
@@ -90,7 +86,7 @@ export default {
       this.$refs.editDialog.open();
     },
     edit(id) {
-      this.$router.push({ name: 'group', params: { id } });
+      this.$router.push({ name: 'ticket', params: { id } });
     },
     loadmore() {
       this.isLoadMoreClicked = true;
@@ -100,7 +96,7 @@ export default {
       const loadMore = this.isLoadMoreClicked;
       this.isLoadMoreClicked = false;
 
-      GroupService.search(this.searchTerm)
+      TicketService.search(this.searchTerm)
         .then((res) => {
           this.isLoadMoreDisabled = true;
           if (res?.length) {
@@ -118,13 +114,13 @@ export default {
       });
     },
     async saveNew(form) {
-      const result = await GroupService.save(form);
+      const result = await TicketService.save(form);
       if (result && result.status) this.search();
     },
     refresh(index, result) {
-      if (this.searchResult && result.group && this.searchResult.length > index) {
+      if (this.searchResult && result.ticket && this.searchResult.length > index) {
         //Vue cannot sense of any change in array when we directly set the index or change the length!
-        this.$set(this.searchResult, index, result.group);
+        this.$set(this.searchResult, index, result.ticket);
       } else {
         this.search();
       }
@@ -146,7 +142,7 @@ export default {
   },
   components: {
     Edit: () => import('./Edit.vue'),
-    Group: () => import('./Group.vue'),
+    Ticket: () => import('./Ticket.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
 }
