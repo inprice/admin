@@ -7,7 +7,7 @@
        overlay-opacity="0.2">
       <v-card>
         <v-card-title class="pr-3">
-          {{ form.id ? 'Edit' : 'New' }} Group
+          {{ form.id ? 'Edit' : 'New' }} Ticket
           <v-spacer></v-spacer>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
@@ -21,24 +21,31 @@
           <v-form ref="form" v-model="valid">
             <input type="hidden" :value="form.id" >
 
-            <v-text-field
+            <v-select
               autofocus
-              label="Name"
-              v-model="form.name"
-              :rules="rules.name"
-              type="text"
-              maxlength="500"
-            />
+              dense
+              outlined
+              label="Type"
+              v-model="form.type"
+              :items="typeItems"
+            ></v-select>
 
-            <v-text-field
-              label="Price"
-              v-model="form.price"
-              :rules="rules.price"
-              @blur="formatPrice"
-              maxlength="10"
-              messages="For competitive pricing, please specify a price greater than zero!"
-            >
-            </v-text-field>
+            <v-select
+              dense
+              outlined
+              label="Subject"
+              v-model="form.subject"
+              :items="subjectItems"
+            ></v-select>
+
+            <v-textarea
+              counter
+              outlined
+              v-model="form.query"
+              label="Thought"
+              rows="8"
+              :rules="rules.query"
+            ></v-textarea>
 
           </v-form>
 
@@ -63,6 +70,10 @@
 </template>
 
 <script>
+
+const typeItems = [ 'FEEDBACK', 'SUPPORT', 'INFO', 'PROBLEM' ];
+const subjectItems = [ 	'SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER' ];
+
 export default {
   computed: {
     findDialogWidth() {
@@ -81,32 +92,30 @@ export default {
       valid: false,
       rules: {},
       form: {
-        name: '',
-        price: 0,
+        id: null,
+        type: typeItems[0],
+        subject: subjectItems[0],
+        query: null,
       },
+      typeItems,
+      subjectItems,
     };
   },
   methods: {
     open(data) {
-      this.opened = true;
-
       if (data) {
         this.form.id = data.id;
-        this.form.name = data.name;
-        this.form.price = data.price;
+        this.form.type = data.type;
+        this.form.subject = data.subject;
+        this.form.query = data.query;
       }
-
-      let self = this;
-      this.$nextTick(() => {
-        self.$refs.form.resetValidation();
-        self.formatPrice();
-      });
+      this.opened = true;
+      this.$nextTick(() => this.$refs.form.resetValidation());
     },
     async save() {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
-        this.form.price = parseFloat(this.form.price);
         this.$emit('saved', this.form);
         this.close();
       }
@@ -117,19 +126,12 @@ export default {
     },
     activateRules() {
       this.rules = {
-        name: [
+        query: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
-        ],
-        price: [
-          v => !!v || "Required",
-          v => (parseFloat(v) > -1) || "Base Price must be greater or equal than 0"
+          v => (v && v.length >= 12 && v.length <= 512) || "Name must be between 12-512 chars"
         ],
       }
     },
-    formatPrice() {
-      this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);
-    }
   },
 };
 </script>

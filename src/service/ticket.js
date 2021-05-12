@@ -19,28 +19,14 @@ export default {
     }
 
     const res = await Helper.call('Save Ticket', { method, url: baseURL, data: form });
-    if (res.status == true) store.commit('snackbar/setMessage', { text: `${form.name} has been successfully ${opType}` });
+    if (res.status == true) store.commit('snackbar/setMessage', { text: `Your ${form.type} about ${form.subject} has been successfully ${opType}` });
     return res;
   },
 
-  async search(term) {
-    const res = await Helper.call('Search Ticket', { method: 'get', url: baseURL + 's/search/?term=' + term });
-    if (res.status == true && res.data) return res.data;
+  async search(form) {
+    const res = await Helper.call('Search Ticket', { url: baseURL + 's/search', data: form });
+    if (res.status == true && res.data.rows) return res.data.rows;
     return null;
-  },
-
-  async markAsRead(id) {
-    if (store.get('session/isViewer')) return;
-
-    const res = await Helper.call('Mark As Read', { method: 'put', url: baseURL + '/mark-as-read/' + id });
-    return res.status;
-  },
-
-  async markAllAsRead(id) {
-    if (store.get('session/isViewer')) return;
-
-    const res = await Helper.call('Mark As Read', { method: 'put', url: baseURL + '/mark-all-as-read' });
-    return res.status;
   },
 
   async remove(id) {

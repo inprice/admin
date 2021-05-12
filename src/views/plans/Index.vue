@@ -104,11 +104,21 @@
 
               <v-divider></v-divider>
 
-              <ul class="my-2 pr-1">
-                <div class="caption mt-1 pl-">
-                  <span v-html="plan.features"></span>
-                </div>
-              </ul>
+              <div class="ma-2 pr-1 caption text-left">
+                <table>
+                  <tr v-for="feature in plan.features" :key="feature.id">
+                    <td width="40%" class="text-right">
+                      <v-icon v-if="feature.allowed" color="success">mdi-check-circle-outline</v-icon>
+                      <v-icon v-else color="grey)">mdi-minus-circle-outline</v-icon>
+                    </td>
+                    <td width="3%">
+                    </td>
+                    <td :class="{ 'font-weight-light': !feature.allowed }">
+                      {{ feature.feature }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
 
               <v-divider class="mb-3"></v-divider>
 
