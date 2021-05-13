@@ -78,7 +78,6 @@ export default {
     return {
       searchTerm: '',
       searchResult: [],
-      isListLoading: true,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
     };
@@ -99,12 +98,10 @@ export default {
     },
     search() {
       const loadMore = this.isLoadMoreClicked;
-      this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
       GroupService.search(this.searchTerm)
         .then((res) => {
-          this.isListLoading = false;
           this.isLoadMoreDisabled = true;
           if (res?.length) {
             if (loadMore == true) {
