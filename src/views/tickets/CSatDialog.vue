@@ -6,51 +6,38 @@
        :max-width="findDialogWidth"
        overlay-opacity="0.2">
       <v-card>
-        <v-card-title class="pr-3">
-          {{ form.id ? 'Edit' : 'New' }} Ticket
-          <v-spacer></v-spacer>
+        <div class="pa-3 d-flex justify-space-between">
+          <span class="pl-2 my-auto">
+            For a better service, please assess your experience
+          </span>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </v-card-title>
+        </div>
 
         <v-divider></v-divider>
 
         <v-divider class="mb-3"></v-divider>
 
-        <v-card-text>
+        <v-card-text class="pb-2">
 
           <v-form ref="form" v-model="valid">
             <input type="hidden" :value="form.id" >
 
             <v-select
-              autofocus
               dense
               outlined
-              label="You want to"
-              v-model="form.type"
-              :items="typeItems"
-              item-text="text"
-              item-value="value"
-            >
-              <template v-slot:selection="{ item }">
-                {{ item.text }}
-              </template>    
-            </v-select>
-
-            <v-select
-              dense
-              outlined
-              label="About"
-              v-model="form.subject"
-              :items="subjectItems"
+              label="Level"
+              v-model="form.level"
+              :items="levelItems"
             ></v-select>
 
             <v-textarea
+              autofocus
               counter
               outlined
-              v-model="form.query"
-              label="Thought"
-              rows="8"
-              :rules="rules.query"
+              v-model="form.assessment"
+              label="Your assessment"
+              rows="4"
+              :rules="rules.assessment"
             ></v-textarea>
 
           </v-form>
@@ -77,12 +64,7 @@
 
 <script>
 
-const typeItems = [ 
-  { value: 'PROBLEM', text: 'Report a problem' },
-  { value: 'SUPPORT', text: 'Ask support' },
-  { value: 'FEEDBACK', text: 'Give feedback' },
-];
-const subjectItems = [ 'SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER' ];
+const levelItems = [ 'HIGH', 'GOOD', 'ENOUGH', 'NEUTRAL', 'BAD' ];
 
 export default {
   computed: {
@@ -103,26 +85,15 @@ export default {
       rules: {},
       form: {
         id: null,
-        type: typeItems[0],
-        subject: subjectItems[0],
-        query: null,
+        level: levelItems[0],
+        assessment: null,
       },
-      typeItems,
-      subjectItems,
+      levelItems,
     };
   },
   methods: {
-    open(data) {
-      this.form.id = null;
-      this.form.type = typeItems[0];
-      this.form.subject = subjectItems[0];
-      this.form.query = null;
-      if (data) {
-        this.form.id = data.id;
-        this.form.type = data.type;
-        this.form.subject = data.subject;
-        this.form.query = data.query;
-      }
+    open(form) {
+      this.form = form;
       this.opened = true;
       this.$nextTick(() => this.$refs.form.resetValidation());
     },
@@ -140,9 +111,17 @@ export default {
     },
     activateRules() {
       this.rules = {
-        query: [
-          v => !!v || "Required",
-          v => (v && v.length >= 12 && v.length <= 512) || "Name must be between 12-512 chars"
+        assessment: [
+          v => {
+            const assessmentRequired = (this.form.level != 'HIGH' && this.form.level != 'GOOD');
+            if (!v && assessmentRequired) {
+              return this.form.level + ' level requires your assessment!';
+            }
+            if (v && (v.length < 12 || v.length > 512)) {
+              return (assessmentRequired ? 'Your ' : 'If given, ') + 'assessment must be between 12-512 chars';
+            }
+            return true;
+          }
         ],
       }
     },

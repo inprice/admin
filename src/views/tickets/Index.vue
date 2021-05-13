@@ -127,6 +127,13 @@
         </v-text-field>
       </div>
 
+      <v-btn 
+        small
+        class="my-auto"
+        :disabled="$store.get('session/isViewer')"
+        @click="addNew">
+          Add new
+      </v-btn>
     </div>
 
     <div class="col pa-0" v-if="searchResult && searchResult.length">
@@ -134,9 +141,10 @@
         v-for="row in searchResult" :key="row.id" 
         :ticket="row"
         :showDetails="isExpanded(row.id)"
-        @removed="search"
-        @updated="search"
         @toggled="toggleDetails(row.id)"
+        @update="openEditDialog(row)"
+        @rate="openCSatDialog(row)"
+        @removed="removed"
       />
     </div>
 
@@ -149,6 +157,7 @@
     </div>
 
     <edit ref="editDialog" @saved="saveNew" />
+    <c-sat-dialog ref="csatDialog" @saved="saveCSat" />
 
   </div>
 
@@ -203,20 +212,25 @@ export default {
     isExpanded(id) {
       return this.showingId==id && this.showDetails;
     },
-    clear() {
-      this.searchTerm = '';
-    },
     addNew() {
       this.$refs.editDialog.open();
     },
-    edit(id) {
-      this.$router.push({ name: 'ticket', params: { id } });
+    openEditDialog(ticket) {
+      const cloned = JSON.parse(JSON.stringify(ticket));
+      this.$refs.editDialog.open(cloned);
+    },
+    openCSatDialog(ticket) {
+      const form = {
+        id: ticket.id,
+        level: ticket.csatLevel,
+        assessment: ticket.csatAssessment
+      };
+      this.$refs.csatDialog.open(form);
     },
     loadmore() {
       this.isLoadMoreClicked = true;
       this.search();
     },
-
     applyOptions() {
       this.searchMenuOpen = false;
       this.search();
@@ -262,18 +276,20 @@ export default {
       const result = await TicketService.save(form);
       if (result && result.status) this.search();
     },
-    removed(index) {
-      if (this.searchResult && this.searchResult.length > index) {
-        this.searchResult.splice(index, 1);
-        if (!this.searchResult || !this.searchResult.length) this.search();
-      }
+    async saveCSat(form) {
+      const result = await TicketService.saveCSat(form);
+      if (result && result.status) this.search();
+    },
+    async removed() {
+      const result = await TicketService.remove(this.ticket.id);
+      if (result && result.status) this.search();
     },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
       if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
         return this.search();
       }
-    }
+    },
   },
   watch: {
     searchTerm() {
@@ -285,6 +301,7 @@ export default {
   },
   components: {
     Edit: () => import('./Edit.vue'),
+    CSatDialog: () => import('./CSatDialog.vue'),
     Ticket: () => import('./Ticket.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
