@@ -6,9 +6,9 @@ import router from '../router';
 import { BroadcastChannel } from 'broadcast-channel';
 
 const state = {
-  no: 0,
+  no: null,
   list: [],
-  current: { }
+  current: {},
 };
 
 const actions = {
@@ -18,18 +18,18 @@ const actions = {
     if (res.status == true) {
       dispatch('create', res);
     }
-    return res.data && res.data;
+    return res.data;
   },
 
-  logout({ commit }, expired) {
+  logout({ state, commit }, expired) {
     if (expired == false) {
       ApiService.post('/logout')
         .then(() => {
           commit('snackbar/setMessage', { text: 'You have been successfully logged out!' }, { root: true });
         });
-      }
+    }
     localStorage.clear();
-    logoutChannel.postMessage();
+    if (state.current.role != 'SUPER') logoutChannel.postMessage();
     commit('RESET');
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   },
@@ -37,7 +37,7 @@ const actions = {
   create({ state, commit }, res) {
     state.no = res.data.sessionNo;
     commit('SET_LIST', res.data);
-    loginChannel.postMessage(res.data);
+    if (!res.data.isPriviledge) loginChannel.postMessage(res.data);
   },
 
   refresh({ commit }) {
@@ -45,6 +45,15 @@ const actions = {
       .then((res) => {
         if (res && res.data) {
           commit('SET_CURRENT', res.data.data.session);
+        }
+      });
+  },
+
+  unbindAccount({ commit }) {
+    ApiService.post('/sys/account/unbind')
+      .then((res) => {
+        if (res && res.data) {
+          commit('SET_CURRENT', res.data.data);
         }
       });
   }
@@ -56,6 +65,7 @@ function buildCurrent(state) {
   const selected = state.list[state.no];
   if (selected) {
     stat = {
+      accountId : selected.accountId,
       isActive : false,
       isSubscriber: false,
       isFree : false,
@@ -75,7 +85,7 @@ function buildCurrent(state) {
       currencyFormat: selected.currencyFormat,
       everSubscribed: (selected.subsStartedAt != undefined),
     };
-    if (selected.subsRenewalAt) {
+    if (state.current.role != 'SUPER' && selected.subsRenewalAt) {
       const renewal = moment(selected.subsRenewalAt, 'YYYY-MM-DD').tz(selected.timezone);
       const dayDiff = renewal.diff(moment().startOf('day'), 'days');
       const base = (selected.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
@@ -97,10 +107,14 @@ function buildCurrent(state) {
 const mutations = {
 
   SET_CURRENT(state, ses, sid) {
-    if (sid != undefined && sid >= 0) state.no = sid;
+    if (sid != undefined && sid >= 0 && sid < state.list.length) {
+      state.no = sid;
+    } else {
+      state.no = 0;
+    }
     if (state.no == undefined || state.no < 0 || state.no >= state.list.length) state.no = 0;
     state.list[state.no] = ses;
-    loginChannel.postMessage(state.list);
+    if (state.current.role != 'SUPER') loginChannel.postMessage(state.list);
     buildCurrent(state);
   },
 
@@ -122,8 +136,17 @@ const mutations = {
   },
 
   RESET(state) {
-    state.no = 0;
+    state.no = null;
     state.list = [];
+  },
+
+  SET_ACCOUNT_INFO(state, form) {
+    if (form && state.current && state.list[state.no]) {
+      state.current.account = form.name;
+      state.current.currencyFormat = form.currencyFormat;
+      state.list[state.no].account = form.name;
+      state.list[state.no].currencyFormat = form.currencyFormat;
+    }
   },
 
 }
@@ -136,6 +159,11 @@ const ACTIVE_ACCOUNT_STATUSES = [
 
 const getters = {
 
+  hasASession: (state) => {
+    if (state) return state.current.status != 'UNKNOWN';
+    return false;
+  },
+
   getSessionList: (state) => {
     if (state) return state.list;
   },
@@ -144,20 +172,32 @@ const getters = {
     return state.current;
   },
 
+  isSuperUser: (state) => {
+    return (state.current.role == 'SUPER');
+  },
+
+  isNotSuperUser: (state) => {
+    return state.current.role != 'SUPER';
+  },
+
   isAdmin: (state) => {
-    return (state.list[state.no] && state.list[state.no].role === 'ADMIN');
+    return (state.current && (state.current.role === 'ADMIN'));
   },
 
   isNotAdmin: (state) => {
-    return (state.list[state.no] && state.list[state.no].role !== 'ADMIN');
+    return (state.current && (state.current.role !== 'ADMIN'));
   },
 
   isEditor: (state) => {
-    return (state.list[state.no] && state.list[state.no].role === 'EDITOR') || getters.isAdmin(state);
+    return (state.current && (state.current.role === 'ADMIN' || state.current.role === 'EDITOR'));
+  },
+
+  isNotEditor: (state) => {
+    return (state.current && !(state.current.role === 'ADMIN' || state.current.role === 'EDITOR'));
   },
 
   isViewer: (state) => {
-    return (state.list[state.no] && state.list[state.no].role === 'VIEWER');
+    return (state.current && state.current.role === 'VIEWER');
   },
 
 };

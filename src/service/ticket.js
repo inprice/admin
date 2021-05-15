@@ -11,7 +11,10 @@ export default {
   },
 
   async save(form) {
-    if (store.get('session/isViewer')) return;
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
 
     let method = 'post', opType = 'added';
     if (form.id && form.id > 0) {
@@ -24,7 +27,10 @@ export default {
   },
 
   async saveCSat(form) {
-    if (store.get('session/isViewer')) return;
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
 
     const res = await Helper.call('Assessment', { url: baseURL + '/csat', data: form });
     if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your assessment is successfully saved.' });
@@ -38,7 +44,10 @@ export default {
   },
 
   async remove(id) {
-    if (store.get('session/isViewer')) return;
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+      return;
+    }
 
     const res = await Helper.call('Ticket Delete', { method: 'delete', url: baseURL + '/' + id });
     return res;

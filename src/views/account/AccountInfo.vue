@@ -103,8 +103,6 @@ export default {
         currencyCode: '',
         currencyFormat: ''
       },
-      sampleAmount: 0.25,
-      sampleAmounts: [0.25, 100, 100.5, 1250.10, 3200.2443, 1263500.34 ],
     };
   },
   methods: {

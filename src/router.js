@@ -58,6 +58,27 @@ const router = new VueRouter({
       }
     },
     {
+      name: 'sys',
+      path: '/:sid/sys',
+      component: () => import('./views/Layout.vue'),
+      meta: {
+        requiresAuth: true,
+        requiresSuper: true
+      },
+      children: [
+        {
+          name: 'sys-dashboard',
+          path: 'dashboard',
+          component: () => import('./views/super/Dashboard.vue')
+        },
+        {
+          name: 'sys-accounts',
+          path: 'accounts',
+          component: () => import('./views/super/Accounts.vue')
+        },
+      ]
+    },
+    {
       name: 'app',
       path: '/:sid/app',
       component: () => import('./views/Layout.vue'),
@@ -115,7 +136,7 @@ const router = new VueRouter({
           path: 'account-settings',
           component: () => import('./views/account/Index.vue'),
           meta: {
-            requiresAdmin: true
+            requiresAdminOrSuperUser: true
           },
         },
         {
@@ -169,7 +190,6 @@ router.beforeEach((to, from, next) => {
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (sesList && sesList.length > 0) {
-
       const sid = to.params.sid;
       if (sid == undefined || sid < 0 || sid >= sesList.length) {
         store.set('session/CURRENT', sesList[0]);
@@ -186,9 +206,16 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  if (to.matched.some(record => record.meta.requiresAdmin)) {
+  if (to.matched.some(record => record.meta.requiresAdminOrSuperUser)) {
     const CURSTAT = store.get('session/getCurrentStatus');
-    if (CURSTAT.role != 'ADMIN') {
+    if (CURSTAT.role !== 'ADMIN' && CURSTAT.role !== 'SUPER') {
+      return next({ name: 'forbidden' });
+    }
+  }
+
+  if (to.matched.some(record => record.meta.requiresSuper)) {
+    const CURSTAT = store.get('session/getCurrentStatus');
+    if (CURSTAT.role != 'SUPER') {
       return next({ name: 'forbidden' });
     }
   }

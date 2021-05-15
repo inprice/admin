@@ -122,14 +122,18 @@ export default {
             this.$store.commit('session/SET_CURRENT', ses, 0);
           }
           if (ses) {
-            if (ses.planName) {
-              if (ses.linkCount > 0) {
-                this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
-              } else {
-                this.$router.push({ name: 'groups', params: { sid: result.sessionNo } });
-              }
+            if (result.isPriviledge) {
+              this.$router.push({ name: 'sys-dashboard', params: { sid: 0 } });
             } else {
-              this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
+              if (ses.planName) {
+                if (ses.linkCount > 0) {
+                  this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
+                } else {
+                  this.$router.push({ name: 'groups', params: { sid: result.sessionNo } });
+                }
+              } else {
+                this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
+              }
             }
           }
         }

@@ -10,28 +10,9 @@ const actions = {
   async fetchPlans({ commit }) {
     SystemService.fetchPlans()
       .then((res) => {
-        /*
-        let plansSets = [];
         if (res && res.data) {
-          let cell = 0;
-          let pSet = [];
-          for (let i = 0; i < res.data.length; i++) {
-            if (cell == 3) {
-              plansSets.push(pSet);
-              pSet = [];
-              cell = 0;
-            }
-            pSet.push(res.data[i]);
-            cell++;
-          }
-
-          if (pSet.length > 0) {
-            plansSets.push(pSet);
-          }
+          commit('SET_PLANS', res.data);
         }
-        commit('SET_PLANS', plansSets);
-        */
-       commit('SET_PLANS', res.data);
       });
   },
 
