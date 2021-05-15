@@ -16,7 +16,7 @@ export default {
   },
 
   getInfo() {
-    return Helper.call('Subs Info', { method: 'get', url: baseURL + '/get-info' }, false);
+    return Helper.call('Subs Info', { method: 'get', url: baseURL + '/get-info' }, false, false);
   },
 
   async cancel() {

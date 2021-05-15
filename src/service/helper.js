@@ -18,7 +18,7 @@ export default {
     }).join('&');    
   },
 
-  async call(caller, req, sensitiveFor404 = true) {
+  async call(caller, req, manualErrorHandling, sensitiveFor404=true) {
     try {
       if (! req.method || req.method === undefined) req.method = 'post';
       const res = await ApiService.customRequest(req);
@@ -26,22 +26,22 @@ export default {
         if (res.data.status == 0) {
           return { data: res.data.data, status: true };
         } else {
-          if (res.data.status == 404 && sensitiveFor404 == false) {
-            return { status: true };
-          }
           if (res.data.status == 403) {
             router.push({ name: 'forbidden' });
             return;
           }
-
-          logoutCheck(res.data.reason);
+          if (res.data.status == 404 && sensitiveFor404 == false) {
+            return { status: true };
+          }
+          if (!manualErrorHandling) {
+            logoutCheck(res.data.reason);
+          }
           return { error: res.data.reason, status: false };
         }
       } else {
         return { error: 'Network Error', status: false };
       }
     } catch (err) {
-      console.log(err.message);
       if (err.message.includes("code 400")) {
         store.commit('snackbar/setMessage', { text: 'Invalid data', level: 'error' });
       } else {

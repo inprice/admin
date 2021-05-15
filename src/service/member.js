@@ -11,7 +11,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Members', { method: 'get', url: baseURL }, false);
+    const res = await Helper.call('Members', { method: 'get', url: baseURL }, false, false);
     if (res.status == true && res.data) return res.data;
     return null;
   },

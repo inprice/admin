@@ -14,11 +14,11 @@ const state = {
 const actions = {
 
   async login({ dispatch }, form) {
-    const res = await Helper.call('Login', { url: '/login', data: form });
+    const res = await Helper.call('Login', { url: '/login', data: form }, true);
     if (res.status == true) {
       dispatch('create', res);
     }
-    return res.data;
+    return res;
   },
 
   logout({ state, commit }, expired) {

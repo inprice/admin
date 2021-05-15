@@ -36,9 +36,18 @@
               >
                 Bind an account
               </v-btn>
+              <v-btn
+                v-else-if="$store.get('session/isSuperUser')"
+                text
+                small
+                outlined
+                @click="unbindAccount"
+              >
+                Unbind Selected Account
+              </v-btn>
 
               <v-btn
-                v-else-if="$store.get('session/isNotSuperUser')"
+                v-else-if="!CURSTAT.isActive && $store.get('session/isNotSuperUser')"
                 text
                 small
                 outlined
@@ -47,15 +56,6 @@
                 @click="menu=false"
               >
                 Please select a plan!
-              </v-btn>
-              <v-btn
-                v-else
-                text
-                small
-                outlined
-                @click="unbindAccount"
-              >
-                Unbind Selected Account
               </v-btn>
             </v-list-item-subtitle>
           </v-list-item-content>

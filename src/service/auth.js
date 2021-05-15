@@ -30,9 +30,9 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Accept Invitation', { url: '/accept-invitation', data: form });
+    const res = await Helper.call('Accept Invitation', { url: '/accept-invitation', data: form }, true);
     if (res.status == true) store.dispatch('session/create', res);
-    return res.status;
+    return res;
   },
 
   async forgotPassword(email) {

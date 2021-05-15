@@ -6,20 +6,44 @@
         <img :src="verticalBrand" :width="140" />
       </div>
 
-      <v-alert dense dismissible color="cyan lighten-2" border="left" elevation="2" colored-border type="success"
-        v-if="successMessage"
+      <v-alert
+        large
+        dismissible
+        colored-border
+        type="success"
+        border="left"
+        elevation="2"
+        color="cyan lighten-2"
+        transition="fade-transition"
+        v-model="successAlert"
       >
         {{ successMessage }}
       </v-alert>
 
-      <v-alert dense dismissible color="purple lighten-2" border="left" elevation="2" colored-border type="info"
-        v-if="infoMessage"
+      <v-alert
+        large
+        dismissible
+        colored-border
+        type="info"
+        border="left"
+        elevation="2"
+        color="purple lighten-2"
+        transition="fade-transition"
+        v-model="infoAlert"
       >
         {{ infoMessage }}
       </v-alert>
 
-      <v-alert dense dismissible color="orange" border="left" elevation="2" colored-border type="warning"
-        v-if="errorMessage"
+      <v-alert
+        large
+        dismissible
+        colored-border
+        type="warning"
+        border="left"
+        elevation="2"
+        color="pink"
+        transition="fade-transition"
+        v-model="errorAlert"
       >
         {{ errorMessage }}
       </v-alert>
@@ -61,7 +85,9 @@
               color="info"
               @click="submit" 
               :loading="loading" 
-              :disabled="loading">Sign In</v-btn>
+              :disabled="loading">
+                Sign In
+            </v-btn>
           </v-card-actions>
 
           <div class="d-flex mt-5">
@@ -82,6 +108,9 @@ import Utility from '@/helpers/utility';
 export default {
   data() {
     return {
+      infoAlert: false,
+      successAlert: false,
+      errorAlert: false,
       infoMessage: null,
       successMessage: null,
       errorMessage: null,
@@ -115,27 +144,33 @@ export default {
       if (this.valid) {
         this.loading = true;
         const result = await this.$store.dispatch('session/login', this.form);
-        if (result != null) {
-          let ses = result.sessions[result.sessionNo];
-          if (ses == undefined && result.sessionNo != 0 && result.sessions[0]) {
-            ses = result.sessions[0];
+        if (result.status) {
+          const resData = result.data;
+          let ses = resData.sessions[resData.sessionNo];
+          if (ses == undefined && resData.sessionNo != 0 && resData.sessions[0]) {
+            ses = resData.sessions[0];
             this.$store.commit('session/SET_CURRENT', ses, 0);
           }
           if (ses) {
-            if (result.isPriviledge) {
+            if (resData.isPriviledge) {
               this.$router.push({ name: 'sys-dashboard', params: { sid: 0 } });
             } else {
               if (ses.planName) {
                 if (ses.linkCount > 0) {
-                  this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
+                  this.$router.push({ name: 'dashboard', params: { sid: resData.sessionNo } });
                 } else {
-                  this.$router.push({ name: 'groups', params: { sid: result.sessionNo } });
+                  this.$router.push({ name: 'groups', params: { sid: resData.sessionNo } });
                 }
               } else {
-                this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
+                this.$router.push({ name: 'plans', params: { sid: resData.sessionNo } });
               }
             }
           }
+        } else {
+          this.infoAlert = false;
+          this.successAlert = false;
+          this.errorMessage = result.error;
+          this.errorAlert = true;
         }
         this.loading = false;
       }
