@@ -48,9 +48,14 @@
 
         <v-divider></v-divider>
 
-        <v-card-actions class="pt-0">
-          <v-spacer></v-spacer>
-          <v-btn @click.native="warning.show = false" text class="mt-2">OK</v-btn>
+        <v-card-actions class="pt-0 justify-end">
+          <v-btn
+            text outlined
+            class="mt-2"
+            @click.native="warning.show = false"
+          >
+            OK
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

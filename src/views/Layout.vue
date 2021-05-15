@@ -132,7 +132,7 @@
             <v-list-item-title>User Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'account-settings'}" :disabled="!($store.get('session/isAdmin') || $store.get('session/isSuperUser'))">
+        <v-list-item link :to="{name: 'account-settings'}">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-action>

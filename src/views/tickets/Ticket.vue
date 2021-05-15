@@ -21,12 +21,14 @@
         <v-menu offset-y bottom left>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              small fab dark
-              v-bind="attrs"
+              small
+              fab dark
               v-on="on"
+              v-bind="attrs"
               @click.stop=""
-              :color="(ticket.repliedAt ? 'green' : 'orange') + ' lighten-2'"
               style="width:25px; height:25px"
+              :color="(ticket.repliedAt ? 'green' : 'orange') + ' lighten-2'"
+              :disabled="$store.get('session/isSuperUser')"
             >
               <v-icon>mdi-dots-vertical</v-icon>
             </v-btn>
@@ -107,12 +109,14 @@
         <div class="d-flex justify-space-between pa-2 body-2" style="background-color: lightcyan">
           <span class="my-auto">Reply</span>
           <v-btn 
-            small text outlined
+            small
+            text outlined
             class="my-auto"
             v-if="!ticket.csatedAt"
-            :disabled="$store.get('session/isViewer')"
-            @click.stop="$emit('rate')">
-              Rate this
+            @click.stop="$emit('rate')"
+            :disabled="$store.get('session/isNotEditor')"
+          >
+            Rate this
           </v-btn>
         </div>
 
@@ -142,11 +146,13 @@
         <div class="d-flex justify-space-between pa-2 body-2" style="background-color: aliceblue">
           <span class="my-auto">Your assessment: {{ ticket.csatLevel }}</span>
           <v-btn 
-            small text outlined
+            small
+            text outlined
             class="my-auto"
-            :disabled="$store.get('session/isViewer')"
-            @click.stop="$emit('rate')">
-              Update
+            @click.stop="$emit('rate')"
+            :disabled="$store.get('session/isNotEditor')"
+          >
+            Update
           </v-btn>
         </div>
 

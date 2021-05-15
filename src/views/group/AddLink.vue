@@ -4,12 +4,11 @@
     <v-dialog  v-model="opened" :max-width="findDialogWidth" overlay-opacity="0.2">
 
       <v-card>
-        <v-card-title>
+        <v-card-title class="justify-space-between">
           <div>
             <div class="caption">For {{ this.groupName }}</div>
             Add New Links
           </div>
-          <v-spacer></v-spacer>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
@@ -35,10 +34,11 @@
 
         <v-card-actions class="py-3 mr-2 justify-end">
           <v-btn
-            @click="save"
+            text outlined
             color="primary"
+            @click="save"
             :loading="loading" 
-            :disabled="loading"
+            :disabled="loading || $store.get('session/isNotEditor')"
           >
             Save
           </v-btn>

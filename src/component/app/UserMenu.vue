@@ -26,7 +26,7 @@
               <p v-if="$store.get('session/isSuperUser')">{{ CURSTAT.email }}</p>
 
               <v-btn
-                v-if="$store.get('session/isSuperUser') && !CURSTAT.accountId"
+                v-if="!CURSTAT.accountId && $store.get('session/isSuperUser')"
                 text
                 small
                 outlined

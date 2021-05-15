@@ -31,10 +31,11 @@
 
       <div class="my-auto">
         <v-btn 
-          small
-          :disabled="$store.get('session/isViewer')"
-          @click="addNew">
-            Add new
+          text outlined
+          :disabled="$store.get('session/isNotEditor')"
+          @click="addNew"
+        >
+          Add new
         </v-btn>
       </div>
     </div>

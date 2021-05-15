@@ -6,9 +6,8 @@
        :max-width="findDialogWidth"
        overlay-opacity="0.2">
       <v-card>
-        <v-card-title class="pr-3">
-          {{ form.id ? 'Edit' : 'New' }} Ticket
-          <v-spacer></v-spacer>
+        <v-card-title class="pr-3 justify-space-between">
+          <span>{{ form.id ? 'Edit' : 'New' }} Ticket</span>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
@@ -60,11 +59,18 @@
         <v-divider></v-divider>
 
         <v-card-actions class="py-4 justify-end">
-          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
-            small
-            @click="save"
+            text outlined
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            text outlined
             color="success"
+            @click="save"
+            :disabled="$store.get('session/isSuperUser')"
           >
             Save
           </v-btn>

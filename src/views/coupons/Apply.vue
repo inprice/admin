@@ -34,20 +34,22 @@
 
         <v-divider></v-divider>
 
-        <v-card-actions class="py-3">
-          <v-spacer></v-spacer>
-
-          <v-btn small tabindex="-1" @click="close">Close</v-btn>
+        <v-card-actions class="py-3 justify-end">
+          <v-btn 
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
           <v-btn
-            small
+            text outlined
             @click="submit"
             color="primary"
             :loading="loading"
-            :disabled="loading || $store.get('session/isViewer')"
+            :disabled="loading || $store.get('session/isNotEditor')"
           >
             Apply
           </v-btn>
-
         </v-card-actions>
 
       </v-card>

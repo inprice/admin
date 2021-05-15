@@ -4,8 +4,10 @@
     <div class="d-flex justify-end">
       <v-btn 
         small
-        @click="$router.go(-1)">
-          <v-icon>mdi-arrow-left-thin-circle-outline</v-icon> Go Back
+        text outlined
+        @click="$router.go(-1)"
+      >
+        <v-icon>mdi-arrow-left-thin-circle-outline</v-icon> Go Back
       </v-btn>
     </div>
 
@@ -22,7 +24,12 @@
     <div class="d-flex justify-space-between">
       <span class="title">Links</span>
       <div>
-        <v-btn small @click="findGroup(data.group.id)">
+        <v-btn
+          small
+          text outlined
+          @click="findGroup(data.group.id)"
+          :disabled="$store.get('session/isSuperUser')"
+        >
           Refresh Links
         </v-btn>
       </div>

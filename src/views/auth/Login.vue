@@ -90,9 +90,8 @@
             </v-btn>
           </v-card-actions>
 
-          <div class="d-flex mt-5">
+          <div class="d-flex mt-5 justify-space-between">
             <router-link to="forgot-password" tabindex="-1">Forgot Password?</router-link>
-            <v-spacer></v-spacer>
             <router-link to="request-registration" tabindex="-1">Sign Up</router-link>
           </div>
         </v-card-text>

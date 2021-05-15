@@ -30,11 +30,10 @@
 
       <div class="my-auto">
         <v-btn
-          text
           small
-          outlined
+          text outlined
           @click="unbindAccount"
-          :disabled="!CURSTAT.accountId"
+          :disabled="!CURSTAT.accountId || $store.get('session/isNotSuperUser')"
         >
           Unbind Current
         </v-btn>
@@ -68,7 +67,7 @@
               <td>{{ acc.currencyCode }}</td>
               <td>{{ acc.country }}</td>
               <td>
-                <v-menu offset-y bottom left>
+                <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
                   <template v-slot:activator="{ on }">
                     <v-btn small icon v-on="on">
                       <v-icon dark>mdi-dots-vertical</v-icon>

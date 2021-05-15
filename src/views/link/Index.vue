@@ -11,7 +11,7 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between" v-if="CURSTAT.isActive || CURSTAT.linkCount > 0">
+    <div v-if="CURSTAT.planId">
 
       <div class="col-10 pl-0 d-flex">
         <v-text-field 
@@ -131,12 +131,21 @@
 
                 <v-divider></v-divider>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn outlined text @click="resetForm" tabindex="-1">
+                <v-card-actions class="justify-end">
+                  <v-btn
+                    text
+                    outlined
+                    @click="resetForm"
+                    tabindex="-1"
+                  >
                     Reset
                   </v-btn>
-                  <v-btn outlined text color="primary" @click="applyOptions">
+                  <v-btn
+                    text
+                    outlined
+                    color="primary"
+                    @click="applyOptions"
+                  >
                     OK
                   </v-btn>
                 </v-card-actions>
@@ -148,7 +157,7 @@
       </div>
 
     </div>
-
+    
     <div class="col pa-0" v-if="CURSTAT.planId">
       <list
         ref="list"
@@ -166,12 +175,14 @@
         You are not allowed to manage your products until activate your account!
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn 
-            :disabled="$store.get('session/isViewer')"
             small
+            text outlined
+            :disabled="$store.get('session/isNotEditor')"
             color="success"
             class="my-auto"
-            @click="$router.push( { name: 'plans' })">
-              See Plans
+            @click="$router.push( { name: 'plans' })"
+          >
+            See Plans
           </v-btn>
         </div>
       </block-message>

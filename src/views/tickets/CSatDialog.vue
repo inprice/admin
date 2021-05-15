@@ -47,11 +47,20 @@
         <v-divider></v-divider>
 
         <v-card-actions class="py-4 justify-end">
-          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
             small
-            @click="save"
+            text outlined
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            small
+            text outlined
             color="success"
+            @click="save"
+            :disabled="$store.get('session/isSuperUser')"
           >
             Save
           </v-btn>

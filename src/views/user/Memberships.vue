@@ -15,7 +15,13 @@
           </div>
 
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn small class="my-auto" @click="refreshMembers">
+            <v-btn
+              small
+              text outlined
+              class="my-auto"
+              @click="refreshMembers"
+              :disabled="$store.get('session/isSuperUser')"
+            >
               Refresh
             </v-btn>
           </div>
@@ -44,11 +50,12 @@
                   <td><ago :date="row.date"/></td>
                   <td class="text-center py-2">
                     <v-btn
-                      v-if="row.role != 'ADMIN'"
                       small
+                      text outlined
+                      v-if="row.role != 'ADMIN'"
                       :loading="loading.leave" 
-                      :disabled="loading.leave"
                       @click="leave(row.id, row.account)"
+                      :disabled="loading.leave || $store.get('session/isSuperUser')"
                     >
                       Leave
                     </v-btn>

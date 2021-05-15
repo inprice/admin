@@ -19,14 +19,22 @@
           </div>
 
           <div class="my-auto">
-            <v-btn small class="mr-2" @click="refreshSession">
+            <v-btn
+              small
+              text outlined
+              class="mr-2"
+              @click="refreshSession"
+              :disabled="$store.get('session/isSuperUser')"
+            >
               Refresh Session
             </v-btn>
             <v-btn 
               small 
+              text outlined
               color="success"
-              @click="openInvoiceInfo">
-                Edit
+              @click="openInvoiceInfo"
+            >
+              Edit
             </v-btn>
           </div>
         </div>

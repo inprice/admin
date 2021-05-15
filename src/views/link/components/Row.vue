@@ -99,11 +99,11 @@
 
             <v-divider></v-divider>
 
-            <v-list-item link @click="$emit('deleteOne', row)">
+            <v-list-item link @click="$emit('deleteOne', row)" :disabled="$store.get('session/isNotEditor')">
               <v-list-item-title>DELETE THIS</v-list-item-title>
             </v-list-item>
 
-            <v-list-item link @click="$emit('moveOne', row)">
+            <v-list-item link @click="$emit('moveOne', row)" :disabled="$store.get('session/isNotEditor')">
               <v-list-item-title>MOVE</v-list-item-title>
             </v-list-item>
 

@@ -17,19 +17,22 @@
         <div>
           <v-btn
             small
+            text outlined
             class="mx-1"
-            :disabled="!selected"
             @click="moveMultiple"
+            :disabled="!selected || $store.get('session/isNotEditor')">
           >
             Move
           </v-btn>
 
           <v-btn 
             small
+            text outlined
             class="mx-1"
-            :disabled="!selected"
-            @click="deleteMultiple">
-              Delete ({{ selected }})
+            @click="deleteMultiple"
+            :disabled="!selected || $store.get('session/isNotEditor')">
+          >
+            Delete ({{ selected }})
           </v-btn>
         </div>
       </div>

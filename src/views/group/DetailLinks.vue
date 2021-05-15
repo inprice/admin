@@ -12,7 +12,7 @@
         </v-btn>
       </v-btn-toggle>
 
-      <v-card tile v-if="groups[selectedTabName].links.length > 1">
+      <v-card tile v-if="groups[selectedTabName].links.length > 1" :disabled="$store.get('session/isNotEditor')">
         <div class="d-flex">
           <v-checkbox
             hide-details="true"
@@ -27,6 +27,7 @@
           <div class="mt-2">
             <v-btn
               small
+              text outlined
               class="mx-1"
               :disabled="groups[selectedTabName].selected < 1"
               @click="moveMultiple(selectedTabName)"
@@ -36,6 +37,7 @@
 
             <v-btn 
               small
+              text outlined
               class="mx-1"
               :disabled="groups[selectedTabName].selected < 1"
               @click="deleteMultiple(selectedTabName)">

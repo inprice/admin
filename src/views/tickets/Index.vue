@@ -111,12 +111,21 @@
 
                 <v-divider></v-divider>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn outlined text @click="resetForm" tabindex="-1">
+                <v-card-actions class="justify-end">
+                  <v-btn
+                    text
+                    outlined
+                    @click="resetForm"
+                    tabindex="-1"
+                  >
                     Reset
                   </v-btn>
-                  <v-btn outlined text color="primary" @click="applyOptions">
+                  <v-btn
+                    text
+                    outlined
+                    color="primary"
+                    @click="applyOptions"
+                  >
                     OK
                   </v-btn>
                 </v-card-actions>
@@ -128,11 +137,12 @@
       </div>
 
       <v-btn 
-        small
+        text outlined
         class="my-auto"
-        :disabled="$store.get('session/isViewer')"
-        @click="addNew">
-          Add new
+        @click="addNew"
+        :disabled="$store.get('session/isNotEditor')"
+      >
+        Add new
       </v-btn>
     </div>
 

@@ -41,13 +41,19 @@
         <v-divider></v-divider>
 
         <v-card-actions class="justify-end py-3">
-          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
-            small
+            text outlined
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            text outlined
             @click="submit"
             color="primary"
             :loading="loading" 
-            :disabled="loading"
+            :disabled="$store.get('session/isNotEditor') || loading"
           >
             Invite
           </v-btn>

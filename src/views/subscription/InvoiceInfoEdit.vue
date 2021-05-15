@@ -95,13 +95,19 @@
         <v-divider></v-divider>
 
         <v-card-actions class="py-4 justify-end">
-          <v-btn small tabindex="-1" @click="close">Close</v-btn>
+          <v-btn 
+            text outlined
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
           <v-btn
-            small
-            @click="submit"
+            text outlined
             color="primary"
+            @click="submit"
             :loading="loading" 
-            :disabled="loading"
+            :disabled="loading || $store.get('session/isNotAdmin')"
           >
             Save
           </v-btn>
