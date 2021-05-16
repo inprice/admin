@@ -6,16 +6,13 @@
       <v-card>
         <v-card-title class="justify-space-between">
           <div>
-            <div class="caption">For {{ this.groupName }}</div>
             Add New Links
+            <div class="caption">For {{ this.groupName }}</div>
           </div>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
-        <div class="body-2 mx-4 pa-3" style="border: 1px solid #ddd">
-          <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
-          One url per row!
-        </div>
+        <v-divider></v-divider>
 
         <v-form ref="form" v-model="valid">
           <v-textarea
@@ -23,7 +20,7 @@
             outlined
             v-model="form.linksText"
             :label="`${rowLimit - lines} links can be added.`"
-            class="pa-4 pb-0"
+            class="px-4 pt-5"
             rows="5"
             :rules="rules.linksText"
             @keyup="checkRowLimit"
@@ -32,7 +29,12 @@
 
         <v-divider></v-divider>
 
-        <v-card-actions class="py-3 mr-2 justify-end">
+        <v-card-actions class="py-3 mr-2 justify-space-between">
+          <div class="body-2 ml-2">
+            <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
+            One url per row!
+          </div>
+
           <v-btn
             text outlined
             color="primary"

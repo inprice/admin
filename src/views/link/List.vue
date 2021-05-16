@@ -20,7 +20,7 @@
             text outlined
             class="mx-1"
             @click="moveMultiple"
-            :disabled="!selected || $store.get('session/isNotEditor')">
+            :disabled="!selected || $store.get('session/isNotEditor')"
           >
             Move
           </v-btn>
@@ -30,7 +30,7 @@
             text outlined
             class="mx-1"
             @click="deleteMultiple"
-            :disabled="!selected || $store.get('session/isNotEditor')">
+            :disabled="!selected || $store.get('session/isNotEditor')"
           >
             Delete ({{ selected }})
           </v-btn>

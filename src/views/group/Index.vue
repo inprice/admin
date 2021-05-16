@@ -23,9 +23,9 @@
           hide-details
           placeholder="Search by Name"
         >
-            <template slot="append">
-              <v-icon @click="clear">mdi-window-close</v-icon>
-            </template>
+          <template slot="append">
+            <v-icon @click="clear">mdi-window-close</v-icon>
+          </template>
         </v-text-field>
       </div>
 

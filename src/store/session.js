@@ -85,7 +85,7 @@ function buildCurrent(state) {
       currencyFormat: selected.currencyFormat,
       everSubscribed: (selected.subsStartedAt != undefined),
     };
-    if (state.current.role != 'SUPER' && selected.subsRenewalAt) {
+    if (selected.subsRenewalAt) {
       const renewal = moment(selected.subsRenewalAt, 'YYYY-MM-DD').tz(selected.timezone);
       const dayDiff = renewal.diff(moment().startOf('day'), 'days');
       const base = (selected.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!

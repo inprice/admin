@@ -77,7 +77,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     },
     currentEmail: get('session/getCurrentStatus@email')

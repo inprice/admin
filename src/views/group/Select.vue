@@ -37,8 +37,9 @@
 
       <v-card-actions class="py-3 mr-2 justify-end">
         <v-btn
+          text outlined
           @click="agree"
-          :disabled="$store.get('session/isNotEditor')">
+          :disabled="$store.get('session/isNotEditor')"
         >
           OK
         </v-btn>
@@ -59,7 +60,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     },
   },

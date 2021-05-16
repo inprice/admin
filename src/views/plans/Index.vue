@@ -22,7 +22,7 @@
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn
             small 
-            text outlined
+            color="success"
             class="my-auto ml-3"
             :loading="loading.tryFreeUse" 
             :disabled="loading.tryFreeUse || $store.get('session/isNotAdmin')"
@@ -66,7 +66,6 @@
           <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
             <v-btn 
               small
-              text outlined
               color="error"
               class="my-auto"
               @click="cancel()"

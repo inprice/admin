@@ -21,7 +21,6 @@
           hide-details
           maxlength="100"
           v-model="searchForm.term"
-          @keyup="isSearchable($event)"
           :label="searchForm.searchBy"
           :placeholder="'Search by ' + searchForm.searchBy"
         >
@@ -62,8 +61,8 @@
                   <v-select
                     autofocus
                     dense
-                    label="Search By"
                     outlined
+                    label="Search By"
                     v-model="searchForm.searchBy"
                     :items="searchByItems"
                   ></v-select>
@@ -84,7 +83,7 @@
                     multiple
                     outlined
                     label="Statuses"
-                      v-model="searchForm.statuses"
+                    v-model="searchForm.statuses"
                     :items="statusItems"
                   ></v-select>
 
@@ -278,22 +277,20 @@ export default {
     resetForm() {
       this.searchMenuOpen = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
-      this.search();
       this.$refs.term.focus();
     },
     loadmore() {
       this.isLoadMoreClicked = true;
       this.search();
     },
-    isSearchable(e) {
-      let char = e.keyCode || e.charCode;
-      if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
-        return this.search();
-      }
-    }
   },
   mounted() {
     this.search();
+  },
+  watch: {
+    'searchForm.term'() {
+      return this.search();
+    }
   },
   components: {
     List: () => import('./List'),
