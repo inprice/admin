@@ -14,8 +14,6 @@
           <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
-        <v-divider></v-divider>
-
         <v-divider class="mb-3"></v-divider>
 
         <v-card-text class="pb-2">
@@ -82,7 +80,7 @@
 </template>
 
 <script>
-import SuperService from '@/service/super';
+import SuperAccountService from '@/service/super/account';
 import SystemService from '@/service/system';
 
 export default {
@@ -135,7 +133,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.form.planId = this.selectedPlan.id;
-        SuperService.createCoupon(this.form)
+        SuperAccountService.createCoupon(this.form)
           .then((res) => {
             if (res && res.data) {
               this.$store.commit('snackbar/setMessage', { text: `${res.data.code} is successfully created for ${this.form.name}` });

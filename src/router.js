@@ -76,6 +76,11 @@ const router = new VueRouter({
           path: 'accounts',
           component: () => import('./views/super/account/Index.vue')
         },
+        {
+          name: 'sys-users',
+          path: 'users',
+          component: () => import('./views/super/user/Index.vue')
+        },
       ]
     },
     {

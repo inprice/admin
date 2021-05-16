@@ -59,8 +59,12 @@ export default (Vue) => {
   Vue.filter('formatDate', (value) => {
     try {
       const tz = store.get(SESSION+'@timezone');
-      if (tz && value) {
-        return moment(value).tz(tz).fromNow();
+      if (value) {
+        if (tz) {
+          return moment(value).tz(tz).fromNow();
+        } else {
+          return moment(value).fromNow();
+        }
       }
       /* eslint-disable no-empty */
     } catch (error) {

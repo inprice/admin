@@ -2,8 +2,8 @@
 
   <div>
     <div>
-      <div class="title">Accounts</div>
-      <div class="body-2">All the registered accounts.</div>
+      <div class="title">Users</div>
+      <div class="body-2">All the registered users.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -27,17 +27,6 @@
           </template>
         </v-text-field>
       </div>
-
-      <div class="my-auto">
-        <v-btn
-          small
-          text outlined
-          @click="unbindAccount"
-          :disabled="!CURSTAT.accountId || $store.get('session/isNotSuperUser')"
-        >
-          Unbind Current
-        </v-btn>
-      </div>
     </div>
 
     <div 
@@ -53,19 +42,17 @@
         >
           <thead>
             <tr>
-              <th :width="RESPROPS.table.name">Name</th>
               <th :width="RESPROPS.table.email">Email</th>
-              <th :width="RESPROPS.table.currency">Currency</th>
-              <th :width="RESPROPS.table.country">Country</th>
+              <th :width="RESPROPS.table.bannedAt">Banned</th>
+              <th :width="RESPROPS.table.reason">Reason</th>
               <th :width="RESPROPS.table.action">Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="acc in searchResult" :key="acc.xid" :style="(CURSTAT.accountId && CURSTAT.accountId == acc.xid ? 'background-color: lightcyan' : '')">
-              <td>{{ acc.name }}</td>
-              <td>{{ acc.email }}</td>
-              <td>{{ acc.currencyCode }}</td>
-              <td>{{ acc.country }}</td>
+            <tr v-for="row in searchResult" :key="row.id">
+              <td>{{ row.email }}</td>
+              <td><ago :date="row.bannedAt" /></td>
+              <td>{{ row.banReason }}</td>
               <td style="padding: 0px !important; text-align: center !important;">
                 <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
                   <template v-slot:activator="{ on }">
@@ -75,14 +62,14 @@
                   </template>
 
                   <v-list dense>
-                    <v-list-item @click="bindAccount(acc.xid)">
+                    <v-list-item @click="banUser(row.id, row.email)" v-if="!row.bannedAt">
                       <v-list-item-title>
-                        BIND THIS
+                        BAN THIS USER
                       </v-list-item-title>
                     </v-list-item>
-                    <v-list-item @click="openCreateCouponDialog(acc.xid, acc.name)">
+                    <v-list-item @click="revokeUserBan(row.id, row.email)" v-else>
                       <v-list-item-title>
-                        CREATE COUPON
+                        REVOKE USER BAN
                       </v-list-item-title>
                     </v-list-item>
                   </v-list>
@@ -95,7 +82,7 @@
     </div>
 
     <v-card v-else >
-      <block-message :message="'No account found! You may want to change your criteria.'" />
+      <block-message :message="'No user found! You may want to change your criteria.'" />
     </v-card>
 
     <v-divider></v-divider>
@@ -104,16 +91,16 @@
       <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
     </div>
 
-    <create-coupon ref="createCouponDialog" />
+    <ban-user ref="banUserDialog" @banned="search" />
+    <confirm ref="confirm"></confirm>
 
   </div>
 
 </template>
 
 <script>
-import SuperAccountService from '@/service/super/account';
+import SuperUserService from '@/service/super/user';
 import SystemConsts from '@/data/system';
-import { get } from 'vuex-pathify'
 
 export default {
   data() {
@@ -147,7 +134,7 @@ export default {
       const loadMore = this.isLoadMoreClicked;
       this.isLoadMoreClicked = false;
 
-      SuperAccountService.search(this.searchForm)
+      SuperUserService.search(this.searchForm)
         .then((res) => {
           this.isLoadMoreDisabled = true;
           if (res?.length) {
@@ -164,17 +151,21 @@ export default {
           }
       });
     },
-    async bindAccount(id) {
-      const res = await SuperAccountService.bind(id);
-      if (res && res.data) {
-        this.$store.commit('session/SET_CURRENT', res.data, 0);
-      }
+    async banUser(id, email) {
+      this.$refs.banUserDialog.open({ id, email });
     },
-    unbindAccount() {
-      this.$store.dispatch('session/unbindAccount');
-    },
-    openCreateCouponDialog(id, name) {
-      this.$refs.createCouponDialog.open({ id, name });
+    async revokeUserBan(id, email) {
+      this.$refs.confirm.open('Revoke Ban', '\'s ban will be revoked. Are you sure?', email).then((confirm) => {
+        if (confirm == true) {
+          SuperUserService.revokeBan(id)
+            .then((res) => {
+              if (res && res.status) {
+                this.$store.commit('snackbar/setMessage', { text: `${email}'s ban is successfully revoked` });
+                this.search();
+              }
+            });
+        }
+      });
     },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
@@ -192,24 +183,24 @@ export default {
     this.search();
   },
   components: {
-    CreateCoupon: () => import('./CreateCoupon.vue'),
+    BanUser: () => import('./BanUser.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   computed: {
-    CURSTAT: get('session/getCurrentStatus'),
     RESPROPS() {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs':
         case 'sm': {
           return {
             'table-layout': 'fixed',
-            table: { name: '250px', email: '250px', currency: '80px', country: '120px', action: '70px' },
+            table: { email: '250px', reason: '', bannedAt: '150px', action: '70px' },
           };
         }
         default: {
           return {
             'table-layout': '',
-            table: { name: '', email: '', currency: '8%', country: '15%', action: '8%' },
+            table: { email: '12%', reason: '', bannedAt: '15%', action: '8%' },
           };
         }
       }

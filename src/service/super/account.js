@@ -1,0 +1,39 @@
+import Helper from '../helper';
+import store from '../../store';
+
+const baseURL = '/sys/account';
+
+export default {
+
+  async search(form) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    const res = await Helper.call('Search Account', { url: baseURL, data: form });
+    if (res.status == true && res.data) return res.data;
+    return null;
+  },
+
+  async bind(id) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    const res = await Helper.call('Bind Account', { method: 'put', url: baseURL + '/bind/' + id });
+    return res;
+  },
+
+  async createCoupon(form) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    const res = await Helper.call('Create Coupon', { url: baseURL + '/coupon', data: form });
+    return res;
+  },
+
+};

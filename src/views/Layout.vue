@@ -43,6 +43,12 @@
             </v-list-item-content>
           </v-list-item>
 
+          <v-list-item link :to="{name: 'sys-users'}">
+            <v-list-item-content>
+              <v-list-item-title>Users</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
         </v-list-group>
 
       </v-list>
@@ -251,7 +257,7 @@ export default {
     }
   },
   components: {
-    UserMenu: () => import('@/component/app/UserMenu.vue'),
+    UserMenu: () => import('./UserMenu.vue'),
     AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
 };
