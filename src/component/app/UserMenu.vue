@@ -53,7 +53,11 @@
                 Please select a plan!
               </v-btn>
 
-              <div v-if="$store.get('session/isNotSuperUser')" class="text-center">
+              <div
+                class="text-center"
+                :class="{ 'pt-3': (!CURSTAT.isActive && $store.get('session/isNotSuperUser')) }"
+                v-if="$store.get('session/isNotSuperUser')"
+              >
                 <v-divider class="pb-3"></v-divider>
                 <v-btn text small class="text-none">Privacy Policy</v-btn>
                 -

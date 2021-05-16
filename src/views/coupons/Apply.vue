@@ -36,6 +36,7 @@
 
         <v-card-actions class="py-3 justify-end">
           <v-btn 
+            text outlined
             tabindex="-1"
             @click="close"
           >

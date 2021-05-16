@@ -36,4 +36,14 @@ export default {
     return res;
   },
 
+  async createCoupon(form) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    const res = await Helper.call('Create Coupon', { url: baseURL + '/account/coupon', data: form });
+    return res;
+  },
+
 };

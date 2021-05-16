@@ -74,7 +74,7 @@ const router = new VueRouter({
         {
           name: 'sys-accounts',
           path: 'accounts',
-          component: () => import('./views/super/Accounts.vue')
+          component: () => import('./views/super/account/Index.vue')
         },
       ]
     },

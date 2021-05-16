@@ -48,7 +48,6 @@
 
         <v-card-actions class="py-4 justify-end">
           <v-btn
-            small
             text outlined
             tabindex="-1"
             @click="close"
@@ -56,7 +55,6 @@
             Close
           </v-btn>
           <v-btn
-            small
             text outlined
             color="success"
             @click="save"

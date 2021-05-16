@@ -66,7 +66,7 @@
               <td>{{ acc.email }}</td>
               <td>{{ acc.currencyCode }}</td>
               <td>{{ acc.country }}</td>
-              <td>
+              <td style="padding: 0px !important; text-align: center !important;">
                 <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
                   <template v-slot:activator="{ on }">
                     <v-btn small icon v-on="on">
@@ -78,6 +78,11 @@
                     <v-list-item @click="bindAccount(acc.xid)">
                       <v-list-item-title>
                         BIND THIS
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="openCreateCouponDialog(acc.xid, acc.name)">
+                      <v-list-item-title>
+                        CREATE COUPON
                       </v-list-item-title>
                     </v-list-item>
                   </v-list>
@@ -99,6 +104,9 @@
     <div class="mt-3">
       <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
     </div>
+
+    <create-coupon ref="createCouponDialog" />
+
   </div>
 
 </template>
@@ -166,6 +174,9 @@ export default {
     unbindAccount() {
       this.$store.dispatch('session/unbindAccount');
     },
+    openCreateCouponDialog(id, name) {
+      this.$refs.createCouponDialog.open({ id, name });
+    },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
       if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
@@ -182,6 +193,7 @@ export default {
     this.search();
   },
   components: {
+    CreateCoupon: () => import('./CreateCoupon.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   computed: {

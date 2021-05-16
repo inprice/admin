@@ -194,12 +194,14 @@
 </template>
 
 <script>
+import SystemService from '@/service/system';
 import SubsService from '@/service/subscription';
 import { get } from 'vuex-pathify'
 
 export default {
   data() {
     return {
+      plansSets: null,
       currentCheckoutHash: null,
       loading: {
         overlay: false,
@@ -208,7 +210,6 @@ export default {
     }
   },
   computed: {
-    plansSets: get('system/plansSets'),
     CURSTAT: get('session/getCurrentStatus'),
     findMinWidthForPlans() {
       switch (this.$vuetify.breakpoint.name) {
@@ -352,7 +353,13 @@ export default {
   },
   mounted() {
     if (!this.plansSets || !this.plansSets.length) {
-      this.$store.dispatch('system/fetchPlans');
+      const self = this;
+      this.$nextTick(() => {
+        SystemService.fetchPlans()
+          .then((res) => {
+            if (res && res.data) self.plansSets = res.data;
+          });
+      });
     }
   },
   components: {
