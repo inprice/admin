@@ -23,14 +23,14 @@ export default {
       if (! req.method || req.method === undefined) req.method = 'post';
       const res = await ApiService.customRequest(req);
       if (res) {
-        if (res.data.status == 0) {
+        if (res.status < 400) {
           return { data: res.data.data, status: true };
         } else {
-          if (res.data.status == 403) {
+          if (res.status == 403) {
             router.push({ name: 'forbidden' });
             return;
           }
-          if (res.data.status == 404 && sensitiveFor404 == false) {
+          if (res.status == 404 && sensitiveFor404 == false) {
             return { status: true };
           }
           if (!manualErrorHandling) {

@@ -175,7 +175,6 @@
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn 
             small
-            text outlined
             :disabled="$store.get('session/isNotEditor')"
             color="success"
             class="my-auto"

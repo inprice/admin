@@ -144,6 +144,7 @@ export default {
         this.loading = true;
         const result = await this.$store.dispatch('session/login', this.form);
         if (result.status) {
+          console.log('-*-*-*-', result);
           const resData = result.data;
           let ses = resData.sessions[resData.sessionNo];
           if (ses == undefined && resData.sessionNo != 0 && resData.sessions[0]) {
