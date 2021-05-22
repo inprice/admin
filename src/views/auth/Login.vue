@@ -38,7 +38,7 @@
         large
         dismissible
         colored-border
-        type="warning"
+        type="error"
         border="left"
         elevation="2"
         color="pink"
@@ -143,8 +143,8 @@ export default {
       if (this.valid) {
         this.loading = true;
         const result = await this.$store.dispatch('session/login', this.form);
-        if (result.status) {
-          console.log('-*-*-*-', result);
+
+        if (result.status && result.data) {
           const resData = result.data;
           let ses = resData.sessions[resData.sessionNo];
           if (ses == undefined && resData.sessionNo != 0 && resData.sessions[0]) {
@@ -193,21 +193,29 @@ export default {
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
 
     this.infoMessage = null;
+    this.successMessage = null;
     this.errorMessage= null;
+    this.infoAlert = false;
+    this.successAlert = false;
+    this.errorAlert = false;
 
     const message = this.$route.query.m;
     switch (message) {
       case '1nqq':
         this.infoMessage = "Your session expired. Please login again.";
+        this.infoAlert = true;
         break;
       case 'plfw':
         this.successMessage = 'We have just sent an activation link to your email address. Please check it.';
+        this.successAlert = true;
         break;
       case 'ap17':
         this.successMessage = "You have successfully activated your member. Please login.";
+        this.successAlert = true;
         break;
       case 'mqn6':
         this.errorMessage = "Your activation link is invalid or expired. Please ask again.";
+        this.errorAlert = true;
         break;
     }
   }

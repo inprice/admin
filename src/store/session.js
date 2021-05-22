@@ -15,7 +15,7 @@ const actions = {
 
   async login({ dispatch }, form) {
     const res = await Helper.call('Login', { url: '/login', data: form }, true);
-    if (res.status < 400) {
+    if (res.status < 400 && res.data) {
       dispatch('create', res);
     }
     return res;

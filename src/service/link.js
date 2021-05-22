@@ -6,7 +6,7 @@ const baseURL = '/link';
 export default {
 
   async list(groupId) {
-    const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + groupId }, false, false);
+    const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + groupId });
     if (res.status == true && res.data) return res.data;
     return null;
   },

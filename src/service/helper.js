@@ -2,10 +2,10 @@ import ApiService from './api';
 import store from '../store'
 import router from '../router';
 
-function logoutCheck(reason) {
+function logoutCheck(reason, manualErrorHandling) {
   if (reason.includes("code 401") || reason.includes("be expired") || (reason.includes("Network Error") && !window.location.href.includes("/login"))) {
     store.dispatch('session/logout', true);
-  } else {
+  } else if (!manualErrorHandling) {
     store.commit('snackbar/setMessage', { text: reason, level: 'error' });
   }
 }
@@ -18,24 +18,24 @@ export default {
     }).join('&');    
   },
 
-  async call(caller, req, manualErrorHandling, sensitiveFor404=true) {
+  async call(caller, req, manualErrorHandling) {
     try {
       if (! req.method || req.method === undefined) req.method = 'post';
       const res = await ApiService.customRequest(req);
       if (res) {
-        if (res.status < 400) {
-          return { data: res.data.data, status: true };
+        if (res.status == 200) {
+          if (res.data.ok) {
+            return { data: res.data.data, status: true };
+          } else {
+            logoutCheck(res.data.reason, manualErrorHandling);
+            return { error: res.data.reason, status: false };
+          }
         } else {
           if (res.status == 403) {
             router.push({ name: 'forbidden' });
             return;
           }
-          if (res.status == 404 && sensitiveFor404 == false) {
-            return { status: true };
-          }
-          if (!manualErrorHandling) {
-            logoutCheck(res.data.reason);
-          }
+          logoutCheck(res.data.reason);
           return { error: res.data.reason, status: false };
         }
       } else {

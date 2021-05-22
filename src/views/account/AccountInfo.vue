@@ -159,7 +159,9 @@ export default {
     edit(data, isInsert) {
       this.isInsert = isInsert;
       if (isInsert == false) {
-        this.form = data;
+        this.form.name = data.name;
+        this.form.currencyCode = data.currencyCode;
+        this.form.currencyFormat = data.currencyFormat;
       } else {
         this.form.name = '';
         if (!this.form.currencyCode) {
