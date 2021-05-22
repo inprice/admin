@@ -14,7 +14,7 @@
 
         <v-divider></v-divider>
 
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" @submit.prevent>
           <v-textarea
             autofocus
             outlined

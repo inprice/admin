@@ -19,7 +19,7 @@
         <v-divider></v-divider>
 
         <v-card-text class="pt-2 pb-0">
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
               autofocus
               label="Your Name"

@@ -18,7 +18,7 @@
 
         <v-card-text class="pb-2">
 
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent>
             <v-select
               dense
               outlined

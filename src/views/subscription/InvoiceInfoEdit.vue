@@ -13,7 +13,7 @@
 
         <v-divider></v-divider>
 
-        <v-form ref="form" v-model="valid" class="mt-5">
+        <v-form ref="form" v-model="valid" class="mt-5" @submit.prevent>
           <v-text-field class="mx-5"
             autofocus
             outlined dense

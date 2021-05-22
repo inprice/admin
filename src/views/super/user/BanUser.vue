@@ -18,7 +18,7 @@
 
         <v-card-text class="pb-0">
 
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent>
 
             <v-text-field
               autofocus

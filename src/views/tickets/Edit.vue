@@ -17,7 +17,7 @@
 
         <v-card-text>
 
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent>
             <input type="hidden" :value="form.id" >
 
             <v-select

@@ -16,6 +16,15 @@ export default {
     return null;
   },
 
+  fetchDetails(id) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Details', { method: 'get', url: baseURL + '/' + id });
+  },
+
   async bind(id) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
