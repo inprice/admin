@@ -40,69 +40,72 @@
       </div>
     </div>
 
-    <div 
-      v-if="searchResult && searchResult.length"
-      class="v-data-table v-data-table--dense theme--light put-behind"
-    >
-      <div class="v-data-table__wrapper">
+    <v-card>
+      <div 
+        v-if="searchResult && searchResult.length"
+        class="v-data-table v-data-table--dense theme--light put-behind"
+      >
+        <div class="v-data-table__wrapper">
 
-        <table
-          class="pb-2"
-          :style="{'table-layout': RESPROPS['table-layout']}"
-          style="border-collapse: collapse;line-height: 40px;"
-        >
-          <thead>
-            <tr>
-              <th :width="RESPROPS.table.name">Name</th>
-              <th :width="RESPROPS.table.email">Email</th>
-              <th :width="RESPROPS.table.currency">Currency</th>
-              <th :width="RESPROPS.table.country">Country</th>
-              <th :width="RESPROPS.table.action">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="acc in searchResult" :key="acc.xid" :style="(CURSTAT.accountId && CURSTAT.accountId == acc.xid ? 'background-color: lightcyan' : '')">
-              <td>{{ acc.name }}</td>
-              <td>{{ acc.email }}</td>
-              <td>{{ acc.currencyCode }}</td>
-              <td>{{ acc.country }}</td>
-              <td style="padding: 0px !important; text-align: center !important;">
-                <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
-                  <template v-slot:activator="{ on }">
-                    <v-btn small icon v-on="on">
-                      <v-icon dark>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                  </template>
+          <table
+            class="pb-2"
+            :style="{'table-layout': RESPROPS['table-layout']}"
+            style="border-collapse: collapse;line-height: 40px;"
+          >
+            <thead>
+              <tr>
+                <th :width="RESPROPS.table.name">Name</th>
+                <th :width="RESPROPS.table.email">Email</th>
+                <th :width="RESPROPS.table.currency">Currency</th>
+                <th :width="RESPROPS.table.country">Country</th>
+                <th :width="RESPROPS.table.action">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="acc in searchResult" :key="acc.xid" :style="(CURSTAT.accountId && CURSTAT.accountId == acc.xid ? 'background-color: lightcyan' : '')">
+                <td>{{ acc.name }}</td>
+                <td>{{ acc.email }}</td>
+                <td>{{ acc.currencyCode }}</td>
+                <td>{{ acc.country }}</td>
+                <td style="padding: 0px !important; text-align: center !important;">
+                  <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
+                    <template v-slot:activator="{ on }">
+                      <v-btn small icon v-on="on">
+                        <v-icon dark>mdi-dots-vertical</v-icon>
+                      </v-btn>
+                    </template>
 
-                  <v-list dense>
-                    <v-list-item @click="bindAccount(acc.xid)">
-                      <v-list-item-title>
-                        BIND THIS
-                      </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="openCreateCouponDialog(acc.xid, acc.name)">
-                      <v-list-item-title>
-                        CREATE COUPON
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    <v-list dense>
+                      <v-list-item @click="bindAccount(acc.xid)">
+                        <v-list-item-title>
+                          BIND THIS
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="openCreateCouponDialog(acc.xid, acc.name)">
+                        <v-list-item-title>
+                          CREATE COUPON
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-    <v-card v-else >
-      <block-message :message="'No account found! You may want to change your criteria.'" />
+      <v-card v-else >
+        <block-message :message="'No account found! You may want to change your criteria.'" />
+      </v-card>
+
+      <v-divider></v-divider>
+
+      <div class="pl-3 py-3">
+        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+      </div>
+      
     </v-card>
-
-    <v-divider></v-divider>
-
-    <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
-    </div>
 
     <create-coupon ref="createCouponDialog" />
 

@@ -11,7 +11,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Search Account', { url: baseURL, data: form });
+    const res = await Helper.call('Search Account', { url: baseURL + 's/search', data: form });
     if (res.status == true && res.data) return res.data;
     return null;
   },

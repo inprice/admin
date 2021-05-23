@@ -29,67 +29,76 @@
       </div>
     </div>
 
-    <div 
-      v-if="searchResult && searchResult.length"
-      class="v-data-table v-data-table--dense theme--light put-behind"
-    >
-      <div class="v-data-table__wrapper">
+    <v-card>
+      <div 
+        v-if="searchResult && searchResult.length"
+        class="v-data-table v-data-table--dense theme--light put-behind"
+      >
+        <div class="v-data-table__wrapper">
 
-        <table
-          class="pb-2"
-          :style="{'table-layout': RESPROPS['table-layout']}"
-          style="border-collapse: collapse;line-height: 40px;"
-        >
-          <thead>
-            <tr>
-              <th :width="RESPROPS.table.email">Email</th>
-              <th :width="RESPROPS.table.bannedAt">Banned</th>
-              <th :width="RESPROPS.table.reason">Reason</th>
-              <th :width="RESPROPS.table.action">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in searchResult" :key="row.id">
-              <td>{{ row.email }}</td>
-              <td><ago :date="row.bannedAt" /></td>
-              <td>{{ row.banReason }}</td>
-              <td style="padding: 0px !important; text-align: center !important;">
-                <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
-                  <template v-slot:activator="{ on }">
-                    <v-btn small icon v-on="on">
-                      <v-icon dark>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                  </template>
+          <table
+            class="pb-2"
+            :style="{'table-layout': RESPROPS['table-layout']}"
+            style="border-collapse: collapse;line-height: 40px;"
+          >
+            <thead>
+              <tr>
+                <th :width="RESPROPS.table.email">Email</th>
+                <th :width="RESPROPS.table.bannedAt">Banned</th>
+                <th :width="RESPROPS.table.reason">Reason</th>
+                <th :width="RESPROPS.table.action">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in searchResult" :key="row.id">
+                <td>{{ row.email }}</td>
+                <td><ago :date="row.bannedAt" /></td>
+                <td>{{ row.banReason }}</td>
+                <td style="padding: 0px !important; text-align: center !important;">
+                  <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
+                    <template v-slot:activator="{ on }">
+                      <v-btn small icon v-on="on">
+                        <v-icon dark>mdi-dots-vertical</v-icon>
+                      </v-btn>
+                    </template>
 
-                  <v-list dense>
-                    <v-list-item @click="banUser(row.id, row.email)" v-if="!row.bannedAt">
-                      <v-list-item-title>
-                        BAN THIS USER
-                      </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="revokeUserBan(row.id, row.email)" v-else>
-                      <v-list-item-title>
-                        REVOKE USER BAN
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    <v-list dense>
+                      <v-list-item link :to="{name: 'sys-user-details', params: { uid: row.id } }">
+                        <v-list-item-title>SHOW DETAILS</v-list-item-title>
+                      </v-list-item>
+
+                      <v-divider></v-divider>
+
+                      <v-list-item @click="banUser(row.id, row.email)" v-if="!row.bannedAt">
+                        <v-list-item-title>
+                          BAN THIS USER
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="revokeUserBan(row.id, row.email)" v-else>
+                        <v-list-item-title>
+                          REVOKE USER BAN
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-    <v-card v-else >
-      <block-message :message="'No user found! You may want to change your criteria.'" />
+      <v-card v-else >
+        <block-message :message="'No user found! You may want to change your criteria.'" />
+      </v-card>
+
+      <v-divider></v-divider>
+
+      <div class="pl-3 py-3">
+        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+      </div>
+
     </v-card>
-
-    <v-divider></v-divider>
-
-    <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
-    </div>
 
     <ban-user ref="banUserDialog" @banned="search" />
     <confirm ref="confirm"></confirm>
@@ -99,7 +108,7 @@
 </template>
 
 <script>
-import SuperUserService from '@/service/super/user';
+import SU_UserService from '@/service/super/user';
 import SystemConsts from '@/data/system';
 
 export default {
@@ -134,7 +143,7 @@ export default {
       const loadMore = this.isLoadMoreClicked;
       this.isLoadMoreClicked = false;
 
-      SuperUserService.search(this.searchForm)
+      SU_UserService.search(this.searchForm)
         .then((res) => {
           this.isLoadMoreDisabled = true;
           if (res?.length) {
@@ -151,13 +160,13 @@ export default {
           }
       });
     },
-    async banUser(id, email) {
+    banUser(id, email) {
       this.$refs.banUserDialog.open({ id, email });
     },
-    async revokeUserBan(id, email) {
+    revokeUserBan(id, email) {
       this.$refs.confirm.open('Revoke Ban', '\'s ban will be revoked. Are you sure?', email).then((confirm) => {
         if (confirm == true) {
-          SuperUserService.revokeBan(id)
+          SU_UserService.revokeBan(id)
             .then((res) => {
               if (res && res.status) {
                 this.$store.commit('snackbar/setMessage', { text: `${email}'s ban is successfully revoked` });

@@ -11,18 +11,9 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Search User', { url: baseURL, data: form });
+    const res = await Helper.call('Search User', { url: baseURL + 's/search', data: form });
     if (res.status == true && res.data) return res.data;
     return null;
-  },
-
-  fetchDetails(id) {
-    if (store.get('session/isNotSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
-      return;
-    }
-
-    return Helper.call('Fetch Details', { method: 'get', url: baseURL + '/' + id });
   },
 
   async ban(form) {
@@ -43,6 +34,69 @@ export default {
 
     const res = await Helper.call('Revoke Ban', { method: 'put', url: baseURL + '/ban-revoke/' + id });
     return res;
+  },
+
+  fetchUserDetails(userId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Details', { method: 'get', url: baseURL + '/details/' + userId });
+  },
+
+  fetchMembershipList(userId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Memberships', { method: 'get', url: baseURL + '/details/memberships/' + userId });
+  },
+
+  fetchSessionList(userId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Sessions', { method: 'get', url: baseURL + '/details/sessions/' + userId });
+  },
+
+  fetchUsedServices(userId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Used Services', { method: 'get', url: baseURL + '/used-services/' + userId });
+  },
+
+  terminateSession(hash) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Terminate Session', { method: 'delete', url: baseURL + '/session/terminate/' + hash });
+  },
+
+  deleteUsedService(id) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Delete Used Services', { method: 'delete', url: baseURL + '/used-service/' + id });
+  },
+
+  toggleUnlimitUsedService(id) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Unlimit Used Services', { method: 'put', url: baseURL + '/used-service/toggle/' + id });
   },
 
 };

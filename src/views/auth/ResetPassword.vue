@@ -53,7 +53,7 @@
       </v-card>
       
       <div class="text-center font-weight-light mt-6">
-        Remember your password? <router-link to="/login">Sign In</router-link>
+        Remember your password? <router-link to="login">Sign In</router-link>
       </div>
 
     </div>

@@ -70,7 +70,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '18%';
+        default: return '50%';
       }
     },
   },
@@ -102,7 +102,7 @@ export default {
           .then((res) => {
             if (res && res.status) {
               this.$store.commit('snackbar/setMessage', { text: `${this.form.email} is successfully banned.` });
-              this.$emit('banned');
+              this.$emit('banned', this.form.reason);
               this.close();
             }
           });
