@@ -36,7 +36,7 @@
                 <tr>
                   <th :width="RESPROPS.table.service">Service</th>
                   <th class="text-center" :width="RESPROPS.table.date">Date</th>
-                  <th class="text-center" :width="RESPROPS.table.whitelisted">Allowed</th>
+                  <th class="text-center" :width="RESPROPS.table.whitelisted">Unlimited</th>
                   <th class="text-center" :width="RESPROPS.table.action">Action</th>
                 </tr>
               </thead>

@@ -1,9 +1,21 @@
 <template>
 
   <div>
-    <div>
-      <div class="title">Access Logs</div>
-      <div class="body-2">User's access logs.</div>
+
+    <div class="d-flex justify-space-between px-4 py-2 pt-4">
+      <div>
+        <div class="title">Access Logs</div>
+        <div class="body-2">User's access logs.</div>
+      </div>
+
+      <v-btn 
+        small
+        text outlined
+        class="my-auto"
+        @click="$router.go(-1)"
+      >
+        <v-icon>mdi-arrow-left-thin-circle-outline</v-icon> Go Back
+      </v-btn>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -73,20 +85,22 @@
                     label="Accounts"
                     v-model="searchForm.account"
                     :items="accountItems"
-                    item-text="name"
-                    item-value="id"
+                    item-text="value"
+                    item-value="key"
+                    clearable
+                    @click:clear="searchForm.account=null"
                   >
                     <template v-slot:selection="{ item }">
-                      {{ item.name }}
+                      {{ item.value }}
                     </template>
                   </v-select>
 
-                  <div class="d-flex justify-space-around">
+                  <div class="d-flex">
                     <v-menu
                       ref="startDateMenu"
-                      v-model="startDate.menu"
+                      v-model="startDateMenuOpen"
                       :close-on-content-click="false"
-                      :return-value.sync="startDate.value"
+                      :return-value.sync="searchForm.startDate"
                       transition="scale-transition"
                       offset-y
                       min-width="auto"
@@ -94,21 +108,24 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           readonly
-                          v-model="startDate.value"
+                          dense
+                          outlined
+                          v-model="searchForm.startDate"
                           label="Start Date"
-                          prepend-icon="mdi-calendar"
                           v-on="on"
                           v-bind="attrs"
+                          class="pr-2"
                         ></v-text-field>
                       </template>
+
                       <v-date-picker
                         no-title
                         scrollable
-                        v-model="startDate.value"
+                        v-model="searchForm.startDate"
                       >
                         <v-btn
                           text
-                          @click="startDate.menu = false"
+                          @click="startDateMenuOpen = false"
                         >
                           Close
                         </v-btn>
@@ -116,6 +133,7 @@
                         <v-btn
                           text
                           color="red"
+                          :disabled="!searchForm.startDate"
                           @click="resetStartDate"
                         >
                           Reset
@@ -123,7 +141,7 @@
                         <v-btn
                           text
                           color="primary"
-                          @click="$refs.startDateMenu.save(startDate.value)"
+                          @click="$refs.startDateMenu.save(searchForm.startDate)"
                         >
                           OK
                         </v-btn>
@@ -132,9 +150,9 @@
 
                     <v-menu
                       ref="endDateMenu"
-                      v-model="endDate.menu"
+                      v-model="endDateMenuOpen"
                       :close-on-content-click="false"
-                      :return-value.sync="endDate.value"
+                      :return-value.sync="searchForm.endDate"
                       transition="scale-transition"
                       offset-y
                       min-width="auto"
@@ -142,21 +160,23 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           readonly
-                          v-model="endDate.value"
+                          dense
+                          outlined
+                          v-model="searchForm.endDate"
                           label="End Date"
-                          prepend-icon="mdi-calendar"
                           v-on="on"
                           v-bind="attrs"
+                          class="px-2"
                         ></v-text-field>
                       </template>
                       <v-date-picker
                         no-title
                         scrollable
-                        v-model="endDate.value"
+                        v-model="searchForm.endDate"
                       >
                         <v-btn
                           text
-                          @click="endDate.menu = false"
+                          @click="endDateMenuOpen = false"
                         >
                           Close
                         </v-btn>
@@ -164,6 +184,7 @@
                         <v-btn
                           text
                           color="red"
+                          :disabled="!searchForm.endDate"
                           @click="resetEndDate"
                         >
                           Reset
@@ -171,7 +192,7 @@
                         <v-btn
                           text
                           color="primary"
-                          @click="$refs.endDateMenu.save(endDate.value)"
+                          @click="$refs.endDateMenu.save(searchForm.endDate)"
                         >
                           OK
                         </v-btn>
@@ -249,17 +270,15 @@
 
     </div>
     
-    <div class="col pa-0">
-      <list
-        ref="list"
-        :rows="searchResult"
-        @refreshList="search"
-      />
+    <div class="col pa-0" v-if="searchResult">
+      <list :rows="searchResult" :selectedId="showingRowId" @selected="rowSelected" />
 
       <div class="mt-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
       </div>
     </div>
+
+    <block-message v-else :message="`No log found.`" />
 
   </div>
 
@@ -289,16 +308,12 @@ const baseSearchForm = {
 
 export default {
   data() {
+    baseSearchForm.userId = this.$route.params.uid;
     return {
+      searchMenuOpen: false,
+      startDateMenuOpen: false,
+      endDateMenuOpen: false,
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
-      startDate: {
-        menu: false,
-        value: null,
-      },
-      endDate: {
-        menu: false,
-        value: null,
-      },
       searchResult: [],
       isListLoading: true,
       isLoadMoreDisabled: true,
@@ -310,6 +325,7 @@ export default {
       rowLimitItems,
       accountItems: [],
       baseSearchForm,
+      showingRowId: null,
     };
   },
   methods: {
@@ -319,19 +335,23 @@ export default {
       this.$refs.term.focus();
     },
     search() {
+      if (!this.searchForm.userId) {
+        console.error("User id is not specified!");
+        return;
+      }
+
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
       } else {
         this.searchForm.rowCount = 0;
-        if (this.$refs.list) this.$refs.list.clearSelected();
       }
 
       const loadMore = this.isLoadMoreClicked;
       this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
-      SU_UserService.searchForAccessLog(this.searchForm)
+      SU_UserService.searchForLogs(this.searchForm)
         .then((res) => {
           this.isListLoading = false;
           this.isLoadMoreDisabled = true;
@@ -354,20 +374,34 @@ export default {
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.$refs.term.focus();
     },
+    resetStartDate() {
+      this.searchForm.startDate = null;
+      this.$refs.startDateMenu.save(null);
+    },
+    resetEndDate() {
+      this.searchForm.endDate = null;
+      this.$refs.endDateMenu.save(null);
+    },
     loadmore() {
       this.isLoadMoreClicked = true;
       this.search();
     },
+    rowSelected(rowId) {
+      if (this.showingRowId && this.showingRowId == rowId) {
+        this.showingRowId = null;
+      } else {
+        this.showingRowId = rowId;
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => {
-      const uid = this.$route.params.uid;
-      SU_UserService.fetcAccountOfUser(uid).then((res) => {
-        if (res && res.status) {
+      this.search()
+      SU_UserService.fetchAccountList(this.searchForm.userId).then((res) => {
+        if (res && res.data) {
           this.accountItems = res.data;
         }
       });
-      this.search();
     });
   },
   watch: {

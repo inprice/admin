@@ -34,7 +34,7 @@ function deepEqual(x, y) {
     (Object.keys(x).length === Object.keys(y).length) &&
       Object.keys(x).reduce(function(isEqual, key) {
         return isEqual && deepEqual(x[key], y[key]);
-      }, true) : (x === y);
+      }, true) : (x == y);
 }
 
 Vue.mixin({

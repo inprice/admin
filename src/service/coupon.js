@@ -6,7 +6,7 @@ const baseURL = '/coupon';
 export default {
 
   getCoupons() {
-    return Helper.call('Coupons', { method: 'get', url: baseURL });
+    return Helper.call('Coupons', { method: 'get', url: baseURL }, true);
   },
 
   async applyCoupon(code) {

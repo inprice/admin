@@ -16,6 +16,17 @@ export default {
     return null;
   },
 
+  async searchForLogs(form) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    const res = await Helper.call('Search Log', { url: baseURL + '/search-logs', data: form });
+    if (res.status == true && res.data) return res.data;
+    return null;
+  },
+
   async ban(form) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
@@ -70,6 +81,15 @@ export default {
     }
 
     return Helper.call('Fetch Used Services', { method: 'get', url: baseURL + '/used-services/' + userId });
+  },
+
+  fetchAccountList(userId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch User Accounts', { method: 'get', url: baseURL + '/accounts/' + userId });
   },
 
   terminateSession(hash) {
