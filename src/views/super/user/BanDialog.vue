@@ -8,7 +8,7 @@
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
           <div>
-            <div>Ban {{ subject }}</div>
+            <div>Ban user</div>
             <div class="caption">{{ form.name }}</div>
           </div>
           <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
@@ -61,7 +61,6 @@
 
 <script>
 export default {
-  props: ['subject'],
   computed: {
     findDialogWidth() {
       switch (this.$vuetify.breakpoint.name) {

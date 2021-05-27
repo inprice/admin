@@ -87,20 +87,11 @@
                       <v-list-item link :to="{ name: 'sys-account-details', params: { aid: row.xid } }">
                         <v-list-item-title>DETAILS</v-list-item-title>
                       </v-list-item>
-                      <v-list-item link :to="{ name: 'sys-account-logs', params: { aid: row.xid } }">
+                      <v-list-item link :to="{ name: 'sys-account-logs', params: { aid: row.xid }, query: { name: row.name } }">
                         <v-list-item-title>ACCESS LOGS</v-list-item-title>
                       </v-list-item>
                       <v-list-item @click="openCreateCouponDialog(row.xid, row.name)">
                         <v-list-item-title>CREATE COUPON</v-list-item-title>
-                      </v-list-item>
-
-                      <v-divider></v-divider>
-
-                      <v-list-item @click="banAccount(row.id, row.name)" v-if="row.status != 'BANNED'">
-                        <v-list-item-title>BAN THIS ACCOUNT</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="revokeAccountBan(row.id, row.name)" v-else>
-                        <v-list-item-title>REVOKE ACCOUNT BAN</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -123,7 +114,6 @@
       
     </v-card>
 
-    <ban-dialog subject="Account" ref="banDialog" @banned="banned" />
     <create-coupon ref="createCouponDialog" />
 
   </div>
@@ -196,31 +186,6 @@ export default {
     openCreateCouponDialog(id, name) {
       this.$refs.createCouponDialog.open({ id, name });
     },
-    banAccount(id, name) {
-      this.$refs.banDialog.open({ id, name });
-    },
-    banned(form) {
-      SU_AccountService.ban(form)
-        .then((res) => {
-          if (res && res.status) {
-            this.$store.commit('snackbar/setMessage', { text: `${form.name} is successfully banned.` });
-            this.search();
-          }
-        });
-    },
-    revokeUserBan(id, name) {
-      this.$refs.confirm.open('Revoke Ban', '\'s ban will be revoked. Are you sure?', name).then((confirm) => {
-        if (confirm == true) {
-          SU_AccountService.revokeBan(id)
-            .then((res) => {
-              if (res && res.status) {
-                this.$store.commit('snackbar/setMessage', { text: `${name}'s ban is successfully revoked` });
-                this.search();
-              }
-            });
-        }
-      });
-    },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
       if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
@@ -237,7 +202,6 @@ export default {
     this.search();
   },
   components: {
-    BanDialog: () => import('../component/BanDialog.vue'),
     CreateCoupon: () => import('./CreateCoupon.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },

@@ -4,8 +4,8 @@
 
     <div class="d-flex justify-space-between px-4 py-2 pt-4">
       <div>
-        <div class="title">Access Logs</div>
         <div class="body-2">Account's access logs.</div>
+        <div class="title">{{ $route.query.name }}</div>
       </div>
 
       <v-btn 

@@ -191,7 +191,7 @@ export default {
     },
   },
   components: {
-    BanDialog: () => import('../../component/BanDialog.vue'),
+    BanDialog: () => import('../BanDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     MembershipList: () => import('./MembershipList'),
     UsedList: () => import('./UsedList'),

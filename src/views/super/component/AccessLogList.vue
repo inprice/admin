@@ -51,19 +51,27 @@
 
       <div v-if="selectedId==row.id" class="ml-3 pa-2">
 
-        <v-card class="my-2" v-if="row.reqBody">
-          <div class="pa-2" style="background-color: aliceblue">
-            <div class="d-flex justify-space-between ">
-              <div><b>IP: </b>{{ row.ip }}</div>
-              <div class="subtitle font-weight-medium">Request</div>
-            </div>
-            <div><b>Agent: </b>{{ row.agent }}</div>
-          </div>
-          <v-divider></v-divider>
+        <v-simple-table class="property-table pa-3" dense style="background-color: aliceblue; border: 1px solid #bbb">
+          <template v-slot:default>
+            <tbody>
+              <tr>
+                <td colspan="2" class="text-center font-weight-medium" style="background-color: #FBD395">REQUEST</td>
+              </tr>
+              <property :valueClass="RESPROPS.table.account" name="Account" :value="row.accountName" />
+              <property :valueClass="RESPROPS.table.user" name="User" :value="row.userEmail" />
+              <property :valueClass="RESPROPS.table.ip" name="IP" :value="row.ip" />
+              <property :valueClass="RESPROPS.table.agent" name="U.Agent" :value="row.agent" :title="row.agent" />
+            </tbody>
+          </template>
+        </v-simple-table>
+
+        <v-card class="my-1" v-if="row.reqBody">
           <vue-json-pretty 
+            v-if="row.reqBody"
             class="px-3 py-1"
             :showLine="false"
             :data="JSON.parse(row.reqBody)"
+            style="background-color: aliceblue"
           > 
           </vue-json-pretty>
         </v-card>
@@ -92,7 +100,27 @@ export default {
   props: ['rows', 'selectedId'],
   components: {
     VueJsonPretty,
+    Property: () => import('@/component/app/Property.vue')
   },
+  computed: {
+    RESPROPS() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case 'sm': {
+          return {
+            'table-layout': 'fixed',
+            table: { account: 'col-10', user: 'col-8', ip: 'col-5', agent: 'col-12' },
+          };
+        }
+        default: {
+          return {
+            'table-layout': '',
+            table: { account: 'col-7', user: 'col-5', ip: 'col-3', agent: 'col-12' },
+          };
+        }
+      }
+    },
+  }
 };
 </script>
 

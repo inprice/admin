@@ -49,31 +49,6 @@
             <property :valueClass="RESPROPS.properties.city" name="City" :value="account.city" />
             <property :valueClass="RESPROPS.properties.city" name="Country" :value="account.country" />
             <property :valueClass="RESPROPS.properties.createdAt" name="Created At" :value="account.createdAt" />
-            <tr>
-              <td colspan="2">
-                <v-divider></v-divider>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2" class="text-center">
-                <v-btn 
-                  small dark
-                  class="red"
-                  v-if="account.status != 'BANNED'"
-                  @click="banAccount"
-                >
-                  <v-icon small>mdi-close-circle</v-icon> <span class="ml-2">Ban This Account</span>
-                </v-btn>
-                <v-btn 
-                  small dark
-                  class="success"
-                  v-else
-                  @click="revokeAccountBan"
-                >
-                  <v-icon small>mdi-human-greeting</v-icon> <span class="ml-2">Revoke Account's Ban</span>
-                </v-btn>
-              </td>
-            </tr>
           </tbody>
         </template>
       </v-simple-table>
@@ -83,7 +58,6 @@
     <history-list :list="historyList" @refreshed="refreshHistoryList" />
     <trans-list :list="transList"  @refreshed="refreshTransList" />
 
-    <ban-dialog subject="Account" ref="banDialog" @banned="banned" />
     <confirm ref="confirm"></confirm>
 
   </div>
@@ -129,33 +103,6 @@ export default {
         });
       }
     },
-    banAccount() {
-      this.$refs.banDialog.open({ id: this.account.xid, name: this.account.name });
-    },
-    banned(form) {
-      SU_AccountService.ban(form)
-        .then((res) => {
-          if (res && res.status) {
-            this.$store.commit('snackbar/setMessage', { text: `${form.name} is successfully banned.` });
-            this.account.preStatus = this.account.status;
-            this.account.status = 'BANNED';
-          }
-        });
-    },
-    revokeAccountBan() {
-      this.$refs.confirm.open('Revoke Ban', '\'s ban will be revoked. Are you sure?', this.account.name).then((confirm) => {
-        if (confirm == true) {
-          SU_AccountService.revokeBan(this.account.xid)
-            .then((res) => {
-              if (res && res.status) {
-                this.$store.commit('snackbar/setMessage', { text: `${this.account.name}'s ban is successfully revoked` });
-                this.account.status = this.account.preStatus;
-                this.account.preStatus = 'BANNED';
-              }
-            });
-        }
-      });
-    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -187,7 +134,6 @@ export default {
     },
   },
   components: {
-    BanDialog: () => import('../../component/BanDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     MemberList: () => import('./MemberList'),
     HistoryList: () => import('./HistoryList'),
