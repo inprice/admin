@@ -63,25 +63,20 @@
                     </template>
 
                     <v-list dense>
-                      <v-list-item link :to="{name: 'sys-user-details', params: { uid: row.id } }">
+                      <v-list-item link :to="{ name: 'sys-user-details', params: { uid: row.id } }">
                         <v-list-item-title>DETAILS</v-list-item-title>
                       </v-list-item>
-
-                      <v-list-item link :to="{name: 'sys-user-logs', params: { uid: row.id } }">
+                      <v-list-item link :to="{ name: 'sys-user-logs', params: { uid: row.id } }">
                         <v-list-item-title>ACCESS LOGS</v-list-item-title>
                       </v-list-item>
 
                       <v-divider></v-divider>
 
                       <v-list-item @click="banUser(row.id, row.email)" v-if="!row.bannedAt">
-                        <v-list-item-title>
-                          BAN THIS USER
-                        </v-list-item-title>
+                        <v-list-item-title>BAN THIS USER</v-list-item-title>
                       </v-list-item>
                       <v-list-item @click="revokeUserBan(row.id, row.email)" v-else>
-                        <v-list-item-title>
-                          REVOKE USER BAN
-                        </v-list-item-title>
+                        <v-list-item-title>REVOKE USER BAN</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -104,7 +99,7 @@
 
     </v-card>
 
-    <ban-user ref="banUserDialog" @banned="search" />
+    <ban-dialog subject="User" ref="banDialog" @banned="banned" />
     <confirm ref="confirm"></confirm>
 
   </div>
@@ -164,8 +159,19 @@ export default {
           }
       });
     },
-    banUser(id, email) {
-      this.$refs.banUserDialog.open({ id, email });
+    banUser(id, name) {
+      this.$refs.banDialog.open({ id, name });
+    },
+    banned(form) {
+      SU_UserService.ban(form)
+        .then((res) => {
+          if (res && res.status) {
+            this.$store.commit('snackbar/setMessage', { text: `${form.name} is successfully banned.` });
+            this.user.bannedAt = 'JUST NOW';
+            this.user.banReason = form.reason;
+            this.user.banned = true;
+          }
+        });
     },
     revokeUserBan(id, email) {
       this.$refs.confirm.open('Revoke Ban', '\'s ban will be revoked. Are you sure?', email).then((confirm) => {
@@ -196,7 +202,7 @@ export default {
     this.search();
   },
   components: {
-    BanUser: () => import('./BanUser.vue'),
+    BanDialog: () => import('../component/BanDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },

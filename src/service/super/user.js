@@ -47,7 +47,7 @@ export default {
     return res;
   },
 
-  fetchUserDetails(userId) {
+  fetchDetails(userId) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
       return;

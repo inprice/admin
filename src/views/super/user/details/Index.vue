@@ -64,7 +64,7 @@
     <used-list :list="usedServiceList" @deleted="deleteUsedService"  @toggledUnlimitedUse="toggleUnlimitedUsedService" @refreshed="refreshUsedServiceList" />
     <session-list :list="sessionList"  @terminated="terminateSession" @refreshed="refreshSessionList" />
 
-    <ban-user ref="banUserDialog" @banned="refreshUserBanInfo" />
+    <ban-dialog subject="User" ref="banDialog" @banned="banned" />
     <confirm ref="confirm"></confirm>
 
   </div>
@@ -132,7 +132,18 @@ export default {
       }
     },
     banUser() {
-      this.$refs.banUserDialog.open({ id: this.user.id, email: this.user.email });
+      this.$refs.banDialog.open({ id: this.user.id, email: this.user.email });
+    },
+    banned(form) {
+      SU_UserService.ban(form)
+        .then((res) => {
+          if (res && res.status) {
+            this.$store.commit('snackbar/setMessage', { text: `${form.name} is successfully banned.` });
+            this.user.bannedAt = 'JUST NOW';
+            this.user.banReason = form.reason;
+            this.user.banned = true;
+          }
+        });
     },
     revokeUserBan() {
       this.$refs.confirm.open('Revoke Ban', '\'s ban will be revoked. Are you sure?', this.user.email).then((confirm) => {
@@ -141,28 +152,19 @@ export default {
             .then((res) => {
               if (res && res.status) {
                 this.$store.commit('snackbar/setMessage', { text: `${this.user.email}'s ban is successfully revoked` });
-                this.refreshUserBanInfo(null);
+                this.user.banned = false;
+                this.user.bannedAt = '';
+                this.user.banReason = '';
               }
             });
         }
       });
     },
-    refreshUserBanInfo(banReason) {
-      if (banReason) {
-        this.user.bannedAt = 'JUST NOW';
-        this.user.banReason = banReason;
-        this.user.banned = true;
-      } else {
-        this.user.bannedAt = '';
-        this.user.banReason = '';
-        this.user.banned = false;
-      }
-    }
   },
   mounted() {
     this.$nextTick(() => {
       const uid = this.$route.params.uid;
-      SU_UserService.fetchUserDetails(uid).then((res) => {
+      SU_UserService.fetchDetails(uid).then((res) => {
         if (res && res.status) {
           this.user = res.data.user;
           this.membershipList = res.data.membershipList;
@@ -189,7 +191,7 @@ export default {
     },
   },
   components: {
-    BanUser: () => import('../BanUser.vue'),
+    BanDialog: () => import('../../component/BanDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     MembershipList: () => import('./MembershipList'),
     UsedList: () => import('./UsedList'),

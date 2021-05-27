@@ -16,13 +16,80 @@ export default {
     return null;
   },
 
-  fetchDetails(id) {
+  async searchForLogs(form) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
       return;
     }
 
-    return Helper.call('Fetch Details', { method: 'get', url: baseURL + '/' + id });
+    const res = await Helper.call('Search Log', { url: baseURL + '/search-logs', data: form });
+    if (res.status == true && res.data) return res.data;
+    return null;
+  },
+
+  async ban(form) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    const res = await Helper.call('Ban User', { url: baseURL + '/ban', data: form });
+    return res;
+  },
+
+  async revokeBan(id) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    const res = await Helper.call('Revoke Ban', { method: 'put', url: baseURL + '/ban-revoke/' + id });
+    return res;
+  },
+
+  fetchDetails(accountId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Details', { method: 'get', url: baseURL + '/details/' + accountId });
+  },
+
+  fetchMemberList(accountId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Members', { method: 'get', url: baseURL + '/details/members/' + accountId });
+  },
+
+  fetchHistoryList(accountId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch History', { method: 'get', url: baseURL + '/details/history/' + accountId });
+  },
+
+  fetchTransactionList(accountId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Transactions', { method: 'get', url: baseURL + '/details/transactions/' + accountId });
+  },
+
+  fetchUserList(accountId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Account Users', { method: 'get', url: baseURL + '/users/' + accountId });
   },
 
   async bind(id) {

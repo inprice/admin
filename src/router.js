@@ -77,6 +77,16 @@ const router = new VueRouter({
           component: () => import('./views/super/account/Index.vue')
         },
         {
+          name: 'sys-account-details',
+          path: 'account-details/:aid',
+          component: () => import('./views/super/account/details/Index.vue')
+        },
+        {
+          name: 'sys-account-logs',
+          path: 'account-logs/:aid',
+          component: () => import('./views/super/account/AccessLogIndex.vue')
+        },
+        {
           name: 'sys-users',
           path: 'users',
           component: () => import('./views/super/user/Index.vue')
@@ -89,7 +99,7 @@ const router = new VueRouter({
         {
           name: 'sys-user-logs',
           path: 'user-logs/:uid',
-          component: () => import('./views/super/user/logs/Index.vue')
+          component: () => import('./views/super/user/AccessLogIndex.vue')
         },
       ]
     },

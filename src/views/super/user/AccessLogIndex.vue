@@ -410,7 +410,7 @@ export default {
     }
   },
   components: {
-    List: () => import('./List'),
+    List: () => import('../component/AccessLogList.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 }

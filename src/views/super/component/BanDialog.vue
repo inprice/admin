@@ -8,8 +8,8 @@
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
           <div>
-            <div>Ban user</div>
-            <div class="caption">{{ form.email }}</div>
+            <div>Ban {{ subject }}</div>
+            <div class="caption">{{ form.name }}</div>
           </div>
           <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
@@ -60,12 +60,11 @@
 </template>
 
 <script>
-import SuperUserService from '@/service/super/user';
-
 export default {
+  props: ['subject'],
   computed: {
     findDialogWidth() {
-      switch (this.$vuetify.breakpoint.email) {
+      switch (this.$vuetify.breakpoint.name) {
         case 'xs': return '80%';
         case 'sm': return '50%';
         case 'md': return '35%';
@@ -81,8 +80,7 @@ export default {
       rules: {},
       form: {
         id: null,
-        email: null,
-        text: null,
+        name: null,
         reason: null,
       },
     };
@@ -98,14 +96,8 @@ export default {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
-        SuperUserService.ban({ id: this.form.id, text: this.form.reason })
-          .then((res) => {
-            if (res && res.status) {
-              this.$store.commit('snackbar/setMessage', { text: `${this.form.email} is successfully banned.` });
-              this.$emit('banned', this.form.reason);
-              this.close();
-            }
-          });
+        this.$emit('banned', this.form);
+        this.close();
       }
     },
     close() {

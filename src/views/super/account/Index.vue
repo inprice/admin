@@ -55,18 +55,18 @@
             <thead>
               <tr>
                 <th :width="RESPROPS.table.name">Name</th>
-                <th :width="RESPROPS.table.email">Email</th>
-                <th :width="RESPROPS.table.currency">Currency</th>
-                <th :width="RESPROPS.table.country">Country</th>
+                <th :width="RESPROPS.table.plan">Plan</th>
+                <th :width="RESPROPS.table.status">Status</th>
+                <th :width="RESPROPS.table.date">Updated</th>
                 <th :width="RESPROPS.table.action">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="acc in searchResult" :key="acc.xid" :style="(CURSTAT.accountId && CURSTAT.accountId == acc.xid ? 'background-color: lightcyan' : '')">
-                <td>{{ acc.name }}</td>
-                <td>{{ acc.email }}</td>
-                <td>{{ acc.currencyCode }}</td>
-                <td>{{ acc.country }}</td>
+              <tr v-for="row in searchResult" :key="row.xid" :style="(CURSTAT.accountId && CURSTAT.accountId == row.xid ? 'background-color: lightcyan' : '')">
+                <td>{{ row.name }}</td>
+                <td>{{ row.plan }}</td>
+                <td>{{ row.status }}</td>
+                <td>{{ row.lastStatusUpdated }}</td>
                 <td style="padding: 0px !important; text-align: center !important;">
                   <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
                     <template v-slot:activator="{ on }">
@@ -76,15 +76,31 @@
                     </template>
 
                     <v-list dense>
-                      <v-list-item @click="bindAccount(acc.xid)">
+                      <v-list-item @click="bindAccount(row.xid)">
                         <v-list-item-title>
                           BIND THIS
                         </v-list-item-title>
                       </v-list-item>
-                      <v-list-item @click="openCreateCouponDialog(acc.xid, acc.name)">
-                        <v-list-item-title>
-                          CREATE COUPON
-                        </v-list-item-title>
+
+                      <v-divider></v-divider>
+
+                      <v-list-item link :to="{ name: 'sys-account-details', params: { aid: row.xid } }">
+                        <v-list-item-title>DETAILS</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item link :to="{ name: 'sys-account-logs', params: { aid: row.xid } }">
+                        <v-list-item-title>ACCESS LOGS</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="openCreateCouponDialog(row.xid, row.name)">
+                        <v-list-item-title>CREATE COUPON</v-list-item-title>
+                      </v-list-item>
+
+                      <v-divider></v-divider>
+
+                      <v-list-item @click="banAccount(row.id, row.name)" v-if="row.status != 'BANNED'">
+                        <v-list-item-title>BAN THIS ACCOUNT</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="revokeAccountBan(row.id, row.name)" v-else>
+                        <v-list-item-title>REVOKE ACCOUNT BAN</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -107,6 +123,7 @@
       
     </v-card>
 
+    <ban-dialog subject="Account" ref="banDialog" @banned="banned" />
     <create-coupon ref="createCouponDialog" />
 
   </div>
@@ -114,7 +131,7 @@
 </template>
 
 <script>
-import SuperAccountService from '@/service/super/account';
+import SU_AccountService from '@/service/super/account';
 import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
@@ -150,7 +167,7 @@ export default {
       const loadMore = this.isLoadMoreClicked;
       this.isLoadMoreClicked = false;
 
-      SuperAccountService.search(this.searchForm)
+      SU_AccountService.search(this.searchForm)
         .then((res) => {
           this.isLoadMoreDisabled = true;
           if (res?.length) {
@@ -168,7 +185,7 @@ export default {
       });
     },
     async bindAccount(id) {
-      const res = await SuperAccountService.bind(id);
+      const res = await SU_AccountService.bind(id);
       if (res && res.data) {
         this.$store.commit('session/SET_CURRENT', res.data, 0);
       }
@@ -178,6 +195,31 @@ export default {
     },
     openCreateCouponDialog(id, name) {
       this.$refs.createCouponDialog.open({ id, name });
+    },
+    banAccount(id, name) {
+      this.$refs.banDialog.open({ id, name });
+    },
+    banned(form) {
+      SU_AccountService.ban(form)
+        .then((res) => {
+          if (res && res.status) {
+            this.$store.commit('snackbar/setMessage', { text: `${form.name} is successfully banned.` });
+            this.search();
+          }
+        });
+    },
+    revokeUserBan(id, name) {
+      this.$refs.confirm.open('Revoke Ban', '\'s ban will be revoked. Are you sure?', name).then((confirm) => {
+        if (confirm == true) {
+          SU_AccountService.revokeBan(id)
+            .then((res) => {
+              if (res && res.status) {
+                this.$store.commit('snackbar/setMessage', { text: `${name}'s ban is successfully revoked` });
+                this.search();
+              }
+            });
+        }
+      });
     },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
@@ -195,6 +237,7 @@ export default {
     this.search();
   },
   components: {
+    BanDialog: () => import('../component/BanDialog.vue'),
     CreateCoupon: () => import('./CreateCoupon.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
