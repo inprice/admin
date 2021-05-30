@@ -10,11 +10,10 @@
 
       <v-btn 
         small
-        text outlined
         class="my-auto"
         @click="$router.go(-1)"
       >
-        <v-icon>mdi-arrow-left-thin-circle-outline</v-icon> Go Back
+        Go Back
       </v-btn>
     </div>
 
@@ -246,7 +245,6 @@
                 <v-card-actions class="justify-end">
                   <v-btn
                     text
-                    outlined
                     @click="resetForm"
                     tabindex="-1"
                   >
@@ -254,7 +252,6 @@
                   </v-btn>
                   <v-btn
                     text
-                    outlined
                     color="primary"
                     @click="applyOptions"
                   >

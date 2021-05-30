@@ -11,11 +11,10 @@
 
         <v-btn 
           small
-          text outlined
           class="my-auto"
           @click="$router.go(-1)"
         >
-          <v-icon>mdi-arrow-left-thin-circle-outline</v-icon> Go Back
+          Go Back
         </v-btn>
 
       </div>

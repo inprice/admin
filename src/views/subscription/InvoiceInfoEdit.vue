@@ -96,14 +96,12 @@
 
         <v-card-actions class="py-4 justify-end">
           <v-btn 
-            text outlined
             tabindex="-1"
             @click="close"
           >
             Close
           </v-btn>
           <v-btn
-            text outlined
             color="primary"
             @click="submit"
             :loading="loading" 

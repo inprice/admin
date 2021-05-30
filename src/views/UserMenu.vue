@@ -31,6 +31,7 @@
 
             <v-list-item-subtitle class="py-3">
               <v-btn
+                text
                 v-if="!CURSTAT.accountId && $store.get('session/isSuperUser')"
                 :to="{ name: 'sys-accounts' }"
                 @click="menu=false"
@@ -38,6 +39,7 @@
                 Bind an account
               </v-btn>
               <v-btn
+                text
                 v-else-if="$store.get('session/isSuperUser')"
                 @click="unbindAccount"
               >
@@ -45,6 +47,7 @@
               </v-btn>
 
               <v-btn
+                text
                 v-else-if="!CURSTAT.isActive && $store.get('session/isNotSuperUser')"
                 color="info"
                 :to="{ name: 'plans' }"

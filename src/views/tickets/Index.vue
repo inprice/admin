@@ -113,7 +113,6 @@
                 <v-card-actions class="justify-end">
                   <v-btn
                     text
-                    outlined
                     @click="resetForm"
                     tabindex="-1"
                   >
@@ -121,7 +120,6 @@
                   </v-btn>
                   <v-btn
                     text
-                    outlined
                     color="primary"
                     @click="applyOptions"
                   >
@@ -136,7 +134,7 @@
       </div>
 
       <v-btn 
-        text outlined
+        small
         class="my-auto"
         @click="addNew"
         :disabled="$store.get('session/isNotEditor')"

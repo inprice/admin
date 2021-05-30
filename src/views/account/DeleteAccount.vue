@@ -7,8 +7,6 @@
           Delete account!
         </div>
         <v-btn 
-          small
-          text outlined
           color="error" 
           class="my-auto"
           @click="openPasswordConfirmDialog"

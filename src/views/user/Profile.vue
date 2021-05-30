@@ -14,7 +14,6 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn
               small
-              text outlined
               color="warning"
               class="mx-2"
               @click="openChangePasswordDialog"
@@ -25,7 +24,6 @@
 
             <v-btn
               small
-              text outlined
               class="mx-2"
               @click="openUpdateUserDialog"
               :disabled="$store.get('session/isSuperUser')"

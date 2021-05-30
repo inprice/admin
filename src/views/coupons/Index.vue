@@ -24,7 +24,6 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn 
               small
-              text outlined
               class="ml-2"
               color="success"
               v-if="CURSTAT.isActive == false"
@@ -36,7 +35,6 @@
 
             <v-btn 
               small
-              text outlined
               class="ml-2"
               color="red"
               v-if="CURSTAT.status == 'COUPONED'"
@@ -48,7 +46,7 @@
 
             <v-btn
               small
-              text outlined
+              color="white"
               class="my-auto ml-2"
               @click="getCoupons"
               :disabled="$store.get('session/isSuperUser')"

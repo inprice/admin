@@ -133,7 +133,6 @@
                 <v-card-actions class="justify-end">
                   <v-btn
                     text
-                    outlined
                     @click="resetForm"
                     tabindex="-1"
                   >
@@ -141,7 +140,6 @@
                   </v-btn>
                   <v-btn
                     text
-                    outlined
                     color="primary"
                     @click="applyOptions"
                   >

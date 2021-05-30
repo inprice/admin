@@ -37,7 +37,7 @@
 
       <v-card-actions class="py-3 mr-2 justify-end">
         <v-btn
-          text outlined
+          text
           @click="agree"
           :disabled="$store.get('session/isNotEditor')"
         >

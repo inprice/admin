@@ -60,14 +60,14 @@
 
         <v-card-actions class="py-4 justify-end">
           <v-btn
-            text outlined
+            text
             tabindex="-1"
             @click="close"
           >
             Close
           </v-btn>
           <v-btn
-            text outlined
+            text
             color="success"
             @click="save"
             :disabled="$store.get('session/isSuperUser')"

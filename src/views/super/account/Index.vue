@@ -31,7 +31,6 @@
       <div class="my-auto">
         <v-btn
           small
-          text outlined
           @click="unbindAccount"
           :disabled="!CURSTAT.accountId || $store.get('session/isNotSuperUser')"
         >

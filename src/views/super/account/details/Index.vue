@@ -11,7 +11,6 @@
 
         <v-btn 
           small
-          color="white"
           class="my-auto"
           @click="$router.go(-1)"
         >

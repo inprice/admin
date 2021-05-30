@@ -36,7 +36,7 @@
           </div>
 
           <v-btn
-            text outlined
+            text
             color="primary"
             @click="save"
             :loading="loading" 

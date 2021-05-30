@@ -110,7 +110,6 @@
           <span class="my-auto">Reply</span>
           <v-btn 
             small
-            text outlined
             class="my-auto"
             v-if="!ticket.csatedAt"
             @click.stop="$emit('rate')"
@@ -147,7 +146,6 @@
           <span class="my-auto">Your assessment: {{ ticket.csatLevel }}</span>
           <v-btn 
             small
-            text outlined
             class="my-auto"
             @click.stop="$emit('rate')"
             :disabled="$store.get('session/isNotEditor')"

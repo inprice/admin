@@ -31,7 +31,7 @@
 
       <div class="my-auto">
         <v-btn 
-          text outlined
+          small
           :disabled="$store.get('session/isNotEditor')"
           @click="addNew"
         >

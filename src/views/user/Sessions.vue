@@ -17,7 +17,6 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn
               small
-              text outlined
               :loading="loading.closeall" 
               @click="closeAllSessions"
               :disabled="loading.closeall || $store.get('session/isSuperUser')"

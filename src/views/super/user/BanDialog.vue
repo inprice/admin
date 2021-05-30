@@ -38,14 +38,14 @@
 
         <v-card-actions class="py-3 justify-end">
           <v-btn
-            text outlined
+            text
             tabindex="-1"
             @click="close"
           >
             Close
           </v-btn>
           <v-btn
-            text outlined
+            text
             color="red"
             @click="save"
             :disabled="$store.get('session/isNotSuperUser')"

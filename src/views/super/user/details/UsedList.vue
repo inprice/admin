@@ -14,7 +14,7 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn
               small
-              text outlined
+              color="white"
               class="my-auto"
               @click="$emit('refreshed')"
               :disabled="$store.get('session/isNotSuperUser')"

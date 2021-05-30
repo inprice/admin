@@ -48,14 +48,14 @@
 
         <v-card-actions class="py-4 justify-end">
           <v-btn
-            text outlined
+            text
             tabindex="-1"
             @click="close"
           >
             Close
           </v-btn>
           <v-btn
-            text outlined
+            text
             @click="save"
             color="success"
             :disabled="$store.get('session/isNotEditor')"

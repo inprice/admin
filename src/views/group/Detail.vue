@@ -4,10 +4,9 @@
     <div class="d-flex justify-end">
       <v-btn 
         small
-        text outlined
         @click="$router.go(-1)"
       >
-        <v-icon>mdi-arrow-left-thin-circle-outline</v-icon> Go Back
+        Go Back
       </v-btn>
     </div>
 
@@ -26,11 +25,11 @@
       <div>
         <v-btn
           small
-          text outlined
+          color="white"
           @click="findGroup(data.group.id)"
           :disabled="$store.get('session/isSuperUser')"
         >
-          Refresh Links
+          Refresh
         </v-btn>
       </div>
     </div>

@@ -17,7 +17,7 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn
               small
-              text outlined
+              color="white"
               class="my-auto"
               @click="getInvitations"
               :disabled="$store.get('session/isSuperUser')"
@@ -51,7 +51,6 @@
                   <td class="text-right py-2">
                     <v-btn
                       small
-                      text outlined
                       class="mr-1"
                       :loading="loading.reject" 
                       @click="reject(row.id, row.name)"
@@ -61,8 +60,6 @@
                     </v-btn>
                     <v-btn
                       small
-                      text
-                      outlined
                       class="ml-1"
                       color="success"
                       :loading="loading.accept" 

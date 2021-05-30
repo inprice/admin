@@ -17,7 +17,6 @@
         <div>
           <v-btn
             small
-            text outlined
             class="mx-1"
             @click="moveMultiple"
             :disabled="!selected || $store.get('session/isNotEditor')"
@@ -27,7 +26,6 @@
 
           <v-btn 
             small
-            text outlined
             class="mx-1"
             @click="deleteMultiple"
             :disabled="!selected || $store.get('session/isNotEditor')"

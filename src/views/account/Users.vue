@@ -17,7 +17,7 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn
               small
-              text outlined
+              color="white"
               class="mr-2"
               @click="refreshMembers"
               :disabled="$store.get('session/isSuperUser')"
@@ -27,7 +27,6 @@
 
             <v-btn
               small
-              text outlined
               color="success"
               @click="openSendDialog"
               :disabled="$store.get('session/isNotAdmin')"

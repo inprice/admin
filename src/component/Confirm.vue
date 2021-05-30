@@ -19,7 +19,7 @@
       <v-divider></v-divider>
 
       <v-card-actions class="justify-end">
-        <v-btn @click.native="agree" text outlined>Yes</v-btn>
+        <v-btn @click.native="agree" text>Yes</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

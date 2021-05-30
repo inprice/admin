@@ -47,7 +47,7 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right')">
             <v-btn
               small
-              text outlined
+              color="white"
               @click="refreshSession"
               :disabled="$store.get('session/isSuperUser')"
             >
@@ -141,7 +141,7 @@
 
               <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
                 <v-btn
-                  text outlined
+                  tile
                   color="error"
                   class="mb-2"
                   @click="cancel()"
@@ -152,7 +152,7 @@
                 </v-btn>
                 <v-btn 
                   v-else
-                  text outlined
+                  tile
                   class="mb-2"
                   @click="changeTo(plan.id)"
                   :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"

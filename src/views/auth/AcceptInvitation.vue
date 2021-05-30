@@ -54,7 +54,6 @@
 
           <v-card-actions class="px-0 d-block">
             <v-btn 
-              large
               block
               color="info"
               @click="submit" 

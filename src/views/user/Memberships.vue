@@ -17,7 +17,7 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn
               small
-              text outlined
+              color="white"
               class="my-auto"
               @click="refreshMembers"
               :disabled="$store.get('session/isSuperUser')"
@@ -51,7 +51,6 @@
                   <td class="text-center py-2">
                     <v-btn
                       small
-                      text outlined
                       v-if="row.role != 'ADMIN'"
                       :loading="loading.leave" 
                       @click="leave(row.id, row.account)"
