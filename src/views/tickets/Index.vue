@@ -21,8 +21,8 @@
           hide-details
           maxlength="100"
           v-model="searchForm.term"
-          :label="searchForm.searchBy"
-          :placeholder="'Search by ' + searchForm.searchBy"
+          label="Issue"
+          placeholder="Search for issue"
         >
           <template v-slot:append>
             <v-menu
@@ -59,12 +59,43 @@
                   <v-divider class="py-2 pb-4"></v-divider>
 
                   <v-select
-                    autofocus
                     dense
-                    label="Search By"
+                    small-chips
+                    multiple
                     outlined
-                    v-model="searchForm.searchBy"
-                    :items="searchByItems"
+                    label="Status"
+                    v-model="searchForm.statuses"
+                    :items="statusItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    label="Priority"
+                    v-model="searchForm.priorities"
+                    :items="priorityItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    label="Type"
+                    v-model="searchForm.types"
+                    :items="typeItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    label="Subject"
+                    v-model="searchForm.subjects"
+                    :items="subjectItems"
                   ></v-select>
 
                   <div class="d-flex justify-space-around">
@@ -85,20 +116,9 @@
                       v-model="searchForm.orderDir"
                       :items="orderDirItems"
                     ></v-select>
-                  </div>
-
-                  <div class="d-flex justify-space-around">
-                    <v-select
-                      class="col mr-2"
-                      dense
-                      outlined
-                      label="Replied ?"
-                      v-model="searchForm.replied"
-                      :items="repliedItems"
-                    ></v-select>
 
                     <v-select
-                      class="col mx-2"
+                      class="col ml-2"
                       dense
                       outlined
                       label="Row Limit"
@@ -143,14 +163,12 @@
       </v-btn>
     </div>
 
-    <div class="col pa-0" v-if="searchResult && searchResult.length">
+    <div v-if="searchResult && searchResult.length">
       <ticket
-        v-for="row in searchResult" :key="row.id" 
+        v-for="row in searchResult" :key="row.id"
         :ticket="row"
-        :showDetails="isExpanded(row.id)"
-        @toggled="toggleDetails(row.id)"
-        @update="openEditDialog(row)"
-        @rate="openCSatDialog(row)"
+        :fromList="true" 
+        @saved="saved"
         @removed="removed"
       />
     </div>
@@ -163,8 +181,7 @@
       <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
     </div>
 
-    <edit ref="editDialog" @saved="saveNew" />
-    <c-sat-dialog ref="csatDialog" @saved="saveCSat" />
+    <edit ref="editDialog" @saved="saved" />
 
   </div>
 
@@ -173,16 +190,20 @@
 <script>
 import TicketService from '@/service/ticket';
 
-const searchByItems = ['TYPE', 'SUBJECT', 'QUERY', 'REPLY'];
-const repliedItems = ['ALL', 'REPLIED', 'NOT_REPLIED'];
-const orderByItems = ['TYPE', 'SUBJECT', 'CREATED_AT', 'REPLIED_AT'];
+const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
+const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
+const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
+const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER'];
+const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  replied: repliedItems[0],
-  searchBy: searchByItems[0],
+  statuses: null,
+  priorities: null,
+  types: null,
+  subjects: null,
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
   rowLimit: rowLimitItems[0],
@@ -199,8 +220,10 @@ export default {
       isLoadMoreClicked: false,
       showingId: 0,
       showDetails: false,
-      searchByItems,
-      repliedItems,
+      statusItems,
+      priorityItems,
+      typeItems,
+      subjectItems,
       orderByItems,
       orderDirItems,
       rowLimitItems,
@@ -225,14 +248,6 @@ export default {
     openEditDialog(ticket) {
       const cloned = JSON.parse(JSON.stringify(ticket));
       this.$refs.editDialog.open(cloned);
-    },
-    openCSatDialog(ticket) {
-      const form = {
-        id: ticket.id,
-        level: ticket.csatLevel,
-        assessment: ticket.csatAssessment
-      };
-      this.$refs.csatDialog.open(form);
     },
     loadmore() {
       this.isLoadMoreClicked = true;
@@ -276,18 +291,15 @@ export default {
     resetForm() {
       this.searchMenuOpen = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
+      this.search();
       this.$refs.term.focus();
     },
-    async saveNew(form) {
+    async saved(form) {
       const result = await TicketService.save(form);
       if (result && result.status) this.search();
     },
-    async saveCSat(form) {
-      const result = await TicketService.saveCSat(form);
-      if (result && result.status) this.search();
-    },
-    async removed() {
-      const result = await TicketService.remove(this.ticket.id);
+    async removed(id) {
+      const result = await TicketService.remove(id);
       if (result && result.status) this.search();
     },
   },
@@ -301,9 +313,18 @@ export default {
   },
   components: {
     Edit: () => import('./Edit.vue'),
-    CSatDialog: () => import('./CSatDialog.vue'),
     Ticket: () => import('./Ticket.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
 }
 </script>
+
+<style scoped>
+  .shorten-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+</style>

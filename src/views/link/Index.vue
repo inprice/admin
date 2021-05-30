@@ -274,6 +274,7 @@ export default {
     resetForm() {
       this.searchMenuOpen = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
+      this.search();
       this.$refs.term.focus();
     },
     loadmore() {

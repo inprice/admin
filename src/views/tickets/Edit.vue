@@ -15,13 +15,12 @@
 
         <v-divider class="mb-3"></v-divider>
 
-        <v-card-text>
+        <v-card-text class="pb-2">
 
           <v-form ref="form" v-model="valid" @submit.prevent>
             <input type="hidden" :value="form.id" >
 
             <v-select
-              autofocus
               dense
               outlined
               label="You want to"
@@ -38,18 +37,28 @@
             <v-select
               dense
               outlined
+              label="Priority"
+              v-model="form.priority"
+              :items="priorityItems"
+            ></v-select>
+
+            <v-select
+              dense
+              outlined
               label="About"
               v-model="form.subject"
               :items="subjectItems"
             ></v-select>
 
             <v-textarea
+              autofocus
               counter
               outlined
-              v-model="form.query"
-              label="Thought"
+              v-model="form.issue"
+              label="Issue"
               rows="8"
-              :rules="rules.query"
+              maxlength="512"
+              :rules="rules.issue"
             ></v-textarea>
 
           </v-form>
@@ -88,6 +97,8 @@ const typeItems = [
   { value: 'SUPPORT', text: 'Ask support' },
   { value: 'FEEDBACK', text: 'Give feedback' },
 ];
+
+const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
 const subjectItems = [ 'SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER' ];
 
 export default {
@@ -110,10 +121,12 @@ export default {
       form: {
         id: null,
         type: typeItems[0],
+        priority: priorityItems[0],
         subject: subjectItems[0],
-        query: null,
+        issue: null,
       },
       typeItems,
+      priorityItems,
       subjectItems,
     };
   },
@@ -122,12 +135,14 @@ export default {
       this.form.id = null;
       this.form.type = typeItems[0];
       this.form.subject = subjectItems[0];
-      this.form.query = null;
+      this.form.priority = priorityItems[0];
+      this.form.issue = null;
       if (data) {
         this.form.id = data.id;
         this.form.type = data.type;
         this.form.subject = data.subject;
-        this.form.query = data.query;
+        this.form.priority = data.priority;
+        this.form.issue = data.issue;
       }
       this.opened = true;
       this.$nextTick(() => this.$refs.form.resetValidation());
@@ -136,6 +151,10 @@ export default {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
+        if (typeof this.form.type === 'object') {
+          const tType = this.form.type.value;
+          this.form.type = tType;
+        }
         this.$emit('saved', this.form);
         this.close();
       }
@@ -146,9 +165,9 @@ export default {
     },
     activateRules() {
       this.rules = {
-        query: [
+        issue: [
           v => !!v || "Required",
-          v => (v && v.length >= 12 && v.length <= 512) || "Name must be between 12-512 chars"
+          v => (v && v.length >= 12 && v.length <= 512) || "Must be between 12-512 chars"
         ],
       }
     },

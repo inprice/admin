@@ -142,6 +142,11 @@ const router = new VueRouter({
           component: () => import('./views/tickets/Index.vue')
         },
         {
+          name: 'ticket-detail',
+          path: 'ticket-detail/:ticketId',
+          component: () => import('./views/tickets/Details.vue')
+        },
+        {
           name: 'coupons',
           path: 'coupons',
           component: () => import('./views/coupons/Index.vue')
