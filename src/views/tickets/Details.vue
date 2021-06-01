@@ -163,7 +163,6 @@ export default {
       if (result && result.status) this.fetchTicket();
     },
     async ticketRemoved(id) {
-      console.log('--------------------', id);
       const result = await TicketService.remove(id);
       if (result && result.status) this.$router.go(-1);
     },

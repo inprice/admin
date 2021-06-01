@@ -164,13 +164,94 @@
     </div>
 
     <div v-if="searchResult && searchResult.length">
-      <ticket
+      <v-card
+        class="my-2 pa-3 pt-4"
+        :class="{ 'elevation-10': !row.seenByUser}"
         v-for="row in searchResult" :key="row.id"
-        :ticket="row"
-        :fromList="true" 
-        @saved="saved"
-        @removed="removed"
-      />
+      >
+        <div class="d-flex justify-space-between">
+          <div class="body-2" :class="{ 'font-weight-bold': !row.seenByUser}">
+            <v-icon color="red" class="mr-2" v-if="!row.seenByUser">mdi-star</v-icon>
+            {{ row.issue }}
+          </div>
+
+          <v-menu offset-y bottom left>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                small icon
+                class="my-auto"
+                v-bind="attrs"
+                v-on="on"
+                @click.stop=""
+              >
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list dense>
+              <v-list-item link :to="{ name: 'ticket-detail', params: { ticketId: row.id } }">
+                <v-list-item-title>DETAILS</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="copyTheContent(row.issue)">
+                <v-list-item-title>COPY</v-list-item-title>
+              </v-list-item>
+
+              <v-divider></v-divider>
+
+              <v-list-item :disabled="row.status != 'OPENED'" @click="openEditDialog(row)">
+                <v-list-item-title>EDIT</v-list-item-title>
+              </v-list-item>
+              <v-list-item :disabled="row.status != 'OPENED'" @click="remove(row.id)">
+                <v-list-item-title>DELETE</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+
+        <div class="d-flex justify-space-between" :class="{ 'font-weight-bold': !row.seenByUser}">
+          <div>
+            <v-chip
+              small
+              dark
+              class="mr-1 font-weight-medium"
+              :color="findStatusColor(row.status)"
+            >
+              {{ row.status }}
+            </v-chip>
+
+            <v-chip
+              small
+              dark
+              class="mx-1 font-weight-medium"
+              :color="findPriorityColor(row.priority)"
+            >
+              {{ row.priority }}
+            </v-chip>
+
+            <v-chip
+              small
+              dark
+              class="mx-1 font-weight-medium"
+              :color="findTypeColor(row.type)"
+            >
+              {{ row.type }}
+            </v-chip>
+
+            <v-chip
+              small
+              dark
+              class="mx-1 font-weight-medium"
+              color="teal"
+            >
+              {{ row.subject }}
+            </v-chip>
+          </div>
+
+          <div class="caption text-right" >
+            <span>Created at</span> <ago class="d-inline font-weight-medium" :date="row.createdAt" />
+          </div>
+        </div>
+      </v-card>
     </div>
 
     <v-card v-else >
@@ -181,6 +262,7 @@
       <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
     </div>
 
+    <confirm ref="confirm"></confirm>
     <edit ref="editDialog" @saved="saved" />
 
   </div>
@@ -231,23 +313,25 @@ export default {
     };
   },
   methods: {
-    toggleDetails(id) {
-      if (this.showingId != id) {
-        this.showingId = id;
-        this.showDetails = true;
-      } else {
-        this.showDetails = !this.showDetails;
-      }
-    },
-    isExpanded(id) {
-      return this.showingId==id && this.showDetails;
-    },
     addNew() {
       this.$refs.editDialog.open();
     },
     openEditDialog(ticket) {
       const cloned = JSON.parse(JSON.stringify(ticket));
       this.$refs.editDialog.open(cloned);
+    },
+    async saved(form) {
+      const result = await TicketService.save(form);
+      if (result && result.status) this.search();
+    },
+    async remove(id) {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', 'This ticket').then((confirm) => {
+        if (confirm == true) {
+          TicketService.remove(id).then((res) => {
+            if (res && res.status) this.search();
+          });
+        }
+      });
     },
     loadmore() {
       this.isLoadMoreClicked = true;
@@ -294,13 +378,36 @@ export default {
       this.search();
       this.$refs.term.focus();
     },
-    async saved(form) {
-      const result = await TicketService.save(form);
-      if (result && result.status) this.search();
+    copyTheContent(text) {
+      this.copyToClipboard(text);
+      this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
     },
-    async removed(id) {
-      const result = await TicketService.remove(id);
-      if (result && result.status) this.search();
+    findStatusColor(status) {
+      switch (status) {
+        case 'OPENED': return 'blue lighten-2';
+        case 'IN_PROGRESS': return 'green lighten-2';
+        case 'WAITING_FOR_USER': return 'orange lighten-2';
+        case 'WAITING_FOR_VERSION': return 'cyan lighten-2';
+        case 'CLOSED': return 'red lighten-2';
+      }
+      return 'gray';
+    },
+    findPriorityColor(priority) {
+      switch (priority) {
+        case 'LOW': return 'green lighten-2';
+        case 'NORMAL': return 'blue lighten-2';
+        case 'HIGH': return 'pink lighten-2';
+        case 'CRITICAL': return 'red lighten-2';
+      }
+      return 'gray';
+    },
+    findTypeColor(type) {
+      switch (type) {
+        case 'FEEDBACK': return 'blue lighten-2';
+        case 'SUPPORT': return 'green lighten-2';
+        case 'PROBLEM': return 'pink lighten-2';
+      }
+      return 'gray';
     },
   },
   mounted() {
@@ -313,18 +420,8 @@ export default {
   },
   components: {
     Edit: () => import('./Edit.vue'),
-    Ticket: () => import('./Ticket.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
 }
 </script>
-
-<style scoped>
-  .shorten-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 2;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-  }
-</style>

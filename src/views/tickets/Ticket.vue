@@ -52,7 +52,7 @@
           icon
           title="Copy content"
           class="my-auto"
-          @click="copyTheLink(ticket.issue)"
+          @click="copyTheContent(ticket.issue)"
         >
           <v-icon>mdi-content-copy</v-icon>
         </v-btn>
@@ -96,16 +96,6 @@
         >
           Edit
         </v-btn>
-        <v-btn
-          small
-          class="ml-1"
-          :disabled="ticket.status != 'OPENED'"
-          v-if="fromList == true"
-          link
-          :to="{ name: 'ticket-detail', params: { ticketId: ticket.id } }"
-        >
-          Details
-        </v-btn>
       </div>
 
     </v-card-actions>
@@ -118,7 +108,7 @@
 
 <script>
 export default {
-  props: ['ticket', 'fromList'],
+  props: ['ticket'],
   methods: {
     openEditDialog() {
       const cloned = JSON.parse(JSON.stringify(this.ticket));
@@ -134,9 +124,9 @@ export default {
         }
       });
     },
-    copyTheLink(text) {
+    copyTheContent(text) {
       this.copyToClipboard(text);
-      this.$store.commit('snackbar/setMessage', { text: 'The content copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+      this.$store.commit('snackbar/setMessage', { text: 'Comment copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
     },
     findStatusColor() {
       switch (this.ticket.status) {
