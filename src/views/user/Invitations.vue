@@ -15,7 +15,13 @@
           </div>
 
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn small class="my-auto" @click="getInvitations">
+            <v-btn
+              small
+              color="white"
+              class="my-auto"
+              @click="getInvitations"
+              :disabled="$store.get('session/isSuperUser')"
+            >
               Refresh
             </v-btn>
           </div>
@@ -47,8 +53,8 @@
                       small
                       class="mr-1"
                       :loading="loading.reject" 
-                      :disabled="loading.reject"
                       @click="reject(row.id, row.name)"
+                      :disabled="loading.reject || $store.get('session/isSuperUser')"
                     >
                       Reject
                     </v-btn>
@@ -57,8 +63,8 @@
                       class="ml-1"
                       color="success"
                       :loading="loading.accept" 
-                      :disabled="loading.accept"
                       @click="accept(row.id)"
+                      :disabled="loading.accept || $store.get('session/isSuperUser')"
                     >
                       Accept
                     </v-btn>

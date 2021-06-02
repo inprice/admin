@@ -18,7 +18,42 @@
         <v-divider v-if="$vuetify.breakpoint.xsOnly"></v-divider>
       </template>
 
-      <v-list dense nav class="text-uppercase font-weight-light">
+      <v-list dense nav class="text-uppercase font-weight-light" v-if="$store.get('session/isSuperUser')">
+
+        <v-list-group
+          :value="true"
+          no-action
+          sub-group
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>Super User</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item link :to="{name: 'sys-dashboard'}">
+            <v-list-item-content>
+              <v-list-item-title>Dashboard</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item link :to="{name: 'sys-accounts'}">
+            <v-list-item-content>
+              <v-list-item-title>Accounts</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item link :to="{name: 'sys-users'}">
+            <v-list-item-content>
+              <v-list-item-title>Users</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+        </v-list-group>
+
+      </v-list>
+
+      <v-list dense nav class="text-uppercase font-weight-light" v-if="$store.get('session/hasASession')">
 
         <v-list-item link :to="{name: 'dashboard'}">
           <v-list-item-action>
@@ -103,7 +138,7 @@
             <v-list-item-title>User Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'account-settings'}" :disabled="$store.get('session/isNotAdmin')">
+        <v-list-item link :to="{name: 'account-settings'}">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>
           </v-list-item-action>
@@ -112,7 +147,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item @click="openCreateAccount">
+        <v-list-item @click="openCreateAccount" v-if="$store.get('session/isNotSuperUser')">
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
@@ -178,7 +213,7 @@
       </v-responsive>
     </v-main>
 
-    <AccountInfoDialog ref="accountInfoDialog"/>
+    <account-info-dialog ref="accountInfoDialog" />
 
     <v-btn
       v-scroll="onScroll"
@@ -219,10 +254,10 @@ export default {
     },
     toTop () {
       this.$vuetify.goTo(0)
-    },
+    }
   },
   components: {
-    UserMenu: () => import('@/component/app/UserMenu.vue'),
+    UserMenu: () => import('./UserMenu.vue'),
     AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
 };

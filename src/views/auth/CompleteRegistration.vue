@@ -42,8 +42,7 @@
 
       <v-card-actions class="px-0">
         <v-btn 
-          large
-          block
+          large block
           color="info"
           @click="submit" 
           :loading="loading" 
@@ -78,7 +77,7 @@ export default {
         case 'sm': return '60%';
         case 'md': return '45%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     }
   },

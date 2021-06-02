@@ -6,7 +6,7 @@ const baseURL = '/link';
 export default {
 
   async list(groupId) {
-    const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + groupId }, false);
+    const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + groupId });
     if (res.status == true && res.data) return res.data;
     return null;
   },
@@ -18,7 +18,10 @@ export default {
   },
 
   async remove(ids, from_group_id=null) {
-    if (store.get('session/isViewer')) return;
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+      return;
+    }
 
     const res = await Helper.call('Link Delete', { method: 'delete', url: baseURL, data: { fromGroupId: from_group_id, linkIdSet: ids } });
     if (res.status == true && res.data) return res.data;
@@ -26,7 +29,10 @@ export default {
   },
 
   async moveTo(form) {
-    if (store.get('session/isViewer')) return;
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
 
     const res = await Helper.call('Link Move', { url: baseURL + '/move', data: form });
     if (res.status == true && res.data) return res.data;
@@ -40,7 +46,10 @@ export default {
   },
 
   async toggleStatus(id) {
-    if (store.get('session/isViewer')) return;
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
 
     const res = await Helper.call('Toggle Status', { method: 'put', url: baseURL + '/toggle/' + id });
     return res.status;

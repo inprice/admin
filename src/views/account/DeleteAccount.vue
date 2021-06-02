@@ -7,12 +7,14 @@
           Delete account!
         </div>
         <v-btn 
-          small
           color="error" 
           class="my-auto"
           @click="openPasswordConfirmDialog"
           :loading="loading" 
-          :disabled="loading && CURSTAT.isSubscriber == false">Delete Account</v-btn>
+          :disabled="$store.get('session/isNotAdmin') || (loading && CURSTAT.isSubscriber == false)"
+        >
+          Delete Account
+        </v-btn>
        </v-card-title>
 
       <v-divider></v-divider>

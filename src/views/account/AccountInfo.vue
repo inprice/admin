@@ -53,13 +53,19 @@
         <v-divider></v-divider>
 
         <v-card-actions class="justify-end py-3">
-          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
-            small
+            text
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            text
             @click="submit"
             color="primary"
             :loading="loading" 
-            :disabled="loading"
+            :disabled="$store.get('session/isNotAdmin') || loading"
           >
             Save
           </v-btn>
@@ -86,7 +92,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     }
   },
@@ -103,8 +109,6 @@ export default {
         currencyCode: '',
         currencyFormat: ''
       },
-      sampleAmount: 0.25,
-      sampleAmounts: [0.25, 100, 100.5, 1250.10, 3200.2443, 1263500.34 ],
     };
   },
   methods: {
@@ -155,7 +159,9 @@ export default {
     edit(data, isInsert) {
       this.isInsert = isInsert;
       if (isInsert == false) {
-        this.form = data;
+        this.form.name = data.name;
+        this.form.currencyCode = data.currencyCode;
+        this.form.currencyFormat = data.currencyFormat;
       } else {
         this.form.name = '';
         if (!this.form.currencyCode) {

@@ -57,7 +57,6 @@
 
           <v-card-actions class="px-0">
             <v-btn 
-              large
               block
               color="info" 
               @click="submit" 
@@ -65,9 +64,8 @@
               :disabled="loading">Sign Up</v-btn>
           </v-card-actions>
 
-          <div class="d-flex mt-5">
+          <div class="d-flex mt-5 justify-space-between">
             <router-link to="forgot-password" tabindex="-1">Forgot Password?</router-link>
-            <v-spacer></v-spacer>
             <router-link to="login" tabindex="-1">Sign In</router-link>
           </div>
         </v-card-text>
@@ -109,7 +107,7 @@ export default {
         case 'sm': return '60%';
         case 'md': return '45%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     }
   },

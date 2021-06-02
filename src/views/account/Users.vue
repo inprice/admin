@@ -9,17 +9,28 @@
               <div>Users</div>
               <div class="caption">Your users are listed in this section</div>
               <div class="caption">
-                <strong>Please note,</strong> users will not be immediately deleted. For a permanent delete, three hours time should be passed.
+                <strong>Please note:</strong> users will not be immediately deleted. For a permanent delete, three hours time should be passed.
               </div>
             </div>
           </div>
 
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn small class="mr-2" @click="refreshMembers">
+            <v-btn
+              small
+              color="white"
+              class="mr-2"
+              @click="refreshMembers"
+              :disabled="$store.get('session/isSuperUser')"
+            >
               Refresh
             </v-btn>
 
-            <v-btn small color="success" @click="openSendDialog">
+            <v-btn
+              small
+              color="success"
+              @click="openSendDialog"
+              :disabled="$store.get('session/isNotAdmin')"
+            >
               Invite
             </v-btn>
           </div>
@@ -53,10 +64,15 @@
                   <td>
                     <ago :date="mem.updatedAt || mem.createdAt" />
                   </td>
-                  <td v-if="mem.status != 'LEFT' && mem.status != 'DELETED'">
+                  <td v-if="$store.get('session/isAdmin') && mem.status != 'LEFT' && mem.status != 'DELETED'">
                     <v-menu>
                       <template v-slot:activator="{ on }">
-                        <v-btn x-small fab elevation="1"  v-on="on" class="my-1">
+                        <v-btn
+                          fab
+                          x-small
+                          v-on="on"
+                          class="my-1"
+                        >
                           <v-icon dark>mdi-dots-vertical</v-icon>
                         </v-btn>
                       </template>

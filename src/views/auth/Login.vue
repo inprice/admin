@@ -6,20 +6,44 @@
         <img :src="verticalBrand" :width="140" />
       </div>
 
-      <v-alert dense dismissible color="cyan lighten-2" border="left" elevation="2" colored-border type="success"
-        v-if="successMessage"
+      <v-alert
+        large
+        dismissible
+        colored-border
+        type="success"
+        border="left"
+        elevation="2"
+        color="cyan lighten-2"
+        transition="fade-transition"
+        v-model="successAlert"
       >
         {{ successMessage }}
       </v-alert>
 
-      <v-alert dense dismissible color="purple lighten-2" border="left" elevation="2" colored-border type="info"
-        v-if="infoMessage"
+      <v-alert
+        large
+        dismissible
+        colored-border
+        type="info"
+        border="left"
+        elevation="2"
+        color="purple lighten-2"
+        transition="fade-transition"
+        v-model="infoAlert"
       >
         {{ infoMessage }}
       </v-alert>
 
-      <v-alert dense dismissible color="orange" border="left" elevation="2" colored-border type="warning"
-        v-if="errorMessage"
+      <v-alert
+        large
+        dismissible
+        colored-border
+        type="error"
+        border="left"
+        elevation="2"
+        color="pink"
+        transition="fade-transition"
+        v-model="errorAlert"
       >
         {{ errorMessage }}
       </v-alert>
@@ -56,17 +80,17 @@
 
           <v-card-actions class="px-0">
             <v-btn 
-              large
               block
               color="info"
               @click="submit" 
               :loading="loading" 
-              :disabled="loading">Sign In</v-btn>
+              :disabled="loading">
+                Sign In
+            </v-btn>
           </v-card-actions>
 
-          <div class="d-flex mt-5">
+          <div class="d-flex mt-5 justify-space-between">
             <router-link to="forgot-password" tabindex="-1">Forgot Password?</router-link>
-            <v-spacer></v-spacer>
             <router-link to="request-registration" tabindex="-1">Sign Up</router-link>
           </div>
         </v-card-text>
@@ -82,6 +106,9 @@ import Utility from '@/helpers/utility';
 export default {
   data() {
     return {
+      infoAlert: false,
+      successAlert: false,
+      errorAlert: false,
       infoMessage: null,
       successMessage: null,
       errorMessage: null,
@@ -104,7 +131,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     }
   },
@@ -115,23 +142,34 @@ export default {
       if (this.valid) {
         this.loading = true;
         const result = await this.$store.dispatch('session/login', this.form);
-        if (result != null) {
-          let ses = result.sessions[result.sessionNo];
-          if (ses == undefined && result.sessionNo != 0 && result.sessions[0]) {
-            ses = result.sessions[0];
+
+        if (result.status && result.data) {
+          const resData = result.data;
+          let ses = resData.sessions[resData.sessionNo];
+          if (ses == undefined && resData.sessionNo != 0 && resData.sessions[0]) {
+            ses = resData.sessions[0];
             this.$store.commit('session/SET_CURRENT', ses, 0);
           }
           if (ses) {
-            if (ses.planName) {
-              if (ses.linkCount > 0) {
-                this.$router.push({ name: 'dashboard', params: { sid: result.sessionNo } });
-              } else {
-                this.$router.push({ name: 'groups', params: { sid: result.sessionNo } });
-              }
+            if (resData.isPriviledge) {
+              this.$router.push({ name: 'sys-dashboard', params: { sid: 0 } });
             } else {
-              this.$router.push({ name: 'plans', params: { sid: result.sessionNo } });
+              if (ses.planName) {
+                if (ses.linkCount > 0) {
+                  this.$router.push({ name: 'dashboard', params: { sid: resData.sessionNo } });
+                } else {
+                  this.$router.push({ name: 'groups', params: { sid: resData.sessionNo } });
+                }
+              } else {
+                this.$router.push({ name: 'plans', params: { sid: resData.sessionNo } });
+              }
             }
           }
+        } else {
+          this.infoAlert = false;
+          this.successAlert = false;
+          this.errorMessage = result.error;
+          this.errorAlert = true;
         }
         this.loading = false;
       }
@@ -154,21 +192,29 @@ export default {
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
 
     this.infoMessage = null;
+    this.successMessage = null;
     this.errorMessage= null;
+    this.infoAlert = false;
+    this.successAlert = false;
+    this.errorAlert = false;
 
     const message = this.$route.query.m;
     switch (message) {
       case '1nqq':
         this.infoMessage = "Your session expired. Please login again.";
+        this.infoAlert = true;
         break;
       case 'plfw':
         this.successMessage = 'We have just sent an activation link to your email address. Please check it.';
+        this.successAlert = true;
         break;
       case 'ap17':
         this.successMessage = "You have successfully activated your member. Please login.";
+        this.successAlert = true;
         break;
       case 'mqn6':
         this.errorMessage = "Your activation link is invalid or expired. Please ask again.";
+        this.errorAlert = true;
         break;
     }
   }

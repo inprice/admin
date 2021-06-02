@@ -6,6 +6,20 @@
         <img :src="verticalBrand" :width="140" />
       </div>
 
+      <v-alert
+        large
+        dismissible
+        colored-border
+        type="warning"
+        border="left"
+        elevation="2"
+        color="pink"
+        transition="fade-transition"
+        v-model="errorAlert"
+      >
+        {{ errorMessage }}
+      </v-alert>
+
       <v-card>
         <v-card-title class="form-title elevation-1 mb-2">Accept Invitation</v-card-title>
 
@@ -38,20 +52,20 @@
             />
           </v-form>
 
-          <v-card-actions class="px-0">
-            <div>
-              <div>Already have an account?</div>
-              <router-link to="login">Sign In</router-link>
-            </div>
-            
-            <v-spacer></v-spacer>
-            
+          <v-card-actions class="px-0 d-block">
             <v-btn 
+              block
               color="info"
-              class="mt-2"
               @click="submit" 
-              :loading="loading"
-              :disabled="loading">Accept</v-btn>
+              :loading="loading" 
+              :disabled="loading">
+                Accept
+            </v-btn>
+
+            <div class="pt-4">
+              Already have an account?
+              <router-link to="login" class="ml-5" tabindex="-1">Sign In</router-link>
+            </div>
           </v-card-actions>
         </v-card-text>
       </v-card>
@@ -71,6 +85,9 @@ import Utility from '@/helpers/utility';
 export default {
   data() {
     return {
+      errorAlert: false,
+      errorMessage: null,
+
       loading: false,
       valid: false,
       showPass1: false,
@@ -91,7 +108,7 @@ export default {
         case 'sm': return '60%';
         case 'md': return '45%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     }
   },
@@ -106,10 +123,13 @@ export default {
       if (this.valid) {
         this.loading = true;
         const result = await AuthService.acceptInvitation(this.form);
-        if (result == true) {
+        if (result.status) {
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
           this.$store.commit('snackbar/setMessage', { text: 'Your have successfully activated your member' });
           return;
+        } else {
+          this.errorMessage = result.error;
+          this.errorAlert = true;
         }
         this.loading = false;
       }

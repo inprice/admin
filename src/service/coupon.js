@@ -6,11 +6,14 @@ const baseURL = '/coupon';
 export default {
 
   getCoupons() {
-    return Helper.call('Coupons', { method: 'get', url: baseURL }, false);
+    return Helper.call('Coupons', { method: 'get', url: baseURL }, true);
   },
 
   async applyCoupon(code) {
-    if (store.get('session/isNotAdmin')) return;
+    if (store.get('session/isNotAdmin')) {
+      store.commit('snackbar/setMessage', { text: 'Coupons can be applied only by admin!' });
+      return;
+    }
 
     const res = await Helper.call('Apply Coupon', { method: 'put', url: baseURL + '/apply/' + code });
     return res;

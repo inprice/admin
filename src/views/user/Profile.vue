@@ -12,11 +12,22 @@
           </div>
 
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn small color="warning" class="mx-2" @click="openChangePasswordDialog">
+            <v-btn
+              small
+              color="warning"
+              class="mx-2"
+              @click="openChangePasswordDialog"
+              :disabled="$store.get('session/isSuperUser')"
+            >
               Change Password
             </v-btn>
 
-            <v-btn small class="mx-2" @click="openUpdateUserDialog">
+            <v-btn
+              small
+              class="mx-2"
+              @click="openUpdateUserDialog"
+              :disabled="$store.get('session/isSuperUser')"
+            >
               Edit User
             </v-btn>
           </div>

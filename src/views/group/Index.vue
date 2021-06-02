@@ -16,24 +16,26 @@
       <div class="col-8 pl-0">
         <v-text-field 
           autofocus
-          v-model="searchTerm"
-          @keyup.enter.native="search"
+          v-model="searchForm.term"
+          @keyup="isSearchable($event)"
           dense solo light
           maxlength="100"
           hide-details
-          placeholder="Search by Name">
-            <template slot="append">
-              <v-icon @click="clear">mdi-window-close</v-icon>
-            </template>
+          placeholder="Search by Name"
+        >
+          <template slot="append">
+            <v-icon @click="clear">mdi-window-close</v-icon>
+          </template>
         </v-text-field>
       </div>
 
       <div class="my-auto">
         <v-btn 
           small
-          :disabled="$store.get('session/isViewer')"
-          @click="addNew">
-            Add new
+          :disabled="$store.get('session/isNotEditor')"
+          @click="addNew"
+        >
+          Add new
         </v-btn>
       </div>
     </div>
@@ -76,7 +78,11 @@ export default {
   },
   data() {
     return {
-      searchTerm: '',
+      searchForm: {
+        term: '',
+        rowCount: 0,
+        loadMore: false
+      },
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
@@ -84,7 +90,7 @@ export default {
   },
   methods: {
     clear() {
-      this.searchTerm = '';
+      this.searchForm.term = '';
     },
     addNew() {
       this.$refs.editDialog.open();
@@ -97,10 +103,17 @@ export default {
       this.search();
     },
     search() {
+      if (this.isLoadMoreClicked == true && this.searchResult.length) {
+        this.searchForm.rowCount = this.searchResult.length;
+        this.searchForm.loadMore = this.isLoadMoreClicked;
+      } else {
+        this.searchForm.rowCount = 0;
+      }
+
       const loadMore = this.isLoadMoreClicked;
       this.isLoadMoreClicked = false;
 
-      GroupService.search(this.searchTerm)
+      GroupService.search(this.searchForm)
         .then((res) => {
           this.isLoadMoreDisabled = true;
           if (res?.length) {
@@ -135,9 +148,15 @@ export default {
         if (!this.searchResult || !this.searchResult.length) this.search();
       }
     },
+    isSearchable(e) {
+      let char = e.keyCode || e.charCode;
+      if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
+        return this.search();
+      }
+    },
   },
   watch: {
-    searchTerm() {
+    searchForm() {
       this.search();
     },
   },

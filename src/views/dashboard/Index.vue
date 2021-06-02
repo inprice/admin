@@ -11,12 +11,11 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-center my-auto" v-if="report.account && CURSTAT.isActive">
-        <div class="mb-1 caption">{{ report.date | formatDate }}</div>
-        <v-btn small @click="refresh">
-          <v-icon left>mdi-refresh</v-icon> Refresh
-          <br>
+      <div class="text-center mt-1" v-if="report.account && CURSTAT.isActive">
+        <v-btn small color="white" @click="refresh">
+          Refresh
         </v-btn>
+        <div class="mb-1 caption">{{ report.date | formatDate }}</div>
       </div>
     </div>
 

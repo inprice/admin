@@ -22,6 +22,7 @@
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn
             small 
+            color="success"
             class="my-auto ml-3"
             :loading="loading.tryFreeUse" 
             :disabled="loading.tryFreeUse || $store.get('session/isNotAdmin')"
@@ -44,7 +45,12 @@
             </div>
           </div>
           <div :class="'my-auto text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right')">
-            <v-btn small @click="refreshSession">
+            <v-btn
+              small
+              color="white"
+              @click="refreshSession"
+              :disabled="$store.get('session/isSuperUser')"
+            >
               Refresh Session
             </v-btn>
           </div>
@@ -63,6 +69,7 @@
               color="error"
               class="my-auto"
               @click="cancel()"
+              :disabled="$store.get('session/isNotAdmin')"
             >
               Or Cancel
             </v-btn>
@@ -124,32 +131,32 @@
 
               <v-btn
                 tile
-                small
-                color="success"
-                :disabled="$store.get('session/isNotAdmin')" 
-                v-if="CURSTAT.isSubscriber == false"
                 class="mb-2"
                 @click="subscribe(plan.id)"
+                v-if="CURSTAT.isSubscriber == false"
+                :disabled="$store.get('session/isNotAdmin')" 
               >
                 Subscribe
               </v-btn>
 
               <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
                 <v-btn
-                  :disabled="$store.get('session/isNotAdmin')" 
-                  v-if="plan.id == CURSTAT.planId"
+                  tile
                   color="error"
                   class="mb-2"
                   @click="cancel()"
+                  v-if="plan.id == CURSTAT.planId"
+                  :disabled="$store.get('session/isNotAdmin')" 
                 >
                   Cancel
                 </v-btn>
                 <v-btn 
                   v-else
-                  :disabled="$store.get('session/isNotAdmin')"
-                  :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
+                  tile
                   class="mb-2"
                   @click="changeTo(plan.id)"
+                  :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
+                  :disabled="$store.get('session/isNotAdmin')"
                 >
                   {{ plan.id > CURSTAT.planId ? 'UPGRADE' : 'DOWNGRADE' }}
                 </v-btn>
@@ -187,12 +194,14 @@
 </template>
 
 <script>
+import SystemService from '@/service/system';
 import SubsService from '@/service/subscription';
 import { get } from 'vuex-pathify'
 
 export default {
   data() {
     return {
+      plansSets: null,
       currentCheckoutHash: null,
       loading: {
         overlay: false,
@@ -201,7 +210,6 @@ export default {
     }
   },
   computed: {
-    plansSets: get('system/plansSets'),
     CURSTAT: get('session/getCurrentStatus'),
     findMinWidthForPlans() {
       switch (this.$vuetify.breakpoint.name) {
@@ -345,7 +353,13 @@ export default {
   },
   mounted() {
     if (!this.plansSets || !this.plansSets.length) {
-      this.$store.dispatch('system/fetchPlans');
+      const self = this;
+      this.$nextTick(() => {
+        SystemService.fetchPlans()
+          .then((res) => {
+            if (res && res.data) self.plansSets = res.data;
+          });
+      });
     }
   },
   components: {

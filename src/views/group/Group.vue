@@ -4,13 +4,13 @@
     <!-- ------ -->
     <!-- INFO   -->
     <!-- ------ -->
-    <v-card-title class="py-1">
+    <v-card-title class="py-1 justify-space-between">
       <span @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">{{ group.name }}</span>
-      <v-spacer></v-spacer>
+
       <div>
         <span v-if="group.price"> {{ group.price | toCurrency }}</span>
 
-        <v-menu offset-y bottom left>
+        <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               small icon

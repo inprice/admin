@@ -34,20 +34,23 @@
 
         <v-divider></v-divider>
 
-        <v-card-actions class="py-3">
-          <v-spacer></v-spacer>
-
-          <v-btn small tabindex="-1" @click="close">Close</v-btn>
+        <v-card-actions class="py-3 justify-end">
+          <v-btn 
+            text
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
           <v-btn
-            small
+            text
             @click="submit"
             color="primary"
             :loading="loading"
-            :disabled="loading || $store.get('session/isViewer')"
+            :disabled="loading || $store.get('session/isNotEditor')"
           >
             Apply
           </v-btn>
-
         </v-card-actions>
 
       </v-card>
@@ -66,7 +69,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     },
   },

@@ -6,9 +6,8 @@
        :max-width="findDialogWidth"
        overlay-opacity="0.2">
       <v-card>
-        <v-card-title class="pr-3">
-          {{ form.id ? 'Edit' : 'New' }} Group
-          <v-spacer></v-spacer>
+        <v-card-title class="pr-3 justify-space-between">
+          <span>{{ form.id ? 'Edit' : 'New' }} Group</span>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
@@ -18,7 +17,7 @@
 
         <v-card-text>
 
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent>
             <input type="hidden" :value="form.id" >
 
             <v-text-field
@@ -36,6 +35,7 @@
               :rules="rules.price"
               @blur="formatPrice"
               maxlength="10"
+              type="number"
               messages="For competitive pricing, please specify a price greater than zero!"
             >
             </v-text-field>
@@ -47,15 +47,21 @@
         <v-divider></v-divider>
 
         <v-card-actions class="py-4 justify-end">
-          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
-            small
+            text
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            text
             @click="save"
             color="success"
+            :disabled="$store.get('session/isNotEditor')"
           >
             Save
           </v-btn>
-
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -71,7 +77,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     },
   },

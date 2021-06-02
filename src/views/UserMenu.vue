@@ -13,20 +13,42 @@
 
       <v-card class="text-center">
         <v-icon large class="pt-4">mdi-account-check</v-icon>
-        <v-list-item two-line>
+        <v-list-item three-line>
           <v-list-item-content class="pa-0 mx-auto">
             <v-list-item-title class="title">{{ CURSTAT.account }}</v-list-item-title>
-            <v-list-item-subtitle class="pa-3">
-              <v-chip outlined class="font-weight-medium" v-if="CURSTAT.isActive">
+
+            <v-list-item-subtitle class="pt-3" v-if="$store.get('session/isSuperUser')">
+              {{ CURSTAT.email }}
+            </v-list-item-subtitle>
+
+            <v-list-item-subtitle class="py-3" v-if="CURSTAT.isActive">
+              <v-chip outlined class="font-weight-medium">
                 <div>{{ CURSTAT.planName }} |</div>
                 <div class="green--text px-2">{{ CURSTAT.status }}</div>
                 <div>| {{ prettyRemainingDays() }}</div>
               </v-chip>
+            </v-list-item-subtitle>
+
+            <v-list-item-subtitle class="py-3">
               <v-btn
-                v-else
                 text
-                small
-                outlined
+                v-if="!CURSTAT.accountId && $store.get('session/isSuperUser')"
+                :to="{ name: 'sys-accounts' }"
+                @click="menu=false"
+              >
+                Bind an account
+              </v-btn>
+              <v-btn
+                text
+                v-else-if="$store.get('session/isSuperUser')"
+                @click="unbindAccount"
+              >
+                Unbind Selected Account
+              </v-btn>
+
+              <v-btn
+                text
+                v-else-if="!CURSTAT.isActive && $store.get('session/isNotSuperUser')"
                 color="info"
                 :to="{ name: 'plans' }"
                 @click="menu=false"
@@ -34,8 +56,20 @@
                 Please select a plan!
               </v-btn>
 
+              <div
+                class="text-center"
+                :class="{ 'pt-3': (!CURSTAT.isActive && $store.get('session/isNotSuperUser')) }"
+                v-if="$store.get('session/isNotSuperUser')"
+              >
+                <v-divider class="pb-3"></v-divider>
+                <v-btn text small class="text-none">Privacy Policy</v-btn>
+                -
+                <v-btn text small class="text-none">Terms of Services</v-btn>
+              </div>
+
             </v-list-item-subtitle>
           </v-list-item-content>
+
         </v-list-item>
       </v-card>
 
@@ -66,7 +100,7 @@
             </template>
           </div>
 
-          <v-list-item :href="`/login?m=addNew`" target="_blank">
+          <v-list-item :href="`/login?m=addNew`" target="_blank" v-if="$store.get('session/isNotSuperUser')">
             <v-icon class="mr-3">mdi-plus</v-icon>
             <v-list-item-content flat>
               <v-list-item-subtitle>Login to another account</v-list-item-subtitle>
@@ -80,25 +114,13 @@
         <v-btn
           text
           outlined
-          small
           class="my-3"
           color="info"
           @click="$store.dispatch('session/logout', false)"
         >
           Log out
         </v-btn>
-
-        <v-divider/>
-        
-         <div class="py-4">
-          <div class="text-center">
-            <v-btn text outlined small class="text-none">Privacy Policy</v-btn>
-            -
-            <v-btn text outlined small class="text-none">Terms of Services</v-btn>
-          </div>
-        </div>
-
-       </v-card>
+      </v-card>
 
     </v-menu>
   </div>
@@ -122,6 +144,9 @@ export default {
     openChangePasswordDialog() {
       this.menu = false;
       this.$refs.changePasswordDialog.open(this.CURSTAT.email);
+    },
+    unbindAccount() {
+      this.$store.dispatch('session/unbindAccount');
     },
     findPath(sesNo) {
       const session = this.sesList[sesNo];

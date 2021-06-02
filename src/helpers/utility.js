@@ -18,14 +18,6 @@ export default {
     for (index = 0; index < list.length; ++index) {
       list[index].setAttribute("tabindex", -1);
     }
-  },
-
-  arraysEqual(a, b) { //works for only primitive arrayls like int[] or String[]
-    if (a === b) return true;
-    if (a == null || b == null) return false;
-    if (a.length !== b.length) return false;
-
-    return a.sort().toString() == b.sort().toString();
   }  
 
 };

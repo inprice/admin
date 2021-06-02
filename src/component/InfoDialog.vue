@@ -19,7 +19,7 @@
       <v-divider></v-divider>
 
       <v-card-actions class="justify-end">
-        <v-btn @click.native="show = false" text outlined>OK</v-btn>
+        <v-btn @click.native="show = false" text>OK</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -35,7 +35,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     },
   },

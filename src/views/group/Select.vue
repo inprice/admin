@@ -7,9 +7,8 @@
     overlay-opacity="0.2"
   >
     <v-card>
-      <v-card-title>
+      <v-card-title class="justify-space-between">
         <div class="subtitle-1">Please select a group</div>
-        <v-spacer></v-spacer>
         <v-btn icon @click.native="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
@@ -37,7 +36,13 @@
       <v-divider></v-divider>
 
       <v-card-actions class="py-3 mr-2 justify-end">
-        <v-btn @click="agree">OK</v-btn>
+        <v-btn
+          text
+          @click="agree"
+          :disabled="$store.get('session/isNotEditor')"
+        >
+          OK
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -55,7 +60,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     },
   },

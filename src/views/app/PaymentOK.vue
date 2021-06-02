@@ -48,7 +48,6 @@
       <v-btn
         class="mt-10"
         color="primary"
-        outlined
         @click="$router.push({ name: 'groups' })"
       >
         Go to groups page

@@ -13,7 +13,7 @@
 
         <v-divider></v-divider>
 
-        <v-form ref="form" v-model="valid" class="mt-5">
+        <v-form ref="form" v-model="valid" class="mt-5" @submit.prevent>
           <v-text-field class="mx-5"
             autofocus
             outlined dense
@@ -95,13 +95,17 @@
         <v-divider></v-divider>
 
         <v-card-actions class="py-4 justify-end">
-          <v-btn small tabindex="-1" @click="close">Close</v-btn>
+          <v-btn 
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
           <v-btn
-            small
-            @click="submit"
             color="primary"
+            @click="submit"
             :loading="loading" 
-            :disabled="loading"
+            :disabled="loading || $store.get('session/isNotAdmin')"
           >
             Save
           </v-btn>
@@ -125,7 +129,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     },
   },

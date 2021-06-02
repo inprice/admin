@@ -26,7 +26,6 @@
       <v-btn
         class="mt-10"
         color="primary"
-        outlined
         :to="{ name: 'plans' }"
       >
         Turn to plans

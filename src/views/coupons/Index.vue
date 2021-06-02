@@ -23,24 +23,35 @@
 
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn 
-              :disabled="$store.get('session/isNotAdmin')"
-              v-if="CURSTAT.isActive == false"
-              small dark
+              small
               class="ml-2"
               color="success"
-              @click="openApplyCouponDialog">
-                Apply coupon
+              v-if="CURSTAT.isActive == false"
+              :disabled="$store.get('session/isNotAdmin')"
+              @click="openApplyCouponDialog"
+            >
+              Apply coupon
             </v-btn>
 
             <v-btn 
-              :disabled="$store.get('session/isNotAdmin')"
-              v-if="CURSTAT.status == 'COUPONED'"
-              small dark
+              small
               class="ml-2"
               color="red"
+              v-if="CURSTAT.status == 'COUPONED'"
+              :disabled="$store.get('session/isNotAdmin')"
               @click="cancel"
             >
               Cancel
+            </v-btn>
+
+            <v-btn
+              small
+              color="white"
+              class="my-auto ml-2"
+              @click="getCoupons"
+              :disabled="$store.get('session/isSuperUser')"
+            >
+              Refresh
             </v-btn>
           </div>
         </div>
@@ -77,11 +88,12 @@
                     <ago :date="cpn.issuedAt" v-if="cpn.issuedAt" />
                     <v-btn
                       v-else small dark
+                      class="my-1"
                       color="light-blue"
-                      :disabled="loading.apply || $store.get('session/isNotAdmin') || CURSTAT.isActive == true"
+                      :disabled="loading.apply || CURSTAT.isActive == true || $store.get('session/isNotAdmin')"
                       @click="apply(cpn.code)"
                       style="min-width: 75%; max-height: 80%"
-                      class="my-1">
+                    >
                       Use
                     </v-btn>
                   </td>

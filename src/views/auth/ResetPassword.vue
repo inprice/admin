@@ -41,8 +41,7 @@
 
           <v-card-actions class="px-0">
             <v-btn 
-              large
-              block
+              large block
               color="info"
               class="mt-2"
               @click="submit" 
@@ -53,7 +52,7 @@
       </v-card>
       
       <div class="text-center font-weight-light mt-6">
-        Remember your password? <router-link to="/login">Sign In</router-link>
+        Remember your password? <router-link to="login">Sign In</router-link>
       </div>
 
     </div>
@@ -86,7 +85,7 @@ export default {
         case 'sm': return '60%';
         case 'md': return '45%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     }
   },

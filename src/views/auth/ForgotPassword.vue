@@ -44,7 +44,6 @@
       </v-form>
 
       <v-btn 
-        large
         block
         color="info"
         class="mt-2"
@@ -84,7 +83,7 @@ export default {
         case 'sm': return '60%';
         case 'md': return '45%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     }
   },

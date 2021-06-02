@@ -18,8 +18,8 @@
             <v-btn
               small
               :loading="loading.closeall" 
-              :disabled="loading.closeall"
               @click="closeAllSessions"
+              :disabled="loading.closeall || $store.get('session/isSuperUser')"
             >
               Close sessions
             </v-btn>

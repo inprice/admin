@@ -10,8 +10,17 @@ export default {
     return res;
   },
 
+  async search(form) {
+    const res = await Helper.call('Search Ticket', { url: baseURL + 's/search', data: form });
+    if (res.status == true && res.data.rows) return res.data.rows;
+    return null;
+  },
+
   async save(form) {
-    if (store.get('session/isViewer')) return;
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
 
     let method = 'post', opType = 'added';
     if (form.id && form.id > 0) {
@@ -23,24 +32,38 @@ export default {
     return res;
   },
 
-  async saveCSat(form) {
-    if (store.get('session/isViewer')) return;
+  async saveComment(form) {
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
 
-    const res = await Helper.call('Assessment', { url: baseURL + '/csat', data: form });
-    if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your assessment is successfully saved.' });
+    let method = 'post';
+    if (form.id && form.id > 0) {
+      method = 'put';
+    }
+
+    const res = await Helper.call('Save Comment', { method, url: baseURL, data: form });
     return res;
   },
 
-  async search(form) {
-    const res = await Helper.call('Search Ticket', { url: baseURL + 's/search', data: form });
-    if (res.status == true && res.data.rows) return res.data.rows;
-    return null;
+  async remove(id) {
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+      return;
+    }
+
+    const res = await Helper.call('Delete Ticket', { method: 'delete', url: baseURL + '/' + id });
+    return res;
   },
 
-  async remove(id) {
-    if (store.get('session/isViewer')) return;
+  async removeComment(id) {
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+      return;
+    }
 
-    const res = await Helper.call('Ticket Delete', { method: 'delete', url: baseURL + '/' + id });
+    const res = await Helper.call('Delete Comment', { method: 'delete', url: baseURL + '/comment/' + id });
     return res;
   }
 

@@ -21,9 +21,8 @@
           hide-details
           maxlength="100"
           v-model="searchForm.term"
-          @keyup="isSearchable($event)"
-          :label="searchForm.searchBy"
-          :placeholder="'Search by ' + searchForm.searchBy"
+          label="Issue"
+          placeholder="Search for issue"
         >
           <template v-slot:append>
             <v-menu
@@ -54,19 +53,76 @@
                 <v-card-text class="pb-0">
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
-                    <v-icon style="cursor: pointer" @click="searchMenuOpen = false">mdi-close</v-icon>
+                    <v-btn
+                      text
+                      @click="resetForm"
+                      tabindex="-1"
+                    >
+                      Reset
+                    </v-btn>
                   </div>
                   
                   <v-divider class="py-2 pb-4"></v-divider>
 
                   <v-select
-                    autofocus
                     dense
-                    label="Search By"
+                    small-chips
+                    multiple
                     outlined
-                    v-model="searchForm.searchBy"
-                    :items="searchByItems"
+                    label="Status"
+                    v-model="searchForm.statuses"
+                    :items="statusItems"
                   ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    label="Priority"
+                    v-model="searchForm.priorities"
+                    :items="priorityItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    label="Type"
+                    v-model="searchForm.types"
+                    :items="typeItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    label="Subject"
+                    v-model="searchForm.subjects"
+                    :items="subjectItems"
+                  ></v-select>
+
+                  <div class="d-flex justify-space-around">
+                    <v-select
+                      class="col mr-2"
+                      dense
+                      outlined
+                      label="Seen ?"
+                      v-model="searchForm.seen"
+                      :items="seenItems"
+                    ></v-select>
+
+                    <v-select
+                      class="col ml-2"
+                      dense
+                      outlined
+                      label="Row Limit"
+                      v-model="searchForm.rowLimit"
+                      :items="rowLimitItems"
+                    ></v-select>
+                  </div>
 
                   <div class="d-flex justify-space-around">
                     <v-select
@@ -79,7 +135,7 @@
                     ></v-select>
 
                     <v-select
-                      class="col mx-2"
+                      class="col ml-2"
                       dense
                       outlined
                       label="Order Dir"
@@ -87,36 +143,23 @@
                       :items="orderDirItems"
                     ></v-select>
                   </div>
-
-                  <div class="d-flex justify-space-around">
-                    <v-select
-                      class="col mr-2"
-                      dense
-                      outlined
-                      label="Replied ?"
-                      v-model="searchForm.replied"
-                      :items="repliedItems"
-                    ></v-select>
-
-                    <v-select
-                      class="col mx-2"
-                      dense
-                      outlined
-                      label="Row Limit"
-                      v-model="searchForm.rowLimit"
-                      :items="rowLimitItems"
-                    ></v-select>
-                  </div>
                 </v-card-text>
 
                 <v-divider></v-divider>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn outlined text @click="resetForm" tabindex="-1">
-                    Reset
+                <v-card-actions class="justify-end">
+                  <v-btn
+                    text
+                    @click="searchMenuOpen = false"
+                    tabindex="-1"
+                  >
+                    Close
                   </v-btn>
-                  <v-btn outlined text color="primary" @click="applyOptions">
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="applyOptions"
+                  >
                     OK
                   </v-btn>
                 </v-card-actions>
@@ -130,22 +173,107 @@
       <v-btn 
         small
         class="my-auto"
-        :disabled="$store.get('session/isViewer')"
-        @click="addNew">
-          Add new
+        @click="addNew"
+        :disabled="$store.get('session/isNotEditor')"
+      >
+        Add new
       </v-btn>
     </div>
 
-    <div class="col pa-0" v-if="searchResult && searchResult.length">
-      <ticket
-        v-for="row in searchResult" :key="row.id" 
-        :ticket="row"
-        :showDetails="isExpanded(row.id)"
-        @toggled="toggleDetails(row.id)"
-        @update="openEditDialog(row)"
-        @rate="openCSatDialog(row)"
-        @removed="removed"
-      />
+    <div v-if="searchResult && searchResult.length">
+      <v-card
+        class="my-2 pa-3 pt-4"
+        :class="{ 'elevation-10': !row.seenByUser}"
+        v-for="row in searchResult" :key="row.id"
+      >
+        <div class="d-flex justify-space-between">
+          <div
+            class="body-2"
+            :class="{ 'font-weight-bold': !row.seenByUser}"
+            style="cursor: pointer"
+            @click="openDetails(row.id)"
+          >
+            <v-icon color="green" class="mr-2" v-if="!row.seenByUser">mdi-alert-rhombus</v-icon>
+            {{ row.issue }}
+          </div>
+
+          <v-menu offset-y bottom left>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                small icon
+                class="my-auto"
+                v-bind="attrs"
+                v-on="on"
+                @click.stop=""
+              >
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list dense>
+              <v-list-item @click="openDetails(row.id)">
+                <v-list-item-title>DETAILS</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="copyTheContent(row.issue)">
+                <v-list-item-title>COPY</v-list-item-title>
+              </v-list-item>
+
+              <v-divider></v-divider>
+
+              <v-list-item :disabled="row.status != 'OPENED'" @click="openEditDialog(row)">
+                <v-list-item-title>EDIT</v-list-item-title>
+              </v-list-item>
+              <v-list-item :disabled="row.status != 'OPENED'" @click="remove(row.id)">
+                <v-list-item-title>DELETE</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+
+        <div class="d-flex justify-space-between">
+          <div>
+            <v-chip
+              small
+              dark
+              class="mr-1 font-weight-medium"
+              :color="findStatusColor(row.status)"
+            >
+              {{ row.status }}
+            </v-chip>
+
+            <v-chip
+              small
+              dark
+              class="mx-1 font-weight-medium"
+              :color="findPriorityColor(row.priority)"
+            >
+              {{ row.priority }}
+            </v-chip>
+
+            <v-chip
+              small
+              dark
+              class="mx-1 font-weight-medium"
+              :color="findTypeColor(row.type)"
+            >
+              {{ row.type }}
+            </v-chip>
+
+            <v-chip
+              small
+              dark
+              class="mx-1 font-weight-medium"
+              color="teal"
+            >
+              {{ row.subject }}
+            </v-chip>
+          </div>
+
+          <div class="caption text-right" >
+            <span>Created at</span> <ago class="d-inline font-weight-medium" :date="row.createdAt" />
+          </div>
+        </div>
+      </v-card>
     </div>
 
     <v-card v-else >
@@ -156,8 +284,8 @@
       <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
     </div>
 
-    <edit ref="editDialog" @saved="saveNew" />
-    <c-sat-dialog ref="csatDialog" @saved="saveCSat" />
+    <confirm ref="confirm"></confirm>
+    <edit ref="editDialog" @saved="saved" />
 
   </div>
 
@@ -166,18 +294,24 @@
 <script>
 import TicketService from '@/service/ticket';
 
-const searchByItems = ['TYPE', 'SUBJECT', 'QUERY', 'REPLY'];
-const repliedItems = ['ALL', 'REPLIED', 'NOT_REPLIED'];
-const orderByItems = ['TYPE', 'SUBJECT', 'CREATED_AT', 'REPLIED_AT'];
+const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
+const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
+const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
+const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER'];
+const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
+const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  replied: repliedItems[0],
-  searchBy: searchByItems[0],
+  statuses: null,
+  priorities: null,
+  types: null,
+  subjects: null,
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
+  seen: seenItems[0],
   rowLimit: rowLimitItems[0],
   rowCount: 0,
 }
@@ -192,26 +326,18 @@ export default {
       isLoadMoreClicked: false,
       showingId: 0,
       showDetails: false,
-      searchByItems,
-      repliedItems,
+      statusItems,
+      priorityItems,
+      typeItems,
+      subjectItems,
       orderByItems,
       orderDirItems,
+      seenItems,
       rowLimitItems,
       baseSearchForm,
     };
   },
   methods: {
-    toggleDetails(id) {
-      if (this.showingId != id) {
-        this.showingId = id;
-        this.showDetails = true;
-      } else {
-        this.showDetails = !this.showDetails;
-      }
-    },
-    isExpanded(id) {
-      return this.showingId==id && this.showDetails;
-    },
     addNew() {
       this.$refs.editDialog.open();
     },
@@ -219,13 +345,18 @@ export default {
       const cloned = JSON.parse(JSON.stringify(ticket));
       this.$refs.editDialog.open(cloned);
     },
-    openCSatDialog(ticket) {
-      const form = {
-        id: ticket.id,
-        level: ticket.csatLevel,
-        assessment: ticket.csatAssessment
-      };
-      this.$refs.csatDialog.open(form);
+    async saved(form) {
+      const result = await TicketService.save(form);
+      if (result && result.status) this.search();
+    },
+    async remove(id) {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', 'This ticket').then((confirm) => {
+        if (confirm == true) {
+          TicketService.remove(id).then((res) => {
+            if (res && res.status) this.search();
+          });
+        }
+      });
     },
     loadmore() {
       this.isLoadMoreClicked = true;
@@ -266,43 +397,58 @@ export default {
           }
       });
     },
+    openDetails(id) {
+      this.$router.push({ name: 'ticket-detail', params: { ticketId: id } });
+    },
     resetForm() {
       this.searchMenuOpen = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
       this.$refs.term.focus();
     },
-    async saveNew(form) {
-      const result = await TicketService.save(form);
-      if (result && result.status) this.search();
+    copyTheContent(text) {
+      this.copyToClipboard(text);
+      this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
     },
-    async saveCSat(form) {
-      const result = await TicketService.saveCSat(form);
-      if (result && result.status) this.search();
-    },
-    async removed() {
-      const result = await TicketService.remove(this.ticket.id);
-      if (result && result.status) this.search();
-    },
-    isSearchable(e) {
-      let char = e.keyCode || e.charCode;
-      if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
-        return this.search();
+    findStatusColor(status) {
+      switch (status) {
+        case 'OPENED': return 'blue lighten-2';
+        case 'IN_PROGRESS': return 'green lighten-2';
+        case 'WAITING_FOR_USER': return 'orange lighten-2';
+        case 'WAITING_FOR_VERSION': return 'cyan lighten-2';
+        case 'CLOSED': return 'red lighten-2';
       }
+      return 'gray';
     },
-  },
-  watch: {
-    searchTerm() {
-      this.search();
+    findPriorityColor(priority) {
+      switch (priority) {
+        case 'LOW': return 'green lighten-2';
+        case 'NORMAL': return 'blue lighten-2';
+        case 'HIGH': return 'pink lighten-2';
+        case 'CRITICAL': return 'red lighten-2';
+      }
+      return 'gray';
+    },
+    findTypeColor(type) {
+      switch (type) {
+        case 'FEEDBACK': return 'blue lighten-2';
+        case 'SUPPORT': return 'green lighten-2';
+        case 'PROBLEM': return 'pink lighten-2';
+      }
+      return 'gray';
     },
   },
   mounted() {
     this.search();
   },
+  watch: {
+    'searchForm.term'() {
+      return this.search();
+    }
+  },
   components: {
     Edit: () => import('./Edit.vue'),
-    CSatDialog: () => import('./CSatDialog.vue'),
-    Ticket: () => import('./Ticket.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
 }

@@ -12,17 +12,30 @@ export default {
   },
 
   async create(form) {
+    if (store.get('session/isSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any data!' });
+      return;
+    }
+
     const res = await Helper.call('Create Account', { method: 'post', url: baseURL, data: form });
     return res && res.status;
   },
 
   async update(form) {
+    if (store.get('session/isSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any data!' });
+      return;
+    }
+
     const res = await Helper.call('Update Account', { method: 'put', url: baseURL, data: form });
     return res.status;
   },
 
   async deleteAccount(password) {
-    if (store.get('session/isNotAdmin')) return;
+    if (store.get('session/isNotAdmin')) {
+      store.commit('snackbar/setMessage', { text: 'Accounts can be deleted only by admin!' });
+      return;
+    }
 
     const res = await Helper.call('Delete Account', { method: 'put', url: baseURL + '/delete', data: { value: password }});
     return res.status;

@@ -11,8 +11,9 @@
         <v-spacer></v-spacer>
 
         <v-btn 
-          small 
-          color="warning"
+          small
+          color="error"
+          :disabled="$store.get('session/isNotAdmin')"
           @click="openAccountInfoDialog">
             Edit
         </v-btn>

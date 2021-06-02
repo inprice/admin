@@ -19,7 +19,7 @@
         <v-divider></v-divider>
 
         <v-card-text class="pt-2 pb-0">
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
               autofocus
               label="Your Name"
@@ -41,13 +41,19 @@
         <v-divider></v-divider>
 
         <v-card-actions class="justify-end py-3">
-          <v-btn tabindex="-1" small @click="close">Close</v-btn>
           <v-btn
-            small
+            text
+            tabindex="-1"
+            @click="close"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            text
             @click="submit"
             color="primary"
             :loading="loading" 
-            :disabled="loading"
+            :disabled="loading || $store.get('session/isNotAdmin')"
           >
             Save
           </v-btn>
@@ -70,7 +76,7 @@ export default {
         case 'sm': return '50%';
         case 'md': return '35%';
         case 'lg': return '27%';
-        default: return '16%';
+        default: return '18%';
       }
     },
     CURSTAT: get('session/getCurrentStatus')

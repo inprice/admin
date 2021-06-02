@@ -11,7 +11,7 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between" v-if="CURSTAT.isActive || CURSTAT.linkCount > 0">
+    <div v-if="CURSTAT.planId">
 
       <div class="col-10 pl-0 d-flex">
         <v-text-field 
@@ -21,7 +21,6 @@
           hide-details
           maxlength="100"
           v-model="searchForm.term"
-          @keyup="isSearchable($event)"
           :label="searchForm.searchBy"
           :placeholder="'Search by ' + searchForm.searchBy"
         >
@@ -54,7 +53,13 @@
                 <v-card-text class="pb-0">
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
-                    <v-icon style="cursor: pointer" @click="searchMenuOpen = false">mdi-close</v-icon>
+                    <v-btn
+                      text
+                      @click="resetForm"
+                      tabindex="-1"
+                    >
+                      Reset
+                    </v-btn>
                   </div>
                   
                   <v-divider class="py-2 pb-4"></v-divider>
@@ -62,8 +67,8 @@
                   <v-select
                     autofocus
                     dense
-                    label="Search By"
                     outlined
+                    label="Search By"
                     v-model="searchForm.searchBy"
                     :items="searchByItems"
                   ></v-select>
@@ -84,7 +89,7 @@
                     multiple
                     outlined
                     label="Statuses"
-                      v-model="searchForm.statuses"
+                    v-model="searchForm.statuses"
                     :items="statusItems"
                   ></v-select>
 
@@ -131,12 +136,19 @@
 
                 <v-divider></v-divider>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn outlined text @click="resetForm" tabindex="-1">
-                    Reset
+                <v-card-actions class="justify-end">
+                  <v-btn
+                    text
+                    @click="searchMenuOpen = false"
+                    tabindex="-1"
+                  >
+                    Close
                   </v-btn>
-                  <v-btn outlined text color="primary" @click="applyOptions">
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="applyOptions"
+                  >
                     OK
                   </v-btn>
                 </v-card-actions>
@@ -148,7 +160,7 @@
       </div>
 
     </div>
-
+    
     <div class="col pa-0" v-if="CURSTAT.planId">
       <list
         ref="list"
@@ -166,12 +178,13 @@
         You are not allowed to manage your products until activate your account!
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn 
-            :disabled="$store.get('session/isViewer')"
             small
+            :disabled="$store.get('session/isNotEditor')"
             color="success"
             class="my-auto"
-            @click="$router.push( { name: 'plans' })">
-              See Plans
+            @click="$router.push( { name: 'plans' })"
+          >
+            See Plans
           </v-btn>
         </div>
       </block-message>
@@ -274,15 +287,14 @@ export default {
       this.isLoadMoreClicked = true;
       this.search();
     },
-    isSearchable(e) {
-      let char = e.keyCode || e.charCode;
-      if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
-        return this.search();
-      }
-    }
   },
   mounted() {
     this.search();
+  },
+  watch: {
+    'searchForm.term'() {
+      return this.search();
+    }
   },
   components: {
     List: () => import('./List'),

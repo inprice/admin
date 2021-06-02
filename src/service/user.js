@@ -7,12 +7,22 @@ const baseURL = '/user';
 export default {
 
   async update(form) {
+    if (store.get('session/isSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+      return;
+    }
+
     const res = await Helper.call('Update User', { method: 'put', url: baseURL + '/update', data: form });
     if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your info has been successfully updated' });
     return res.status;
   },
 
   async changePassword(form) {
+    if (store.get('session/isSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+      return;
+    }
+
     const res = await Helper.call('Change Password', { method: 'put', url: baseURL + '/change-password', data: form });
     if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your password has been successfully changed' });
     return res.status;
@@ -25,11 +35,21 @@ export default {
   },
 
   async acceptInvitation(id) {
+    if (store.get('session/isSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+      return;
+    }
+
     const res = await Helper.call('Accept Invitation', { method: 'put', url: baseURL + '/accept-invitation', data: { value: id } });
     return res.status;
   },
 
   async rejectInvitation(id) {
+    if (store.get('session/isSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+      return;
+    }
+
     const res = await Helper.call('Reject Invitation', { method: 'put', url: baseURL + '/reject-invitation', data: { value: id } });
     return res.status;
   },
@@ -41,6 +61,11 @@ export default {
   },
 
   async leaveMember(id) {
+    if (store.get('session/isSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+      return;
+    }
+
     const res = await Helper.call('Leave Member', { method: 'put', url: baseURL + '/leave-member', data: { value: id } });
     return res.status;
   },
@@ -52,6 +77,11 @@ export default {
   },
 
   async closeAllSessions() {
+    if (store.get('session/isSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to close sessions!' });
+      return;
+    }
+
     const res = await Helper.call('Closing Sessions', { method: 'post', url: baseURL + '/close-all-sessions' });
     return (res.status == true);
   }
