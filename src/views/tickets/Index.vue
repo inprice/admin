@@ -53,7 +53,13 @@
                 <v-card-text class="pb-0">
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
-                    <v-icon style="cursor: pointer" @click="searchMenuOpen = false">mdi-close</v-icon>
+                    <v-btn
+                      text
+                      @click="resetForm"
+                      tabindex="-1"
+                    >
+                      Reset
+                    </v-btn>
                   </div>
                   
                   <v-divider class="py-2 pb-4"></v-divider>
@@ -103,18 +109,9 @@
                       class="col mr-2"
                       dense
                       outlined
-                      label="Order By"
-                      v-model="searchForm.orderBy"
-                      :items="orderByItems"
-                    ></v-select>
-
-                    <v-select
-                      class="col mx-2"
-                      dense
-                      outlined
-                      label="Order Dir"
-                      v-model="searchForm.orderDir"
-                      :items="orderDirItems"
+                      label="Seen ?"
+                      v-model="searchForm.seen"
+                      :items="seenItems"
                     ></v-select>
 
                     <v-select
@@ -126,6 +123,26 @@
                       :items="rowLimitItems"
                     ></v-select>
                   </div>
+
+                  <div class="d-flex justify-space-around">
+                    <v-select
+                      class="col mr-2"
+                      dense
+                      outlined
+                      label="Order By"
+                      v-model="searchForm.orderBy"
+                      :items="orderByItems"
+                    ></v-select>
+
+                    <v-select
+                      class="col ml-2"
+                      dense
+                      outlined
+                      label="Order Dir"
+                      v-model="searchForm.orderDir"
+                      :items="orderDirItems"
+                    ></v-select>
+                  </div>
                 </v-card-text>
 
                 <v-divider></v-divider>
@@ -133,10 +150,10 @@
                 <v-card-actions class="justify-end">
                   <v-btn
                     text
-                    @click="resetForm"
+                    @click="searchMenuOpen = false"
                     tabindex="-1"
                   >
-                    Reset
+                    Close
                   </v-btn>
                   <v-btn
                     text
@@ -170,8 +187,13 @@
         v-for="row in searchResult" :key="row.id"
       >
         <div class="d-flex justify-space-between">
-          <div class="body-2" :class="{ 'font-weight-bold': !row.seenByUser}">
-            <v-icon color="red" class="mr-2" v-if="!row.seenByUser">mdi-star</v-icon>
+          <div
+            class="body-2"
+            :class="{ 'font-weight-bold': !row.seenByUser}"
+            style="cursor: pointer"
+            @click="openDetails(row.id)"
+          >
+            <v-icon color="green" class="mr-2" v-if="!row.seenByUser">mdi-alert-rhombus</v-icon>
             {{ row.issue }}
           </div>
 
@@ -189,7 +211,7 @@
             </template>
 
             <v-list dense>
-              <v-list-item link :to="{ name: 'ticket-detail', params: { ticketId: row.id } }">
+              <v-list-item @click="openDetails(row.id)">
                 <v-list-item-title>DETAILS</v-list-item-title>
               </v-list-item>
               <v-list-item @click="copyTheContent(row.issue)">
@@ -208,7 +230,7 @@
           </v-menu>
         </div>
 
-        <div class="d-flex justify-space-between" :class="{ 'font-weight-bold': !row.seenByUser}">
+        <div class="d-flex justify-space-between">
           <div>
             <v-chip
               small
@@ -278,6 +300,7 @@ const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
 const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER'];
 const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
+const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
@@ -288,6 +311,7 @@ const baseSearchForm = {
   subjects: null,
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
+  seen: seenItems[0],
   rowLimit: rowLimitItems[0],
   rowCount: 0,
 }
@@ -308,6 +332,7 @@ export default {
       subjectItems,
       orderByItems,
       orderDirItems,
+      seenItems,
       rowLimitItems,
       baseSearchForm,
     };
@@ -371,6 +396,9 @@ export default {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
       });
+    },
+    openDetails(id) {
+      this.$router.push({ name: 'ticket-detail', params: { ticketId: id } });
     },
     resetForm() {
       this.searchMenuOpen = false;

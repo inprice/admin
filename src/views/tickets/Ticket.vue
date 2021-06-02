@@ -61,7 +61,8 @@
 
     <v-divider></v-divider>
 
-    <v-card-text class="pa-3 shorten-text">
+    <v-card-text class="pa-3 pb-5">
+      <div class="overline pb-1">Issue</div>
       {{ ticket.issue }}
     </v-card-text>
 

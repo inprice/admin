@@ -38,13 +38,12 @@ export default {
       return;
     }
 
-    let method = 'post', opType = 'added';
+    let method = 'post';
     if (form.id && form.id > 0) {
-      method = 'put'; opType = 'edited';
+      method = 'put';
     }
 
     const res = await Helper.call('Save Comment', { method, url: baseURL, data: form });
-    if (res.status == true) store.commit('snackbar/setMessage', { text: `Your comment has been successfully ${opType}` });
     return res;
   },
 

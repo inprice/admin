@@ -53,7 +53,13 @@
                 <v-card-text class="pb-0">
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
-                    <v-icon style="cursor: pointer" @click="searchMenuOpen = false">mdi-close</v-icon>
+                    <v-btn
+                      text
+                      @click="resetForm"
+                      tabindex="-1"
+                    >
+                      Reset
+                    </v-btn>
                   </div>
                   
                   <v-divider class="py-2 pb-4"></v-divider>
@@ -133,10 +139,10 @@
                 <v-card-actions class="justify-end">
                   <v-btn
                     text
-                    @click="resetForm"
+                    @click="searchMenuOpen = false"
                     tabindex="-1"
                   >
-                    Reset
+                    Close
                   </v-btn>
                   <v-btn
                     text
