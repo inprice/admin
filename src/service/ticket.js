@@ -63,7 +63,7 @@ export default {
       method = 'put';
     }
 
-    const res = await Helper.call('Save Comment', { method, url: baseURL, data: form });
+    const res = await Helper.call('Save Comment', { method, url: baseURL + '/comment', data: form });
     return res;
   },
 

@@ -110,8 +110,8 @@
               rows="3"
               class="mb-0"
               outlined
-              v-model="newComment"
-              :rules="rules.newComment"
+              v-model="content"
+              :rules="rules.content"
             ></v-textarea>
 
             <v-btn
@@ -148,12 +148,12 @@ export default {
   data()  {
     return {
       ticket: null,
-      newComment: null,
+      content: null,
       valid: false,
       updatingCommentId: null,
       commentPanelOpened: false,
       rules: {
-        newComment: [
+        content: [
           v => !!v || "Required",
           v => (v && v.length >= 12 && v.length <= 512) || "Comment must be between 12-512 chars",
         ],
@@ -161,21 +161,9 @@ export default {
     }
   },
   methods: {
-    removeComment(id) {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', 'This comment').then((confirm) => {
-        if (confirm) {
-          TicketService.removeComment(id).then((res) => {
-            if (res && res.status) {
-              this.ticket = res.data;
-              if (this.commentPanelOpened) this.closeCommentPanel();
-            }
-          });
-        }
-      });
-    },
     updateComment(comment) {
       this.updatingCommentId = comment.id;
-      this.newComment = comment.content;
+      this.content = comment.content;
       this.openCommentPanel(false);
     },
     async saveComment() {
@@ -183,16 +171,16 @@ export default {
       if (this.valid) {
         const form = {
           ticketId: this.ticket.id,
-          issue: this.newComment
+          content: this.content
         };
         if (this.updatingCommentId) {
           form.id = this.updatingCommentId;
         }
         TicketService.saveComment(form).then((res) => {
           if (res && res.status) {
-            this.ticket = res.data;
+            this.ticket.commentList = res.data;
             this.$refs.form.resetValidation();
-            this.newComment = null;
+            this.content = null;
             this.valid = false;
             this.$refs.commentText.focus();
             if (this.updatingCommentId) {
@@ -207,11 +195,23 @@ export default {
       this.commentPanelOpened = true;
       this.$nextTick(() => this.$refs.commentText.focus());
     },
+    removeComment(id) {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', 'This comment').then((confirm) => {
+        if (confirm) {
+          TicketService.removeComment(id).then((res) => {
+            if (res && res.status) {
+              this.ticket.commentList = res.data;
+              if (this.commentPanelOpened) this.closeCommentPanel();
+            }
+          });
+        }
+      });
+    },
     closeCommentPanel() {
       this.$refs.form.resetValidation();
       this.commentPanelOpened = false;
       this.updatingCommentId = null;
-      this.newComment = null;
+      this.content = null;
       this.valid = false;
     },
     async ticketSaved(form) {
