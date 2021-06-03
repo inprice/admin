@@ -25,25 +25,24 @@
         Comments
       </div>
 
-      <div class="pa-2 pt-0" v-if="ticket && ticket.commentList.length">
+      <div v-if="ticket && ticket.commentList.length">
 
-        <v-divider></v-divider>
-
-        <div>
+        <div ref="comments" class="scrollable px-4" style="border: 1px solid #ddd">
           <v-card
             v-for="comment in ticket.commentList" :key="comment.id"
-            class="col-10 elevation-2 my-5 pa-0"
-            :class="{ 'offset-2': !comment.addedByUser }"
+            class="col-8 elevation-2 my-5 pa-0"
+            :class="{ 'offset-4': !comment.addedByUser }"
           >
             <div
               class="d-flex justify-space-between py-1 px-2"
               style="border: 1px solid #ddd;"
+              :style="'background-color: ' + (comment.addedByUser ? '#f9f9f9' : 'aliceblue')"
             >
-              <div class="caption font-weight-medium my-auto">{{ comment.email  }}</div>
+              <div class="caption my-auto">
+                <ago class="caption d-inline" :date="comment.createdAt" /> by <span class="teal--text" >{{ comment.username  }}</span>
+              </div>
 
               <div>
-                <ago class="caption d-inline" :date="comment.createdAt" />
-
                 <v-menu offset-y bottom left>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -58,14 +57,14 @@
                   </template>
 
                   <v-list dense>
-                    <v-list-item @click="updateComment(comment)" v-if="comment.editable && comment.addedByUser">
+                    <v-list-item @click="updateComment(comment)" :disabled="!isEditable(comment)">
                       <v-list-item-title>Update</v-list-item-title>
                     </v-list-item>
-                    <v-list-item @click="removeComment(comment.id)" v-if="comment.editable && comment.addedByUser">
+                    <v-list-item @click="removeComment(comment.id)" :disabled="!isEditable(comment)">
                       <v-list-item-title>Delete</v-list-item-title>
                     </v-list-item>
 
-                    <v-divider v-if="comment.editable && comment.addedByUser"></v-divider>
+                    <v-divider></v-divider>
 
                     <v-list-item @click="copyComment(comment.content)">
                       <v-list-item-title>Copy the content</v-list-item-title>
@@ -75,13 +74,12 @@
               </div>
             </div>
 
-            <v-card-text :style="'background-color: ' + (comment.addedByUser ? '#f9f9f9' : 'aliceblue')">
+            <v-card-text>
               {{ comment.content }}
             </v-card-text>
           </v-card>
         </div>
 
-        <v-divider></v-divider>
       </div>
 
       <div v-if="ticket.status != 'CLOSED'">
@@ -211,10 +209,10 @@ export default {
     },
     closeCommentPanel() {
       this.$refs.form.resetValidation();
+      this.commentPanelOpened = false;
       this.updatingCommentId = null;
       this.newComment = null;
       this.valid = false;
-      this.commentPanelOpened = false;
     },
     async ticketSaved(form) {
       const result = await TicketService.save(form);
@@ -242,10 +240,31 @@ export default {
           this.ticket = res.data;
         }
       });
-    }
+    },
+    isEditable(comment) {
+      if (!comment.editable) return false;
+      const user = this.$store.get('session/getCurrentStatus');
+
+      if (user.role == 'SUPER') {
+        if (comment.addedByUser) return false;
+      }
+      if (user.role == 'ADMIN' || this.CURSTAT.user == comment.username) {
+        return true;
+        } else {
+        return false;
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => this.fetchTicket());
+  },
+  updated() {
+    this.$nextTick(() => {
+      const el = this.$refs.comments;
+      if (el) {
+        el.scrollTop = el.scrollHeight;
+      }
+    });
   },
   components: {
     Ticket: () => import('./Ticket.vue'),
@@ -254,3 +273,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .scrollable {
+    overflow: hidden;
+    overflow-y: auto;
+    max-height: 30vh;
+  }
+</style>

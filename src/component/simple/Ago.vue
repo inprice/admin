@@ -1,11 +1,11 @@
 <template>
   <div :title="date" v-if="date">
-    {{ date | formatDate }}
+    {{ prefix }} {{ date | formatDate }} {{ postfix }}
   </div>
 </template>
 
 <script>
 export default {
-  props: ['date']
+  props: ['date', 'prefix', 'postfix']
 }
 </script>

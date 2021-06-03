@@ -32,6 +32,26 @@ export default {
     return res;
   },
 
+  async remove(id) {
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+      return;
+    }
+
+    const res = await Helper.call('Delete Ticket', { method: 'delete', url: baseURL + '/' + id });
+    return res;
+  },
+
+  async toggleSeenValue(id) {
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+      return;
+    }
+
+    const res = await Helper.call('Toggle Seen', { method: 'put', url: baseURL + '/seen/' + id });
+    return res;
+  },
+
   async saveComment(form) {
     if (store.get('session/isNotEditor')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
@@ -44,16 +64,6 @@ export default {
     }
 
     const res = await Helper.call('Save Comment', { method, url: baseURL, data: form });
-    return res;
-  },
-
-  async remove(id) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
-      return;
-    }
-
-    const res = await Helper.call('Delete Ticket', { method: 'delete', url: baseURL + '/' + id });
     return res;
   },
 

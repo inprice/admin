@@ -27,7 +27,7 @@
                 <div class="caption">
                   When
                 </div>
-                <span class="subtitle-2"><ago :date="row.createdAt" /></span>
+                <ago class="subtitle-2" :date="row.createdAt" />
               </v-col>
               <v-col class="py-1" cols="3">
                 <div class="caption">
@@ -93,7 +93,7 @@
                 <div class="caption">
                   When
                 </div>
-                <span class="subtitle-2"><ago :date="row.createdAt" /></span>
+                <ago class="subtitle-2" :date="row.createdAt" />
               </v-col>
               <v-col class="py-1 hidden-xs-only" cols="3">
                 <v-chip

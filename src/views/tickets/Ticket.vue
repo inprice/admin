@@ -4,7 +4,7 @@
     <v-card-title class="justify-space-between py-2">
       <div>
         <div class="caption teal--text font-weight-medium">
-          {{ ticket.email }}
+          {{ ticket.username }}
         </div>
         <div class="body-1">
           <span class="text-capitalize">{{ ticket.type.toLowerCase() }}</span> about {{ ticket.subject.toLowerCase() }}
@@ -50,9 +50,9 @@
         <v-btn
           small
           icon
-          title="Copy content"
+          title="Copy issue"
           class="my-auto"
-          @click="copyTheContent(ticket.issue)"
+          @click="copyIssue(ticket.issue)"
         >
           <v-icon>mdi-content-copy</v-icon>
         </v-btn>
@@ -125,9 +125,9 @@ export default {
         }
       });
     },
-    copyTheContent(text) {
+    copyIssue(text) {
       this.copyToClipboard(text);
-      this.$store.commit('snackbar/setMessage', { text: 'Comment copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+      this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
     },
     findStatusColor() {
       switch (this.ticket.status) {

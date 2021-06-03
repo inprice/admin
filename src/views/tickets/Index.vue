@@ -173,22 +173,22 @@
       <v-btn 
         small
         class="my-auto"
-        @click="addNew"
+        @click="openTicket"
         :disabled="$store.get('session/isNotEditor')"
       >
-        Add new
+        Open a Ticket
       </v-btn>
     </div>
 
     <div v-if="searchResult && searchResult.length">
       <v-card
-        class="my-2 pa-3 pt-4"
+        class="my-4 pa-4"
         :class="{ 'elevation-10': !row.seenByUser}"
         v-for="row in searchResult" :key="row.id"
       >
-        <div class="d-flex justify-space-between">
+        <div class="d-flex justify-space-between mb-1">
           <div
-            class="body-2"
+            class="body-2 text-truncate"
             :class="{ 'font-weight-bold': !row.seenByUser}"
             style="cursor: pointer"
             @click="openDetails(row.id)"
@@ -226,6 +226,12 @@
               <v-list-item :disabled="row.status != 'OPENED'" @click="remove(row.id)">
                 <v-list-item-title>DELETE</v-list-item-title>
               </v-list-item>
+
+              <v-divider></v-divider>
+
+              <v-list-item @click="toggleSeenValue(row)">
+                <v-list-item-title>MARK AS {{ row.seenByUser ? 'UN' : '' }}SEEN</v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-menu>
         </div>
@@ -235,6 +241,8 @@
             <v-chip
               small
               dark
+              label
+              outlined
               class="mr-1 font-weight-medium"
               :color="findStatusColor(row.status)"
             >
@@ -244,6 +252,8 @@
             <v-chip
               small
               dark
+              label
+              outlined
               class="mx-1 font-weight-medium"
               :color="findPriorityColor(row.priority)"
             >
@@ -253,6 +263,8 @@
             <v-chip
               small
               dark
+              label
+              outlined
               class="mx-1 font-weight-medium"
               :color="findTypeColor(row.type)"
             >
@@ -262,6 +274,8 @@
             <v-chip
               small
               dark
+              label
+              outlined
               class="mx-1 font-weight-medium"
               color="teal"
             >
@@ -338,7 +352,7 @@ export default {
     };
   },
   methods: {
-    addNew() {
+    openTicket() {
       this.$refs.editDialog.open();
     },
     openEditDialog(ticket) {
@@ -356,6 +370,11 @@ export default {
             if (res && res.status) this.search();
           });
         }
+      });
+    },
+    toggleSeenValue(row) {
+      TicketService.toggleSeenValue(row.id).then((res) => {
+        if (res && res.status) row.seenByUser = !row.seenByUser;
       });
     },
     loadmore() {
