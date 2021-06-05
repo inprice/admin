@@ -79,7 +79,7 @@
             text
             color="success"
             @click="save"
-            :disabled="$store.get('session/isSuperUser')"
+            :disabled="form.status != 'OPENED' || $store.get('session/isSuperUser')"
           >
             Save
           </v-btn>
@@ -132,12 +132,14 @@ export default {
   },
   methods: {
     open(data) {
+      this.form.status = 'OPENED';
       this.form.id = null;
       this.form.type = typeItems[0];
       this.form.subject = subjectItems[0];
       this.form.priority = priorityItems[0];
       this.form.issue = null;
       if (data) {
+        this.form.status = data.status;
         this.form.id = data.id;
         this.form.type = data.type;
         this.form.subject = data.subject;

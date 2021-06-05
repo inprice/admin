@@ -22,7 +22,7 @@
           maxlength="100"
           v-model="searchForm.term"
           label="Issue"
-          placeholder="Search for issue"
+          placeholder="Search by issue"
         >
           <template v-slot:append>
             <v-menu
@@ -197,43 +197,51 @@
             {{ row.issue }}
           </div>
 
-          <v-menu offset-y bottom left>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                small icon
-                class="my-auto"
-                v-bind="attrs"
-                v-on="on"
-                @click.stop=""
-              >
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </template>
+          <div>
+            <v-btn
+              small text
+              outlined
+              class="mr-1"
+              @click="openDetails(row.id)"
+            >
+              Details
+            </v-btn>
 
-            <v-list dense>
-              <v-list-item @click="openDetails(row.id)">
-                <v-list-item-title>DETAILS</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="copyTheContent(row.issue)">
-                <v-list-item-title>COPY</v-list-item-title>
-              </v-list-item>
+            <v-menu offset-y bottom left>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  small icon
+                  class="my-auto"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click.stop=""
+                >
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
 
-              <v-divider></v-divider>
+              <v-list dense>
+                <v-list-item @click="copyTheContent(row.issue)">
+                  <v-list-item-title>COPY</v-list-item-title>
+                </v-list-item>
 
-              <v-list-item :disabled="row.status != 'OPENED'" @click="openEditDialog(row)">
-                <v-list-item-title>EDIT</v-list-item-title>
-              </v-list-item>
-              <v-list-item :disabled="row.status != 'OPENED'" @click="remove(row.id)">
-                <v-list-item-title>DELETE</v-list-item-title>
-              </v-list-item>
+                <v-divider></v-divider>
 
-              <v-divider></v-divider>
+                <v-list-item @click="openEditDialog(row)">
+                  <v-list-item-title>EDIT</v-list-item-title>
+                </v-list-item>
+                <v-list-item :disabled="row.status != 'OPENED'" @click="remove(row.id)">
+                  <v-list-item-title>DELETE</v-list-item-title>
+                </v-list-item>
 
-              <v-list-item @click="toggleSeenValue(row)">
-                <v-list-item-title>MARK AS {{ row.seenByUser ? 'UN' : '' }}SEEN</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+                <v-divider></v-divider>
+
+                <v-list-item @click="toggleSeenValue(row)">
+                  <v-list-item-title>MARK AS {{ row.seenByUser ? 'UN' : '' }}SEEN</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </div>
         </div>
 
         <div class="d-flex justify-space-between">

@@ -97,6 +97,16 @@ const router = new VueRouter({
           component: () => import('./views/super/user/details/Index.vue')
         },
         {
+          name: 'sys-tickets',
+          path: 'tickets',
+          component: () => import('./views/super/ticket/Index.vue')
+        },
+        {
+          name: 'sys-ticket-details',
+          path: 'sys-ticket-details/:ticketId',
+          component: () => import('./views/super/ticket/Details.vue')
+        },
+        {
           name: 'sys-user-logs',
           path: 'user-logs/:uid',
           component: () => import('./views/super/user/AccessLogIndex.vue')
@@ -137,14 +147,14 @@ const router = new VueRouter({
           component: () => import('./views/subscription/Index.vue')
         },
         {
-          name: 'tickets',
-          path: 'tickets',
-          component: () => import('./views/tickets/Index.vue')
+          name: 'ticket',
+          path: 'ticket',
+          component: () => import('./views/ticket/Index.vue')
         },
         {
           name: 'ticket-detail',
           path: 'ticket-detail/:ticketId',
-          component: () => import('./views/tickets/Details.vue')
+          component: () => import('./views/ticket/Details.vue')
         },
         {
           name: 'coupons',

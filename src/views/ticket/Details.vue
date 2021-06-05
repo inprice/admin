@@ -4,7 +4,7 @@
     <div v-if="ticket">
 
       <div class="title d-flex justify-space-between mt-3">
-        <span>Ticket Details</span>
+        <span>Ticket Details - {{ ticket.status.replaceAll('_', ' ') }}</span>
         <div class="d-flex justify-end">
           <v-btn 
             small
@@ -22,7 +22,7 @@
       />
 
       <div class="title mt-4">
-        Comments
+        Comments ({{ ticket.commentList.length }})
       </div>
 
       <div v-if="ticket && ticket.commentList.length">
@@ -36,7 +36,7 @@
             <div
               class="d-flex justify-space-between py-1 px-2"
               style="border: 1px solid #ddd;"
-              :style="'background-color: ' + (comment.addedByUser ? '#f9f9f9' : 'aliceblue')"
+              :style="'background-color: ' + (comment.addedByUser ? '#eeeccc' : '#cceece')"
             >
               <div class="caption my-auto">
                 <ago class="caption d-inline" :date="comment.createdAt" /> by <span class="teal--text" >{{ comment.username  }}</span>
@@ -57,14 +57,14 @@
                   </template>
 
                   <v-list dense>
-                    <v-list-item @click="updateComment(comment)" :disabled="!isEditable(comment)">
+                    <v-list-item @click="updateComment(comment)" :disabled="!isEditable(comment)" v-if="comment.addedByUser">
                       <v-list-item-title>Update</v-list-item-title>
                     </v-list-item>
-                    <v-list-item @click="removeComment(comment.id)" :disabled="!isEditable(comment)">
+                    <v-list-item @click="removeComment(comment.id)" :disabled="!isEditable(comment)" v-if="comment.addedByUser">
                       <v-list-item-title>Delete</v-list-item-title>
                     </v-list-item>
 
-                    <v-divider></v-divider>
+                    <v-divider v-if="comment.addedByUser"></v-divider>
 
                     <v-list-item @click="copyComment(comment.content)">
                       <v-list-item-title>Copy the content</v-list-item-title>
@@ -74,9 +74,10 @@
               </div>
             </div>
 
-            <v-card-text>
-              {{ comment.content }}
+            <v-card-text v-if="comment.addedByUser">
+<pre>{{ comment.content }}</pre>
             </v-card-text>
+            <v-card-text v-else v-html="comment.content"></v-card-text>
           </v-card>
         </div>
 
@@ -126,8 +127,8 @@
 
       </div>
 
-      <v-card v-else >
-        <block-message dense :message="'Comments are disabled for closed ticket!'" />
+      <v-card v-else class="mt-2">
+        <block-message dense :message="'Comments are disabled for closed tickets!'" />
       </v-card>
 
     </div>
@@ -143,6 +144,7 @@
 
 <script>
 import TicketService from '@/service/ticket';
+import { get } from 'vuex-pathify'
 
 export default {
   data()  {
@@ -159,6 +161,9 @@ export default {
         ],
       },
     }
+  },
+  computed: {
+    CURSTAT: get('session/getCurrentStatus'),
   },
   methods: {
     updateComment(comment) {
@@ -222,14 +227,6 @@ export default {
       const result = await TicketService.remove(id);
       if (result && result.status) this.$router.go(-1);
     },
-    findIcon(type) {
-      switch (type) {
-        case 'FEEDBACK': return 'feature-search-outline';
-        case 'SUPPORT': return 'face-agent';
-        case 'INFO': return 'information-outline';
-        case 'PROBLEM': return 'comment-question-outline';
-      }
-    },
     copyComment(text) {
       this.copyToClipboard(text);
       this.$store.commit('snackbar/setMessage', { text: 'The content copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
@@ -242,7 +239,7 @@ export default {
       });
     },
     isEditable(comment) {
-      if (!comment.editable) return false;
+      if (!comment.editable || this.ticket.status == 'CLOSED') return false;
       const user = this.$store.get('session/getCurrentStatus');
 
       if (user.role == 'SUPER') {
@@ -250,7 +247,7 @@ export default {
       }
       if (user.role == 'ADMIN' || this.CURSTAT.user == comment.username) {
         return true;
-        } else {
+      } else {
         return false;
       }
     },
@@ -278,6 +275,6 @@ export default {
   .scrollable {
     overflow: hidden;
     overflow-y: auto;
-    max-height: 30vh;
+    max-height: 35vh;
   }
 </style>

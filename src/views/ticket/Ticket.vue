@@ -19,17 +19,6 @@
             dark
             outlined
             class="mx-1 font-weight-medium"
-            :color="findStatusColor()"
-          >
-            {{ ticket.status }}
-          </v-chip>
-
-          <v-chip
-            small
-            label
-            dark
-            outlined
-            class="mx-1 font-weight-medium"
             :color="findPriorityColor()"
           >
             {{ ticket.priority }}
@@ -85,6 +74,7 @@
         <v-btn
           small
           class="mr-1"
+          :disabled="ticket.status != 'OPENED'"
           @click="remove"
         >
           Delete
@@ -128,16 +118,6 @@ export default {
     copyIssue(text) {
       this.copyToClipboard(text);
       this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
-    },
-    findStatusColor() {
-      switch (this.ticket.status) {
-        case 'OPENED': return 'blue';
-        case 'IN_PROGRESS': return 'green';
-        case 'WAITING_FOR_USER': return 'orange';
-        case 'WAITING_FOR_VERSION': return 'cyan';
-        case 'CLOSED': return 'red';
-      }
-      return 'gray';
     },
     findPriorityColor() {
       switch (this.ticket.priority) {

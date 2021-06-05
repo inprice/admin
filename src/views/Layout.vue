@@ -49,6 +49,12 @@
             </v-list-item-content>
           </v-list-item>
 
+          <v-list-item link :to="{name: 'sys-tickets'}">
+            <v-list-item-content>
+              <v-list-item-title>Tickets</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
         </v-list-group>
 
       </v-list>
@@ -103,7 +109,7 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'tickets'}">
+        <v-list-item link :to="{name: 'ticket'}">
           <v-list-item-action>
             <v-icon>mdi-chat-question-outline</v-icon>
           </v-list-item-action>

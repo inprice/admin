@@ -75,7 +75,12 @@
                     </template>
 
                     <v-list dense>
-                      <v-list-item @click="bindAccount(row.xid)">
+                      <v-list-item @click="unbindAccount(row.xid)" v-if="CURSTAT.accountId && CURSTAT.accountId == row.xid">
+                        <v-list-item-title>
+                          UNBIND THIS
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="bindAccount(row.xid)" v-else>
                         <v-list-item-title>
                           BIND THIS
                         </v-list-item-title>
