@@ -194,7 +194,7 @@
             @click="openDetails(row.id)"
           >
             <v-icon color="green" class="mr-2" v-if="!row.seenByUser">mdi-alert-rhombus</v-icon>
-            {{ row.issue }}
+            {{ row.body }}
           </div>
 
           <div>
@@ -221,7 +221,7 @@
               </template>
 
               <v-list dense>
-                <v-list-item @click="copyTheContent(row.issue)">
+                <v-list-item @click="copyTheContent(row.body)">
                   <v-list-item-title>COPY</v-list-item-title>
                 </v-list-item>
 

@@ -192,7 +192,7 @@
           >
             <div class="overline teal--text font-weight-medium">{{ row.account }}</div>
             <v-icon color="green" class="mr-2" v-if="!row.seenBySuper">mdi-alert-rhombus</v-icon>
-            {{ row.issue }}
+            {{ row.body }}
           </div>
 
           <div>
@@ -219,7 +219,7 @@
               </template>
 
               <v-list dense>
-                <v-list-item @click="copyTheContent(row.issue)">
+                <v-list-item @click="copyTheContent(row.body)">
                   <v-list-item-title>COPY</v-list-item-title>
                 </v-list-item>
 
@@ -327,7 +327,7 @@
 <script>
 import SU_TicketService from '@/service/super/ticket';
 
-const searchByItems = ['ISSUE', 'ACCOUNT'];
+const searchByItems = ['BODY', 'ACCOUNT'];
 const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
 const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
 const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];

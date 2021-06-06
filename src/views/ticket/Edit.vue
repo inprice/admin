@@ -54,11 +54,11 @@
               autofocus
               counter
               outlined
-              v-model="form.issue"
+              v-model="form.body"
               label="Issue"
               rows="8"
               maxlength="512"
-              :rules="rules.issue"
+              :rules="rules.body"
             ></v-textarea>
 
           </v-form>
@@ -123,7 +123,7 @@ export default {
         type: typeItems[0],
         priority: priorityItems[0],
         subject: subjectItems[0],
-        issue: null,
+        body: null,
       },
       typeItems,
       priorityItems,
@@ -137,14 +137,14 @@ export default {
       this.form.type = typeItems[0];
       this.form.subject = subjectItems[0];
       this.form.priority = priorityItems[0];
-      this.form.issue = null;
+      this.form.body = null;
       if (data) {
         this.form.status = data.status;
         this.form.id = data.id;
         this.form.type = data.type;
         this.form.subject = data.subject;
         this.form.priority = data.priority;
-        this.form.issue = data.issue;
+        this.form.body = data.body;
       }
       this.opened = true;
       this.$nextTick(() => this.$refs.form.resetValidation());
@@ -167,9 +167,9 @@ export default {
     },
     activateRules() {
       this.rules = {
-        issue: [
+        body: [
           v => !!v || "Required",
-          v => (v && v.length >= 12 && v.length <= 512) || "Must be between 12-512 chars"
+          v => (v && v.length >= 12 && v.length <= 1024) || "Must be between 12-1024 chars"
         ],
       }
     },

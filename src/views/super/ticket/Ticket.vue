@@ -43,7 +43,7 @@
           icon
           title="Copy issue"
           class="my-auto"
-          @click="copyIssue(ticket.issue)"
+          @click="copyIssue(ticket.body)"
         >
           <v-icon>mdi-content-copy</v-icon>
         </v-btn>
@@ -54,7 +54,7 @@
 
     <v-card-text class="pa-3 pb-5">
       <div class="overline pb-1">Issue</div>
-      {{ ticket.issue }}
+      {{ ticket.body }}
     </v-card-text>
 
     <v-divider></v-divider>

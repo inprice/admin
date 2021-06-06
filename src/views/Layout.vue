@@ -205,7 +205,8 @@
 
       <v-spacer></v-spacer>
 
-      <user-menu />
+      <notification-menu></notification-menu>
+      <user-menu></user-menu>
 
     </v-app-bar>
 
@@ -263,6 +264,7 @@ export default {
     }
   },
   components: {
+    NotificationMenu: () => import('./NotificationMenu.vue'),
     UserMenu: () => import('./UserMenu.vue'),
     AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
