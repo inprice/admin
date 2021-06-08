@@ -58,7 +58,10 @@
 
           <v-list-item v-else>
             <v-list-item-content  class="py-1">
-              <v-list-item-subtitle><span style="font-size: 25px; font-weight:bold; vertical-align: middle; line-height: 2;" >🤷🏻‍♂️</span> No new notification found!</v-list-item-subtitle>
+              <v-list-item-subtitle>
+                <span style="font-size: 25px; font-weight:bold; vertical-align: middle; line-height: 2;" >🤷🏻‍♂️</span> 
+                No new notification found!
+              </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>

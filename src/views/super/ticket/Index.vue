@@ -19,7 +19,7 @@
         hide-details
         maxlength="100"
         v-model="searchForm.term"
-        label="Issue"
+        :label="searchForm.searchBy"
         :placeholder="'Search by ' + searchForm.searchBy"
       >
         <template v-slot:append>
@@ -35,7 +35,6 @@
                 v-bind="attrs"
                 v-on="on"
                 tabindex="-1"
-                style="margin-top: 5px;"
               >
                 <v-badge
                   dot overlap
@@ -53,6 +52,7 @@
                   <span>Search Options</span>
                   <v-btn
                     text
+                    color="green"
                     @click="resetForm"
                     tabindex="-1"
                   >

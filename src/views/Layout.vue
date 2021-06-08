@@ -55,6 +55,12 @@
             </v-list-item-content>
           </v-list-item>
 
+          <v-list-item link :to="{name: 'sys-announces'}">
+            <v-list-item-content>
+              <v-list-item-title>Announcements</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
         </v-list-group>
 
       </v-list>

@@ -2,8 +2,7 @@
 
   <div>
     <div>
-      <div class="title">Tickets</div>
-      <div class="body-2">The tickets opened by your users.</div>
+      <div class="title">Announcements</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -21,8 +20,8 @@
           hide-details
           maxlength="100"
           v-model="searchForm.term"
-          label="Issue"
-          placeholder="Search by issue"
+          :label="searchForm.searchBy"
+          :placeholder="'Search by ' + searchForm.searchBy"
         >
           <template v-slot:append>
             <v-menu
@@ -65,23 +64,12 @@
                   <v-divider class="py-2 pb-4"></v-divider>
 
                   <v-select
+                    autofocus
                     dense
-                    small-chips
-                    multiple
                     outlined
-                    label="Status"
-                    v-model="searchForm.statuses"
-                    :items="statusItems"
-                  ></v-select>
-
-                  <v-select
-                    dense
-                    small-chips
-                    multiple
-                    outlined
-                    label="Priority"
-                    v-model="searchForm.priorities"
-                    :items="priorityItems"
+                    label="Search By"
+                    v-model="searchForm.searchBy"
+                    :items="searchByItems"
                   ></v-select>
 
                   <v-select
@@ -99,29 +87,67 @@
                     small-chips
                     multiple
                     outlined
-                    label="Subject"
-                    v-model="searchForm.subjects"
-                    :items="subjectItems"
+                    label="Levels"
+                    v-model="searchForm.levels"
+                    :items="levelItems"
                   ></v-select>
 
-                  <div class="d-flex justify-space-around">
-                    <v-select
-                      class="col mr-2"
-                      dense
-                      outlined
-                      label="Seen ?"
-                      v-model="searchForm.seen"
-                      :items="seenItems"
-                    ></v-select>
+                  <div class="d-flex">
+                    <v-menu
+                      v-model="startingAtMenuOpen"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          readonly
+                          dense
+                          outlined
+                          clearable
+                          v-model="searchForm.startingAt"
+                          label="Starting At"
+                          v-on="on"
+                          v-bind="attrs"
+                          class="pr-2"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        no-title
+                        scrollable
+                        v-model="searchForm.startingAt"
+                        @input="startingAtMenuOpen = false"
+                      ></v-date-picker>
+                    </v-menu>
 
-                    <v-select
-                      class="col ml-2"
-                      dense
-                      outlined
-                      label="Row Limit"
-                      v-model="searchForm.rowLimit"
-                      :items="rowLimitItems"
-                    ></v-select>
+                    <v-menu
+                      v-model="endingAtMenuOpen"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          readonly
+                          dense
+                          outlined
+                          clearable
+                          v-model="searchForm.endingAt"
+                          label="Ending At"
+                          v-on="on"
+                          v-bind="attrs"
+                          class="pl-2"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        no-title
+                        scrollable
+                        v-model="searchForm.endingAt"
+                        @input="endingAtMenuOpen = false"
+                      ></v-date-picker>
+                    </v-menu>
                   </div>
 
                   <div class="d-flex justify-space-around">
@@ -143,6 +169,14 @@
                       :items="orderDirItems"
                     ></v-select>
                   </div>
+
+                  <v-select
+                    dense
+                    outlined
+                    label="Row Limit"
+                    v-model="searchForm.rowLimit"
+                    :items="rowLimitItems"
+                  ></v-select>
                 </v-card-text>
 
                 <v-divider></v-divider>
@@ -173,40 +207,72 @@
       <v-btn 
         small
         class="my-auto"
-        @click="openTicket"
-        :disabled="$store.get('session/isNotEditor')"
+        @click="addAnAnnouncement"
+        :disabled="$store.get('session/isNotSuperUser')"
       >
-        Open a Ticket
+        New Announce
       </v-btn>
     </div>
 
     <div v-if="searchResult && searchResult.length">
-      <v-card
-        class="my-4 pa-4"
-        :class="{ 'elevation-10': !row.seenByUser}"
-        v-for="row in searchResult" :key="row.id"
+
+      <div
+        class="px-2 pr-4 body-2"
+        v-for="(row, index) in searchResult" :key="row.id"
       >
-        <div class="d-flex justify-space-between mb-1">
-          <div
-            class="body-2 text-truncate"
-            :class="{ 'font-weight-bold': !row.seenByUser}"
-            style="cursor: pointer"
-            @click="openDetails(row.id)"
-          >
-            <v-icon color="green" class="mr-2" v-if="!row.seenByUser">mdi-alert-rhombus</v-icon>
-            {{ row.body }}
-          </div>
+        <div  v-if="index==0">
+          <v-divider></v-divider>
+            <v-row class="font-weight-medium">
+              <v-col cols="2" class="hidden-sm-and-down">
+                Type
+              </v-col>
+              <v-col cols="2">
+                Level
+              </v-col>
+              <v-col>
+                Title
+              </v-col>
+              <v-col cols="2" class="text-right hidden-sm-and-down">
+                Starting At
+              </v-col>
+              <v-col cols="2" class="text-right hidden-sm-and-down">
+                Ending At
+              </v-col>
+              <v-btn
+                small icon
+                class="my-auto"
+                disabled
+              ></v-btn>
+            </v-row>
+          <v-divider></v-divider>
+        </div>
 
-          <div>
-            <v-btn
-              small text
-              outlined
-              class="mr-1"
-              @click="openDetails(row.id)"
+        <div style="cursor: pointer">
+          <v-row @click="toggleDetailPanel(row.id)">
+            <v-col
+              cols="2"
+              class="font-weight-medium hidden-sm-and-down"
+              :style="'color: ' + findTypeColor(row.type)"
             >
-              Details
-            </v-btn>
-
+              {{ row.type }}
+            </v-col>
+            <v-col
+              cols="2"
+              class="font-weight-medium"
+              :style="'color: ' + findLevelColor(row.level)"
+            >
+              {{ row.level }}
+            </v-col>
+            <v-col>
+              {{ row.title }}
+            </v-col>
+            <v-col cols="2" class="text-right hidden-sm-and-down">
+              {{ row.startingAt }}
+            </v-col>
+            <v-col cols="2" class="text-right hidden-sm-and-down">
+              {{ row.endingAt }}
+            </v-col>
+          
             <v-menu offset-y bottom left>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -221,85 +287,34 @@
               </template>
 
               <v-list dense>
-                <v-list-item @click="copyTheContent(row.body)">
-                  <v-list-item-title>COPY</v-list-item-title>
-                </v-list-item>
-
-                <v-divider></v-divider>
-
-                <v-list-item @click="openEditDialog(row)">
+                <v-list-item :disabled="isNotEditable(row)" @click="openEditDialog(row)">
                   <v-list-item-title>EDIT</v-list-item-title>
                 </v-list-item>
-                <v-list-item :disabled="row.status != 'OPENED'" @click="remove(row.id)">
+                <v-list-item :disabled="isNotEditable(row)" @click="remove(row.id)">
                   <v-list-item-title>DELETE</v-list-item-title>
-                </v-list-item>
-
-                <v-divider></v-divider>
-
-                <v-list-item @click="toggleSeenValue(row)">
-                  <v-list-item-title>MARK AS {{ row.seenByUser ? 'UN' : '' }}SEEN</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
-          </div>
+          </v-row>
+
+          <v-card
+            tile
+            class="ml-7 mb-2"
+            style="border-left: 3px solid red; cursor: auto"
+            v-if="showDetails == true && showingId == row.id"
+          >
+            <v-card-text v-html="row.body"></v-card-text>
+          </v-card>
+
         </div>
 
-        <div class="d-flex justify-space-between">
-          <div>
-            <v-chip
-              small
-              dark
-              label
-              outlined
-              class="mr-1 font-weight-medium"
-              :color="findStatusColor(row.status)"
-            >
-              {{ row.status }}
-            </v-chip>
+        <v-divider></v-divider>
 
-            <v-chip
-              small
-              dark
-              label
-              outlined
-              class="mx-1 font-weight-medium"
-              :color="findPriorityColor(row.priority)"
-            >
-              {{ row.priority }}
-            </v-chip>
-
-            <v-chip
-              small
-              dark
-              label
-              outlined
-              class="mx-1 font-weight-medium"
-              :color="findTypeColor(row.type)"
-            >
-              {{ row.type }}
-            </v-chip>
-
-            <v-chip
-              small
-              dark
-              label
-              outlined
-              class="mx-1 font-weight-medium"
-              color="teal"
-            >
-              {{ row.subject }}
-            </v-chip>
-          </div>
-
-          <div class="caption text-right" >
-            <span>Created at</span> <ago class="d-inline font-weight-medium" :date="row.createdAt" />
-          </div>
-        </div>
-      </v-card>
+      </div>
     </div>
 
     <v-card v-else >
-      <block-message :message="'No ticket found! You can add a new one or change your criteria.'" />
+      <block-message :message="'No announce found! You can add a new one or change your criteria.'" />
     </v-card>
 
     <div class="mt-3">
@@ -314,26 +329,25 @@
 </template>
 
 <script>
-import TicketService from '@/service/ticket';
+import SU_AnnounceService from '@/service/super/announce';
+import moment from 'moment';
 
-const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
-const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
-const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
-const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER'];
-const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
+const searchByItems = ['TITLE', 'BODY'];
+const typeItems = ['USER', 'ACCOUNT', 'SYSTEM'];
+const levelItems = ['INFO', 'WARNING'];
+const orderByItems = ['TITLE', 'TYPE', 'LEVEL', 'STARTING_AT', 'ENDING_AT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
-const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  statuses: null,
-  priorities: null,
+  searchBy: searchByItems[0],
   types: null,
-  subjects: null,
+  levels: null,
+  startingAt: null,
+  endingAt: null,
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
-  seen: seenItems[0],
   rowLimit: rowLimitItems[0],
   rowCount: 0,
 }
@@ -343,45 +357,50 @@ export default {
     return {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
       searchMenuOpen: false,
+      startingAtMenuOpen: false,
+      endingAtMenuOpen: false,
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      statusItems,
-      priorityItems,
+      showingId: 0,
+      showDetails: false,
+      searchByItems,
       typeItems,
-      subjectItems,
+      levelItems,
       orderByItems,
       orderDirItems,
-      seenItems,
       rowLimitItems,
       baseSearchForm,
     };
   },
   methods: {
-    openTicket() {
+    addAnAnnouncement() {
       this.$refs.editDialog.open();
     },
     openEditDialog(ticket) {
       const cloned = JSON.parse(JSON.stringify(ticket));
       this.$refs.editDialog.open(cloned);
     },
-    async saved(form) {
-      const result = await TicketService.save(form);
+    async saved(searchForm) {
+      const result = await SU_AnnounceService.save(searchForm);
       if (result && result.status) this.search();
     },
     async remove(id) {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', 'This ticket').then((confirm) => {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', 'This announce').then((confirm) => {
         if (confirm == true) {
-          TicketService.remove(id).then((res) => {
+          SU_AnnounceService.remove(id).then((res) => {
             if (res && res.status) this.search();
           });
         }
       });
     },
-    toggleSeenValue(row) {
-      TicketService.toggleSeenValue(row.id).then((res) => {
-        if (res && res.status) row.seenByUser = !row.seenByUser;
-      });
+    toggleDetailPanel(id) {
+      if (this.showingId == id) {
+        this.showDetails = !this.showDetails;
+      } else {
+        this.showingId = id;
+        this.showDetails = true;
+      }
     },
     loadmore() {
       this.isLoadMoreClicked = true;
@@ -404,7 +423,7 @@ export default {
       this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
-      TicketService.search(this.searchForm, true)
+      SU_AnnounceService.search(this.searchForm, true)
         .then((res) => {
           this.isListLoading = false;
           this.isLoadMoreDisabled = true;
@@ -422,8 +441,8 @@ export default {
           }
       });
     },
-    openDetails(id) {
-      this.$router.push({ name: 'ticket-detail', params: { ticketId: id } });
+    isNotEditable(announce) {
+      return moment(announce.endingAt).isBefore();
     },
     resetForm() {
       this.searchMenuOpen = false;
@@ -431,36 +450,20 @@ export default {
       this.search();
       this.$refs.term.focus();
     },
-    copyTheContent(text) {
-      this.copyToClipboard(text);
-      this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
-    },
-    findStatusColor(status) {
-      switch (status) {
-        case 'OPENED': return 'blue lighten-2';
-        case 'IN_PROGRESS': return 'green lighten-2';
-        case 'WAITING_FOR_USER': return 'orange lighten-2';
-        case 'WAITING_FOR_VERSION': return 'cyan lighten-2';
-        case 'CLOSED': return 'red lighten-2';
-      }
-      return 'gray';
-    },
-    findPriorityColor(priority) {
-      switch (priority) {
-        case 'LOW': return 'green lighten-2';
-        case 'NORMAL': return 'blue lighten-2';
-        case 'HIGH': return 'pink lighten-2';
-        case 'CRITICAL': return 'red lighten-2';
-      }
-      return 'gray';
-    },
     findTypeColor(type) {
       switch (type) {
-        case 'FEEDBACK': return 'blue lighten-2';
-        case 'SUPPORT': return 'green lighten-2';
-        case 'PROBLEM': return 'pink lighten-2';
+        case 'USER': return 'blue';
+        case 'ACCOUNT': return 'green';
+        case 'SYSTEM': return 'purple';
       }
-      return 'gray';
+      return 'grey';
+    },
+    findLevelColor(level) {
+      switch (level) {
+        case 'INFO': return 'teal';
+        case 'WARNING': return 'red';
+      }
+      return 'grey';
     },
   },
   mounted() {
