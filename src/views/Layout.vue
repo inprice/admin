@@ -131,14 +131,6 @@
             <v-list-item-title>Announcements</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-bell-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Notifications</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
         <v-list-item link :to="{name: 'coupons'}">
           <v-list-item-action>
             <v-icon>mdi-ticket-confirmation-outline</v-icon>

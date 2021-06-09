@@ -13,18 +13,18 @@
             overlap
             bordered
             color="red"
-            offset-x="7"
+            offset-x="10"
             offset-y="10"
-            :value="announces && announces.length"
+            :value="hasAnnounce()"
           >
-            <v-icon>mdi-bell-outline</v-icon>
+            <v-icon>mdi-bell{{ !hasAnnounce() ? '-outline' : '' }}</v-icon>
           </v-badge>
         </v-btn>
       </template>
 
       <v-card elevation="0">
         <v-list two-line>
-          <v-list-item-group v-if="announces && announces.length">
+          <v-list-item-group v-if="hasAnnounce()">
             <v-list-item
               :ripple="false"
               class="py-1"
@@ -111,6 +111,11 @@ export default {
       menu: false,
     }
   },
+  methods: {
+    hasAnnounce() {
+      return (this.announces && this.announces.length);
+    }
+  }
 }
 </script>
 

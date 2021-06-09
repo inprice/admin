@@ -120,7 +120,9 @@ export default {
     //fetching system level messages!
     const self = this;
     function fetchSystemMessages() {
-      self.$store.dispatch('message/fetchAnnounces');
+      if (self.$route.name != 'announce') { //no need to fetch here!
+        self.$store.dispatch('message/fetchAnnounces');
+      }
       setTimeout(fetchSystemMessages, 1 * 60 * 1000);
     }
     fetchSystemMessages();

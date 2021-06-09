@@ -16,7 +16,7 @@ const actions = {
         }
       })
       .catch((err) => {
-        console.error('-*-*-', err);
+        console.error('fetchAnnounces', err);
         commit('setAnnounces', []);
       });
   },
@@ -27,7 +27,6 @@ const mutations = {
 
   setAnnounces(state, announces) {
     state.announces = announces;
-    console.log('-*-*-*-*-', announces);
   },
 
 };
