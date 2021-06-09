@@ -8,52 +8,62 @@
     >
       <template v-slot:activator="{ on }">
         <v-btn icon v-on="on">
-          <v-icon>mdi-bell-outline</v-icon>
+          <v-badge
+            dot
+            overlap
+            bordered
+            color="red"
+            offset-x="7"
+            offset-y="10"
+            :value="announces && announces.length"
+          >
+            <v-icon>mdi-bell-outline</v-icon>
+          </v-badge>
         </v-btn>
       </template>
 
       <v-card elevation="0">
         <v-list two-line>
           <v-list-item-group v-if="announces && announces.length">
-            <template v-for="(row, index) in announces">
-              <v-list-item :key="row.id">
+            <v-list-item
+              :ripple="false"
+              class="py-1"
+              v-for="row in announces" :key="row.id"
+              style="border-bottom: 1px solid #ddd"
+            >
 
-                <v-list-item-content class="py-1">
-                  <v-list-item-title>{{ row.type + ' (' + row.level +')' }} </v-list-item-title>
+              <v-list-item-content class="py-1">
+                <v-list-item-title>{{ row.type + ' (' + row.level +')' }} </v-list-item-title>
 
-                  <v-list-item-subtitle
-                    class="text--primary"
-                    v-text="item.title"
-                  ></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  class="text--primary"
+                  v-text="row.title"
+                ></v-list-item-subtitle>
 
-                  <v-list-item-subtitle class="text-truncate" v-text="item.body"></v-list-item-subtitle>
-                </v-list-item-content>
+              </v-list-item-content>
 
-                <v-list-item-action>
-                  <v-list-item-action-text><ago class="d-inline font-weight-bold" :date="row.createdAt" /></v-list-item-action-text>
+              <v-list-item-action>
+                <v-list-item-action-text><ago class="d-inline font-weight-bold" :date="row.createdAt" /></v-list-item-action-text>
 
-                  <v-btn
-                    small
-                    text
-                    outlined
-                    color="white"
-                    v-if="row.link"
-                    :href="row.link"
-                  >
-                    Open
-                  </v-btn>
+                <v-btn
+                  small
+                  text
+                  outlined
+                  color="white"
+                  v-if="row.link"
+                  :href="row.link"
+                >
+                  Open
+                </v-btn>
 
-                  <v-icon
-                    v-else
-                    color="grey lighten-1"
-                  >
-                    mdi-star
-                  </v-icon>
-                </v-list-item-action>
-              </v-list-item>
-
-              <v-divider :key="index"></v-divider>
-            </template>
+                <v-icon
+                  v-else
+                  color="grey lighten-1"
+                >
+                  mdi-star
+                </v-icon>
+              </v-list-item-action>
+            </v-list-item>
           </v-list-item-group>
 
           <v-list-item v-else>
@@ -64,7 +74,6 @@
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-          <v-divider></v-divider>
         </v-list>
 
         <div class="pa-1 pb-2 d-flex justify-space-between">
@@ -91,11 +100,15 @@
 </template>
 
 <script>
+import { get } from 'vuex-pathify'
+
 export default {
+  computed: {
+    announces: get('message/getAnnounces'),
+  },
   data() {
     return {
       menu: false,
-      announces: null
     }
   },
 }

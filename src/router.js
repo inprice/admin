@@ -162,6 +162,11 @@ const router = new VueRouter({
           component: () => import('./views/ticket/Details.vue')
         },
         {
+          name: 'announce',
+          path: 'announce',
+          component: () => import('./views/announce/Index.vue')
+        },
+        {
           name: 'coupons',
           path: 'coupons',
           component: () => import('./views/coupons/Index.vue')

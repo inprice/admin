@@ -48,7 +48,7 @@
               </template>
 
               <v-card>
-                <v-card-text class="pb-0">
+                <v-card-text class="pb-2">
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
                     <v-btn
@@ -61,15 +61,17 @@
                     </v-btn>
                   </div>
                   
-                  <v-divider class="py-2 pb-4"></v-divider>
+                  <v-divider class="py-2"></v-divider>
 
                   <v-select
                     autofocus
                     dense
                     outlined
+                    hide-details
                     label="Search By"
                     v-model="searchForm.searchBy"
                     :items="searchByItems"
+                    class="mb-4"
                   ></v-select>
 
                   <v-select
@@ -77,9 +79,11 @@
                     small-chips
                     multiple
                     outlined
+                    hide-details
                     label="Type"
                     v-model="searchForm.types"
                     :items="typeItems"
+                    class="mb-4"
                   ></v-select>
 
                   <v-select
@@ -87,12 +91,14 @@
                     small-chips
                     multiple
                     outlined
+                    hide-details
                     label="Levels"
                     v-model="searchForm.levels"
                     :items="levelItems"
+                    class="mb-4"
                   ></v-select>
 
-                  <div class="d-flex">
+                  <div class="d-flex mb-4">
                     <v-menu
                       v-model="startingAtMenuOpen"
                       :close-on-content-click="false"
@@ -106,11 +112,12 @@
                           dense
                           outlined
                           clearable
+                          hide-details
                           v-model="searchForm.startingAt"
                           label="Starting At"
                           v-on="on"
                           v-bind="attrs"
-                          class="pr-2"
+                          class="pr-1"
                         ></v-text-field>
                       </template>
                       <v-date-picker
@@ -134,11 +141,12 @@
                           dense
                           outlined
                           clearable
+                          hide-details
                           v-model="searchForm.endingAt"
                           label="Ending At"
                           v-on="on"
                           v-bind="attrs"
-                          class="pl-2"
+                          class="pl-1"
                         ></v-text-field>
                       </template>
                       <v-date-picker
@@ -150,20 +158,22 @@
                     </v-menu>
                   </div>
 
-                  <div class="d-flex justify-space-around">
+                  <div class="d-flex justify-space-around mb-4">
                     <v-select
-                      class="col mr-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pr-1"
                       label="Order By"
                       v-model="searchForm.orderBy"
                       :items="orderByItems"
                     ></v-select>
 
                     <v-select
-                      class="col ml-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pl-1"
                       label="Order Dir"
                       v-model="searchForm.orderDir"
                       :items="orderDirItems"
@@ -173,9 +183,11 @@
                   <v-select
                     dense
                     outlined
+                    hide-details
                     label="Row Limit"
                     v-model="searchForm.rowLimit"
                     :items="rowLimitItems"
+                    class="mb-2"
                   ></v-select>
                 </v-card-text>
 
@@ -214,15 +226,14 @@
       </v-btn>
     </div>
 
-    <div v-if="searchResult && searchResult.length">
+    <div v-if="searchResult && searchResult.length" style="border: 1px solid #ddd">
 
       <div
-        class="px-2 pr-4 body-2"
+        class="body-2"
         v-for="(row, index) in searchResult" :key="row.id"
       >
         <div  v-if="index==0">
-          <v-divider></v-divider>
-            <v-row class="font-weight-medium">
+            <v-row class="px-2 mx-0 font-weight-medium">
               <v-col cols="2" class="hidden-sm-and-down">
                 Type
               </v-col>
@@ -247,8 +258,8 @@
           <v-divider></v-divider>
         </div>
 
-        <div style="cursor: pointer">
-          <v-row @click="toggleDetailPanel(row.id)">
+        <div class="row-wrapper">
+          <v-row class="px-2 mx-0" @click="toggleDetailPanel(row.id)">
             <v-col
               cols="2"
               class="font-weight-medium hidden-sm-and-down"
@@ -481,3 +492,14 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+  .row-wrapper .row:hover {
+    background-color: #eee !important;
+    cursor: pointer;
+  }
+  .col {
+    padding: 6px !important;
+  }
+
+</style>

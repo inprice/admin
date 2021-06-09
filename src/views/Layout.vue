@@ -123,6 +123,14 @@
             <v-list-item-title>Tickets</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item link :to="{name: 'announce'}">
+          <v-list-item-action>
+            <v-icon>mdi-bullhorn-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Announcements</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-bell-outline</v-icon>
