@@ -122,7 +122,7 @@ export default {
     if (this.messageRefrefresherFunc == null) {
       const self = this;
       this.messageRefrefresherFunc = () => {
-        if (self.$route.name != 'announce' && (self.$route.params.sid != undefined)) {
+        if (self.$route.params.sid != undefined && self.$route.name != 'announce') {
           self.$store.dispatch('message/fetchAnnounces');
         }
         setTimeout(this.messageRefrefresherFunc, 5 * 60 * 1000);
@@ -130,7 +130,13 @@ export default {
       this.messageRefrefresherFunc();
     }
   },
-
+  watch: { 
+    '$route.params.sid': {
+        handler: function(sid) {
+          if (sid != undefined) this.$store.dispatch('message/fetchAnnounces');
+        },
+      }
+  }
 }
 </script>
 

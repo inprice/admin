@@ -34,11 +34,9 @@ const actions = {
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   },
 
-  create({ state, commit, dispatch }, res) {
-    state.no = res.data.sessionNo;
+  create({ commit }, res) {
     commit('SET_LIST', res.data);
     if (!res.data.isPriviledge) loginChannel.postMessage(res.data);
-    dispatch('message/fetchAnnounces', null, { root: true });
   },
 
   refresh({ commit }) {
@@ -123,8 +121,8 @@ const mutations = {
     if (data.sessions) {
       state.list = data.sessions;
     }
-    if (data.no !== undefined && data.no > -1 && data.no <= state.list.length) {
-      state.no = data.no;
+    if (data.sessionNo !== undefined && data.sessionNo > -1 && data.sessionNo <= state.list.length) {
+      state.no = data.sessionNo;
     }
     buildCurrent(state);
   },
