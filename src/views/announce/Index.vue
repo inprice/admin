@@ -415,11 +415,7 @@ export default {
   },
   mounted() {
     this.search();
-    AnnounceService.markAllAsRead().then((res) => {
-      if (res && res.status) {
-        this.$store.commit('message/setAnnounces', []);
-      }
-    });
+    this.$store.dispatch('message/markAllAnnouncesAsRead');
   },
   watch: {
     'searchForm.term'() {

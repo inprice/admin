@@ -211,7 +211,7 @@
 
       <v-spacer></v-spacer>
 
-      <notification-menu></notification-menu>
+      <notification-menu v-if="$route.name != 'announce'"></notification-menu>
       <user-menu></user-menu>
 
     </v-app-bar>

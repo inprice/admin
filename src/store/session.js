@@ -34,10 +34,11 @@ const actions = {
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   },
 
-  create({ state, commit }, res) {
+  create({ state, commit, dispatch }, res) {
     state.no = res.data.sessionNo;
     commit('SET_LIST', res.data);
     if (!res.data.isPriviledge) loginChannel.postMessage(res.data);
+    dispatch('message/fetchAnnounces', null, { root: true });
   },
 
   refresh({ commit }) {

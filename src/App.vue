@@ -92,7 +92,8 @@ export default {
         show: false,
         title: 'Warning',
         message: ''
-      }
+      },
+      messageRefrefresherFunc: null,
     }
   },
   mounted() {
@@ -118,14 +119,16 @@ export default {
     });
 
     //fetching system level messages!
-    const self = this;
-    function fetchSystemMessages() {
-      if (self.$route.name != 'announce') { //no need to fetch here!
-        self.$store.dispatch('message/fetchAnnounces');
+    if (this.messageRefrefresherFunc == null) {
+      const self = this;
+      this.messageRefrefresherFunc = () => {
+        if (self.$route.name != 'announce' && (self.$route.params.sid != undefined)) {
+          self.$store.dispatch('message/fetchAnnounces');
+        }
+        setTimeout(this.messageRefrefresherFunc, 5 * 60 * 1000);
       }
-      setTimeout(fetchSystemMessages, 1 * 60 * 1000);
+      this.messageRefrefresherFunc();
     }
-    fetchSystemMessages();
   },
 
 }

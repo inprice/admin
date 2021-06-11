@@ -6,28 +6,29 @@ const state = {
 
 const actions = {
 
-  fetchAnnounces({ commit }) {
+  fetchAnnounces({ state }) {
     ApiService.get('/announces/new')
       .then((res) => {
         if (res && res.data) {
-          commit('setAnnounces', res.data.data);
+          state.announces = res.data.data;
         } else {
-          commit('setAnnounces', []);
+          state.announces = [];
         }
       })
       .catch((err) => {
         console.error('fetchAnnounces', err);
-        commit('setAnnounces', []);
+        state.announces = [];
       });
   },
 
-};
-
-const mutations = {
-
-  setAnnounces(state, announces) {
-    state.announces = announces;
-  },
+  markAllAnnouncesAsRead({ state }) {
+    ApiService.put('/announce')
+      .then((res) => {
+        if (res && res.status) {
+          state.announces = [];
+        }
+      });
+  }
 
 };
 
@@ -43,6 +44,5 @@ export default {
   namespaced: true,
   state,
   actions,
-  mutations,
   getters
 };

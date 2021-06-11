@@ -4,9 +4,10 @@
       <v-card-title class="justify-space-between">
         <div>
           <v-icon color="red" class="mr-4 hidden-xs-only">mdi-alert-decagram-outline</v-icon>
-          Delete account!
+          Deleting this account!
         </div>
-        <v-btn 
+        <v-btn
+          small
           color="error" 
           class="my-auto"
           @click="openPasswordConfirmDialog"
