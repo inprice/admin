@@ -66,8 +66,8 @@
 
                     <v-divider v-if="comment.addedByUser"></v-divider>
 
-                    <v-list-item @click="copyComment(comment.content)">
-                      <v-list-item-title>Copy the content</v-list-item-title>
+                    <v-list-item @click="copyComment(comment.body)">
+                      <v-list-item-title>Copy the body</v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -75,9 +75,9 @@
             </div>
 
             <v-card-text v-if="comment.addedByUser">
-<pre>{{ comment.content }}</pre>
+<pre>{{ comment.body }}</pre>
             </v-card-text>
-            <v-card-text v-else v-html="comment.content"></v-card-text>
+            <v-card-text v-else v-html="comment.body"></v-card-text>
           </v-card>
         </div>
 
@@ -111,8 +111,8 @@
               rows="3"
               class="mb-0"
               outlined
-              v-model="content"
-              :rules="rules.content"
+              v-model="body"
+              :rules="rules.body"
             ></v-textarea>
 
             <v-btn
@@ -150,14 +150,14 @@ export default {
   data()  {
     return {
       ticket: null,
-      content: null,
+      body: null,
       valid: false,
       updatingCommentId: null,
       commentPanelOpened: false,
       rules: {
-        content: [
+        body: [
           v => !!v || "Required",
-          v => (v && v.length >= 12 && v.length <= 512) || "Comment must be between 12-512 chars",
+          v => (v && v.length >= 12 && v.length <= 1024) || "Must be between 12-1024 chars",
         ],
       },
     }
@@ -168,7 +168,7 @@ export default {
   methods: {
     updateComment(comment) {
       this.updatingCommentId = comment.id;
-      this.content = comment.content;
+      this.body = comment.body;
       this.openCommentPanel(false);
     },
     async saveComment() {
@@ -176,7 +176,7 @@ export default {
       if (this.valid) {
         const form = {
           ticketId: this.ticket.id,
-          content: this.content
+          body: this.body
         };
         if (this.updatingCommentId) {
           form.id = this.updatingCommentId;
@@ -185,7 +185,7 @@ export default {
           if (res && res.status) {
             this.ticket.commentList = res.data;
             this.$refs.form.resetValidation();
-            this.content = null;
+            this.body = null;
             this.valid = false;
             this.$refs.commentText.focus();
             if (this.updatingCommentId) {
@@ -216,7 +216,7 @@ export default {
       this.$refs.form.resetValidation();
       this.commentPanelOpened = false;
       this.updatingCommentId = null;
-      this.content = null;
+      this.body = null;
       this.valid = false;
     },
     async ticketSaved(form) {
@@ -229,7 +229,7 @@ export default {
     },
     copyComment(text) {
       this.copyToClipboard(text);
-      this.$store.commit('snackbar/setMessage', { text: 'The content copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+      this.$store.commit('snackbar/setMessage', { text: 'The body copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
     },
     fetchTicket() {
       TicketService.get(this.$route.params.ticketId).then((res) => {

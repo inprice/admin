@@ -37,7 +37,6 @@
                   v-bind="attrs"
                   v-on="on"
                   tabindex="-1"
-                  style="margin-top: 5px;"
                 >
                   <v-badge
                     dot overlap
@@ -50,11 +49,12 @@
               </template>
 
               <v-card>
-                <v-card-text class="pb-0">
+                <v-card-text class="pb-2">
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
                     <v-btn
                       text
+                      color="green"
                       @click="resetForm"
                       tabindex="-1"
                     >
@@ -62,15 +62,17 @@
                     </v-btn>
                   </div>
                   
-                  <v-divider class="py-2 pb-4"></v-divider>
+                  <v-divider class="pb-2"></v-divider>
 
                   <v-select
                     autofocus
                     dense
                     outlined
+                    hide-details
                     label="Search By"
                     v-model="searchForm.searchBy"
                     :items="searchByItems"
+                    class="mb-4"
                   ></v-select>
 
                   <v-select
@@ -78,9 +80,11 @@
                     small-chips
                     multiple
                     outlined
+                    hide-details
                     label="Levels"
                     v-model="searchForm.levels"
                     :items="levelItems"
+                    class="mb-4"
                   ></v-select>
 
                   <v-select
@@ -88,45 +92,51 @@
                     small-chips
                     multiple
                     outlined
+                    hide-details
                     label="Statuses"
                     v-model="searchForm.statuses"
                     :items="statusItems"
+                    class="mb-4"
                   ></v-select>
 
-                  <div class="d-flex justify-space-around">
+                  <div class="d-flex justify-space-around mb-4">
                     <v-select
-                      class="col mr-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pr-2"
                       label="Order By"
                       v-model="searchForm.orderBy"
                       :items="orderByItems"
                     ></v-select>
 
                     <v-select
-                      class="col mx-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pl-1"
                       label="Order Dir"
                       v-model="searchForm.orderDir"
                       :items="orderDirItems"
                     ></v-select>
                   </div>
 
-                  <div class="d-flex justify-space-around">
+                  <div class="d-flex justify-space-around mb-2">
                     <v-select
-                      class="col mr-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pr-1"
                       label="Alarm ?"
                       v-model="searchForm.alarm"
                       :items="alarmItems"
                     ></v-select>
 
                     <v-select
-                      class="col mx-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pl-1"
                       label="Row Limit"
                       v-model="searchForm.rowLimit"
                       :items="rowLimitItems"

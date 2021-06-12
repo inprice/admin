@@ -1,20 +1,8 @@
 <template>
 
   <div>
-
-    <div class="d-flex justify-space-between px-4 py-2 pt-4">
-      <div>
-        <div class="body-2">User's access logs.</div>
-        <div class="title">{{ $route.query.email }}</div>
-      </div>
-
-      <v-btn 
-        small
-        class="my-auto"
-        @click="$router.go(-1)"
-      >
-        Go Back
-      </v-btn>
+    <div>
+      <div class="title">Announcements</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -22,7 +10,7 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div>
+    <div class="d-flex justify-space-between">
 
       <div class="col-10 pl-0 d-flex">
         <v-text-field 
@@ -73,7 +61,7 @@
                     </v-btn>
                   </div>
                   
-                  <v-divider class="pb-2"></v-divider>
+                  <v-divider class="py-2"></v-divider>
 
                   <v-select
                     autofocus
@@ -88,25 +76,31 @@
 
                   <v-select
                     dense
+                    small-chips
+                    multiple
                     outlined
                     hide-details
-                    label="Accounts"
-                    v-model="searchForm.account"
-                    :items="accountItems"
-                    item-text="value"
-                    item-value="key"
-                    clearable
-                    @click:clear="searchForm.account=null"
+                    label="Type"
+                    v-model="searchForm.types"
+                    :items="typeItems"
                     class="mb-4"
-                  >
-                    <template v-slot:selection="{ item }">
-                      {{ item.value }}
-                    </template>
-                  </v-select>
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    hide-details
+                    label="Levels"
+                    v-model="searchForm.levels"
+                    :items="levelItems"
+                    class="mb-4"
+                  ></v-select>
 
                   <div class="d-flex mb-4">
                     <v-menu
-                      v-model="startDateMenuOpen"
+                      v-model="startingAtMenuOpen"
                       :close-on-content-click="false"
                       transition="scale-transition"
                       offset-y
@@ -119,8 +113,8 @@
                           outlined
                           clearable
                           hide-details
-                          v-model="searchForm.startDate"
-                          label="Start Date"
+                          v-model="searchForm.startingAt"
+                          label="Starting At"
                           v-on="on"
                           v-bind="attrs"
                           class="pr-1"
@@ -129,13 +123,13 @@
                       <v-date-picker
                         no-title
                         scrollable
-                        v-model="searchForm.startDate"
-                        @input="startDateMenuOpen = false"
+                        v-model="searchForm.startingAt"
+                        @input="startingAtMenuOpen = false"
                       ></v-date-picker>
                     </v-menu>
 
                     <v-menu
-                      v-model="endDateMenuOpen"
+                      v-model="endingAtMenuOpen"
                       :close-on-content-click="false"
                       transition="scale-transition"
                       offset-y
@@ -148,8 +142,8 @@
                           outlined
                           clearable
                           hide-details
-                          v-model="searchForm.endDate"
-                          label="End Date"
+                          v-model="searchForm.endingAt"
+                          label="Ending At"
                           v-on="on"
                           v-bind="attrs"
                           class="pl-1"
@@ -158,8 +152,8 @@
                       <v-date-picker
                         no-title
                         scrollable
-                        v-model="searchForm.endDate"
-                        @input="endDateMenuOpen = false"
+                        v-model="searchForm.endingAt"
+                        @input="endingAtMenuOpen = false"
                       ></v-date-picker>
                     </v-menu>
                   </div>
@@ -186,27 +180,15 @@
                     ></v-select>
                   </div>
 
-                  <div class="d-flex justify-space-around mb-2">
-                    <v-select
-                      dense
-                      outlined
-                      hide-details
-                      class="col pr-1"
-                      label="Method"
-                      v-model="searchForm.method"
-                      :items="methodItems"
-                    ></v-select>
-
-                    <v-select
-                      dense
-                      outlined
-                      hide-details
-                      class="col pl-1"
-                      label="Row Limit"
-                      v-model="searchForm.rowLimit"
-                      :items="rowLimitItems"
-                    ></v-select>
-                  </div>
+                  <v-select
+                    dense
+                    outlined
+                    hide-details
+                    label="Row Limit"
+                    v-model="searchForm.rowLimit"
+                    :items="rowLimitItems"
+                    class="mb-2"
+                  ></v-select>
                 </v-card-text>
 
                 <v-divider></v-divider>
@@ -233,39 +215,107 @@
           </template>
         </v-text-field>
       </div>
-
     </div>
-    
-    <div class="col pa-0" v-if="searchResult">
-      <list :rows="searchResult" :selectedId="showingRowId" @selected="rowSelected" />
 
-      <div class="mt-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
+    <div v-if="searchResult && searchResult.length" style="border: 1px solid #ddd">
+
+      <div
+        class="body-2"
+        v-for="(row, index) in searchResult" :key="row.id"
+      >
+        <div  v-if="index==0">
+            <v-row class="px-2 mx-0 font-weight-medium">
+              <v-col cols="2" class="hidden-sm-and-down">
+                Type
+              </v-col>
+              <v-col cols="2">
+                Level
+              </v-col>
+              <v-col>
+                Title
+              </v-col>
+              <v-col cols="2" class="text-right hidden-sm-and-down">
+                Starting At
+              </v-col>
+              <v-col cols="2" class="text-right hidden-sm-and-down">
+                Ending At
+              </v-col>
+            </v-row>
+          <v-divider></v-divider>
+        </div>
+
+        <div class="row-wrapper">
+          <v-row class="px-2 mx-0" @click="toggleDetailPanel(row.id)">
+            <v-col
+              cols="2"
+              class="font-weight-medium hidden-sm-and-down"
+              :style="'color: ' + findTypeColor(row.type)"
+            >
+              {{ row.type }}
+            </v-col>
+            <v-col
+              cols="2"
+              class="font-weight-medium"
+              :style="'color: ' + findLevelColor(row.level)"
+            >
+              {{ row.level }}
+            </v-col>
+            <v-col>
+              {{ row.title }}
+            </v-col>
+            <v-col cols="2" class="text-right hidden-sm-and-down">
+              {{ row.startingAt }}
+            </v-col>
+            <v-col cols="2" class="text-right hidden-sm-and-down">
+              {{ row.endingAt }}
+            </v-col>
+          </v-row>
+
+          <v-card
+            tile
+            class="ml-7 mb-2"
+            style="border-left: 3px solid red; cursor: auto"
+            v-if="showDetails == true && showingId == row.id"
+          >
+            <v-card-text v-html="row.body"></v-card-text>
+          </v-card>
+
+        </div>
+
+        <v-divider></v-divider>
+
       </div>
     </div>
 
-    <block-message v-else :message="`No log found.`" />
+    <v-card v-else >
+      <block-message :message="'No announce found!'" />
+    </v-card>
+
+    <div class="mt-3">
+      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+    </div>
 
   </div>
 
 </template>
 
 <script>
-import SU_UserService from '@/service/super/user';
+import AnnounceService from '@/service/announce';
 
-const searchByItems = ['PATH', 'STATUS', 'REQ_BODY', 'RES_BODY', 'IP'];
-const methodItems = ['GET', 'POST', 'PUT', 'DELETE'];
-const orderByItems = ['DATE', 'PATH', 'STATUS', 'IP', 'ELAPSED', 'METHOD', 'SLOW'];
+const searchByItems = ['TITLE', 'BODY'];
+const typeItems = ['USER', 'ACCOUNT', 'SYSTEM'];
+const levelItems = ['INFO', 'WARNING'];
+const orderByItems = ['TITLE', 'TYPE', 'LEVEL', 'STARTING_AT', 'ENDING_AT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  startDate: null,
-  endDate: null,
-  method: null,
-  account: null,
   searchBy: searchByItems[0],
+  types: null,
+  levels: null,
+  startingAt: null,
+  endingAt: null,
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
   rowLimit: rowLimitItems[0],
@@ -274,38 +324,44 @@ const baseSearchForm = {
 
 export default {
   data() {
-    baseSearchForm.userId = this.$route.params.uid;
     return {
-      searchMenuOpen: false,
-      startDateMenuOpen: false,
-      endDateMenuOpen: false,
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
+      searchMenuOpen: false,
+      startingAtMenuOpen: false,
+      endingAtMenuOpen: false,
       searchResult: [],
-      isListLoading: true,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
+      showingId: 0,
+      showDetails: false,
       searchByItems,
-      methodItems,
+      typeItems,
+      levelItems,
       orderByItems,
       orderDirItems,
       rowLimitItems,
-      accountItems: [],
       baseSearchForm,
-      showingRowId: null,
     };
   },
   methods: {
+    toggleDetailPanel(id) {
+      if (this.showingId == id) {
+        this.showDetails = !this.showDetails;
+      } else {
+        this.showingId = id;
+        this.showDetails = true;
+      }
+    },
+    loadmore() {
+      this.isLoadMoreClicked = true;
+      this.search();
+    },
     applyOptions() {
       this.searchMenuOpen = false;
       this.search();
       this.$refs.term.focus();
     },
     search() {
-      if (!this.searchForm.userId) {
-        console.error("User id is not specified!");
-        return;
-      }
-
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -317,7 +373,7 @@ export default {
       this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
-      SU_UserService.searchForLogs(this.searchForm)
+      AnnounceService.search(this.searchForm, true)
         .then((res) => {
           this.isListLoading = false;
           this.isLoadMoreDisabled = true;
@@ -341,35 +397,25 @@ export default {
       this.search();
       this.$refs.term.focus();
     },
-    resetStartDate() {
-      this.searchForm.startDate = null;
-      this.$refs.startDateMenu.save(null);
-    },
-    resetEndDate() {
-      this.searchForm.endDate = null;
-      this.$refs.endDateMenu.save(null);
-    },
-    loadmore() {
-      this.isLoadMoreClicked = true;
-      this.search();
-    },
-    rowSelected(rowId) {
-      if (this.showingRowId && this.showingRowId == rowId) {
-        this.showingRowId = null;
-      } else {
-        this.showingRowId = rowId;
+    findTypeColor(type) {
+      switch (type) {
+        case 'USER': return 'blue';
+        case 'ACCOUNT': return 'green';
+        case 'SYSTEM': return 'purple';
       }
+      return 'grey';
+    },
+    findLevelColor(level) {
+      switch (level) {
+        case 'INFO': return 'teal';
+        case 'WARNING': return 'red';
+      }
+      return 'grey';
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      this.search()
-      SU_UserService.fetchAccountList(this.searchForm.userId).then((res) => {
-        if (res && res.data) {
-          this.accountItems = res.data;
-        }
-      });
-    });
+    this.search();
+    this.$store.dispatch('message/markAllAnnouncesAsRead');
   },
   watch: {
     'searchForm.term'() {
@@ -377,8 +423,18 @@ export default {
     }
   },
   components: {
-    List: () => import('../component/AccessLogList.vue'),
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
 }
 </script>
+
+<style scoped>
+  .row-wrapper .row:hover {
+    background-color: #eee !important;
+    cursor: pointer;
+  }
+  .col {
+    padding: 6px !important;
+  }
+
+</style>

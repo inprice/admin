@@ -3,11 +3,12 @@
 
     <v-dialog 
       v-model="opened" 
-       :max-width="findDialogWidth"
-       overlay-opacity="0.2">
+      max-width="40%"
+      overlay-opacity="0.2"
+    >
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
-          <span>{{ form.id ? 'Edit' : 'New' }} Ticket</span>
+          <span>{{ form.id ? 'Edit' : 'New' }} Announce</span>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
@@ -23,42 +24,50 @@
             <v-select
               dense
               outlined
-              label="You want to"
-              v-model="form.type"
-              :items="typeItems"
-              item-text="text"
-              item-value="value"
-            >
-              <template v-slot:selection="{ item }">
-                {{ item.text }}
-              </template>    
-            </v-select>
-
-            <v-select
-              dense
-              outlined
-              label="Priority"
-              v-model="form.priority"
-              :items="priorityItems"
+              label="Level"
+              v-model="form.level"
+              :items="levelItems"
             ></v-select>
 
-            <v-select
+            <div class="d-flex">
+              <v-text-field
+                dense
+                outlined
+                v-mask="'####-##-## ##:##'"
+                v-model="form.startingAt"
+                :rules="rules.startingAt"
+                label="Starting At"
+                class="pr-2"
+              ></v-text-field>
+
+              <v-text-field
+                dense
+                outlined
+                v-mask="'####-##-## ##:##'"
+                v-model="form.endingAt"
+                :rules="rules.endingAt"
+                label="Ending At"
+                class="pl-2"
+              ></v-text-field>
+            </div>
+
+            <v-text-field
+              autofocus
               dense
               outlined
-              label="About"
-              v-model="form.subject"
-              :items="subjectItems"
-            ></v-select>
+              label="Title"
+              v-model="form.title"
+              :rules="rules.title"
+            ></v-text-field>
 
             <v-textarea
-              autofocus
               counter
               outlined
               v-model="form.body"
-              label="Issue"
-              rows="8"
-              maxlength="512"
               :rules="rules.body"
+              label="Body"
+              rows="8"
+              maxlength="1024"
             ></v-textarea>
 
           </v-form>
@@ -79,7 +88,6 @@
             text
             color="success"
             @click="save"
-            :disabled="form.status != 'OPENED' || $store.get('session/isSuperUser')"
           >
             Save
           </v-btn>
@@ -91,28 +99,12 @@
 </template>
 
 <script>
+import moment from 'moment';
 
-const typeItems = [ 
-  { value: 'PROBLEM', text: 'Report a problem' },
-  { value: 'SUPPORT', text: 'Ask support' },
-  { value: 'FEEDBACK', text: 'Give feedback' },
-];
-
-const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
-const subjectItems = [ 'SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER' ];
+const dtf = 'YYYY-MM-DD HH:mm';
+const levelItems = ['INFO', 'WARNING'];
 
 export default {
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    },
-  },
   data() {
     return {
       opened: false,
@@ -120,30 +112,32 @@ export default {
       rules: {},
       form: {
         id: null,
-        type: typeItems[0],
-        priority: priorityItems[0],
-        subject: subjectItems[0],
+        level: levelItems[0],
+        startingAt: null,
+        endingAt: null,
+        title: null,
         body: null,
+        account: null,
       },
-      typeItems,
-      priorityItems,
-      subjectItems,
+      startingAtMenuOpen: false,
+      endingAtMenuOpen: false,
+      levelItems,
     };
   },
   methods: {
     open(data) {
-      this.form.status = 'OPENED';
       this.form.id = null;
-      this.form.type = typeItems[0];
-      this.form.subject = subjectItems[0];
-      this.form.priority = priorityItems[0];
+      this.form.level = levelItems[0];
+      this.form.startingAt = moment().format(dtf);
+      this.form.endingAt = moment().add(1, 'M').format(dtf);
+      this.form.title = null;
       this.form.body = null;
       if (data) {
-        this.form.status = data.status;
         this.form.id = data.id;
-        this.form.type = data.type;
-        this.form.subject = data.subject;
-        this.form.priority = data.priority;
+        this.form.level = data.level;
+        this.form.startingAt = data.startingAt;
+        this.form.endingAt = data.endingAt;
+        this.form.title = data.title;
         this.form.body = data.body;
       }
       this.opened = true;
@@ -153,10 +147,6 @@ export default {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
-        if (typeof this.form.type === 'object') {
-          const tType = this.form.type.value;
-          this.form.type = tType;
-        }
         this.$emit('saved', this.form);
         this.close();
       }
@@ -167,6 +157,18 @@ export default {
     },
     activateRules() {
       this.rules = {
+        startingAt: [
+          v => !!v || "Required",
+          v => moment(v, dtf).isValid() || "Must be a valid date",
+        ],
+        endingAt: [
+          v => !!v || "Required",
+          v => moment(v, dtf).isValid() || "Must be a valid date",
+        ],
+        title: [
+          v => !!v || "Required",
+          v => (v && v.length >= 5 && v.length <= 50) || "Must be between 5-50 chars"
+        ],
         body: [
           v => !!v || "Required",
           v => (v && v.length >= 12 && v.length <= 1024) || "Must be between 12-1024 chars"

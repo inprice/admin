@@ -48,7 +48,6 @@
                   v-bind="attrs"
                   v-on="on"
                   tabindex="-1"
-                  style="margin-top: 5px;"
                 >
                   <v-badge
                     dot overlap
@@ -61,11 +60,12 @@
               </template>
 
               <v-card>
-                <v-card-text class="pb-0">
+                <v-card-text class="pb-2">
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
                     <v-btn
                       text
+                      color="green"
                       @click="resetForm"
                       tabindex="-1"
                     >
@@ -73,20 +73,24 @@
                     </v-btn>
                   </div>
                   
-                  <v-divider class="py-2 pb-4"></v-divider>
+                  <v-divider class="pb-2"></v-divider>
 
                   <v-select
                     autofocus
                     dense
                     outlined
+                    hide-details
                     label="Search By"
                     v-model="searchForm.searchBy"
                     :items="searchByItems"
+                    class="mb-4"
                   ></v-select>
 
                   <v-select
                     dense
                     outlined
+                    hide-details
+                    class="mb-4"
                     label="Users"
                     v-model="searchForm.user"
                     :items="userItems"
@@ -100,12 +104,10 @@
                     </template>
                   </v-select>
 
-                  <div class="d-flex">
+                  <div class="d-flex mb-4">
                     <v-menu
-                      ref="startDateMenu"
                       v-model="startDateMenuOpen"
                       :close-on-content-click="false"
-                      :return-value.sync="searchForm.startDate"
                       transition="scale-transition"
                       offset-y
                       min-width="auto"
@@ -115,49 +117,26 @@
                           readonly
                           dense
                           outlined
+                          clearable
+                          hide-details
                           v-model="searchForm.startDate"
                           label="Start Date"
                           v-on="on"
                           v-bind="attrs"
-                          class="pr-2"
+                          class="pr-1"
                         ></v-text-field>
                       </template>
-
                       <v-date-picker
                         no-title
                         scrollable
                         v-model="searchForm.startDate"
-                      >
-                        <v-btn
-                          text
-                          @click="startDateMenuOpen = false"
-                        >
-                          Close
-                        </v-btn>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                          text
-                          color="red"
-                          :disabled="!searchForm.startDate"
-                          @click="resetStartDate"
-                        >
-                          Clear
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.startDateMenu.save(searchForm.startDate)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
+                        @input="startDateMenuOpen = false"
+                      ></v-date-picker>
                     </v-menu>
 
                     <v-menu
-                      ref="endDateMenu"
                       v-model="endDateMenuOpen"
                       :close-on-content-click="false"
-                      :return-value.sync="searchForm.endDate"
                       transition="scale-transition"
                       offset-y
                       min-width="auto"
@@ -167,78 +146,62 @@
                           readonly
                           dense
                           outlined
+                          clearable
+                          hide-details
                           v-model="searchForm.endDate"
                           label="End Date"
                           v-on="on"
                           v-bind="attrs"
-                          class="px-2"
+                          class="pl-1"
                         ></v-text-field>
                       </template>
                       <v-date-picker
                         no-title
                         scrollable
                         v-model="searchForm.endDate"
-                      >
-                        <v-btn
-                          text
-                          @click="endDateMenuOpen = false"
-                        >
-                          Close
-                        </v-btn>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                          text
-                          color="red"
-                          :disabled="!searchForm.endDate"
-                          @click="resetEndDate"
-                        >
-                          Clear
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.endDateMenu.save(searchForm.endDate)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
+                        @input="endDateMenuOpen = false"
+                      ></v-date-picker>
                     </v-menu>
                   </div>
 
-                  <div class="d-flex justify-space-around">
+                  <div class="d-flex justify-space-around mb-4">
                     <v-select
-                      class="col mr-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pr-1"
                       label="Order By"
                       v-model="searchForm.orderBy"
                       :items="orderByItems"
                     ></v-select>
 
                     <v-select
-                      class="col mx-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pl-1"
                       label="Order Dir"
                       v-model="searchForm.orderDir"
                       :items="orderDirItems"
                     ></v-select>
                   </div>
 
-                  <div class="d-flex justify-space-around">
+                  <div class="d-flex justify-space-around mb-2">
                     <v-select
-                      class="col mr-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pr-1"
                       label="Method"
                       v-model="searchForm.method"
                       :items="methodItems"
                     ></v-select>
 
                     <v-select
-                      class="col mx-2"
                       dense
                       outlined
+                      hide-details
+                      class="col pl-1"
                       label="Row Limit"
                       v-model="searchForm.rowLimit"
                       :items="rowLimitItems"
@@ -377,14 +340,6 @@ export default {
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
       this.$refs.term.focus();
-    },
-    resetStartDate() {
-      this.searchForm.startDate = null;
-      this.$refs.startDateMenu.save(null);
-    },
-    resetEndDate() {
-      this.searchForm.endDate = null;
-      this.$refs.endDateMenu.save(null);
     },
     loadmore() {
       this.isLoadMoreClicked = true;

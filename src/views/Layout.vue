@@ -55,6 +55,12 @@
             </v-list-item-content>
           </v-list-item>
 
+          <v-list-item link :to="{name: 'sys-announces'}">
+            <v-list-item-content>
+              <v-list-item-title>Announcements</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
         </v-list-group>
 
       </v-list>
@@ -117,12 +123,12 @@
             <v-list-item-title>Tickets</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item link :to="{name: 'announce'}">
           <v-list-item-action>
-            <v-icon>mdi-bell-outline</v-icon>
+            <v-icon>mdi-bullhorn-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Notifications</v-list-item-title>
+            <v-list-item-title>Announcements</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item link :to="{name: 'coupons'}">
@@ -205,7 +211,8 @@
 
       <v-spacer></v-spacer>
 
-      <user-menu />
+      <notification-menu v-if="CURSTAT.role != 'SUPER' && $route.name != 'announce'"></notification-menu>
+      <user-menu></user-menu>
 
     </v-app-bar>
 
@@ -263,6 +270,7 @@ export default {
     }
   },
   components: {
+    NotificationMenu: () => import('./NotificationMenu.vue'),
     UserMenu: () => import('./UserMenu.vue'),
     AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
