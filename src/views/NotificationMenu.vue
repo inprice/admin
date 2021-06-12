@@ -27,7 +27,7 @@
           <v-list-item-group v-if="hasAnnounce()">
             <v-list-item
               :ripple="false"
-              class="py-1"
+              class="py-1 pt-0 pr-0"
               v-for="row in announces" :key="row.id"
               style="border-bottom: 1px solid #ddd"
             >

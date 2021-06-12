@@ -86,7 +86,7 @@ Vue.mixin({
         await document.execCommand('copy');
         textArea.remove();
       }
-    }
+    },
   },
 })
 

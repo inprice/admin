@@ -1,4 +1,5 @@
 import ApiService from '../service/api';
+import store from '../store';
 
 const state = {
   announces: [],
@@ -7,6 +8,8 @@ const state = {
 const actions = {
 
   fetchAnnounces({ state }) {
+    if (store.get('session/isSuperUser')) return;
+
     ApiService.get('/announces/new')
       .then((res) => {
         if (res && res.data) {
@@ -22,6 +25,8 @@ const actions = {
   },
 
   markAllAnnouncesAsRead({ state }) {
+    if (store.get('session/isSuperUser')) return;
+
     ApiService.put('/announce')
       .then((res) => {
         if (res && res.status) {

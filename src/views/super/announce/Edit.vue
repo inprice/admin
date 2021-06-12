@@ -30,61 +30,25 @@
             ></v-select>
 
             <div class="d-flex">
-              <v-menu
-                v-model="startingAtMenuOpen"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    readonly
-                    dense
-                    outlined
-                    v-model="form.startingAt"
-                    :rules="rules.startingAt"
-                    label="Starting At"
-                    v-on="on"
-                    v-bind="attrs"
-                    class="pr-2"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  no-title
-                  scrollable
-                  v-model="form.startingAt"
-                  @input="startingAtMenuOpen = false"
-                ></v-date-picker>
-              </v-menu>
+              <v-text-field
+                dense
+                outlined
+                v-mask="'####-##-## ##:##'"
+                v-model="form.startingAt"
+                :rules="rules.startingAt"
+                label="Starting At"
+                class="pr-2"
+              ></v-text-field>
 
-              <v-menu
-                v-model="endingAtMenuOpen"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    readonly
-                    dense
-                    outlined
-                    v-model="form.endingAt"
-                    :rules="rules.endingAt"
-                    label="Ending At"
-                    v-on="on"
-                    v-bind="attrs"
-                    class="pl-2"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  no-title
-                  scrollable
-                  v-model="form.endingAt"
-                  @input="endingAtMenuOpen = false"
-                ></v-date-picker>
-              </v-menu>
+              <v-text-field
+                dense
+                outlined
+                v-mask="'####-##-## ##:##'"
+                v-model="form.endingAt"
+                :rules="rules.endingAt"
+                label="Ending At"
+                class="pl-2"
+              ></v-text-field>
             </div>
 
             <v-text-field
@@ -137,9 +101,8 @@
 <script>
 import moment from 'moment';
 
+const dtf = 'YYYY-MM-DD HH:mm';
 const levelItems = ['INFO', 'WARNING'];
-const today = moment().format('YYYY-MM-DD');
-const nextMonth = moment(today).add(1, 'M').format('YYYY-MM-DD');
 
 export default {
   data() {
@@ -150,8 +113,8 @@ export default {
       form: {
         id: null,
         level: levelItems[0],
-        startingAt: today,
-        endingAt: nextMonth,
+        startingAt: null,
+        endingAt: null,
         title: null,
         body: null,
         account: null,
@@ -165,8 +128,8 @@ export default {
     open(data) {
       this.form.id = null;
       this.form.level = levelItems[0];
-      this.form.startingAt = today;
-      this.form.endingAt = nextMonth;
+      this.form.startingAt = moment().format(dtf);
+      this.form.endingAt = moment().add(1, 'M').format(dtf);
       this.form.title = null;
       this.form.body = null;
       if (data) {
@@ -196,9 +159,11 @@ export default {
       this.rules = {
         startingAt: [
           v => !!v || "Required",
+          v => moment(v, dtf).isValid() || "Must be a valid date",
         ],
         endingAt: [
           v => !!v || "Required",
+          v => moment(v, dtf).isValid() || "Must be a valid date",
         ],
         title: [
           v => !!v || "Required",
