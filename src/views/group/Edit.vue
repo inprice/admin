@@ -37,8 +37,7 @@
               maxlength="10"
               type="number"
               messages="For competitive pricing, please specify a price greater than zero!"
-            >
-            </v-text-field>
+            ></v-text-field>
 
           </v-form>
 
