@@ -47,6 +47,12 @@
                 <v-list-item-title>DELETE</v-list-item-title>
               </v-list-item>
 
+              <v-divider></v-divider>
+
+              <v-list-item link @click="openAlarmDialog">
+                <v-list-item-title>SET ALARM</v-list-item-title>
+              </v-list-item>
+
             </v-list>
           </v-menu>
         </div>
@@ -54,191 +60,175 @@
 
     </v-card-title>
 
-    <v-btn-toggle tile :value="selectedTab">
-      <v-btn @click="selectedTab=0" small>
-        Prices
-      </v-btn>
+    <!-- ------ -->
+    <!-- PRICES -->
+    <!-- ------ -->
+    <div class="d-flex flex-wrap justify-start px-1" @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
 
-      <v-btn @click="selectedTab=1" small>
-        Alarm
-      </v-btn>
-    </v-btn-toggle>
-
-    <v-divider></v-divider>
-
-    <v-tabs v-model="selectedTab">
-      <v-tab-item>
-        <!-- ------ -->
-        <!-- PRICES -->
-        <!-- ------ -->
-        <div class="d-flex flex-wrap justify-start px-1" @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
-
-          <v-card
-            v-if="group.minPrice"
-            tile
-            outlined
-            class="col elevation-1 mr-1 mt-1 py-1"
-            :style="{ 'min-width': findMinWidthForCells }"
-          >
-            <div class="caption text-uppercase font-weight-light">
-              Minimum Price
-            </div>
-            <div class="text-h6">
-              <span v-if="$vuetify.breakpoint.smAndDown">
-                {{ group.minPrice | toPrice }}
-              </span>
-              <span v-else>
-                {{ group.minPrice | toCurrency }}
-              </span>
-            </div>
-            <div class="caption">
-              <span class="font-weight-medium">{{ group.minSeller }}</span> | {{ group.minPlatform }}
-            </div>
-          </v-card>
-
-          <v-card
-            v-if="group.avgPrice"
-            tile
-            outlined
-            class="col elevation-1 mr-1 mt-1 py-1"
-            :style="{ 'min-width': findMinWidthForCells }"
-          >
-            <div class="caption text-uppercase font-weight-light">
-              Average Price
-            </div>
-            <div class="text-h6">
-              <span v-if="$vuetify.breakpoint.smAndDown">
-                {{ group.avgPrice | toPrice }}
-              </span>
-              <span v-else>
-                {{ group.avgPrice | toCurrency }}
-              </span>
-            </div>
-            <div>
-              <span class="font-weight-medium">{{ group.actives }}</span> <span class="caption">active links</span>
-            </div>
-          </v-card>
-
-          <v-card
-            v-if="group.maxPrice"
-            tile
-            outlined
-            class="col elevation-1 mr-1 mt-1 py-1"
-            :style="{ 'min-width': findMinWidthForCells }"
-          >
-            <div class="caption text-uppercase font-weight-light">
-              Maximum Price
-            </div>
-            <div class="text-h6">
-              <span v-if="$vuetify.breakpoint.smAndDown">
-                {{ group.maxPrice | toPrice }}
-              </span>
-              <span v-else>
-                {{ group.maxPrice | toCurrency }}
-              </span>
-            </div>
-            <div class="caption">
-              <span class="font-weight-medium">{{ group.maxSeller }}</span> | {{ group.maxPlatform }}
-            </div>
-          </v-card>
-
-          <v-card
-            v-if="!group.price && group.total"
-            tile
-            outlined
-            class="col elevation-1 mr-1 mt-1 py-1"
-            :style="{ 'min-width': findMinWidthForCells }"
-          >
-            <div class="caption text-uppercase font-weight-light">
-              Total
-            </div>
-            <div class="text-h6">
-              <span v-if="$vuetify.breakpoint.smAndDown">
-                {{ group.total | toPrice }}
-              </span>
-              <span v-else>
-                {{ group.total | toCurrency }}
-              </span>
-            </div>
-            <div>
-              <span class="font-weight-medium">{{ group.linkCount }}</span> <span class="caption">total links</span>
-            </div>
-          </v-card>
-
-          <v-card
-            v-if="group.price"
-            tile
-            outlined
-            class="col elevation-1 mr-1 mt-1 py-1"
-            :style="{ 'min-width': findMinWidthForCells }"
-          >
-            <div class="caption text-uppercase font-weight-light">
-              Your Price
-            </div>
-            <div class="text-h6">
-              <span v-if="$vuetify.breakpoint.smAndDown">
-                {{ group.price | toPrice }}
-              </span>
-              <span v-else>
-                {{ group.price | toCurrency }}
-              </span>
-            </div>
-
-            <span :class="findLevelColor(group.level) +'--text caption font-weight-medium'">
-              <v-icon small color="cyan">mdi-star</v-icon>
-              {{ group.level }}
-              <v-icon small color="cyan">mdi-star</v-icon>
-            </span>
-          </v-card>
-
-          <v-card
-            v-if="!group.minPrice"
-            tile
-            outlined
-            class="col elevation-1 mr-1 mt-1 py-1"
-            :style="{ 'min-width': findMinWidthForCells }"
-          >
-            <div class="caption text-uppercase font-weight-light">
-              Links
-            </div>
-            <div class="d-flex">
-              <div class="mr-2">
-                <span v-if="group.actives" class="font-weight-medium">{{ group.actives }}</span>
-                <span v-else class="font-weight-medium">no</span>
-                <span class="caption ml-1">active links,</span>
-              </div>
-              <div>
-                <span v-if="group.waitings" class="font-weight-medium">{{ group.waitings }}</span>
-                <span v-else class="font-weight-medium">no</span>
-                <span class="caption ml-1">waiting links</span>
-              </div>
-            </div>
-            <div class="d-flex">
-              <div class="mr-2">
-                <span v-if="group.tryings" class="font-weight-medium">{{ group.tryings }}</span>
-                <span v-else class="font-weight-medium">no</span>
-                <span class="caption ml-1">trying links,</span>
-              </div>
-              <div>
-                <span v-if="group.problems" class="font-weight-medium">{{ group.problems }}</span>
-                <span v-else class="font-weight-medium">no</span>
-                <span class="caption ml-1">problem links</span>
-              </div>
-            </div>
-          </v-card>
-
+      <v-card
+        v-if="group.minPrice"
+        tile
+        outlined
+        class="col elevation-1 mr-1 mt-1 py-1"
+        :style="{ 'min-width': findMinWidthForCells }"
+      >
+        <div class="caption text-uppercase font-weight-light">
+          Minimum Price
         </div>
-      </v-tab-item>
+        <div class="text-h6">
+          <span v-if="$vuetify.breakpoint.smAndDown">
+            {{ group.minPrice | toPrice }}
+          </span>
+          <span v-else>
+            {{ group.minPrice | toCurrency }}
+          </span>
+        </div>
+        <div class="caption">
+          <span class="font-weight-medium">{{ group.minSeller }}</span> | {{ group.minPlatform }}
+        </div>
+      </v-card>
 
-      <v-tab-item>
-        <alarm-settings :id="group.id" subject="group" @saved="alarmSaved" />
-      </v-tab-item>
+      <v-card
+        v-if="group.avgPrice"
+        tile
+        outlined
+        class="col elevation-1 mr-1 mt-1 py-1"
+        :style="{ 'min-width': findMinWidthForCells }"
+      >
+        <div class="caption text-uppercase font-weight-light">
+          Average Price
+        </div>
+        <div class="text-h6">
+          <span v-if="$vuetify.breakpoint.smAndDown">
+            {{ group.avgPrice | toPrice }}
+          </span>
+          <span v-else>
+            {{ group.avgPrice | toCurrency }}
+          </span>
+        </div>
+        <div>
+          <span class="font-weight-medium">{{ group.actives }}</span> <span class="caption">active links</span>
+        </div>
+      </v-card>
 
-    </v-tabs>
+      <v-card
+        v-if="group.maxPrice"
+        tile
+        outlined
+        class="col elevation-1 mr-1 mt-1 py-1"
+        :style="{ 'min-width': findMinWidthForCells }"
+      >
+        <div class="caption text-uppercase font-weight-light">
+          Maximum Price
+        </div>
+        <div class="text-h6">
+          <span v-if="$vuetify.breakpoint.smAndDown">
+            {{ group.maxPrice | toPrice }}
+          </span>
+          <span v-else>
+            {{ group.maxPrice | toCurrency }}
+          </span>
+        </div>
+        <div class="caption">
+          <span class="font-weight-medium">{{ group.maxSeller }}</span> | {{ group.maxPlatform }}
+        </div>
+      </v-card>
+
+      <v-card
+        v-if="!group.price && group.total"
+        tile
+        outlined
+        class="col elevation-1 mr-1 mt-1 py-1"
+        :style="{ 'min-width': findMinWidthForCells }"
+      >
+        <div class="caption text-uppercase font-weight-light">
+          Total
+        </div>
+        <div class="text-h6">
+          <span v-if="$vuetify.breakpoint.smAndDown">
+            {{ group.total | toPrice }}
+          </span>
+          <span v-else>
+            {{ group.total | toCurrency }}
+          </span>
+        </div>
+        <div>
+          <span class="font-weight-medium">{{ group.linkCount }}</span> <span class="caption">total links</span>
+        </div>
+      </v-card>
+
+      <v-card
+        v-if="group.price"
+        tile
+        outlined
+        class="col elevation-1 mr-1 mt-1 py-1"
+        :style="{ 'min-width': findMinWidthForCells }"
+      >
+        <div class="caption text-uppercase font-weight-light">
+          Your Price
+        </div>
+        <div class="text-h6">
+          <span v-if="$vuetify.breakpoint.smAndDown">
+            {{ group.price | toPrice }}
+          </span>
+          <span v-else>
+            {{ group.price | toCurrency }}
+          </span>
+        </div>
+
+        <span :class="findLevelColor(group.level) +'--text caption font-weight-medium'">
+          <v-icon small color="cyan">mdi-star</v-icon>
+          {{ group.level }}
+          <v-icon small color="cyan">mdi-star</v-icon>
+        </span>
+      </v-card>
+
+      <v-card
+        v-if="!group.minPrice"
+        tile
+        outlined
+        class="col elevation-1 mr-1 mt-1 py-1"
+        :style="{ 'min-width': findMinWidthForCells }"
+      >
+        <div class="caption text-uppercase font-weight-light">
+          Links
+        </div>
+        <div class="d-flex">
+          <div class="mr-2">
+            <span v-if="group.actives" class="font-weight-medium">{{ group.actives }}</span>
+            <span v-else class="font-weight-medium">no</span>
+            <span class="caption ml-1">active links,</span>
+          </div>
+          <div>
+            <span v-if="group.waitings" class="font-weight-medium">{{ group.waitings }}</span>
+            <span v-else class="font-weight-medium">no</span>
+            <span class="caption ml-1">waiting links</span>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="mr-2">
+            <span v-if="group.tryings" class="font-weight-medium">{{ group.tryings }}</span>
+            <span v-else class="font-weight-medium">no</span>
+            <span class="caption ml-1">trying links,</span>
+          </div>
+          <div>
+            <span v-if="group.problems" class="font-weight-medium">{{ group.problems }}</span>
+            <span v-else class="font-weight-medium">no</span>
+            <span class="caption ml-1">problem links</span>
+          </div>
+        </div>
+      </v-card>
+
+    </div>
 
     <edit
       ref="editDialog"
       @saved="save"
+    />
+
+    <alarm-dialog
+      ref="alarmDialog"
+      @saved="alarmSaved"
     />
 
     <add-link
@@ -268,11 +258,6 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      selectedTab: 0,
-    }
-  },
   methods: {
     openAddLinkDialog() {
       this.$refs.addLinkDialog.open();
@@ -280,6 +265,22 @@ export default {
     openEditDialog() {
       let cloned = JSON.parse(JSON.stringify(this.group));
       this.$refs.editDialog.open(cloned);
+    },
+    openAlarmDialog() {
+      let cloned = {};
+      if (this.group.alarm) {
+        cloned = JSON.parse(JSON.stringify(this.group.alarm));
+      } else {
+        cloned = {
+          subject: 'STATUS',
+          when: 'CHANGED',
+          priceLowerLimit: 0,
+          priceUpperLimit: 0,
+        };
+      }
+      cloned.forWhich = 'group';
+      cloned.name = this.group.name;
+      this.$refs.alarmDialog.open(cloned);
     },
     remove() {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.group.name).then(async (confirm) => {
@@ -291,7 +292,9 @@ export default {
     },
     async save(form) {
       const result = await GroupService.save(form);
-      if (result && result.status) this.$emit('saved', result.data);
+      if (result && result.status) {
+        this.$emit('saved', result.data);
+      }
     },
     async addLinks(links) {
       const result = await GroupService.insertLinks(this.group.id, this.fromSearchPage, links);
@@ -309,7 +312,7 @@ export default {
   components: {
     Edit: () => import('./Edit'),
     AddLink: () => import('./AddLink'),
-    AlarmSettings: () => import('@/component/special/AlarmSettings.vue'),
+    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
   },
 };
