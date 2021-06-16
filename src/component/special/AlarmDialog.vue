@@ -15,6 +15,8 @@
           <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
+        <v-divider></v-divider>
+
         <v-stepper
           vertical
           v-model="stepNo"
@@ -24,8 +26,8 @@
             step="1"
             color="success"
           >
-            Subject
-            <small class="caption">For which subject: <b>{{ form.subject }}</b></small>
+            <div>Subject</div>
+            <div><small class="caption">For which subject: <b>{{ form.subject }}</b></small></div>
           </v-stepper-step>
           <v-stepper-content step="1">
             <v-radio-group
@@ -36,7 +38,7 @@
               <v-radio
                 v-for="(sub, ix) in subjects[forWhich]" :key="ix"
                 class="text-capitalize"
-                :label="sub.toLowerCase().replaceAll('_', ' ')"
+                :label="sub.toLowerCase()"
                 :value="sub"
               ></v-radio>
             </v-radio-group>
@@ -59,7 +61,7 @@
             class="font-weight-medium"
           >
             When
-            <small class="caption">When do you want to be informed: <b>{{ form.when.replaceAll('_', ' ') }}</b></small>
+            <small class="caption text-capitalize">{{ form.subject.toLowerCase() }} is <b>{{ form.when.replaceAll('_', ' ') }}</b></small>
           </v-stepper-step>
           <v-stepper-content step="2">
             <v-radio-group
@@ -155,6 +157,8 @@
           </v-stepper-content>
         </v-stepper>
 
+        <v-divider></v-divider>
+
         <v-card-actions class="py-4 justify-space-between">
           <v-btn
             text
@@ -177,7 +181,7 @@
               text
               @click="save"
               color="success"
-              :disabled="$store.get('session/isNotEditor') || stepNo != 3"
+              :disabled="$store.get('session/isNotEditor') || !isFormValid()"
             >
               {{ form.id ? 'Update' : 'Create' }}
             </v-btn>
@@ -241,30 +245,31 @@ export default {
       if (data) {
         this.form = data;
         this.name = data.name;
+        this.stepNo = 3;
       }
       this.$nextTick(() => this.formatPrices());
     },
     save() {
-      this.hint.certainStatus = null;
-      this.hint.priceLowerLimit = null;
-      this.hint.priceUpperLimit = null;
-      if (this.form.subject == 'STATUS' && this.form.when != 'CHANGED' && !this.form.certainStatus) {
-        this.hint.certainStatus = 'Required';
-        return false;
-      }
-      if (this.form.subject != 'STATUS' && this.form.when == 'OUT_OF_LIMITS') {
-        if (parseFloat(this.form.priceLowerLimit) < 1) {
-          this.hint.priceLowerLimit = 'Required';
-          if (parseFloat(this.form.priceUpperLimit) > 0) return false;
+      if (this.isFormValid) {
+        this.$emit('saved', this.form);
+        this.close();
+      } else {
+        this.hint.certainStatus = null;
+        this.hint.priceLowerLimit = null;
+        this.hint.priceUpperLimit = null;
+        if (this.form.subject == 'STATUS' && this.form.when != 'CHANGED' && !this.form.certainStatus) {
+          this.hint.certainStatus = 'Required';
+        } else {
+          if (this.form.subject != 'STATUS' && this.form.when == 'OUT_OF_LIMITS') {
+            if (parseFloat(this.form.priceLowerLimit) < 1) {
+              if (parseFloat(this.form.priceUpperLimit) < 1) this.hint.priceLowerLimit = 'Required';
+            }
+            if (parseFloat(this.form.priceUpperLimit) < 1) {
+              if (parseFloat(this.form.priceLowerLimit) < 1) this.hint.priceUpperLimit = 'Required';
+            }
+          }
         }
-        if (parseFloat(this.form.priceUpperLimit) < 1) {
-          this.hint.priceUpperLimit = 'Required';
-          return false;
-        }
       }
-
-      this.$emit('saved', this.form);
-      this.close();
     },
     setOff() {
       this.$emit('setOff', this.form.id);
@@ -283,6 +288,21 @@ export default {
     },
     isConditionsBlockShowed() {
       return (this.form.subject == 'STATUS' && this.form.when != 'CHANGED') || (this.form.subject != 'STATUS' && this.form.when == 'OUT_OF_LIMITS');
+    },
+    isFormValid() {
+      if (this.form.subject == 'STATUS' && this.form.when != 'CHANGED' && !this.form.certainStatus) {
+        return false;
+      } else {
+        if (this.form.subject != 'STATUS' && this.form.when == 'OUT_OF_LIMITS') {
+          if (parseFloat(this.form.priceLowerLimit) < 1) {
+            if (parseFloat(this.form.priceUpperLimit) < 1) return false;
+          }
+          if (parseFloat(this.form.priceUpperLimit) < 1) {
+            if (parseFloat(this.form.priceLowerLimit) < 1) return false;
+          }
+        }
+      }
+      return true;
     }
   },
   components: {
@@ -292,6 +312,9 @@ export default {
 </script>
 
 <style scoped>
+  .v-stepper {
+    box-shadow: none;
+  }
   .v-stepper--vertical {
     padding-bottom: 0px;
   }

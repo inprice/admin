@@ -228,7 +228,8 @@
 
     <alarm-dialog
       ref="alarmDialog"
-      @saved="alarmSaved"
+      @setOff="setAlarmOff"
+      @saved="saveAlarm"
     />
 
     <add-link
@@ -305,9 +306,12 @@ export default {
         this.$router.push({ name: 'group', params: {id: this.group.id} });
       }
     },
-    alarmSaved(form) {
+    saveAlarm(form) {
       console.log('Alarm saved', form);
-    }
+    },
+    setAlarmOff(id) {
+      console.log('Alarm set off', id);
+    },
   },
   components: {
     Edit: () => import('./Edit'),
