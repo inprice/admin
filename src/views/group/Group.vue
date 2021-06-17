@@ -11,8 +11,6 @@
         <span v-if="group.price"> {{ group.price | toCurrency }}</span>
 
         <div>
-          <v-icon class="mr-2" v-if="group.alarmId">mdi-alarm</v-icon>
-
           <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -221,6 +219,13 @@
 
     </div>
 
+    <alarm-note
+      :alarm="group.alarm"
+      v-if="group.alarm"
+      class="pl-2 pt-3"
+      @clicked="openAlarmDialog"
+    ></alarm-note>
+
     <edit
       ref="editDialog"
       @saved="save"
@@ -246,6 +251,7 @@
 
 <script>
 import GroupService from '@/service/group';
+import AlarmService from '@/service/alarm';
 
 export default {
   props: ['fromSearchPage', 'group'],
@@ -274,7 +280,7 @@ export default {
       } else {
         cloned = {
           subject: 'STATUS',
-          when: 'CHANGED',
+          subjectWhen: 'CHANGED',
           priceLowerLimit: 0,
           priceUpperLimit: 0,
         };
@@ -306,18 +312,29 @@ export default {
         this.$router.push({ name: 'group', params: {id: this.group.id} });
       }
     },
-    saveAlarm(form) {
-      console.log('Alarm saved', form);
+    async saveAlarm(form) {
+      form.forWhich = 'group';
+      form.groupId = this.group.id;
+      const result = await AlarmService.save(form);
+      if (result && result.status) {
+        this.group.alarm = result.data;
+        this.group.alarmId = result.data.id;
+      }
     },
-    setAlarmOff(id) {
-      console.log('Alarm set off', id);
+    async setAlarmOff(id) {
+      const result = await AlarmService.remove(id);
+      if (result && result.status) {
+        this.group.alarmId = null;
+        this.group.alarm = null;
+      }
     },
   },
   components: {
     Edit: () => import('./Edit'),
     AddLink: () => import('./AddLink'),
+    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
     AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
-    Confirm: () => import('@/component/Confirm.vue'),
+    Confirm: () => import('@/component/Confirm.vue')
   },
 };
 </script>

@@ -61,15 +61,15 @@
             class="font-weight-medium"
           >
             When
-            <small class="caption text-capitalize">{{ form.subject.toLowerCase() }} is <b>{{ form.when.replaceAll('_', ' ') }}</b></small>
+            <small class="caption text-capitalize">{{ form.subject.toLowerCase() }} is <b>{{ form.subjectWhen.replaceAll('_', ' ') }}</b></small>
           </v-stepper-step>
           <v-stepper-content step="2">
             <v-radio-group
               dense
-              v-model="form.when"
+              v-model="form.subjectWhen"
             >
               <v-radio
-                v-for="(whn, ix) in whenItems" :key="ix"
+                v-for="(whn, ix) in subjectWhens" :key="ix"
                 class="text-capitalize"
                 :label="whn.toLowerCase().replaceAll('_', ' ')"
                 :value="whn"
@@ -105,44 +105,50 @@
           </v-stepper-step>
           <v-stepper-content step="3">
 
-            <div
-              class="pt-2 pr-4"
-              v-if="isConditionsBlockShowed()"
-            >
-              <v-text-field
-                dense
-                outlined
-                label="Certain Status"
-                v-model="form.certainStatus"
-                :messages="hint.certainStatus"
-                :error="hint.certainStatus != null"
-                v-if="form.subject == 'STATUS' && form.when != 'CHANGED'"
-              ></v-text-field>
+            <div v-if="isConditionsBlockShowed()">
 
-              <v-text-field
+              <v-radio-group
                 dense
-                outlined
-                label="Lower Limit"
-                v-model="form.priceLowerLimit"
-                :messages="hint.priceLowerLimit"
-                :error="hint.priceLowerLimit != null"
-                @blur="formatPrices"
-                maxlength="10"
-                type="number"
-                v-if="form.subject != 'STATUS' && form.when == 'OUT_OF_LIMITS'"
-              ></v-text-field>
-              <v-text-field
-                dense
-                outlined
-                label="Upper Limit"
-                v-model="form.priceUpperLimit"
-                :messages="hint.priceUpperLimit"
-                :error="hint.priceUpperLimit != null"
-                @blur="formatPrices"
-                maxlength="10"
-                type="number"
-                v-if="form.subject != 'STATUS' && form.when == 'OUT_OF_LIMITS'"
-              ></v-text-field>
+                v-model="form.certainStatus"
+                v-if="form.subject == 'STATUS' && form.subjectWhen != 'CHANGED'"
+              >
+                <v-radio
+                  v-for="(sta, ix) in statuses" :key="ix"
+                  class="text-capitalize"
+                  :label="sta.toLowerCase()"
+                  :value="sta"
+                ></v-radio>
+              </v-radio-group>
+
+              <div
+                class="d-flex justify-space-between mt-3 mr-3"
+                v-if="form.subject != 'STATUS' && form.subjectWhen == 'OUT_OF_LIMITS'"
+              >
+                <v-text-field
+                  dense
+                  outlined
+                  label="Lower Limit"
+                  v-model="form.priceLowerLimit"
+                  :messages="hint.priceLowerLimit"
+                  :error="hint.priceLowerLimit != null"
+                  @blur="formatPrices"
+                  maxlength="10"
+                  type="number"
+                  class="px-2"
+                ></v-text-field>
+                <v-text-field
+                  dense
+                  outlined
+                  label="Upper Limit"
+                  v-model="form.priceUpperLimit"
+                  :messages="hint.priceUpperLimit"
+                  :error="hint.priceUpperLimit != null"
+                  @blur="formatPrices"
+                  maxlength="10"
+                  type="number"
+                  class="px-2"
+                ></v-text-field>
+              </div>
             </div>
 
             <block-message v-else dense class="mb-3 mr-4" :message="'No condition applicable!'" />
@@ -203,6 +209,11 @@ const whens = {
   price:  ['INCREASED', 'DECREASED', 'OUT_OF_LIMITS']
 };
 
+const statuses = {
+  link:  ['ACTIVE', 'TRYING', 'WAITING', 'PROBLEM'],
+  group: ['LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST', 'NA']
+};
+
 export default {
   computed: {
     findDialogWidth() {
@@ -221,21 +232,21 @@ export default {
       form: {
         id: null,
         subject: 'STATUS',
-        when: 'CHANGED',
+        subjectWhen: 'CHANGED',
+        status: 'ACTIVE',
         certainStatus: null,
         priceLowerLimit: 0,
         priceUpperLimit: 0,
       },
       hint: {
-        certainStatus: null,
         priceLowerLimit: null,
         priceUpperLimit: null,
       },
       name: null,
       forWhich: 'link',
       subjects,
-      whens,
-      whenItems: whens.status,
+      statuses: null,
+      subjectWhens: whens.status,
       stepNo: 1,
     };
   },
@@ -245,7 +256,9 @@ export default {
       if (data) {
         this.form = data;
         this.name = data.name;
-        this.stepNo = 3;
+        this.forWhich = data.forWhich;
+        this.statuses = statuses[data.forWhich];
+        this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
       }
       this.$nextTick(() => this.formatPrices());
     },
@@ -254,19 +267,14 @@ export default {
         this.$emit('saved', this.form);
         this.close();
       } else {
-        this.hint.certainStatus = null;
         this.hint.priceLowerLimit = null;
         this.hint.priceUpperLimit = null;
-        if (this.form.subject == 'STATUS' && this.form.when != 'CHANGED' && !this.form.certainStatus) {
-          this.hint.certainStatus = 'Required';
-        } else {
-          if (this.form.subject != 'STATUS' && this.form.when == 'OUT_OF_LIMITS') {
-            if (parseFloat(this.form.priceLowerLimit) < 1) {
-              if (parseFloat(this.form.priceUpperLimit) < 1) this.hint.priceLowerLimit = 'Required';
-            }
-            if (parseFloat(this.form.priceUpperLimit) < 1) {
-              if (parseFloat(this.form.priceLowerLimit) < 1) this.hint.priceUpperLimit = 'Required';
-            }
+        if (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
+          if (parseFloat(this.form.priceLowerLimit) < 1) {
+            if (parseFloat(this.form.priceUpperLimit) < 1) this.hint.priceLowerLimit = 'Required';
+          }
+          if (parseFloat(this.form.priceUpperLimit) < 1) {
+            if (parseFloat(this.form.priceLowerLimit) < 1) this.hint.priceUpperLimit = 'Required';
           }
         }
       }
@@ -279,21 +287,21 @@ export default {
       this.opened = false;
     },
     onSubjectChanged() {
-      this.whenItems = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
-      this.form.when = this.whenItems[0];
+      this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
+      this.form.subjectWhen = this.subjectWhens[0];
     },
     formatPrices() {
       this.form.priceLowerLimit = parseFloat(('0' + this.form.priceLowerLimit).replace(/[^\d.]/g, '')).toFixed(2);
       this.form.priceUpperLimit = parseFloat(('0' + this.form.priceUpperLimit).replace(/[^\d.]/g, '')).toFixed(2);
     },
     isConditionsBlockShowed() {
-      return (this.form.subject == 'STATUS' && this.form.when != 'CHANGED') || (this.form.subject != 'STATUS' && this.form.when == 'OUT_OF_LIMITS');
+      return (this.form.subject == 'STATUS' && this.form.subjectWhen != 'CHANGED') || (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS');
     },
     isFormValid() {
-      if (this.form.subject == 'STATUS' && this.form.when != 'CHANGED' && !this.form.certainStatus) {
+      if (this.form.subject == 'STATUS' && this.form.subjectWhen != 'CHANGED' && !this.form.certainStatus) {
         return false;
       } else {
-        if (this.form.subject != 'STATUS' && this.form.when == 'OUT_OF_LIMITS') {
+        if (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
           if (parseFloat(this.form.priceLowerLimit) < 1) {
             if (parseFloat(this.form.priceUpperLimit) < 1) return false;
           }
@@ -327,5 +335,10 @@ export default {
   }
   .v-stepper__wrapper > .v-input--selection-controls {
     margin-top: 5px;
+  }
+  .v-input--selection-controls {
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 10px;
   }
 </style>
