@@ -74,6 +74,7 @@
               :showingId="showingId"
               :showDetails="showDetails"
               :isChecked="row.selected == true"
+              :key="linkRefresherKey"
               @rowSelected="changeRowSelection(data, index)"
               @moveOne="moveOne"
               @deleteOne="deleteOne"
@@ -134,6 +135,7 @@ export default {
         TRYING: { links: [], selected: 0 },
         WAITING: { links: [], selected: 0 },
       },
+      linkRefresherKey: 0
     }
   },
   methods: {
@@ -287,11 +289,12 @@ export default {
       this.$refs.alarmDialog.open(cloned);
     },
     async saveAlarm(selected) {
-      console.log('-*-*-', selected);
       const result = await AlarmService.save(selected);
       if (result && result.status) {
         const link = this.groups[selected.groupName].links[selected.index];
         link.alarm = result.data;
+        link.alarmId = result.data.id;
+        this.linkRefresherKey++;
       }
     },
     setAlarmOff(selected) {
@@ -302,6 +305,8 @@ export default {
             if (res && res.status) {
               const link = self.groups[selected.groupName].links[selected.index];
               link.alarm = null;
+              link.alarmId = null;
+              this.linkRefresherKey++;
             }
           });
         }
@@ -317,9 +322,9 @@ export default {
     }
   },
   components: {
+    LinkRow: () => import('@/views/link/components/Row.vue'),
     GroupSelect: () => import('./Select.vue'),
     AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
-    LinkRow: () => import('@/views/link/components/Row.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }

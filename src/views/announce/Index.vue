@@ -244,7 +244,7 @@
         </div>
 
         <div class="row-wrapper">
-          <v-row class="px-2 mx-0" @click="toggleDetailPanel(row.id)">
+          <v-row class="pa-1 mx-0" @click="toggleDetailPanel(row.id)">
             <v-col
               cols="2"
               class="font-weight-medium hidden-sm-and-down"

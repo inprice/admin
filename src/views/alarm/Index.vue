@@ -165,30 +165,35 @@
         class="body-2"
         v-for="(row, index) in searchResult" :key="row.id"
       >
-        <div  v-if="index==0">
-            <v-row class="pa-1 mx-0 font-weight-medium">
-              <v-col>
-                Name
-              </v-col>
-              <v-col>
-                When
-              </v-col>
-              <v-btn
-                small icon
-                class="my-auto"
-                disabled
-              ></v-btn>
-            </v-row>
+        <div v-if="index==0">
+          <v-row class="pa-1 mx-0 font-weight-medium">
+            <v-col cols="1" class="caption text-right">
+            </v-col>
+            <v-col cols="4">
+              When
+            </v-col>
+            <v-col>
+              For
+            </v-col>
+            <v-btn
+              small icon
+              class="my-auto"
+              disabled
+            ></v-btn>
+          </v-row>
           <v-divider></v-divider>
         </div>
 
         <div class="row-wrapper">
-          <v-row class="px-2 mx-0" @click="openAlarmDialog(row)">
-            <v-col>
-              {{ row.name }}
+          <v-row class="pa-1 mx-0" @click="openAlarmDialog(row)">
+            <v-col cols="1" class="caption teal--text text-right">
+              {{ row.topic }}
+            </v-col>
+            <v-col cols="4">
+              {{ row.when }} <span v-html="whenClause(row)"></span>
             </v-col>
             <v-col>
-              {{ row.when }} <span v-html="whenClause(row)"></span>
+              {{ row.name }}
             </v-col>
 
             <v-menu offset-y bottom left>
@@ -208,7 +213,7 @@
                 <v-list-item @click="openAlarmDialog(row)">
                   <v-list-item-title>EDIT</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="remove(row.id)">
+                <v-list-item @click="setAlarmOff(row)">
                   <v-list-item-title>DELETE</v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -232,7 +237,7 @@
 
     <alarm-dialog
       ref="alarmDialog"
-      @setOff="remove"
+      @setOff="setAlarmOff"
       @saved="saveAlarm"
     />
 
@@ -282,16 +287,17 @@ export default {
   },
   methods: {
     openAlarmDialog(row) {
-      this.$refs.alarmDialog.open(row);
+      const cloned = JSON.parse(JSON.stringify(row));
+      this.$refs.alarmDialog.open(cloned);
     },
     async saveAlarm(form) {
       const result = await AlarmService.save(form);
       if (result && result.status) this.search();
     },
-    remove(id) {
+    setAlarmOff(form) {
       this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
         if (confirm == true) {
-          AlarmService.remove(id).then((res) => {
+          AlarmService.remove(form.id).then((res) => {
             if (res && res.status) this.search();
           });
         }
@@ -349,9 +355,9 @@ export default {
           break;
         }
         case 'OUT_OF_LIMITS': {
-          if (row.priceLowerLimit) {
+          if (row.priceLowerLimit > 0) {
             condition = `<b style="color:green">${row.subject}</b> is less than <b style="color:red">${row.priceLowerLimit}</b>`;
-            if (row.priceLowerLimit) {
+            if (row.priceUpperLimit > 0) {
               condition += ` or greater than <b style="color:blue">${row.priceUpperLimit}</b>`;
             }
           } else {

@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <v-btn-toggle tile :value="selectedTab">
       <v-btn v-for="(name, index) in tabs" @click="selectedTab=index" :key="index" small>{{ name }}</v-btn>
     </v-btn-toggle>
@@ -146,42 +147,16 @@
 
       </v-tab-item>
 
-      <!-- ALARM -->
-      <v-tab-item>
-
-        <block-message v-if="!alarm">
-          No alarm set for this link!
-          <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
-            <v-btn 
-              small
-              :disabled="$store.get('session/isNotEditor')"
-              color="success"
-              class="my-auto"
-              @click="$emit('openAlarmDialog')"
-            >
-              Set An Alarm
-            </v-btn>
-          </div>
-        </block-message>
-
-        <block-message v-else>
-          <alarm-note :alarm="alarm"></alarm-note>
-          <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
-            <v-btn 
-              small
-              :disabled="$store.get('session/isNotEditor')"
-              color="success"
-              class="my-auto"
-              @click="$emit('openAlarmDialog')"
-            >
-              Modify Alarm
-            </v-btn>
-          </div>
-        </block-message>
-
-      </v-tab-item>
-
     </v-tabs>
+
+    <v-divider class="my-2"></v-divider>
+
+    <alarm-note
+      :hasIcon="false"
+      :alarm="alarm"
+      @clicked="$emit('openAlarmDialog')"
+    >
+    </alarm-note>
   </div>
 </template>
 
@@ -190,7 +165,7 @@ export default {
   props: ['data', 'alarm'],
   data() {
     return {
-      tabs: ['Prices', 'History', 'Specs', 'Alarm'],
+      tabs: ['Prices', 'History', 'Specs'],
       selectedTab: 0,
     }
   },

@@ -1,7 +1,8 @@
 <template>
   <div class="body-2 d-flex" style="cursor: pointer" @click="$emit('clicked')">
     <div v-if="alarm">
-      <v-icon class="mr-1">mdi-alarm</v-icon>
+      <v-icon class="mr-1">mdi-{{ hasIcon ? 'alarm' : 'shield-alert-outline' }}</v-icon>
+      <span v-if="!hasIcon">Alarm </span>
       will be triggered when
       <span class="text-capitalize green--text"><b>{{ alarm.subject.toLowerCase()}}</b></span> 
       <span v-html="findLastPart()"></span>
@@ -15,7 +16,15 @@
 
 <script>
 export default {
-  props: ['alarm'],
+  props: {
+    alarm: {
+      type: Object,
+    },
+    hasIcon: {
+      type: Boolean,
+      default: true,
+    },
+  },
   methods: {
     findLastPart() {
       if (this.alarm.subjectWhen == 'EQUAL' || this.alarm.subjectWhen == 'NOT_EQUAL') {

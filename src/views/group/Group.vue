@@ -326,11 +326,11 @@ export default {
         this.alarmNoteRefresherKey++;
       }
     },
-    setAlarmOff(id) {
+    setAlarmOff(form) {
       this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
         if (confirm == true) {
           const self = this;
-          AlarmService.remove(id).then((res) => {
+          AlarmService.remove(form.id).then((res) => {
             if (res && res.status) {
               self.group.alarmId = null;
               self.group.alarm = null;

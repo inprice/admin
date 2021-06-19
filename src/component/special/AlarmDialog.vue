@@ -10,7 +10,11 @@
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
           <div>
-            <div>{{ form.id ? 'Edit' : 'New' }} Alarm</div>
+            <div>
+              {{ form.id ? 'Edit' : 'New' }} 
+              <span class="text-capitalize">{{ topic.toLowerCase() }}</span>
+              Alarm
+            </div>
             <div class="caption">For {{ name }}</div>
           </div>
           <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
@@ -280,7 +284,7 @@ export default {
       }
     },
     setOff() {
-      this.$emit('setOff', this.form.id);
+      this.$emit('setOff', this.form);
       this.close();
     },
     close() {
