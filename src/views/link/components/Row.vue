@@ -107,6 +107,12 @@
               <v-list-item-title>MOVE</v-list-item-title>
             </v-list-item>
 
+            <v-divider></v-divider>
+
+            <v-list-item link @click="$emit('setAlarm', row)" :disabled="$store.get('session/isNotEditor')">
+              <v-list-item-title>SET ALARM</v-list-item-title>
+            </v-list-item>
+
           </v-list>
         </v-menu>
       </div>
@@ -150,6 +156,8 @@
     <row-detail
       class="mt-2"
       :data="row.details"
+      :alarm="row.alarm"
+      @openAlarmDialog="$emit('openAlarmDialog')"
       v-if="showingId==row.id && showDetails==true"
     />
 
@@ -158,7 +166,7 @@
 
 <script>
 export default {
-  props: ['linksCount', 'row', 'showingId', 'showDetails', 'isChecked', 'fromSearchPage'],
+  props: ['row', 'linksCount', 'showingId', 'showDetails', 'isChecked', 'fromSearchPage'],
   methods: {
     copyTheLink(url) {
       this.copyToClipboard(url);

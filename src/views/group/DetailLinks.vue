@@ -70,7 +70,6 @@
             </template>
             <link-row
               :row="row"
-              :details="row.details"
               :linksCount="data.links.length"
               :showingId="showingId"
               :showDetails="showDetails"
@@ -79,15 +78,23 @@
               @moveOne="moveOne"
               @deleteOne="deleteOne"
               @toggleDetails="toggleDetails"
+              @openAlarmDialog="openAlarmDialog(row, name, index)"
             />
           </v-card>
         </div>
+
         <block-message 
           v-else dense
           :message="`No ${selectedTabName.toLowerCase()} link.`"
         />
       </v-tab-item>
     </v-tabs>
+
+    <alarm-dialog
+      ref="alarmDialog"
+      @setOff="setAlarmOff"
+      @saved="saveAlarm"
+    ></alarm-dialog>
 
     <confirm ref="confirm"></confirm>
     <group-select ref="groupSelect"></group-select>
@@ -98,6 +105,7 @@
 
 <script>
 import LinkService from '@/service/link';
+import AlarmService from '@/service/alarm';
 
 export default {
   props: ["groupId", "links"],
@@ -258,6 +266,47 @@ export default {
         });
       }
     },
+    openAlarmDialog(link, groupName, index) {
+      let cloned = {};
+      if (link.alarm) {
+        cloned = JSON.parse(JSON.stringify(link.alarm));
+      } else {
+        cloned = {
+          subject: 'STATUS',
+          subjectWhen: 'CHANGED',
+          priceLowerLimit: 0,
+          priceUpperLimit: 0,
+        };
+      }
+      cloned.topic = 'LINK';
+      cloned.linkId = link.id;
+      cloned.index = index;
+      cloned.groupName = groupName;
+      cloned.name = link.name || link.url;
+
+      this.$refs.alarmDialog.open(cloned);
+    },
+    async saveAlarm(selected) {
+      console.log('-*-*-', selected);
+      const result = await AlarmService.save(selected);
+      if (result && result.status) {
+        const link = this.groups[selected.groupName].links[selected.index];
+        link.alarm = result.data;
+      }
+    },
+    setAlarmOff(selected) {
+      this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
+        if (confirm == true) {
+          const self = this;
+          AlarmService.remove(selected.id).then((res) => {
+            if (res && res.status) {
+              const link = self.groups[selected.groupName].links[selected.index];
+              link.alarm = null;
+            }
+          });
+        }
+      });
+    },
   },
   mounted() {
     this.convertLinksToStatusGroup();
@@ -269,6 +318,7 @@ export default {
   },
   components: {
     GroupSelect: () => import('./Select.vue'),
+    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     LinkRow: () => import('@/views/link/components/Row.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),

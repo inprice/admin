@@ -4,8 +4,9 @@
     <v-dialog 
       v-model="opened" 
       :max-width="findDialogWidth"
+      overlay-opacity="0.2"
       @keydown.esc="close"
-      overlay-opacity="0.2">
+    >
       <v-card>
         <div class="d-flex justify-space-between pa-3">
           <div>

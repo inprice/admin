@@ -59,9 +59,11 @@
           @moveOne="moveOne"
           @deleteOne="deleteOne"
           @toggleDetails="toggleDetails"
+          @setAlarm="openAlarmDialog"
         />
       </v-card>
     </div>
+
     <block-message 
       v-else dense
       :message="`No link found.`"

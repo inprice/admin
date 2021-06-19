@@ -4,8 +4,8 @@
     <v-dialog 
       v-model="opened" 
       :max-width="findDialogWidth"
-      @keydown.esc="close"
       overlay-opacity="0.2"
+      @keydown.esc="close"
     >
       <v-card>
 

@@ -146,20 +146,56 @@
 
       </v-tab-item>
 
+      <!-- ALARM -->
+      <v-tab-item>
+
+        <block-message v-if="!alarm">
+          No alarm set for this link!
+          <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+            <v-btn 
+              small
+              :disabled="$store.get('session/isNotEditor')"
+              color="success"
+              class="my-auto"
+              @click="$emit('openAlarmDialog')"
+            >
+              Set An Alarm
+            </v-btn>
+          </div>
+        </block-message>
+
+        <block-message v-else>
+          <alarm-note :alarm="alarm"></alarm-note>
+          <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+            <v-btn 
+              small
+              :disabled="$store.get('session/isNotEditor')"
+              color="success"
+              class="my-auto"
+              @click="$emit('openAlarmDialog')"
+            >
+              Modify Alarm
+            </v-btn>
+          </div>
+        </block-message>
+
+      </v-tab-item>
+
     </v-tabs>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['data'],
+  props: ['data', 'alarm'],
   data() {
     return {
-      tabs: ['Prices', 'History', 'Specs'],
+      tabs: ['Prices', 'History', 'Specs', 'Alarm'],
       selectedTab: 0,
     }
   },
   components: {
+    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 }

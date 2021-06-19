@@ -34,6 +34,7 @@ export default {
     }
 
     const res = await Helper.call('Delete Alarm', { method: 'delete', url: baseURL + '/' + id });
+    if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your alarm has been successfully removed' });
     return res;
   },
 

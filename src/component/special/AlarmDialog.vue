@@ -5,6 +5,7 @@
       v-model="opened" 
       :max-width="findDialogWidth"
       overlay-opacity="0.2"
+      @keydown.esc="opened = false"
     >
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
@@ -36,7 +37,7 @@
               v-model="form.subject"
             >
               <v-radio
-                v-for="(sub, ix) in subjects[forWhich]" :key="ix"
+                v-for="(sub, ix) in subjects[topic]" :key="ix"
                 class="text-capitalize"
                 :label="sub.toLowerCase()"
                 :value="sub"
@@ -66,6 +67,7 @@
           <v-stepper-content step="2">
             <v-radio-group
               dense
+              @change="onWhenChanged"
               v-model="form.subjectWhen"
             >
               <v-radio
@@ -105,23 +107,21 @@
           </v-stepper-step>
           <v-stepper-content step="3">
 
-            <div v-if="isConditionsBlockShowed()">
+            <div v-if="isConditionsBlockShowed()" class="mr-5">
 
-              <v-radio-group
+              <v-select
                 dense
+                outlined
+                hide-details
+                label="Status"
                 v-model="form.certainStatus"
+                :items="statuses"
+                class="my-3"
                 v-if="form.subject == 'STATUS' && form.subjectWhen != 'CHANGED'"
-              >
-                <v-radio
-                  v-for="(sta, ix) in statuses" :key="ix"
-                  class="text-capitalize"
-                  :label="sta.toLowerCase()"
-                  :value="sta"
-                ></v-radio>
-              </v-radio-group>
+              ></v-select>
 
               <div
-                class="d-flex justify-space-between mt-3 mr-3"
+                class="d-flex justify-space-between mt-3"
                 v-if="form.subject != 'STATUS' && form.subjectWhen == 'OUT_OF_LIMITS'"
               >
                 <v-text-field
@@ -200,8 +200,8 @@
 
 <script>
 const subjects = {
-  link:  ['STATUS', 'PRICE'],
-  group: ['STATUS', 'MINIMUM', 'AVERAGE', 'MAXIMUM', 'TOTAL']
+  LINK:  ['STATUS', 'PRICE'],
+  GROUP: ['STATUS', 'MINIMUM', 'AVERAGE', 'MAXIMUM', 'TOTAL']
 };
 
 const whens = {
@@ -210,8 +210,8 @@ const whens = {
 };
 
 const statuses = {
-  link:  ['ACTIVE', 'TRYING', 'WAITING', 'PROBLEM'],
-  group: ['LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST', 'NA']
+  LINK:  ['ACTIVE', 'TRYING', 'WAITING', 'PROBLEM'],
+  GROUP: ['NA', 'LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST']
 };
 
 export default {
@@ -233,8 +233,7 @@ export default {
         id: null,
         subject: 'STATUS',
         subjectWhen: 'CHANGED',
-        status: 'ACTIVE',
-        certainStatus: null,
+        certainStatus: 'ACTIVE',
         priceLowerLimit: 0,
         priceUpperLimit: 0,
       },
@@ -243,7 +242,7 @@ export default {
         priceUpperLimit: null,
       },
       name: null,
-      forWhich: 'link',
+      topic: 'LINK',
       subjects,
       statuses: null,
       subjectWhens: whens.status,
@@ -256,9 +255,10 @@ export default {
       if (data) {
         this.form = data;
         this.name = data.name;
-        this.forWhich = data.forWhich;
-        this.statuses = statuses[data.forWhich];
+        this.topic = data.topic;
+        this.statuses = statuses[data.topic];
         this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
+        this.stepNo = 3;
       }
       this.$nextTick(() => this.formatPrices());
     },
@@ -289,6 +289,11 @@ export default {
     onSubjectChanged() {
       this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
       this.form.subjectWhen = this.subjectWhens[0];
+    },
+    onWhenChanged() {
+      if (this.form.subjectWhen == 'EQUAL' || this.form.subjectWhen == 'NOT_EQUAL') {
+        this.form.certainStatus = this.statuses[0];
+      }
     },
     formatPrices() {
       this.form.priceLowerLimit = parseFloat(('0' + this.form.priceLowerLimit).replace(/[^\d.]/g, '')).toFixed(2);

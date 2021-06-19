@@ -221,20 +221,20 @@
 
     <alarm-note
       :alarm="group.alarm"
-      v-if="group.alarm"
       class="pl-2 pt-3"
       @clicked="openAlarmDialog"
+      :key="alarmNoteRefresherKey"
     ></alarm-note>
-
-    <edit
-      ref="editDialog"
-      @saved="save"
-    />
 
     <alarm-dialog
       ref="alarmDialog"
       @setOff="setAlarmOff"
       @saved="saveAlarm"
+    ></alarm-dialog>
+
+    <edit
+      ref="editDialog"
+      @saved="save"
     />
 
     <add-link
@@ -265,6 +265,11 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      alarmNoteRefresherKey: 0,
+    };
+  },
   methods: {
     openAddLinkDialog() {
       this.$refs.addLinkDialog.open();
@@ -272,22 +277,6 @@ export default {
     openEditDialog() {
       let cloned = JSON.parse(JSON.stringify(this.group));
       this.$refs.editDialog.open(cloned);
-    },
-    openAlarmDialog() {
-      let cloned = {};
-      if (this.group.alarm) {
-        cloned = JSON.parse(JSON.stringify(this.group.alarm));
-      } else {
-        cloned = {
-          subject: 'STATUS',
-          subjectWhen: 'CHANGED',
-          priceLowerLimit: 0,
-          priceUpperLimit: 0,
-        };
-      }
-      cloned.forWhich = 'group';
-      cloned.name = this.group.name;
-      this.$refs.alarmDialog.open(cloned);
     },
     remove() {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.group.name).then(async (confirm) => {
@@ -312,21 +301,44 @@ export default {
         this.$router.push({ name: 'group', params: {id: this.group.id} });
       }
     },
+    openAlarmDialog() {
+      let cloned = {};
+      if (this.group.alarm) {
+        cloned = JSON.parse(JSON.stringify(this.group.alarm));
+      } else {
+        cloned = {
+          subject: 'STATUS',
+          subjectWhen: 'CHANGED',
+          priceLowerLimit: 0,
+          priceUpperLimit: 0,
+        };
+      }
+      cloned.topic = 'GROUP';
+      cloned.name = this.group.name;
+      this.$refs.alarmDialog.open(cloned);
+    },
     async saveAlarm(form) {
-      form.forWhich = 'group';
       form.groupId = this.group.id;
       const result = await AlarmService.save(form);
       if (result && result.status) {
         this.group.alarm = result.data;
         this.group.alarmId = result.data.id;
+        this.alarmNoteRefresherKey++;
       }
     },
-    async setAlarmOff(id) {
-      const result = await AlarmService.remove(id);
-      if (result && result.status) {
-        this.group.alarmId = null;
-        this.group.alarm = null;
-      }
+    setAlarmOff(id) {
+      this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
+        if (confirm == true) {
+          const self = this;
+          AlarmService.remove(id).then((res) => {
+            if (res && res.status) {
+              self.group.alarmId = null;
+              self.group.alarm = null;
+              self.alarmNoteRefresherKey++;
+            }
+          });
+        }
+      });
     },
   },
   components: {

@@ -83,18 +83,18 @@
             text
             small
             class="text-none"
-            @click="gotoPage"
+            @click="markAllAsRead"
+            :disabled="!announces || !announces.length"
           >
-            See all notifications
+            Mark all as Read
           </v-btn>
           <v-btn
             text
             small
             class="text-none"
-            @click="markAllAsRead"
-            :disabled="!announces || !announces.length"
+            @click="gotoPage"
           >
-            Mark all as Read
+            See all notifications
           </v-btn>
         </div>
       </v-card>

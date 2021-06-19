@@ -223,7 +223,7 @@
         v-for="(row, index) in searchResult" :key="row.id"
       >
         <div  v-if="index==0">
-            <v-row class="px-2 mx-0 font-weight-medium">
+            <v-row class="pa-1 mx-0 font-weight-medium">
               <v-col cols="2" class="hidden-sm-and-down">
                 Type
               </v-col>

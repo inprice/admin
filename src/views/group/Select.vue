@@ -3,8 +3,8 @@
     v-model="dialog"
     :max-width="500"
     style="zIndex: 200"
-    @keydown.esc="close"
     overlay-opacity="0.2"
+    @keydown.esc="close"
   >
     <v-card>
       <v-card-title class="justify-space-between">
