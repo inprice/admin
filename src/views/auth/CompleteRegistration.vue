@@ -45,13 +45,14 @@
           large block
           color="info"
           @click="submit" 
-          :loading="loading" 
-          :disabled="loading">
+        >
           Sign Up
         </v-btn>
       </v-card-actions>
-      <router-link class="d-flex justify-center mt-4" to="login" :disabled="loading">Back to Login</router-link>
+      <router-link class="d-flex justify-center mt-4" to="login">Back to Login</router-link>
     </div>
+
+    <overlay :show="overlay" />
   </div>
 </template>
 
@@ -61,7 +62,7 @@ import AuthService from '@/service/auth';
 export default {
   data() {
     return {
-      loading: false,
+      overlay: false,
       valid: false,
       rules: {},
       form: {
@@ -86,14 +87,14 @@ export default {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
-        this.loading = true;
+        this.overlay = true;
         const result = await AuthService.completeRegistration(this.form.code.replaceAll('-', ''));
         if (result == true) {
           this.$router.push({ name: 'plans', params: { sid: 0 } });
           this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your account.' });
           return;
         }
-        this.loading = false;
+        this.overlay = false;
       }
     },
     activateRules() {
@@ -105,6 +106,9 @@ export default {
       }
     }
   },
+  components: {
+    Overlay: () => import('@/component/app/Overlay.vue'),
+  }
 };
 </script>
 

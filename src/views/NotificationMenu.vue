@@ -27,7 +27,7 @@
           <v-list-item-group v-if="hasAnnounce()">
             <v-list-item
               :ripple="false"
-              class="py-1 pt-0 pr-0"
+              class="pb-1 pt-0 pr-0"
               v-for="row in announces" :key="row.id"
               style="border-bottom: 1px solid #ddd"
             >
@@ -68,17 +68,15 @@
             </v-list-item>
           </v-list-item-group>
 
-          <v-list-item v-else>
-            <v-list-item-content>
-              <v-list-item-subtitle>
-                <v-icon>mdi-emoticon-sad-outline</v-icon>
-                No new notification found!
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
+          <div class="px-4 pt-3" v-else>
+            <v-icon>mdi-emoticon-sad-outline</v-icon>
+            No new notification found!
+          </div>
         </v-list>
 
-        <div class="pa-1 pb-2 d-flex justify-space-between">
+        <v-divider class="mt-1" v-if="!hasAnnounce()"></v-divider>
+
+        <div class="pa-2 d-flex justify-space-between">
           <v-btn
             text
             small

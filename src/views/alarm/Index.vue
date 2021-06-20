@@ -72,6 +72,7 @@
                   label="Topic"
                   v-model="searchForm.topic"
                   :items="topicItems"
+                  clearable
                   class="mb-4"
                 ></v-select>
 
@@ -104,7 +105,7 @@
                     dense
                     outlined
                     hide-details
-                    class="col pr-1"
+                    class="pr-1"
                     label="Order By"
                     v-model="searchForm.orderBy"
                     :items="orderByItems"
@@ -114,7 +115,7 @@
                     dense
                     outlined
                     hide-details
-                    class="col pl-1"
+                    class="pl-1"
                     label="Order Dir"
                     v-model="searchForm.orderDir"
                     :items="orderDirItems"
@@ -167,8 +168,7 @@
       >
         <div v-if="index==0">
           <v-row class="pa-1 mx-0 font-weight-medium">
-            <v-col cols="1" class="caption text-right">
-            </v-col>
+            <div style="min-width:24px"></div>
             <v-col cols="4">
               When
             </v-col>
@@ -186,9 +186,15 @@
 
         <div class="row-wrapper">
           <v-row class="pa-1 mx-0" @click="openAlarmDialog(row)">
-            <v-col cols="1" class="caption teal--text text-right">
-              {{ row.topic }}
-            </v-col>
+            <v-avatar
+              class="pa-3 my-auto"
+              color="light-blue"
+              size="22"
+              :title="row.topic"
+            >
+              <span class="white--text font-weight-medium">{{ row.topic.charAt(0) }}</span>
+            </v-avatar>
+
             <v-col cols="4">
               {{ row.when }} <span v-html="whenClause(row)"></span>
             </v-col>
@@ -253,7 +259,7 @@ import AlarmService from '@/service/alarm';
 const topicItems = ['LINK', 'GROUP'];
 const subjectItems = ['STATUS', 'PRICE', 	'MINIMUM', 	'AVERAGE', 	'MAXIMUM', 	'TOTAL' ];
 const whenItems = ['CHANGED', 'EQUAL', 'NOT_EQUAL', 'INCREASED', 'DECREASED', 'OUT_OF_LIMITS'];
-const orderByItems = ['NOTIFIED_AT', 'SUBJECT', 'WHEN'];
+const orderByItems = ['NAME', 'TOPIC', 'SUBJECT', 'WHEN', 'NOTIFIED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const rowLimitItems = [25, 50, 100];
 
@@ -310,6 +316,7 @@ export default {
     applyOptions() {
       this.searchMenuOpen = false;
       this.search();
+      this.$refs.term.focus();
     },
     search() {
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
@@ -345,6 +352,7 @@ export default {
       this.searchMenuOpen = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
+      this.$refs.term.focus();
     },
     whenClause: (row) => {
       let condition = '';
@@ -375,6 +383,11 @@ export default {
   },
   mounted() {
     this.search();
+  },
+  watch: {
+    'searchForm.term'() {
+      return this.search();
+    }
   },
   components: {
     AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
