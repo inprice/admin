@@ -363,13 +363,13 @@ export default {
           break;
         }
         case 'OUT_OF_LIMITS': {
-          if (row.priceLowerLimit > 0) {
-            condition = `<b style="color:green">${row.subject}</b> is less than <b style="color:red">${row.priceLowerLimit}</b>`;
-            if (row.priceUpperLimit > 0) {
-              condition += ` or greater than <b style="color:blue">${row.priceUpperLimit}</b>`;
+          if (row.amountLowerLimit > 0) {
+            condition = `<b style="color:green">${row.subject}</b> is less than <b style="color:red">${row.amountLowerLimit}</b>`;
+            if (row.amountUpperLimit > 0) {
+              condition += ` or greater than <b style="color:blue">${row.amountUpperLimit}</b>`;
             }
           } else {
-            condition += `<b style="color:green">${row.subject}</b> is greater than <b style="color:red">${row.priceUpperLimit}</b>`;
+            condition += `<b style="color:green">${row.subject}</b> is greater than <b style="color:red">${row.amountUpperLimit}</b>`;
           }
           break;
         }

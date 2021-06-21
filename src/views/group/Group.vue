@@ -29,14 +29,8 @@
                 <v-list-item-title>DETAILS</v-list-item-title>
               </v-list-item>
 
-              <v-divider></v-divider>
-
               <v-list-item link @click="openEditDialog">
                 <v-list-item-title>EDIT</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item link @click="openAddLinkDialog">
-                <v-list-item-title>ADD NEW LINKS</v-list-item-title>
               </v-list-item>
 
               <v-divider></v-divider>
@@ -237,13 +231,6 @@
       @saved="save"
     />
 
-    <add-link
-      ref="addLinkDialog"
-      :groupId="group.id"
-      :groupName="group.name"
-      @added="addLinks"
-    />
-
     <confirm ref="confirm"></confirm>
 
   </v-card>
@@ -271,9 +258,6 @@ export default {
     };
   },
   methods: {
-    openAddLinkDialog() {
-      this.$refs.addLinkDialog.open();
-    },
     openEditDialog() {
       let cloned = JSON.parse(JSON.stringify(this.group));
       this.$refs.editDialog.open(cloned);
@@ -292,10 +276,6 @@ export default {
         this.$emit('saved', result.data);
       }
     },
-    async addLinks(links) {
-      const result = await GroupService.insertLinks(this.group.id, this.fromSearchPage, links);
-      if (result && result.status) this.$emit('linksAdded', result.data);
-    },
     openDetails() {
       if (this.fromSearchPage) {
         this.$router.push({ name: 'group', params: {id: this.group.id} });
@@ -309,8 +289,8 @@ export default {
         cloned = {
           subject: 'STATUS',
           subjectWhen: 'CHANGED',
-          priceLowerLimit: 0,
-          priceUpperLimit: 0,
+          amountLowerLimit: 0,
+          amountUpperLimit: 0,
         };
       }
       cloned.topic = 'GROUP';
@@ -343,7 +323,6 @@ export default {
   },
   components: {
     Edit: () => import('./Edit'),
-    AddLink: () => import('./AddLink'),
     AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
     AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue')

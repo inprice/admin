@@ -31,13 +31,13 @@ export default {
     return res;
   },
 
-  async insertLinks(groupId, fromSearchPage, linksText) {
+  async insertLinks(groupId, linksText) {
     if (store.get('session/isNotEditor')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to insert any data!' });
       return;
     }
 
-    const res = await Helper.call('Add Links', { url: baseURL + '/links/import', data: { groupId, fromSearchPage, linksText } });
+    const res = await Helper.call('Add Links', { url: baseURL + '/links/import', data: { groupId, linksText } });
     return res;
   },
 

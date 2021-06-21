@@ -221,7 +221,7 @@ export default {
     findSelectedIds(groupName) {
       let selection = [];
       for (var i=0; i<this.groups[groupName].links.length; i++) {
-        const link = this.groups[groupName].links;
+        const link = this.groups[groupName].links[i];
         if (link.selected) selection.push(link.id);
       }
       return selection;
@@ -257,10 +257,10 @@ export default {
     convertLinksToStatusGroup() {
       if (this.links) {
         this.groups = {
-          ACTIVE: { links: [], selected: [] },
-          PROBLEM: { links: [], selected: [] },
-          TRYING: { links: [], selected: [] },
-          WAITING: { links: [], selected: [] },
+          ACTIVE: { links: [], selected: 0 },
+          PROBLEM: { links: [], selected: 0 },
+          TRYING: { links: [], selected: 0 },
+          WAITING: { links: [], selected: 0 },
         };
         this.links.forEach(link => {
           link.selected = false;
@@ -276,8 +276,8 @@ export default {
         cloned = {
           subject: 'STATUS',
           subjectWhen: 'CHANGED',
-          priceLowerLimit: 0,
-          priceUpperLimit: 0,
+          amountLowerLimit: 0,
+          amountUpperLimit: 0,
         };
       }
       cloned.topic = 'LINK';

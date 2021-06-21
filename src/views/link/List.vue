@@ -220,8 +220,8 @@ export default {
         cloned = {
           subject: 'STATUS',
           subjectWhen: 'CHANGED',
-          priceLowerLimit: 0,
-          priceUpperLimit: 0,
+          amountLowerLimit: 0,
+          amountUpperLimit: 0,
         };
       }
       cloned.topic = 'LINK';

@@ -132,9 +132,9 @@
                   dense
                   outlined
                   label="Lower Limit"
-                  v-model="form.priceLowerLimit"
-                  :messages="hint.priceLowerLimit"
-                  :error="hint.priceLowerLimit != null"
+                  v-model="form.amountLowerLimit"
+                  :messages="hint.amountLowerLimit"
+                  :error="hint.amountLowerLimit != null"
                   @blur="formatPrices"
                   maxlength="10"
                   type="number"
@@ -144,9 +144,9 @@
                   dense
                   outlined
                   label="Upper Limit"
-                  v-model="form.priceUpperLimit"
-                  :messages="hint.priceUpperLimit"
-                  :error="hint.priceUpperLimit != null"
+                  v-model="form.amountUpperLimit"
+                  :messages="hint.amountUpperLimit"
+                  :error="hint.amountUpperLimit != null"
                   @blur="formatPrices"
                   maxlength="10"
                   type="number"
@@ -238,12 +238,12 @@ export default {
         subject: 'STATUS',
         subjectWhen: 'CHANGED',
         certainStatus: 'ACTIVE',
-        priceLowerLimit: 0,
-        priceUpperLimit: 0,
+        amountLowerLimit: 0,
+        amountUpperLimit: 0,
       },
       hint: {
-        priceLowerLimit: null,
-        priceUpperLimit: null,
+        amountLowerLimit: null,
+        amountUpperLimit: null,
       },
       name: null,
       topic: 'LINK',
@@ -271,14 +271,14 @@ export default {
         this.$emit('saved', this.form);
         this.close();
       } else {
-        this.hint.priceLowerLimit = null;
-        this.hint.priceUpperLimit = null;
+        this.hint.amountLowerLimit = null;
+        this.hint.amountUpperLimit = null;
         if (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
-          if (parseFloat(this.form.priceLowerLimit) < 1) {
-            if (parseFloat(this.form.priceUpperLimit) < 1) this.hint.priceLowerLimit = 'Required';
+          if (parseFloat(this.form.amountLowerLimit) < 1) {
+            if (parseFloat(this.form.amountUpperLimit) < 1) this.hint.amountLowerLimit = 'Required';
           }
-          if (parseFloat(this.form.priceUpperLimit) < 1) {
-            if (parseFloat(this.form.priceLowerLimit) < 1) this.hint.priceUpperLimit = 'Required';
+          if (parseFloat(this.form.amountUpperLimit) < 1) {
+            if (parseFloat(this.form.amountLowerLimit) < 1) this.hint.amountUpperLimit = 'Required';
           }
         }
       }
@@ -300,8 +300,8 @@ export default {
       }
     },
     formatPrices() {
-      this.form.priceLowerLimit = parseFloat(('0' + this.form.priceLowerLimit).replace(/[^\d.]/g, '')).toFixed(2);
-      this.form.priceUpperLimit = parseFloat(('0' + this.form.priceUpperLimit).replace(/[^\d.]/g, '')).toFixed(2);
+      this.form.amountLowerLimit = parseFloat(('0' + this.form.amountLowerLimit).replace(/[^\d.]/g, '')).toFixed(2);
+      this.form.amountUpperLimit = parseFloat(('0' + this.form.amountUpperLimit).replace(/[^\d.]/g, '')).toFixed(2);
     },
     isConditionsBlockShowed() {
       return (this.form.subject == 'STATUS' && this.form.subjectWhen != 'CHANGED') || (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS');
@@ -311,11 +311,11 @@ export default {
         return false;
       } else {
         if (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
-          if (parseFloat(this.form.priceLowerLimit) < 1) {
-            if (parseFloat(this.form.priceUpperLimit) < 1) return false;
+          if (parseFloat(this.form.amountLowerLimit) < 1) {
+            if (parseFloat(this.form.amountUpperLimit) < 1) return false;
           }
-          if (parseFloat(this.form.priceUpperLimit) < 1) {
-            if (parseFloat(this.form.priceLowerLimit) < 1) return false;
+          if (parseFloat(this.form.amountUpperLimit) < 1) {
+            if (parseFloat(this.form.amountLowerLimit) < 1) return false;
           }
         }
       }
