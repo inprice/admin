@@ -97,6 +97,12 @@
                       <v-list-item @click="openCreateCouponDialog(row.xid, row.name)">
                         <v-list-item-title>CREATE COUPON</v-list-item-title>
                       </v-list-item>
+
+                      <v-divider></v-divider>
+
+                      <v-list-item @click="makeAnAnnouncement(row.xid, row.name)">
+                        <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
+                      </v-list-item>
                     </v-list>
                   </v-menu>
                 </td>
@@ -120,12 +126,15 @@
 
     <create-coupon ref="createCouponDialog" />
 
+    <announce-dialog ref="announceDialog" @saved="saveAnnounce" />
+
   </div>
 
 </template>
 
 <script>
 import SU_AccountService from '@/service/super/account';
+import SU_AnnounceService from '@/service/super/announce';
 import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
@@ -190,6 +199,19 @@ export default {
     openCreateCouponDialog(id, name) {
       this.$refs.createCouponDialog.open({ id, name });
     },
+    makeAnAnnouncement(id, name) {
+      const form = {
+        accountId: id,
+        forWhom: name
+      };
+      this.$refs.announceDialog.open(form);
+    },
+    async saveAnnounce(form) {
+      const result = await SU_AnnounceService.save(form);
+      if (result && result.status) {
+        this.$store.commit('snackbar/setMessage', { text: 'User\'s announce is successfully published.' });
+      }
+    },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
       if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
@@ -206,6 +228,7 @@ export default {
     this.search();
   },
   components: {
+    AnnounceDialog: () => import('../announce/Edit.vue'),
     CreateCoupon: () => import('./CreateCoupon.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },

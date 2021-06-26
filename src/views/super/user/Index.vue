@@ -78,6 +78,12 @@
                       <v-list-item @click="revokeUserBan(row.id, row.email)" v-else>
                         <v-list-item-title>REVOKE USER BAN</v-list-item-title>
                       </v-list-item>
+
+                      <v-divider></v-divider>
+
+                      <v-list-item @click="makeAnAnnouncement(row.id, row.email)">
+                        <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
+                      </v-list-item>
                     </v-list>
                   </v-menu>
                 </td>
@@ -100,6 +106,9 @@
     </v-card>
 
     <ban-dialog subject="User" ref="banDialog" @banned="banned" />
+
+    <announce-dialog ref="announceDialog" @saved="saveAnnounce" />
+
     <confirm ref="confirm"></confirm>
 
   </div>
@@ -108,6 +117,7 @@
 
 <script>
 import SU_UserService from '@/service/super/user';
+import SU_AnnounceService from '@/service/super/announce';
 import SystemConsts from '@/data/system';
 
 export default {
@@ -186,6 +196,19 @@ export default {
         }
       });
     },
+    makeAnAnnouncement(id, email) {
+      const form = {
+        userId: id,
+        forWhom: email
+      };
+      this.$refs.announceDialog.open(form);
+    },
+    async saveAnnounce(form) {
+      const result = await SU_AnnounceService.save(form);
+      if (result && result.status) {
+        this.$store.commit('snackbar/setMessage', { text: 'Account\'s announce is successfully published.' });
+      }
+    },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
       if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
@@ -203,6 +226,7 @@ export default {
   },
   components: {
     BanDialog: () => import('./BanDialog.vue'),
+    AnnounceDialog: () => import('../announce/Edit.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },

@@ -387,8 +387,8 @@ export default {
     addAnAnnouncement() {
       this.$refs.editDialog.open();
     },
-    openEditDialog(ticket) {
-      const cloned = JSON.parse(JSON.stringify(ticket));
+    openEditDialog(announce) {
+      const cloned = JSON.parse(JSON.stringify(announce));
       this.$refs.editDialog.open(cloned);
     },
     async saved(searchForm) {

@@ -9,7 +9,10 @@
     >
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
-          <span>{{ form.id ? 'Edit' : 'New' }} Announce</span>
+          <div>
+            <div>{{ form.id ? 'Edit' : 'New' }} Announce</div>
+            <div class="caption">For {{ forWhom }}</div>
+          </div>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
@@ -120,6 +123,7 @@ export default {
         body: null,
         account: null,
       },
+      forWhom: 'public',
       startingAtMenuOpen: false,
       endingAtMenuOpen: false,
       levelItems,
@@ -133,13 +137,18 @@ export default {
       this.form.endingAt = moment().add(1, 'M').format(dtf);
       this.form.title = null;
       this.form.body = null;
+      this.form.userId = null;
+      this.form.accountId = null;
       if (data) {
         this.form.id = data.id;
-        this.form.level = data.level;
-        this.form.startingAt = data.startingAt;
-        this.form.endingAt = data.endingAt;
         this.form.title = data.title;
         this.form.body = data.body;
+        this.form.userId = data.userId;
+        this.form.accountId = data.accountId;
+        if (data.level) this.form.level = data.level;
+        if (data.startingAt) this.form.startingAt = data.startingAt;
+        if (data.endingAt) this.form.endingAt = data.endingAt;
+        if (data.forWhom) this.forWhom = data.forWhom;
       }
       this.opened = true;
       this.$nextTick(() => this.$refs.form.resetValidation());
