@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <v-btn-toggle tile :value="selectedTab">
       <v-btn v-for="(name, index) in tabs" @click="selectedTab=index" :key="index" small>{{ name }}</v-btn>
     </v-btn-toggle>
@@ -147,12 +148,21 @@
       </v-tab-item>
 
     </v-tabs>
+
+    <v-divider class="my-2"></v-divider>
+
+    <alarm-note
+      :hasIcon="false"
+      :alarm="alarm"
+      @clicked="$emit('openAlarmDialog')"
+    >
+    </alarm-note>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['data'],
+  props: ['data', 'alarm'],
   data() {
     return {
       tabs: ['Prices', 'History', 'Specs'],
@@ -160,6 +170,7 @@ export default {
     }
   },
   components: {
+    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }
 }

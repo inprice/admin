@@ -3,8 +3,8 @@
     v-model="dialog"
     :max-width="500"
     style="zIndex: 200"
-    @keydown.esc="close"
     overlay-opacity="0.2"
+    @keydown.esc="close"
   >
     <v-card>
       <v-card-title class="justify-space-between">
@@ -87,9 +87,9 @@ export default {
         if (res && res.data) {
           const names = [];
           res.data.forEach(group => {
-            this.groups[group.value.toLowerCase()] = group.key; //in order to finding id by name!
-            if (group.key != callerGroupId) {
-              names.push(group.value);
+            this.groups[group.right.toLowerCase()] = group.left; //in order to finding id by name!
+            if (group.left != callerGroupId) {
+              names.push(group.right);
             }
           });
           this.groupNames = names;

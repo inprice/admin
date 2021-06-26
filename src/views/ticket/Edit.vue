@@ -3,8 +3,10 @@
 
     <v-dialog 
       v-model="opened" 
-       :max-width="findDialogWidth"
-       overlay-opacity="0.2">
+      :max-width="findDialogWidth"
+      overlay-opacity="0.2"
+      @keydown.esc="opened = false"
+    >
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
           <span>{{ form.id ? 'Edit' : 'New' }} Ticket</span>

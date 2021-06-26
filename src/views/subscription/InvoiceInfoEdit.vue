@@ -4,7 +4,9 @@
     <v-dialog 
       v-model="opened" 
       :max-width="findDialogWidth"
-      overlay-opacity="0.2">
+      overlay-opacity="0.2"
+      @keydown.esc="opened = false"
+    >
       <v-card>
         <div class="d-flex justify-space-between pa-4 pb-1">
           <div class="title">Invoice info</div>

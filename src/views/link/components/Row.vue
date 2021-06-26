@@ -15,12 +15,32 @@
       />
 
       <div style="flex: 1">
-        <div v-if="fromSearchPage" class="caption" style="color: #00748B; line-height: inherit">{{ row.groupName }}</div>
-        <div v-if="row.name">
-          {{ row.name }}
+        <div
+          v-if="fromSearchPage"
+          class="caption"
+          style="color: #00748B; line-height: inherit"
+        >
+          <v-badge
+            dot
+            left
+            color="pink"
+            title="Alarmed"
+            :value="row.alarmId != undefined && fromSearchPage"
+          >
+            {{ row.groupName }}
+          </v-badge>
         </div>
-        <div class="body-2 text-lowercase" v-else>
-          {{ row.url }}
+
+        <div :class="{'body-2 text-lowercase' : row.name }">
+          <v-badge
+            dot
+            left
+            color="pink"
+            title="Alarmed"
+            :value="row.alarmId != undefined && !fromSearchPage"
+          >
+            {{ row.name || row.url }}
+          </v-badge>
         </div>
       </div>
 
@@ -107,6 +127,12 @@
               <v-list-item-title>MOVE</v-list-item-title>
             </v-list-item>
 
+            <v-divider></v-divider>
+
+            <v-list-item link @click="$emit('openAlarmDialog')" :disabled="$store.get('session/isNotEditor')">
+              <v-list-item-title>SET ALARM</v-list-item-title>
+            </v-list-item>
+
           </v-list>
         </v-menu>
       </div>
@@ -150,6 +176,8 @@
     <row-detail
       class="mt-2"
       :data="row.details"
+      :alarm="row.alarm"
+      @openAlarmDialog="$emit('openAlarmDialog', row)"
       v-if="showingId==row.id && showDetails==true"
     />
 
@@ -158,7 +186,7 @@
 
 <script>
 export default {
-  props: ['linksCount', 'row', 'showingId', 'showDetails', 'isChecked', 'fromSearchPage'],
+  props: ['row', 'linksCount', 'showingId', 'showDetails', 'isChecked', 'fromSearchPage'],
   methods: {
     copyTheLink(url) {
       this.copyToClipboard(url);

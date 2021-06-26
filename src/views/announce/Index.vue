@@ -52,12 +52,11 @@
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
                     <v-btn
-                      text
-                      color="green"
-                      @click="resetForm"
+                      icon
+                      @click="searchMenuOpen = false"
                       tabindex="-1"
                     >
-                      Reset
+                      <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </div>
                   
@@ -196,10 +195,10 @@
                 <v-card-actions class="justify-end">
                   <v-btn
                     text
-                    @click="searchMenuOpen = false"
+                    @click="resetForm"
                     tabindex="-1"
                   >
-                    Close
+                    Clear
                   </v-btn>
                   <v-btn
                     text
@@ -224,7 +223,7 @@
         v-for="(row, index) in searchResult" :key="row.id"
       >
         <div  v-if="index==0">
-            <v-row class="px-2 mx-0 font-weight-medium">
+            <v-row class="pa-1 mx-0 font-weight-medium">
               <v-col cols="2" class="hidden-sm-and-down">
                 Type
               </v-col>
@@ -245,7 +244,7 @@
         </div>
 
         <div class="row-wrapper">
-          <v-row class="px-2 mx-0" @click="toggleDetailPanel(row.id)">
+          <v-row class="pa-1 mx-0" @click="toggleDetailPanel(row.id)">
             <v-col
               cols="2"
               class="font-weight-medium hidden-sm-and-down"

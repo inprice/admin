@@ -1,7 +1,12 @@
 <template>
   <v-row justify="center">
 
-    <v-dialog  v-model="opened" :max-width="findDialogWidth" overlay-opacity="0.2">
+    <v-dialog
+      v-model="opened"
+      :max-width="findDialogWidth"
+      overlay-opacity="0.2"
+      @keydown.esc="opened = false"
+    >
 
       <v-card>
         <v-card-title class="justify-space-between">

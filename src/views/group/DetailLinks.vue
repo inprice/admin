@@ -70,24 +70,32 @@
             </template>
             <link-row
               :row="row"
-              :details="row.details"
               :linksCount="data.links.length"
               :showingId="showingId"
               :showDetails="showDetails"
               :isChecked="row.selected == true"
+              :key="linkRefresherKey"
               @rowSelected="changeRowSelection(data, index)"
               @moveOne="moveOne"
               @deleteOne="deleteOne"
               @toggleDetails="toggleDetails"
+              @openAlarmDialog="openAlarmDialog(row, name, index)"
             />
           </v-card>
         </div>
+
         <block-message 
           v-else dense
           :message="`No ${selectedTabName.toLowerCase()} link.`"
         />
       </v-tab-item>
     </v-tabs>
+
+    <alarm-dialog
+      ref="alarmDialog"
+      @setOff="setAlarmOff"
+      @saved="saveAlarm"
+    ></alarm-dialog>
 
     <confirm ref="confirm"></confirm>
     <group-select ref="groupSelect"></group-select>
@@ -98,6 +106,7 @@
 
 <script>
 import LinkService from '@/service/link';
+import AlarmService from '@/service/alarm';
 
 export default {
   props: ["groupId", "links"],
@@ -126,6 +135,7 @@ export default {
         TRYING: { links: [], selected: 0 },
         WAITING: { links: [], selected: 0 },
       },
+      linkRefresherKey: 0
     }
   },
   methods: {
@@ -211,7 +221,7 @@ export default {
     findSelectedIds(groupName) {
       let selection = [];
       for (var i=0; i<this.groups[groupName].links.length; i++) {
-        const link = this.groups[groupName].links;
+        const link = this.groups[groupName].links[i];
         if (link.selected) selection.push(link.id);
       }
       return selection;
@@ -247,16 +257,60 @@ export default {
     convertLinksToStatusGroup() {
       if (this.links) {
         this.groups = {
-          ACTIVE: { links: [], selected: [] },
-          PROBLEM: { links: [], selected: [] },
-          TRYING: { links: [], selected: [] },
-          WAITING: { links: [], selected: [] },
+          ACTIVE: { links: [], selected: 0 },
+          PROBLEM: { links: [], selected: 0 },
+          TRYING: { links: [], selected: 0 },
+          WAITING: { links: [], selected: 0 },
         };
         this.links.forEach(link => {
           link.selected = false;
           this.groups[link.statusGroup].links.push(link);
         });
       }
+    },
+    openAlarmDialog(link, groupName, index) {
+      let cloned = {};
+      if (link.alarm) {
+        cloned = JSON.parse(JSON.stringify(link.alarm));
+      } else {
+        cloned = {
+          subject: 'STATUS',
+          subjectWhen: 'CHANGED',
+          amountLowerLimit: 0,
+          amountUpperLimit: 0,
+        };
+      }
+      cloned.topic = 'LINK';
+      cloned.linkId = link.id;
+      cloned.index = index;
+      cloned.groupName = groupName;
+      cloned.name = link.name || link.url;
+
+      this.$refs.alarmDialog.open(cloned);
+    },
+    async saveAlarm(selected) {
+      const result = await AlarmService.save(selected);
+      if (result && result.status) {
+        const link = this.groups[selected.groupName].links[selected.index];
+        link.alarm = result.data;
+        link.alarmId = result.data.id;
+        this.linkRefresherKey++;
+      }
+    },
+    setAlarmOff(selected) {
+      this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
+        if (confirm == true) {
+          const self = this;
+          AlarmService.remove(selected.id).then((res) => {
+            if (res && res.status) {
+              const link = self.groups[selected.groupName].links[selected.index];
+              link.alarm = null;
+              link.alarmId = null;
+              this.linkRefresherKey++;
+            }
+          });
+        }
+      });
     },
   },
   mounted() {
@@ -268,8 +322,9 @@ export default {
     }
   },
   components: {
-    GroupSelect: () => import('./Select.vue'),
     LinkRow: () => import('@/views/link/components/Row.vue'),
+    GroupSelect: () => import('./Select.vue'),
+    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }

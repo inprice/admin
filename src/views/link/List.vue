@@ -59,13 +59,21 @@
           @moveOne="moveOne"
           @deleteOne="deleteOne"
           @toggleDetails="toggleDetails"
+          @openAlarmDialog="openAlarmDialog"
         />
       </v-card>
     </div>
+
     <block-message 
       v-else dense
       :message="`No link found.`"
     />
+
+    <alarm-dialog
+      ref="alarmDialog"
+      @setOff="setAlarmOff"
+      @saved="saveAlarm"
+    ></alarm-dialog>
 
     <confirm ref="confirm"></confirm>
     <group-select ref="groupSelect"></group-select>
@@ -76,6 +84,7 @@
 
 <script>
 import LinkService from '@/service/link';
+import AlarmService from '@/service/alarm';
 
 export default {
   props: ['rows'],
@@ -202,11 +211,47 @@ export default {
     },
     clearSelected() {
       this.selected = 0;
-    }
+    },
+    openAlarmDialog(row) {
+      let cloned = {};
+      if (row.alarm) {
+        cloned = JSON.parse(JSON.stringify(row.alarm));
+      } else {
+        cloned = {
+          subject: 'STATUS',
+          subjectWhen: 'CHANGED',
+          amountLowerLimit: 0,
+          amountUpperLimit: 0,
+        };
+      }
+      cloned.topic = 'LINK';
+      cloned.linkId = row.id;
+      cloned.name = row.name || row.url;
+
+      this.$refs.alarmDialog.open(cloned);
+    },
+    async saveAlarm(selected) {
+      const result = await AlarmService.save(selected);
+      if (result && result.status) {
+        this.$emit('refreshList');
+      }
+    },
+    setAlarmOff(selected) {
+      this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
+        if (confirm == true) {
+          AlarmService.remove(selected.id).then((res) => {
+            if (res && res.status) {
+              this.$emit('refreshList');
+            }
+          });
+        }
+      });
+    },
   },
   components: {
     LinkRow: () => import('./components/Row.vue'),
     GroupSelect: () => import('@/views/group/Select.vue'),
+    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }

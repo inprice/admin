@@ -10,42 +10,44 @@
       <div>
         <span v-if="group.price"> {{ group.price | toCurrency }}</span>
 
-        <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              small icon
-              class="mx-1"
-              v-bind="attrs"
-              v-on="on"
-              @click.stop=""
-            >
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </template>
+        <div>
+          <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                small icon
+                class="mx-1"
+                v-bind="attrs"
+                v-on="on"
+                @click.stop=""
+              >
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
 
-          <v-list dense>
-            <v-list-item link v-if="fromSearchPage"  @click="openDetails">
-              <v-list-item-title>DETAILS</v-list-item-title>
-            </v-list-item>
+            <v-list dense>
+              <v-list-item link v-if="fromSearchPage"  @click="openDetails">
+                <v-list-item-title>DETAILS</v-list-item-title>
+              </v-list-item>
 
-            <v-divider></v-divider>
+              <v-list-item link @click="openEditDialog">
+                <v-list-item-title>EDIT</v-list-item-title>
+              </v-list-item>
 
-            <v-list-item link @click="openEditDialog">
-              <v-list-item-title>EDIT</v-list-item-title>
-            </v-list-item>
+              <v-divider></v-divider>
 
-            <v-list-item link @click="openAddLinkDialog">
-              <v-list-item-title>ADD NEW LINKS</v-list-item-title>
-            </v-list-item>
+              <v-list-item link @click="remove">
+                <v-list-item-title>DELETE</v-list-item-title>
+              </v-list-item>
 
-            <v-divider></v-divider>
+              <v-divider></v-divider>
 
-            <v-list-item link @click="remove">
-              <v-list-item-title>DELETE</v-list-item-title>
-            </v-list-item>
+              <v-list-item link @click="openAlarmDialog">
+                <v-list-item-title>SET ALARM</v-list-item-title>
+              </v-list-item>
 
-          </v-list>
-        </v-menu>
+            </v-list>
+          </v-menu>
+        </div>
       </div>
 
     </v-card-title>
@@ -211,16 +213,22 @@
 
     </div>
 
+    <alarm-note
+      :alarm="group.alarm"
+      class="pl-2 pt-3"
+      @clicked="openAlarmDialog"
+      :key="alarmNoteRefresherKey"
+    ></alarm-note>
+
+    <alarm-dialog
+      ref="alarmDialog"
+      @setOff="setAlarmOff"
+      @saved="saveAlarm"
+    ></alarm-dialog>
+
     <edit
       ref="editDialog"
       @saved="save"
-    />
-
-    <add-link
-      ref="addLinkDialog"
-      :groupId="group.id"
-      :groupName="group.name"
-      @added="addLinks"
     />
 
     <confirm ref="confirm"></confirm>
@@ -230,6 +238,7 @@
 
 <script>
 import GroupService from '@/service/group';
+import AlarmService from '@/service/alarm';
 
 export default {
   props: ['fromSearchPage', 'group'],
@@ -243,10 +252,12 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      alarmNoteRefresherKey: 0,
+    };
+  },
   methods: {
-    openAddLinkDialog() {
-      this.$refs.addLinkDialog.open();
-    },
     openEditDialog() {
       let cloned = JSON.parse(JSON.stringify(this.group));
       this.$refs.editDialog.open(cloned);
@@ -261,22 +272,60 @@ export default {
     },
     async save(form) {
       const result = await GroupService.save(form);
-      if (result && result.status) this.$emit('saved', result.data);
-    },
-    async addLinks(links) {
-      const result = await GroupService.insertLinks(this.group.id, this.fromSearchPage, links);
-      if (result && result.status) this.$emit('linksAdded', result.data);
+      if (result && result.status) {
+        this.$emit('saved', result.data);
+      }
     },
     openDetails() {
       if (this.fromSearchPage) {
         this.$router.push({ name: 'group', params: {id: this.group.id} });
       }
-    }
+    },
+    openAlarmDialog() {
+      let cloned = {};
+      if (this.group.alarm) {
+        cloned = JSON.parse(JSON.stringify(this.group.alarm));
+      } else {
+        cloned = {
+          subject: 'STATUS',
+          subjectWhen: 'CHANGED',
+          amountLowerLimit: 0,
+          amountUpperLimit: 0,
+        };
+      }
+      cloned.topic = 'GROUP';
+      cloned.name = this.group.name;
+      this.$refs.alarmDialog.open(cloned);
+    },
+    async saveAlarm(form) {
+      form.groupId = this.group.id;
+      const result = await AlarmService.save(form);
+      if (result && result.status) {
+        this.group.alarm = result.data;
+        this.group.alarmId = result.data.id;
+        this.alarmNoteRefresherKey++;
+      }
+    },
+    setAlarmOff(form) {
+      this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
+        if (confirm == true) {
+          const self = this;
+          AlarmService.remove(form.id).then((res) => {
+            if (res && res.status) {
+              self.group.alarmId = null;
+              self.group.alarm = null;
+              self.alarmNoteRefresherKey++;
+            }
+          });
+        }
+      });
+    },
   },
   components: {
     Edit: () => import('./Edit'),
-    AddLink: () => import('./AddLink'),
-    Confirm: () => import('@/component/Confirm.vue'),
+    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
+    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
+    Confirm: () => import('@/component/Confirm.vue')
   },
 };
 </script>

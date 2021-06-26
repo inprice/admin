@@ -23,13 +23,24 @@
     <div class="d-flex justify-space-between">
       <span class="title">Links</span>
       <div>
+
         <v-btn
           small
           color="white"
+          class="mr-1"
           @click="findGroup(data.group.id)"
           :disabled="$store.get('session/isSuperUser')"
         >
           Refresh
+        </v-btn>
+
+        <v-btn
+          small
+          class="ml-1"
+          @click="openAddLinkDialog"
+          :disabled="$store.get('session/isNotEditor')"
+        >
+          Add new Links
         </v-btn>
       </div>
     </div>
@@ -42,6 +53,13 @@
     />
 
     <confirm ref="confirm" />
+
+    <add-link
+      ref="addLinkDialog"
+      :groupId="data.group.id"
+      :groupName="data.group.name"
+      @added="addLinks"
+    />
 
   </div>
 </template>
@@ -74,6 +92,13 @@ export default {
         this.$store.commit('snackbar/setMessage', { text: result.count + ' links have been successfully ' + message });
       }
     },
+    openAddLinkDialog() {
+      this.$refs.addLinkDialog.open();
+    },
+    async addLinks(links) {
+      const result = await GroupService.insertLinks(this.data.group.id, links);
+      if (result && result.status) this.refreshWhole(result.data, 'added!');
+    },
   },
   mounted() {
     this.findGroup();
@@ -81,6 +106,7 @@ export default {
   components: {
     Group: () => import('./Group.vue'),
     Links: () => import('./DetailLinks.vue'),
+    AddLink: () => import('./AddLink'),
     Confirm: () => import('@/component/Confirm.vue')
   },
   watch: {

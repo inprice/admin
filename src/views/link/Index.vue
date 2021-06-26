@@ -53,12 +53,11 @@
                   <div class="subtitle-1 pb-1 d-flex justify-space-between">
                     <span>Search Options</span>
                     <v-btn
-                      text
-                      color="green"
-                      @click="resetForm"
+                      icon
+                      @click="searchMenuOpen = false"
                       tabindex="-1"
                     >
-                      Reset
+                      <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </div>
                   
@@ -149,10 +148,10 @@
                 <v-card-actions class="justify-end">
                   <v-btn
                     text
-                    @click="searchMenuOpen = false"
+                    @click="resetForm"
                     tabindex="-1"
                   >
-                    Close
+                    Clear
                   </v-btn>
                   <v-btn
                     text

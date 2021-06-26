@@ -3,8 +3,10 @@
 
     <v-dialog 
       v-model="opened" 
-       :max-width="findDialogWidth"
-       overlay-opacity="0.2">
+      :max-width="findDialogWidth"
+      overlay-opacity="0.2"
+      @keydown.esc="opened = false"
+    >
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
           <span>{{ form.id ? 'Edit' : 'New' }} Group</span>
@@ -37,8 +39,7 @@
               maxlength="10"
               type="number"
               messages="For competitive pricing, please specify a price greater than zero!"
-            >
-            </v-text-field>
+            ></v-text-field>
 
           </v-form>
 
