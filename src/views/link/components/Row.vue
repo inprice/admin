@@ -134,12 +134,24 @@
               <v-list-item-title>SET ALARM</v-list-item-title>
             </v-list-item>
 
-            <v-list-item link @click="$emit('resolvedOne', row)" v-if="!showMenu && row.status == 'TOBE_IMPLEMENTED'" :disabled="$store.get('session/isNotSuperUser')">
-              <v-list-item-title>RESOLVED</v-list-item-title>
+            <v-divider></v-divider>
+
+            <v-list-item link @click="$emit('changeOneStatus', { row, newStatus: 'PAUSED' })" v-if="row.statusGroup == 'ACTIVE' || row.statusGroup == 'TRYING'">
+              <v-list-item-title>PAUSE</v-list-item-title>
             </v-list-item>
 
-            <v-list-item link @click="$emit('toggleOneStatus', row)" v-if="!showMenu" :disabled="$store.get('session/isNotSuperUser')">
-              <v-list-item-title>PAUSED / RESUMED</v-list-item-title>
+            <v-list-item link @click="$emit('changeOneStatus', { row, newStatus: 'RESOLVED' })" v-if="row.status == 'TOBE_IMPLEMENTED'">
+              <v-list-item-title>MARK AS RESOLVED</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item link @click="$emit('changeOneStatus', { row, newStatus: 'NOT_SUITABLE' })" v-if="row.status != 'NOT_SUITABLE'">
+              <v-list-item-title>MARK AS NOT SUITABLE</v-list-item-title>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item link @click="$emit('undoOne', row)">
+              <v-list-item-title>UNDO LAST CHANGE</v-list-item-title>
             </v-list-item>
 
           </v-list>

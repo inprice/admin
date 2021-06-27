@@ -15,22 +15,41 @@
         ></v-checkbox>
 
         <div>
-          <v-btn
-            small
-            class="mx-1"
-            @click="toggleMultipleStatus"
-            :disabled="!selected || $store.get('session/isNotSuperUser')"
-          >
-            Pause or Resume
-          </v-btn>
+          <v-menu bottom right offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                small
+                class="mx-1"
+                v-on="on"
+                v-bind="attrs"
+                :disabled="!selected || $store.get('session/isNotSuperUser')"
+              >
+                Change Status
+              </v-btn>
+            </template>
+
+            <v-list dense>
+              <v-list-item link @click="changeMultipleStatus('RESOLVED')">
+                <v-list-item-title>RESOLVED</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item link @click="changeMultipleStatus('PAUSED')">
+                <v-list-item-title>PAUSED</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item link @click="changeMultipleStatus('NOT_SUITABLE')">
+                <v-list-item-title>NOT SUITABLE</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
 
           <v-btn 
             small
             class="mx-1"
-            @click="resolvedMultiple"
+            @click="undoMultiple"
             :disabled="!selected || $store.get('session/isNotSuperUser')"
           >
-            Resolved ({{ selected }})
+            UNDO LAST CHANGE ({{ selected }})
           </v-btn>
         </div>
       </div>
@@ -57,8 +76,8 @@
           :fromSearchPage="true"
           :showMenu="false"
           @toggleDetails="toggleDetails"
-          @toggleOneStatus="toggleOneStatus"
-          @resolvedOne="resolvedOne"
+          @changeOneStatus="changeOneStatus"
+          @undoOne="undoOne"
           @rowSelected="changeRowSelection(index)"
         />
       </v-card>
@@ -111,58 +130,54 @@ export default {
         this.showDetails = !this.showDetails;
       }
     },
-    toggleOneStatus(row) {
-      this.$refs.confirm.open('Toggle Status', 'will be toggled (PAUSED or RESUMED). Are you sure?', (row.name || row.url)).then(async (confirm) => {
-        if (confirm == true) {
-          const result = await SU_LinkService.toggleStatus([ row.id ]);
-          if (result) {
-            this.$store.commit('snackbar/setMessage', { text: 'Link\'s status successfully toggled.' });
-            this.showingId = 0;
-            row.details = null;
-            this.toggleDetails(row);
-          }
-        }
-      });
+    changeOneStatus(data) {
+      this.changeStatusCommon([ data.row.id ], data.newStatus);
     },
-    resolvedOne(row) {
-      this.$refs.confirm.open('Resolve', 'will be RESOLVED. Are you sure?', (row.name || row.url)).then(async (confirm) => {
-        if (confirm == true) {
-          const result = await SU_LinkService.resolved([ row.id ]);
-          if (result) {
-            this.$store.commit('snackbar/setMessage', { text: 'Link\'s status successfully marked as RESOLVED.' });
-            this.showingId = 0;
-            row.details = null;
-            this.toggleDetails(row);
-          }
-        }
-      });
+    changeMultipleStatus(newStatus) {
+      const selection = this.findSelectedIds();
+      this.changeStatusCommon(selection, newStatus);
     },
-    toggleMultipleStatus() {
-      let selection = this.findSelectedIds();
-      if (selection.length) {
-        const title = `${selection.length} links`;
-        this.$refs.confirm.open('Toggle Status', ' will be PAUSED or RESUMED. Are you sure?', title).then(async (confirm) => {
+    changeStatusCommon(ids, newStatus) {
+      if (ids && ids.length && newStatus) {
+        let title = '';
+        if (ids.length > 1) {
+          title = `${ids.length} links statuses`;
+        } else {
+          title = 'Link status';
+        }
+        this.$refs.confirm.open('Change Status', `${title} will be changed to ${newStatus}. Are you sure?`).then(async (confirm) => {
           if (confirm == true) {
-            const result = await SU_LinkService.toggleStatus(selection);
+            const result = await SU_LinkService.changeStatus(ids, newStatus);
             if (result) {
               this.clearSelected();
-              this.$store.commit('snackbar/setMessage', { text: title + ' successfully toggled.' });
+              this.$store.commit('snackbar/setMessage', { text: `${title} successfully updated.` });
               this.$emit('refreshList');
             }
           }
         });
       }
     },
-    resolvedMultiple() {
-      let selection = this.findSelectedIds();
-      if (selection.length) {
-        const title = `${selection.length} links`;
-        this.$refs.confirm.open('Resolve', ' will be marked as RESOLVED. Are you sure?', title).then(async (confirm) => {
+    undoOne(row) {
+      this.undoCommon([ row.id ]);
+    },
+    undoMultiple() {
+      const selection = this.findSelectedIds();
+      this.undoCommon(selection);
+    },
+    undoCommon(ids) {
+      if (ids && ids.length) {
+        let title = '';
+        if (ids.length > 1) {
+          title = `${ids.length} links last transactions `;
+        } else {
+          title = 'Link\'s last transaction ';
+        }
+        this.$refs.confirm.open('Undo Last', `${title} will be rolled back. Are you sure?`).then(async (confirm) => {
           if (confirm == true) {
-            const result = await SU_LinkService.resolved(selection);
+            const result = await SU_LinkService.undo(ids);
             if (result) {
               this.clearSelected();
-              this.$store.commit('snackbar/setMessage', { text: title + ' are successfully marked as RESOLVED.' });
+              this.$store.commit('snackbar/setMessage', { text: `${title} successfully rolled back to previous status.` });
               this.$emit('refreshList');
             }
           }

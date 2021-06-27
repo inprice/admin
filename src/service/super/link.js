@@ -27,23 +27,23 @@ export default {
     return null;
   },
 
-  async toggleStatus(ids) {
+  async changeStatus(ids, newStatus) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be a super user!' });
       return;
     }
 
-    const res = await Helper.call('Toggle Status', { method: 'put', url: baseURL + '/toggle', data: { set: ids } });
+    const res = await Helper.call('Resolve', { method: 'put', url: baseURL + '/change-status', data: { idSet: ids, status: newStatus } });
     return res.status;
   },
 
-  async resolved(ids) {
+  async undo(ids) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be a super user!' });
       return;
     }
 
-    const res = await Helper.call('Resolve', { method: 'put', url: baseURL + '/resolved', data: { set: ids } });
+    const res = await Helper.call('Undo', { method: 'put', url: baseURL + '/undo', data: { idSet: ids } });
     return res.status;
   }
 
