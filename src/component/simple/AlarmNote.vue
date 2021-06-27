@@ -1,5 +1,5 @@
 <template>
-  <div class="body-2 d-flex" style="cursor: pointer" @click="$emit('clicked')">
+  <div class="body-2 d-flex" :style="editable ? 'cursor: pointer' : ''" @click="$emit('clicked')">
     <div v-if="alarm">
       <v-icon class="mr-1">mdi-{{ hasIcon ? 'alarm' : 'shield-alert-outline' }}</v-icon>
       <span v-if="!hasIcon">Alarm </span>
@@ -9,7 +9,12 @@
     </div>
     <div v-else>
       <v-icon class="mr-1">mdi-alarm-off</v-icon>
-      Click here to set alarm
+      <span v-if="editable">
+        Click here to set alarm
+      </span>
+      <span v-else>
+        No alarm set!
+      </span>
     </div>
   </div>
 </template>
@@ -17,13 +22,9 @@
 <script>
 export default {
   props: {
-    alarm: {
-      type: Object,
-    },
-    hasIcon: {
-      type: Boolean,
-      default: true,
-    },
+    alarm: { type: Object, },
+    editable: { type: Boolean, default: true, },
+    hasIcon: { type: Boolean, default: true, },
   },
   methods: {
     findLastPart() {

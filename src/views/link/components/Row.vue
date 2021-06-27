@@ -104,7 +104,8 @@
             </v-list-item>
 
             <v-divider v-if="row.name"></v-divider>
-            <v-list-item link v-if="fromSearchPage" @click="$router.push({ name: 'group', params: { id: row.groupId } })">
+
+            <v-list-item link v-if="fromSearchPage && showMenu" @click="$router.push({ name: 'group', params: { id: row.groupId } })">
               <v-list-item-title>OPEN GROUP PAGE</v-list-item-title>
             </v-list-item>
 
@@ -119,18 +120,26 @@
 
             <v-divider></v-divider>
 
-            <v-list-item link @click="$emit('deleteOne', row)" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item link @click="$emit('deleteOne', row)" v-if="showMenu" :disabled="$store.get('session/isNotEditor')">
               <v-list-item-title>DELETE THIS</v-list-item-title>
             </v-list-item>
 
-            <v-list-item link @click="$emit('moveOne', row)" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item link @click="$emit('moveOne', row)" v-if="showMenu" :disabled="$store.get('session/isNotEditor')">
               <v-list-item-title>MOVE</v-list-item-title>
             </v-list-item>
 
             <v-divider></v-divider>
 
-            <v-list-item link @click="$emit('openAlarmDialog')" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item link @click="$emit('openAlarmDialog')" v-if="showMenu" :disabled="$store.get('session/isNotEditor')">
               <v-list-item-title>SET ALARM</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item link @click="$emit('resolvedOne', row)" v-if="!showMenu && row.status == 'TOBE_IMPLEMENTED'" :disabled="$store.get('session/isNotSuperUser')">
+              <v-list-item-title>RESOLVED</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item link @click="$emit('toggleOneStatus', row)" v-if="!showMenu" :disabled="$store.get('session/isNotSuperUser')">
+              <v-list-item-title>PAUSED / RESUMED</v-list-item-title>
             </v-list-item>
 
           </v-list>
@@ -177,6 +186,7 @@
       class="mt-2"
       :data="row.details"
       :alarm="row.alarm"
+      :alarmEditable="showMenu"
       @openAlarmDialog="$emit('openAlarmDialog', row)"
       v-if="showingId==row.id && showDetails==true"
     />
@@ -186,7 +196,15 @@
 
 <script>
 export default {
-  props: ['row', 'linksCount', 'showingId', 'showDetails', 'isChecked', 'fromSearchPage'],
+  props: {
+    row: { type: Object, default: null, },
+    linksCount: { type: Number, default: 0, },
+    showingId: { type: Number, default: 0, },
+    showDetails: { type: Boolean, default: false, },
+    isChecked: { type: Boolean, default: false, },
+    fromSearchPage: { type: Boolean, default: false, },
+    showMenu: { type: Boolean, default: true, },
+  },
   methods: {
     copyTheLink(url) {
       this.copyToClipboard(url);

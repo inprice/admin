@@ -152,8 +152,8 @@
     <v-divider class="my-2"></v-divider>
 
     <alarm-note
-      :hasIcon="false"
       :alarm="alarm"
+      :editable="alarmEditable"
       @clicked="$emit('openAlarmDialog')"
     >
     </alarm-note>
@@ -162,7 +162,11 @@
 
 <script>
 export default {
-  props: ['data', 'alarm'],
+  props: {
+    data: { type: Object, default: null, },
+    alarm: { type: Object, default: null, },
+    alarmEditable: { type: Boolean, default: true, },
+  },
   data() {
     return {
       tabs: ['Prices', 'History', 'Specs'],

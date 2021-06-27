@@ -45,6 +45,15 @@ export default {
     return Helper.call('Fetch Members', { method: 'get', url: baseURL + '/details/members/' + accountId });
   },
 
+  fetchUserList(accountId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Fetch Account Users', { method: 'get', url: baseURL + '/users/' + accountId });
+  },
+
   fetchHistoryList(accountId) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
@@ -61,15 +70,6 @@ export default {
     }
 
     return Helper.call('Fetch Transactions', { method: 'get', url: baseURL + '/details/transactions/' + accountId });
-  },
-
-  fetchUserList(accountId) {
-    if (store.get('session/isNotSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
-      return;
-    }
-
-    return Helper.call('Fetch Account Users', { method: 'get', url: baseURL + '/users/' + accountId });
   },
 
   async bind(id) {
@@ -90,6 +90,17 @@ export default {
 
     const res = await Helper.call('Create Coupon', { url: baseURL + '/coupon', data: form });
     return res;
+  },
+
+  async getIdNameList(term) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    const res = await Helper.call('Account List', { url: baseURL + '/id-name-pairs?term=' + term });
+    if (res.status == true && res.data) return res;
+    return null;
   },
 
 };

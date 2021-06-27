@@ -72,6 +72,11 @@ const router = new VueRouter({
           component: () => import('./views/super/Dashboard.vue')
         },
         {
+          name: 'sys-links',
+          path: 'links',
+          component: () => import('./views/super/link/Index.vue')
+        },
+        {
           name: 'sys-accounts',
           path: 'accounts',
           component: () => import('./views/super/account/Index.vue')

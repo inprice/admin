@@ -127,7 +127,7 @@
                       hide-details
                       class="col pr-1"
                       label="Alarm ?"
-                      v-model="searchForm.alarm"
+                      v-model="searchForm.alarmStatus"
                       :items="alarmItems"
                     ></v-select>
 
@@ -212,7 +212,7 @@ const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL'];
 const statusItems = ['WAITING', 'ACTIVE', 'TRYING', 'PROBLEM'];
 const orderByItems = [...searchByItems, 'LEVEL', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
-const alarmItems = ['All', 'ALARMED', 'NOT_ALARMED'];
+const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
@@ -223,7 +223,7 @@ const baseSearchForm = {
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
   rowLimit: rowLimitItems[0],
-  alarm: alarmItems[0],
+  alarmStatus: alarmItems[0],
   rowCount: 0,
 }
 

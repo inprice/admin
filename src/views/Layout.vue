@@ -37,6 +37,12 @@
             </v-list-item-content>
           </v-list-item>
 
+          <v-list-item link :to="{name: 'sys-links'}">
+            <v-list-item-content>
+              <v-list-item-title>Links</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
           <v-list-item link :to="{name: 'sys-accounts'}">
             <v-list-item-content>
               <v-list-item-title>Accounts</v-list-item-title>
