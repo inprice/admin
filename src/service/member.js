@@ -1,7 +1,7 @@
 import Helper from './helper';
 import store from '../store';
 
-const baseURL = '/member';
+const baseURL = '/membership';
 
 export default {
 
@@ -52,7 +52,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Delete Member', { method: 'delete', url: baseURL + '/delete/' + id });
+    const res = await Helper.call('Delete Member', { method: 'delete', url: baseURL + '/' + id });
     return res.status;
   },
 
