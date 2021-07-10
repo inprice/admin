@@ -37,7 +37,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Delete Account', { method: 'put', url: baseURL + '/delete', data: { value: password }});
+    const res = await Helper.call('Delete Account', { method: 'delete', url: baseURL, data: { value: password }});
     return res.status;
   }
 

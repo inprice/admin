@@ -12,7 +12,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Update User', { method: 'put', url: baseURL + '/update', data: form });
+    const res = await Helper.call('Update User', { method: 'put', url: baseURL + '/update-info', data: form });
     if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your info has been successfully updated' });
     return res.status;
   },
