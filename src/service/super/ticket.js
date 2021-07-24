@@ -22,7 +22,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Change Status', { method: 'put', url: baseURL + '/status', data: form });
+    const res = await Helper.call('Change Status', { method: 'put', url: baseURL + '/change-status', data: form });
     return res;
   },
 

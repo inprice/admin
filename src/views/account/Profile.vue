@@ -25,6 +25,7 @@
         <template v-slot:default>
           <tbody>
             <property :valueClass="RESPROPS.properties.title" name="Title" :value="CURSTAT.account" />
+            <property :valueClass="RESPROPS.properties.contact" name="Contact" :value="CURSTAT.contactName" />
             <property :valueClass="RESPROPS.properties.format" name="Format" :value="CURSTAT.currencyFormat" />
           </tbody>
         </template>
@@ -46,12 +47,12 @@ export default {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs': {
           return {
-            properties: { title: 'col-11', format: 'col-6' },
+            properties: { title: 'col-11', contact: 'col-8', format: 'col-6' },
           };
         }
         default: {
           return {
-            properties: { title: 'col-8', format: 'col-4' },
+            properties: { title: 'col-8', contact: 'col-5', format: 'col-4' },
           };
         }
       }

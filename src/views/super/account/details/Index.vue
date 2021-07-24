@@ -43,6 +43,9 @@
             </property>
 
             <property :valueClass="RESPROPS.properties.title" name="Title" :value="account.title" />
+            <property :valueClass="RESPROPS.properties.contact" name="Contact" :value="account.contactName" />
+            <property :valueClass="RESPROPS.properties.city" name="Tax Id" :value="account.taxId" />
+            <property :valueClass="RESPROPS.properties.city" name="Tax Office" :value="account.taxOffice" />
             <property :valueClass="RESPROPS.properties.title" name="Address 1" :value="account.address1" />
             <property :valueClass="RESPROPS.properties.title" name="2" :value="account.address2" />
             <property :valueClass="RESPROPS.properties.city" name="City" :value="account.city" />
@@ -121,12 +124,12 @@ export default {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs': {
           return {
-            properties: { name: 'col-10', status: 'col-7', planName: 'col-7', users: 'col-7', title: 'col-10', city: 'col-7', createdAt: 'col-7' },
+            properties: { name: 'col-10', contact: 'col-8', status: 'col-7', planName: 'col-7', users: 'col-7', title: 'col-10', city: 'col-7', createdAt: 'col-7' },
           };
         }
         default: {
           return {
-            properties: { name: 'col-7', status: 'col-3', planName: 'col-3', users: 'col-3', title: 'col-7', city: 'col-3', createdAt: 'col-3' },
+            properties: { name: 'col-7', contact: 'col-5', status: 'col-3', planName: 'col-3', users: 'col-3', title: 'col-7', city: 'col-3', createdAt: 'col-3' },
           };
         }
       }

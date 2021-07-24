@@ -45,17 +45,20 @@
         <template v-slot:default>
           <tbody>
             <property :valueClass="RESPROPS.properties.title" name="Title" :value="info.title" />
+            <property :valueClass="RESPROPS.properties.contact" name="Contact" :value="info.contactName" />
+            <property :valueClass="RESPROPS.properties.country" name="Tax Id" :value="info.taxId" />
+            <property :valueClass="RESPROPS.properties.country" name="Tax Office" :value="info.taxOffice" />
             <property :valueClass="RESPROPS.properties.title" name="Address1" :value="info.address1" />
             <property :valueClass="RESPROPS.properties.title" name="2" :value="info.address2" />
             <property :valueClass="RESPROPS.properties.postcode" name="Postcode" :value="info.postcode" />
             <property :valueClass="RESPROPS.properties.city" name="City" :value="info.city" />
             <property :valueClass="RESPROPS.properties.state" name="State" :value="info.state" />
-            <property :valueClass="RESPROPS.properties.country" name="Country" :value="info.countryName" />
+            <property :valueClass="RESPROPS.properties.country" name="Country" :value="info.country" />
           </tbody>
         </template>
       </v-simple-table>
 
-      <invoice-info-dialog ref="invoiceInfoDialog" :list="countries.list" @saved="invoiceInfoSaved" />
+      <invoice-info-dialog ref="invoiceInfoDialog" :countries="countries.list" @saved="invoiceInfoSaved" />
 
     </v-card>
 
@@ -81,17 +84,17 @@ export default {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs': {
           return {
-            properties: { title: 'col-10', postcode: 'col-6', city: 'col-9', state: 'col-9', country: 'col-9' },
+            properties: { title: 'col-10', contact: 'col-7', postcode: 'col-6', city: 'col-9', state: 'col-9', country: 'col-9' },
           };
         }
         case 'sm': {
           return {
-            properties: { title: 'col-10', postcode: 'col-3', city: 'col-5', state: 'col-5', country: 'col-5' },
+            properties: { title: 'col-10', contact: 'col-7', postcode: 'col-3', city: 'col-5', state: 'col-5', country: 'col-5' },
           };
         }
         default: {
           return {
-            properties: { title: 'col-9', postcode: 'col-2', city: 'col-3', state: 'col-3', country: 'col-3' },
+            properties: { title: 'col-9', contact: 'col-6', postcode: 'col-2', city: 'col-3', state: 'col-3', country: 'col-3' },
           };
         }
       }
@@ -113,7 +116,6 @@ export default {
     },
     invoiceInfoSaved(newInfo) {
       this.info = newInfo;
-      this.info.countryName = countries.findByCode(newInfo.country);
     },
     refreshSession() {
       this.$store.dispatch('session/refresh');
@@ -126,9 +128,6 @@ export default {
           this.info = res.data.info;
           this.transactions = res.data.transactions;
           this.invoices = res.data.invoices;
-          if (this.info) {
-            this.info.countryName = countries.findByCode(this.info.country);
-          }
         }
     });
   },

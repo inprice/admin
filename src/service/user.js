@@ -66,7 +66,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Leave Member', { method: 'put', url: baseURL + '/leave-member', data: { value: id } });
+    const res = await Helper.call('Leave Member', { method: 'put', url: baseURL + '/leave-membership', data: { value: id } });
     return res.status;
   },
 

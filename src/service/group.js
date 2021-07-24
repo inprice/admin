@@ -37,7 +37,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Add Links', { url: baseURL + '/links/import', data: { groupId, linksText } });
+    const res = await Helper.call('Add Links', { url: baseURL + '/links/add-links', data: { groupId, linksText } });
     return res;
   },
 

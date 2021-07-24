@@ -39,16 +39,6 @@ export default {
     return res;
   },
 
-  async createCheckout(planId) {
-    if (store.get('session/isNotAdmin')) {
-      store.commit('snackbar/setMessage', { text: 'You must be admin to make a payment!' });
-      return;
-    }
-
-    const res = await Helper.call('Create Checkout', { url: baseURL + '/create-checkout/' + planId });
-    return res;
-  },
-
   async changeTo(planId) {
     if (store.get('session/isNotAdmin')) {
       store.commit('snackbar/setMessage', { text: 'You must be admin to change your plan!' });
@@ -56,6 +46,16 @@ export default {
     }
 
     const res = await Helper.call('Change Plan', { method: 'put', url: baseURL + '/change-plan/' + planId });
+    return res;
+  },
+
+  async createCheckout(planId) {
+    if (store.get('session/isNotAdmin')) {
+      store.commit('snackbar/setMessage', { text: 'You must be admin to make a payment!' });
+      return;
+    }
+
+    const res = await Helper.call('Create Checkout', { url: baseURL + '/create-checkout/' + planId });
     return res;
   },
 

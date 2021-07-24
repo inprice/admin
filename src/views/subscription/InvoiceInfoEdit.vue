@@ -27,6 +27,33 @@
           />
 
           <v-text-field class="mx-5"
+            outlined dense
+            label="Contact"
+            v-model="form.contactName"
+            :rules="rules.contactName"
+            type="text"
+            maxlength="50"
+          />
+
+          <v-text-field class="mx-5"
+            outlined dense
+            label="Tax Id"
+            v-model="form.taxId"
+            :rules="rules.taxId"
+            type="text"
+            maxlength="16"
+          />
+
+          <v-text-field class="mx-5"
+            outlined dense
+            label="Tax Office"
+            v-model="form.taxOffice"
+            :rules="rules.taxOffice"
+            type="text"
+            maxlength="25"
+          />
+
+          <v-text-field class="mx-5"
             label="Address 1"
             outlined dense
             v-model="form.address1"
@@ -60,10 +87,8 @@
                 label="Country"
                 outlined dense
                 v-model="form.country"
-                item-text="text"
-                item-value="value"
                 :rules="rules.country"
-                :items="list"
+                :items="countries"
                 :menu-props="{ auto: true, overflowY: true }"
               />
             </v-col>
@@ -122,8 +147,10 @@
 <script>
 import SubsService from '@/service/subscription';
 
+//TODO: ozellikle ulke ismi degisikligi nedeniyle iyi test yapilacak!
+
 export default {
-  props: ['list'],
+  props: ['countries'],
   computed: {
     findDialogWidth() {
       switch (this.$vuetify.breakpoint.name) {
@@ -173,27 +200,36 @@ export default {
       this.rules = {
         title: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3-255 chars"
+          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3 - 255 chars"
         ],
         address1: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3-255 chars"
-        ],
-        address2: [
-          v => (!v || v.length <= 255) || "Must be less than 256 chars"
-        ],
-        postcode: [
-          v => (!v || v.length <= 8) || "Must be less than 9 chars"
+          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3 - 255 chars"
         ],
         city: [
           v => !!v || "Required",
-          v => (v && v.length <= 70) || "Must be less than 71 chars"
-        ],
-        state: [
-          v => (!v || v.length <= 70) || "Must be less than 71 chars"
+          v => (v && v.length >= 2 && v.length <= 50) || "Must be between 2 - 50 chars"
         ],
         country: [
           v => !!v || "Required"
+        ],
+        contactName: [
+          v => (!v || (v.length <= 70)) || "Can be up to 50 chars"
+        ],
+        taxId: [
+          v => (!v || (v.length <= 16)) || "Can be up to 16 chars"
+        ],
+        taxOffice: [
+          v => (!v || (v.length <= 25)) || "Can be up to 25 chars"
+        ],
+        address2: [
+          v => (!v || v.length <= 255) || "Can be up to 255 chars"
+        ],
+        postcode: [
+          v => (!v || v.length <= 8) || "Can be up to 8 chars"
+        ],
+        state: [
+          v => (!v || v.length <= 50) || "Can be up to 50 chars"
         ],
       }
     },
