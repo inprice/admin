@@ -97,7 +97,7 @@
 
               <div class="headline grey lighten-4 py-2 elevation-1 ">
                 <div class="title teal--text text-uppercase">
-                  {{ plan.name.replace(' Plan', '') }}
+                  {{ plan.name }}
                 </div>
 
                 <v-divider class="my-2"></v-divider>
@@ -113,15 +113,15 @@
 
               <div class="ma-2 pr-1 caption text-left">
                 <table>
-                  <tr v-for="feature in plan.features" :key="feature.id">
+                  <tr v-for="(feature, ix) in plan.features" :key="ix">
                     <td width="40%" class="text-right">
                       <v-icon v-if="feature.allowed" color="success">mdi-check-circle-outline</v-icon>
-                      <v-icon v-else color="grey)">mdi-minus-circle-outline</v-icon>
+                      <v-icon v-else color="pink">mdi-minus-circle-outline</v-icon>
                     </td>
                     <td width="3%">
                     </td>
                     <td :class="{ 'font-weight-light': !feature.allowed }">
-                      {{ feature.feature }}
+                      {{ feature.description }}
                     </td>
                   </tr>
                 </table>
@@ -377,5 +377,8 @@ export default {
     border-radius: 5px;
     border-image-source: linear-gradient(to bottom right, yellow 0%, darkorange 100%); 
     border-image-slice: 5;
+  }
+  .v-icon.v-icon {
+    font-size: 20px;
   }
 </style>

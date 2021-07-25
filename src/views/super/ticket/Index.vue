@@ -193,7 +193,7 @@
     <div v-if="searchResult && searchResult.length">
       <v-card
         class="my-4 pa-4"
-        :class="{ 'elevation-10': !row.seenBySuper}"
+        :class="{ 'elevation-3': !row.seenBySuper}"
         v-for="row in searchResult" :key="row.id"
       >
         <div class="d-flex justify-space-between mb-1">
@@ -203,7 +203,7 @@
             style="cursor: pointer"
             @click="openDetails(row.id)"
           >
-            <div class="overline teal--text font-weight-medium">{{ row.account }}</div>
+            <div class="caption font-weight-light">{{ row.account }}</div>
             <v-icon color="green" class="mr-2" v-if="!row.seenBySuper">mdi-alert-rhombus</v-icon>
             {{ row.body }}
           </div>
@@ -275,7 +275,6 @@
               small
               dark
               label
-              outlined
               class="mr-1 font-weight-medium"
               :color="findStatusColor(row.status)"
             >
@@ -375,7 +374,7 @@ export default {
       showingId: 0,
       showDetails: false,
       statusItems,
-      statusItemsWOOpened: statusItems.slice(1, statusItems.length),
+      statusItemsWOOpened: statusItems,
       priorityItems,
       typeItems,
       searchByItems,
