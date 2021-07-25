@@ -42,7 +42,7 @@
               </thead>
               <tbody>
                 <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.permType }}</td>
+                  <td>{{ row.type }}</td>
                   <td class="text-center">{{ row.createdAt }}</td>
                   <td class="text-center">{{ row.whitelisted ? 'YES' : 'NO' }}</td>
 
@@ -55,7 +55,7 @@
                       </template>
 
                       <v-list dense>
-                        <v-list-item @click="remove(row.id, row.permType)">
+                        <v-list-item @click="remove(row.id, row.type)">
                           <v-list-item-title>
                             DELETE THIS USE
                           </v-list-item-title>
@@ -93,12 +93,12 @@ export default {
   props: ['list'],
   methods: {
     toggleUnlimitedServiceUse(row) {
-      this.$refs.confirm.open('Service Use', `You are about to ${row.whitelisted ? 'remove the' : 'give a'} permission to user for use of ${row.permType} indefinetely. Are you sure?`).then(async (confirm) => {
+      this.$refs.confirm.open('Service Use', `You are about to ${row.whitelisted ? 'remove the' : 'give a'} permission to user for use of ${row.type} indefinetely. Are you sure?`).then(async (confirm) => {
         if (confirm == true) this.$emit('toggledUnlimitedUse', row.id);
       });
     },
-    remove(id, permType) {
-      this.$refs.confirm.open('Service Use', 'You are about to remove ' + permType + '. By doing that, user can use the same service one more time. Are you sure?').then(async (confirm) => {
+    remove(id, type) {
+      this.$refs.confirm.open('Service Use', 'You are about to remove ' + type + '. By doing that, user can use the same service one more time. Are you sure?').then(async (confirm) => {
         if (confirm == true) this.$emit('deleted', id);
       });
     }

@@ -39,11 +39,8 @@
       </div>
     </div>
 
-    <v-card>
-      <div 
-        v-if="searchResult && searchResult.length"
-        class="v-data-table v-data-table--dense theme--light put-behind"
-      >
+    <v-card v-if="searchResult && searchResult.length">
+      <div class="v-data-table v-data-table--dense theme--light put-behind">
         <div class="v-data-table__wrapper">
 
           <table
@@ -62,7 +59,10 @@
             </thead>
             <tbody>
               <tr v-for="row in searchResult" :key="row.xid" :style="(CURSTAT.accountId && CURSTAT.accountId == row.xid ? 'background-color: lightcyan' : '')">
-                <td>{{ row.name }}</td>
+                <td style="padding: 3px 10px">
+                  <div class="caption font-weight-thin">{{ row.email }}</div>
+                  {{ row.name }}
+                </td>
                 <td>{{ row.plan }}</td>
                 <td>{{ row.status }}</td>
                 <td>{{ row.lastStatusUpdated }}</td>
@@ -112,16 +112,16 @@
         </div>
       </div>
 
-      <v-card v-else >
-        <block-message :message="'No account found! You may want to change your criteria.'" />
-      </v-card>
-
       <v-divider></v-divider>
 
       <div class="pl-3 py-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
       </div>
       
+    </v-card>
+
+    <v-card v-else >
+      <block-message :message="'No account found! You may want to change your criteria.'" />
     </v-card>
 
     <create-coupon ref="createCouponDialog" />
@@ -254,3 +254,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+  td {
+    line-height: 25px;
+  }
+</style>

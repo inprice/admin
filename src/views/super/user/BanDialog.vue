@@ -27,8 +27,8 @@
               outlined
               dense
               label="Reason"
-              v-model="form.reason"
-              :rules="rules.reason"
+              v-model="form.text"
+              :rules="rules.text"
               maxlength="128"
             />
 
@@ -82,7 +82,7 @@ export default {
       form: {
         id: null,
         name: null,
-        reason: null,
+        text: null,
       },
     };
   },
@@ -107,7 +107,7 @@ export default {
     },
     activateRules() {
       this.rules = {
-        reason: [
+        text: [
           v => !!v || "Required",
           v => (v && v.length >= 5 && v.length <= 128) || "Reason must be between 5-128 chars"
         ],

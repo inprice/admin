@@ -29,11 +29,8 @@
       </div>
     </div>
 
-    <v-card>
-      <div 
-        v-if="searchResult && searchResult.length"
-        class="v-data-table v-data-table--dense theme--light put-behind"
-      >
+    <v-card v-if="searchResult && searchResult.length">
+      <div class="v-data-table v-data-table--dense theme--light put-behind">
         <div class="v-data-table__wrapper">
 
           <table
@@ -93,16 +90,16 @@
         </div>
       </div>
 
-      <v-card v-else >
-        <block-message :message="'No user found! You may want to change your criteria.'" />
-      </v-card>
-
       <v-divider></v-divider>
 
       <div class="pl-3 py-3">
         <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
       </div>
 
+    </v-card>
+
+    <v-card v-else >
+      <block-message :message="'No user found! You may want to change your criteria.'" />
     </v-card>
 
     <ban-dialog subject="User" ref="banDialog" @banned="banned" />
@@ -177,9 +174,7 @@ export default {
         .then((res) => {
           if (res && res.status) {
             this.$store.commit('snackbar/setMessage', { text: `${form.name} is successfully banned.` });
-            this.user.bannedAt = 'JUST NOW';
-            this.user.banReason = form.reason;
-            this.user.banned = true;
+            this.search();
           }
         });
     },
@@ -237,13 +232,13 @@ export default {
         case 'sm': {
           return {
             'table-layout': 'fixed',
-            table: { email: '250px', reason: '', bannedAt: '150px', action: '70px' },
+            table: { email: '', reason: '', bannedAt: '150px', action: '70px' },
           };
         }
         default: {
           return {
             'table-layout': '',
-            table: { email: '12%', reason: '', bannedAt: '15%', action: '8%' },
+            table: { email: '', reason: '', bannedAt: '15%', action: '8%' },
           };
         }
       }
