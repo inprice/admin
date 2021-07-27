@@ -15,7 +15,7 @@
         <v-icon large class="pt-4">mdi-account-check</v-icon>
         <v-list-item three-line>
           <v-list-item-content class="pa-0 mx-auto">
-            <v-list-item-title class="title">{{ CURSTAT.account }}</v-list-item-title>
+            <v-list-item-title class="title" style="white-space: normal">{{ CURSTAT.account }}</v-list-item-title>
 
             <v-list-item-subtitle class="pt-3" v-if="$store.get('session/isSuperUser')">
               {{ CURSTAT.email }}

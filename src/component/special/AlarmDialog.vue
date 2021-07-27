@@ -262,7 +262,7 @@ export default {
         this.topic = data.topic;
         this.statuses = statuses[data.topic];
         this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
-        this.stepNo = 3;
+        if (data.id) this.stepNo = 3;
       }
       this.$nextTick(() => this.formatPrices());
     },

@@ -134,23 +134,39 @@
               <v-list-item-title>SET ALARM</v-list-item-title>
             </v-list-item>
 
-            <v-divider></v-divider>
+            <v-divider v-if="$store.get('session/isSuperUser')"></v-divider>
 
-            <v-list-item link @click="$emit('changeOneStatus', { row, newStatus: 'PAUSED' })" v-if="row.statusGroup == 'ACTIVE' || row.statusGroup == 'TRYING'">
+            <v-list-item 
+              link 
+              v-if="$store.get('session/isSuperUser') && (row.statusGroup == 'ACTIVE' || row.statusGroup == 'TRYING')"
+              @click="$emit('changeOneStatus', { row, newStatus: 'PAUSED' })" 
+            >
               <v-list-item-title>PAUSE</v-list-item-title>
             </v-list-item>
 
-            <v-list-item link @click="$emit('changeOneStatus', { row, newStatus: 'RESOLVED' })" v-if="row.status == 'TOBE_IMPLEMENTED'">
+            <v-list-item
+              link
+              v-if="$store.get('session/isSuperUser') && row.status == 'TOBE_IMPLEMENTED'"
+              @click="$emit('changeOneStatus', { row, newStatus: 'RESOLVED' })"
+            >
               <v-list-item-title>MARK AS RESOLVED</v-list-item-title>
             </v-list-item>
 
-            <v-list-item link @click="$emit('changeOneStatus', { row, newStatus: 'NOT_SUITABLE' })" v-if="row.status != 'NOT_SUITABLE'">
+            <v-list-item
+              link
+              v-if="$store.get('session/isSuperUser') && row.status != 'NOT_SUITABLE'"
+              @click="$emit('changeOneStatus', { row, newStatus: 'NOT_SUITABLE' })"
+            >
               <v-list-item-title>MARK AS NOT SUITABLE</v-list-item-title>
             </v-list-item>
 
-            <v-divider></v-divider>
+            <v-divider v-if="$store.get('session/isSuperUser')"></v-divider>
 
-            <v-list-item link @click="$emit('undoOne', row)">
+            <v-list-item
+              link
+              v-if="$store.get('session/isSuperUser')"
+              @click="$emit('undoOne', row)"
+            >
               <v-list-item-title>UNDO LAST CHANGE</v-list-item-title>
             </v-list-item>
 

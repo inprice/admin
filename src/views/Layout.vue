@@ -201,7 +201,7 @@
         <v-list v-if="CURSTAT" class="pa-0">
           <v-list-item class="text-center black--text text-truncate">
             <v-list-item-content>
-              <div class="subtitle font-weight-bold">{{ CURSTAT.account }}</div>
+              <div class="subtitle font-weight-bold" style="white-space: normal">{{ CURSTAT.account }}</div>
               <span class="caption">{{ CURSTAT.email }}</span>
               <v-chip label outlined class="caption d-flex justify-center">
                 <span class="font-weight-medium">{{ CURSTAT.role }}</span>

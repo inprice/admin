@@ -238,7 +238,7 @@ export default {
       });
     },
     async subscribe() {
-      this.$refs.info.open('Sorry!', 'We are working really hard to implement our payment gateway and it is about to be completed soon. Thank you for your interest.');
+      this.$refs.info.open('Sorry!', 'Our payment gateway is not yet fully completed. We will make an announcement when it is finished. Thank you for your interest.');
     //async subscribe(planId) {
       /*
       this.loading.overlay = true;
