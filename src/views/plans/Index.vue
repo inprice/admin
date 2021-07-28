@@ -130,7 +130,6 @@
               <v-divider class="mb-3"></v-divider>
 
               <v-btn
-                tile
                 class="mb-2"
                 @click="subscribe(plan.id)"
                 v-if="CURSTAT.isSubscriber == false"
@@ -141,7 +140,6 @@
 
               <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
                 <v-btn
-                  tile
                   color="error"
                   class="mb-2"
                   @click="cancel()"
@@ -152,7 +150,7 @@
                 </v-btn>
                 <v-btn 
                   v-else
-                  tile
+                  dark
                   class="mb-2"
                   @click="changeTo(plan.id)"
                   :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"

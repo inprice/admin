@@ -134,7 +134,6 @@ const mutations = {
     if (data.sessionNo !== undefined && data.sessionNo > -1 && data.sessionNo <= state.list.length) {
       state.no = data.sessionNo;
     }
-    //buildCurrent(state);
   },
 
   SET_LINK_COUNT(state, val) {
@@ -155,6 +154,13 @@ const mutations = {
       state.current.currencyFormat = form.currencyFormat;
       state.list[state.no].account = form.name;
       state.list[state.no].currencyFormat = form.currencyFormat;
+    }
+  },
+
+  SET_USER_INFO(state, form) {
+    if (form && state.current && state.list[state.no]) {
+      state.current.timezone = form.timezone ;
+      state.list[state.no].timezone = form.timezone;
     }
   },
 

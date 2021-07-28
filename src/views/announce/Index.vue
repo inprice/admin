@@ -263,10 +263,10 @@
               {{ row.title }}
             </v-col>
             <v-col cols="2" class="text-right hidden-sm-and-down">
-              {{ row.startingAt }}
+              {{ row.startingAt | formatPlainDate }}
             </v-col>
             <v-col cols="2" class="text-right hidden-sm-and-down">
-              {{ row.endingAt }}
+              {{ row.endingAt | formatPlainDate }}
             </v-col>
           </v-row>
 

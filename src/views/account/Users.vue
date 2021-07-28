@@ -68,8 +68,8 @@
                     <v-menu>
                       <template v-slot:activator="{ on }">
                         <v-btn
-                          fab
-                          x-small
+                          icon
+                          small
                           v-on="on"
                           class="my-1"
                         >

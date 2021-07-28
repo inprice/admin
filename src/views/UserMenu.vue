@@ -15,9 +15,13 @@
         <v-icon large class="pt-4">mdi-account-check</v-icon>
         <v-list-item three-line>
           <v-list-item-content class="pa-0 mx-auto">
+            <v-list-item-title class="caption">{{ CURSTAT.email }}</v-list-item-title>
+
+            <v-divider class="my-2"></v-divider>
+
             <v-list-item-title class="title" style="white-space: normal">{{ CURSTAT.account }}</v-list-item-title>
 
-            <v-list-item-subtitle class="pt-3" v-if="$store.get('session/isSuperUser')">
+            <v-list-item-subtitle v-if="$store.get('session/isSuperUser')">
               {{ CURSTAT.email }}
             </v-list-item-subtitle>
 
@@ -29,7 +33,10 @@
               </v-chip>
             </v-list-item-subtitle>
 
-            <v-list-item-subtitle class="py-3">
+            <v-list-item-subtitle
+              class="py-3"
+              v-if="$store.get('session/isSuperUser') || (!CURSTAT.isActive && $store.get('session/isNotSuperUser'))"
+            >
               <v-btn
                 text
                 v-if="!CURSTAT.accountId && $store.get('session/isSuperUser')"
@@ -55,17 +62,6 @@
               >
                 Please select a plan!
               </v-btn>
-
-              <div
-                class="text-center"
-                :class="{ 'pt-3': (!CURSTAT.isActive && $store.get('session/isNotSuperUser')) }"
-                v-if="$store.get('session/isNotSuperUser')"
-              >
-                <v-divider class="pb-3"></v-divider>
-                <v-btn text small class="text-none">Privacy Policy</v-btn>
-                -
-                <v-btn text small class="text-none">Terms of Services</v-btn>
-              </div>
 
             </v-list-item-subtitle>
           </v-list-item-content>
