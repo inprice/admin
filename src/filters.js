@@ -4,38 +4,9 @@ import numFormatter from 'number-format.js';
 
 const SESSION = 'session/getCurrentStatus';
 
-export default (Vue) => {
-  Vue.filter('toPosition', (value) => {
-    switch (value) {
-      case 1:
-        return 'LOWEST';
-      case 2:
-        return 'LOWER';
-      case 3:
-        return 'AVERAGE';
-      case 4:
-        return 'HIGHER';
-      case 5:
-        return 'HIGHEST';
-    }
-    return 'NOT SET';
-  });
+const longDateFormat = "YYYY-MM-DD HH:mm:ss";
 
-  Vue.filter('toDifferenceLine', (diff) => {
-    if (diff != 0) {
-      let dir = 'minus';
-      let color = 'primary';
-      if (diff > 0) {
-        dir = 'up';
-        color = 'success';
-      } else {
-        dir = 'down';
-        color = 'red';
-      }
-      return numFormatter('#.00%', diff)+` <v-icon color="${color}">mdi-arrow-${dir}</v-icon>`;
-    }
-    return 'NA';
-  });
+export default (Vue) => {
 
   Vue.filter('toCurrency', (value, format) => {
     try {
@@ -54,6 +25,23 @@ export default (Vue) => {
       /* eslint-disable no-empty */
     } catch (error) { }
     return 0;
+  });
+
+  Vue.filter('formatPlainDate', (value) => {
+    try {
+      const tz = store.get(SESSION+'@timezone');
+      if (value) {
+        if (tz) {
+          return moment(value).tz(tz).format(longDateFormat);
+        } else {
+          return moment(value).format(longDateFormat);
+        }
+      }
+      /* eslint-disable no-empty */
+    } catch (error) {
+      console.error('Failed to format date', value, error);
+     }
+    return 'NA';
   });
 
   Vue.filter('formatDate', (value) => {

@@ -178,7 +178,7 @@
       />
 
       <div class="mt-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
+        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length">Load More</v-btn>
       </div>
     </div>
 

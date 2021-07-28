@@ -162,8 +162,6 @@ export default {
         } else {
           toPage = 'groups';
         }
-      } else {
-        toPage = 'plans';
       }
       return `/${sesNo}/app/${toPage}`;
     },

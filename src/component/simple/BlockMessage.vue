@@ -11,7 +11,7 @@ export default {
   props: {
     message: String,
     dense: {
-      default: false,
+      default: true,
       type: Boolean,
     }
   }

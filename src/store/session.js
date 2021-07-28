@@ -8,7 +8,7 @@ import { BroadcastChannel } from 'broadcast-channel';
 const state = {
   no: null,
   list: [],
-  current: {},
+  current: {}
 };
 
 const actions = {
@@ -22,6 +22,7 @@ const actions = {
   },
 
   logout({ state, commit }, expired) {
+    if (state.current.role != 'SUPER') logoutChannel.postMessage();
     if (expired == false) {
       ApiService.post('/logout')
         .then(() => {
@@ -29,7 +30,6 @@ const actions = {
         });
     }
     localStorage.clear();
-    if (state.current.role != 'SUPER') logoutChannel.postMessage();
     commit('RESET');
     router.push('/login' + (expired == true ? '?m=1nqq' : ''));
   },
@@ -117,6 +117,16 @@ const mutations = {
     buildCurrent(state);
   },
 
+  CHANGE_CURRENT(state, sid) {
+    if (sid != undefined && sid >= 0 && sid < state.list.length) {
+      state.no = sid;
+    } else {
+      state.no = 0;
+    }
+    if (state.no == undefined || state.no < 0 || state.no >= state.list.length) state.no = 0;
+    buildCurrent(state);
+  },
+
   SET_LIST(state, data) {
     if (data.sessions) {
       state.list = data.sessions;
@@ -124,7 +134,7 @@ const mutations = {
     if (data.sessionNo !== undefined && data.sessionNo > -1 && data.sessionNo <= state.list.length) {
       state.no = data.sessionNo;
     }
-    buildCurrent(state);
+    //buildCurrent(state);
   },
 
   SET_LINK_COUNT(state, val) {
@@ -201,15 +211,17 @@ const getters = {
 
 };
 
+import store from '../store/'
+
 const loginChannel = new BroadcastChannel('login');
 loginChannel.onmessage = (e) => {
-  mutations.SET_LIST(state, e);
+  store.commit('session/SET_LIST', e);
 };
 
 const logoutChannel = new BroadcastChannel('logout');
 logoutChannel.onmessage = () => {
-  mutations.RESET(state);
-  router.push('/login');
+  store.commit('session/RESET');
+  router.push({ name: 'login' }).catch(() => {});
 };
 
 export default {

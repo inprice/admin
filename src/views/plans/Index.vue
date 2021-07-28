@@ -211,6 +211,7 @@ export default {
   },
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
+    SESSION_NO: get('session/getSessionNo'),
     findMinWidthForPlans() {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs':

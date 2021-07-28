@@ -1,5 +1,5 @@
 <template>
-  <div :title="date" v-if="date">
+  <div :title="date | formatPlainDate" v-if="date">
     {{ prefix }} {{ date | formatDate }} {{ postfix }}
   </div>
 </template>
