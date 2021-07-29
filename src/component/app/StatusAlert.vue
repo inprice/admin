@@ -9,7 +9,7 @@
           You've started {{ freeIndicator() }} period <ago class="d-inline font-weight-bold" :date="CURSTAT.subsRenewalAt" />.
           There are only <strong>{{ CURSTAT.daysToRenewal }} days</strong> left to end.
         </span>
-        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">        
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">        
           <v-btn 
             small
             color="primary"
@@ -26,11 +26,10 @@
 
     <block-message v-if="!CURSTAT.isActive">
       You have no active subscription right now. {{ infoForPassiveAccount() }}
-      <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+      <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">
         <v-btn 
           small
           color="success"
-          class="ml-2"
           @click="$router.push( { name: 'plans' })">
             See Plans
         </v-btn>

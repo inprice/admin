@@ -185,7 +185,7 @@
     <v-card v-else>
       <block-message class="mt-2">
         You are not allowed to manage your products until activate your account!
-        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">
           <v-btn 
             small
             :disabled="$store.get('session/isNotEditor')"

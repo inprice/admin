@@ -177,14 +177,14 @@
     </v-card>
 
     <!-- ------------------ -->
-    <!-- MRU 25 Links -->
+    <!-- MRU 10 Links -->
     <!-- ------------------ -->
     <v-card class="mt-4">
       <v-card-title class="pa-2 d-flex">
         <v-icon class="mr-4 hidden-xs-only">mdi-account-search-outline</v-icon>
         <div>
           <div>Links</div>
-          <div class="caption">Most recently updated 25 links.</div>
+          <div class="caption">Most recently updated 10 links.</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
@@ -194,34 +194,26 @@
           <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
             <thead>
               <tr>
-                <th :width="RESPROPS.linksTable.seller" class="text-truncate">Seller & Platform | URL</th>
-                <th :width="RESPROPS.linksTable.price" class="text-right">Price | Problem</th>
-                <th :width="RESPROPS.linksTable.status" class="text-center">Status</th>
+                <th :width="RESPROPS.linksTable.seller" class="text-truncate">Name</th>
+                <th :width="RESPROPS.linksTable.price" class="text-right">Price</th>
                 <th :width="RESPROPS.linksTable.time">Time</th>
+                <th :width="RESPROPS.linksTable.seller" class="text-truncate">Status</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(row, index) in report.links.mru25" :key="index" :title="row.groupName">
-                <td v-if="row.seller">{{ (row.seller || 'NA') + (' ('+row.platform+')' || '') }}</td>
-                <td v-else class="font-italic">{{ row.url }}</td>
-                <td class="text-right" v-if="row.price" >{{ row.price | toPrice }}</td>
-                <td
-                  colspan="2"
-                  class="text-center"
-                  v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')"
-                >
-                  {{ row.statusDesc }}
-                </td>
-                <td
-                  class="text-center"
-                  v-if="row.price && (row.status == 'ACTIVE' || row.level != 'NA')"
-                >
-                  <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
-                  {{ row.level }}
-                  <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
-                </td>
+                <td>{{ (row.name || row.url) }}</td>
+                <td class="text-right">{{ row.price | toPrice }}</td>
                 <td>
                   <ago :date="row.updatedAt" />
+                </td>
+                <td>
+                  <div v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')">{{ row.statusDesc }}</div>
+                  <div v-else>
+                    <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
+                    {{ row.level }}
+                    <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
+                  </div>
                 </td>
               </tr>
             </tbody>

@@ -147,8 +147,6 @@
 <script>
 import SubsService from '@/service/subscription';
 
-//TODO: ozellikle ulke ismi degisikligi nedeniyle iyi test yapilacak!
-
 export default {
   props: ['countries'],
   computed: {

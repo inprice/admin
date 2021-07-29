@@ -12,8 +12,10 @@ export default (Vue) => {
     try {
       if (format) {
         return numFormatter(format, value);
-      } else {
+      } else if (store.get(SESSION+'@currencyFormat')) {
         return numFormatter(store.get(SESSION+'@currencyFormat'), value);
+      } else {
+        return numFormatter('#,##0.00', value);
       }
       /* eslint-disable no-empty */
     } catch (error) { }

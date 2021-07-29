@@ -54,9 +54,9 @@
               </v-btn>
 
               <v-btn
-                text
-                v-else-if="!CURSTAT.isActive && $store.get('session/isNotSuperUser')"
+                small
                 color="info"
+                v-else-if="!CURSTAT.isActive && $store.get('session/isNotSuperUser')"
                 :to="{ name: 'plans' }"
                 @click="menu=false"
               >
@@ -108,10 +108,9 @@
 
       <v-card class="text-center">
         <v-btn
-          text
-          outlined
+          small
           class="my-3"
-          color="info"
+          color="warning"
           @click="$store.dispatch('session/logout', false)"
         >
           Log out
