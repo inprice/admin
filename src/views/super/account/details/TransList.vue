@@ -34,14 +34,16 @@
             <table :style="{'table-layout': RESPROPS['table-layout']}">
               <thead>
                 <tr>
+                  <th :width="RESPROPS.table.date">Date</th>
                   <th :width="RESPROPS.table.event">Event</th>
                   <th :width="RESPROPS.table.description">Description or File</th>
-                  <th class="text-center" :width="RESPROPS.table.ok">OK?</th>
+                  <th class="text-center" :width="RESPROPS.table.ok">OK</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.event }}</td>
+                  <td>{{ row.createdAt }}</td>
+                  <td>{{ row.event }} - {{ row.eventId }}</td>
                   <td v-if="row.fileUrl"><a :href="row.fileUrl">row.fileUrl</a></td>
                   <td v-else>{{ row.reason || row.description }}</td>
                   <td class="text-center">{{ row.successful ? 'YES' : 'NO' }}</td>
@@ -75,13 +77,13 @@ export default {
         case 'sm': {
           return {
             'table-layout': 'fixed',
-            table: { event: '300px', description: '350px', ok: '70px' },
+            table: { date: '150px', event: '250px', description: '350px', ok: '70px' },
           };
         }
         default: {
           return {
             'table-layout': '',
-            table: { account: '', description: '', ok: '7%' },
+            table: { date: '17%', event: '33%', description: '', ok: '7%' },
           };
         }
       }

@@ -35,23 +35,28 @@
             maxlength="50"
           />
 
-          <v-text-field class="mx-5"
-            outlined dense
-            label="Tax Id"
-            v-model="form.taxId"
-            :rules="rules.taxId"
-            type="text"
-            maxlength="16"
-          />
-
-          <v-text-field class="mx-5"
-            outlined dense
-            label="Tax Office"
-            v-model="form.taxOffice"
-            :rules="rules.taxOffice"
-            type="text"
-            maxlength="25"
-          />
+          <v-row class="mx-2">
+            <v-col class="py-0">
+              <v-text-field
+                outlined dense
+                label="Tax Id"
+                v-model="form.taxId"
+                :rules="rules.taxId"
+                type="text"
+                maxlength="16"
+              />
+            </v-col>
+            <v-col class="py-0">
+              <v-text-field
+                outlined dense
+                label="Tax Office"
+                v-model="form.taxOffice"
+                :rules="rules.taxOffice"
+                type="text"
+                maxlength="25"
+              />
+            </v-col>
+          </v-row>
 
           <v-text-field class="mx-5"
             label="Address 1"
@@ -83,19 +88,6 @@
               />
             </v-col>
             <v-col class="py-0">
-              <v-select
-                label="Country"
-                outlined dense
-                v-model="form.country"
-                :rules="rules.country"
-                :items="countries"
-                :menu-props="{ auto: true, overflowY: true }"
-              />
-            </v-col>
-          </v-row>
-
-          <v-row class="mx-2">
-            <v-col class="py-0">
               <v-text-field
                 label="Postcode"
                 outlined dense
@@ -105,18 +97,26 @@
                 maxlength="8"
               />
             </v-col>
-            <v-col class="py-0">
-              <v-text-field
-                label="State"
-                outlined dense
-                v-model="form.state"
-                :rules="rules.state"
-                type="text"
-                maxlength="70"
-              />
-            </v-col>
           </v-row>
-          
+
+          <v-text-field  class="mx-5"
+            label="State"
+            outlined dense
+            v-model="form.state"
+            :rules="rules.state"
+            type="text"
+            maxlength="70"
+          />
+
+          <v-select  class="mx-5"
+            label="Country"
+            outlined dense
+            v-model="form.country"
+            :rules="rules.country"
+            :items="countries"
+            :menu-props="{ auto: true, overflowY: true }"
+          />
+
         </v-form>
 
         <v-divider></v-divider>
@@ -146,8 +146,6 @@
 
 <script>
 import SubsService from '@/service/subscription';
-
-//TODO: ozellikle ulke ismi degisikligi nedeniyle iyi test yapilacak!
 
 export default {
   props: ['countries'],

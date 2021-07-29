@@ -3,7 +3,7 @@ import store from '../store'
 import router from '../router';
 
 function logoutCheck(reason, manualErrorHandling) {
-  if (reason.includes("code 401") || reason.includes("be expired") || (reason.includes("Network Error") && !window.location.href.includes("/login"))) {
+  if (reason.includes("sign in") || reason.includes("be expired") || (reason.includes("Network Error") && !window.location.href.includes("/login"))) {
     store.dispatch('session/logout', true);
   } else if (!manualErrorHandling) {
     store.commit('snackbar/setMessage', { text: reason, level: 'error' });

@@ -10,7 +10,7 @@
       <div>
         <span v-if="group.price"> {{ group.price | toCurrency }}</span>
 
-        <div>
+        <div class="d-inline">
           <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -226,11 +226,7 @@
       @saved="saveAlarm"
     ></alarm-dialog>
 
-    <edit
-      ref="editDialog"
-      @saved="save"
-    />
-
+    <edit ref="editDialog" @saved="save"></edit>
     <confirm ref="confirm"></confirm>
 
   </v-card>
@@ -273,7 +269,7 @@ export default {
     async save(form) {
       const result = await GroupService.save(form);
       if (result && result.status) {
-        this.$emit('saved', result.data);
+        this.$emit('saved', result.data.group);
       }
     },
     openDetails() {

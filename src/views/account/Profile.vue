@@ -25,7 +25,6 @@
         <template v-slot:default>
           <tbody>
             <property :valueClass="RESPROPS.properties.title" name="Title" :value="CURSTAT.account" />
-            <property :valueClass="RESPROPS.properties.contact" name="Contact" :value="CURSTAT.contactName" />
             <property :valueClass="RESPROPS.properties.format" name="Format" :value="CURSTAT.currencyFormat" />
           </tbody>
         </template>

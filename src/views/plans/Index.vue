@@ -97,7 +97,7 @@
 
               <div class="headline grey lighten-4 py-2 elevation-1 ">
                 <div class="title teal--text text-uppercase">
-                  {{ plan.name.replace(' Plan', '') }}
+                  {{ plan.name }}
                 </div>
 
                 <v-divider class="my-2"></v-divider>
@@ -113,15 +113,15 @@
 
               <div class="ma-2 pr-1 caption text-left">
                 <table>
-                  <tr v-for="feature in plan.features" :key="feature.id">
+                  <tr v-for="(feature, ix) in plan.features" :key="ix">
                     <td width="40%" class="text-right">
                       <v-icon v-if="feature.allowed" color="success">mdi-check-circle-outline</v-icon>
-                      <v-icon v-else color="grey)">mdi-minus-circle-outline</v-icon>
+                      <v-icon v-else color="pink">mdi-minus-circle-outline</v-icon>
                     </td>
                     <td width="3%">
                     </td>
                     <td :class="{ 'font-weight-light': !feature.allowed }">
-                      {{ feature.feature }}
+                      {{ feature.description }}
                     </td>
                   </tr>
                 </table>
@@ -130,7 +130,6 @@
               <v-divider class="mb-3"></v-divider>
 
               <v-btn
-                tile
                 class="mb-2"
                 @click="subscribe(plan.id)"
                 v-if="CURSTAT.isSubscriber == false"
@@ -141,7 +140,6 @@
 
               <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
                 <v-btn
-                  tile
                   color="error"
                   class="mb-2"
                   @click="cancel()"
@@ -152,7 +150,7 @@
                 </v-btn>
                 <v-btn 
                   v-else
-                  tile
+                  dark
                   class="mb-2"
                   @click="changeTo(plan.id)"
                   :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
@@ -211,6 +209,7 @@ export default {
   },
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
+    SESSION_NO: get('session/getSessionNo'),
     findMinWidthForPlans() {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs':
@@ -238,7 +237,7 @@ export default {
       });
     },
     async subscribe() {
-      this.$refs.info.open('Sorry!', 'We are working really hard to implement our payment gateway and it is about to be completed soon. Thank you for your interest.');
+      this.$refs.info.open('Sorry!', 'Our payment gateway is not yet fully completed. We will make an announcement when it is finished. Thank you for your interest.');
     //async subscribe(planId) {
       /*
       this.loading.overlay = true;
@@ -377,5 +376,8 @@ export default {
     border-radius: 5px;
     border-image-source: linear-gradient(to bottom right, yellow 0%, darkorange 100%); 
     border-image-slice: 5;
+  }
+  .v-icon.v-icon {
+    font-size: 20px;
   }
 </style>

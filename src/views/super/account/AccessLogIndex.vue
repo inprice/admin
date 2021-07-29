@@ -4,8 +4,8 @@
 
     <div class="d-flex justify-space-between px-4 py-2 pt-4">
       <div>
-        <div class="body-2">Account's access logs.</div>
         <div class="title">{{ $route.query.name }}</div>
+        <div class="body-2">Account's access logs.</div>
       </div>
 
       <v-btn 
@@ -235,7 +235,7 @@
 
     </div>
     
-    <div class="col pa-0" v-if="searchResult">
+    <div class="col pa-0" v-if="searchResult && searchResult.length > 0">
       <list :rows="searchResult" :selectedId="showingRowId" @selected="rowSelected" />
 
       <div class="mt-3">

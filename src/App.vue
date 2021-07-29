@@ -133,7 +133,10 @@ export default {
   watch: { 
     '$route.params.sid': {
         handler: function(sid) {
-          if (sid != undefined) this.$store.dispatch('message/fetchAnnounces');
+          if (sid != undefined) {
+            this.$store.commit('session/CHANGE_CURRENT', sid);
+            this.$store.dispatch('message/fetchAnnounces');
+          }
         },
       }
   }

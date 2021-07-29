@@ -34,7 +34,7 @@
             </v-btn>
 
             <v-btn 
-              small
+              small dark
               class="ml-2"
               color="red"
               v-if="CURSTAT.status == 'COUPONED'"
