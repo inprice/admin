@@ -28,7 +28,14 @@
               v-model="form.name"
               :rules="rules.name"
               type="text"
-              maxlength="500"
+              maxlength="50"
+            />
+
+            <v-text-field
+              label="Description"
+              v-model="form.description"
+              :rules="rules.description"
+              maxlength="128"
             />
 
             <v-text-field
@@ -88,6 +95,7 @@ export default {
       rules: {},
       form: {
         name: '',
+        description: '',
         price: 0,
       },
     };
@@ -99,6 +107,7 @@ export default {
       if (data) {
         this.form.id = data.id;
         this.form.name = data.name;
+        this.form.description = data.description;
         this.form.price = data.price;
       }
 
@@ -125,7 +134,10 @@ export default {
       this.rules = {
         name: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 500) || "Name must be between 3-500 chars"
+          v => (v && v.length >= 3 && v.length <= 50) || "Name must be between 3-50 chars"
+        ],
+        description: [
+          v => (!v || (v.length <= 128)) || "Can be up to 128 chars"
         ],
         price: [
           v => !!v || "Required",

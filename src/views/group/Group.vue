@@ -5,7 +5,10 @@
     <!-- INFO   -->
     <!-- ------ -->
     <v-card-title class="py-1 justify-space-between">
-      <span @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">{{ group.name }}</span>
+      <div @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
+        <div>{{ group.name }}</div>
+        <div class="caption">{{ group.description }}</div>
+      </div>
 
       <div>
         <span v-if="group.price"> {{ group.price | toCurrency }}</span>
