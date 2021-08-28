@@ -107,7 +107,7 @@ export default {
   methods: {
     refreshMemberList() {
       if (this.account != null) {
-        SU_AccountService.fetchMemberList(this.account.xid).then((res) => {
+        SU_AccountService.fetchMemberList(this.account.id).then((res) => {
           if (res && res.status) {
             this.memberList = res.data;
           }
@@ -116,7 +116,7 @@ export default {
     },
     refreshHistoryList() {
       if (this.account != null) {
-        SU_AccountService.fetchHistoryList(this.account.xid).then((res) => {
+        SU_AccountService.fetchHistoryList(this.account.id).then((res) => {
           if (res && res.status) {
             this.historyList = res.data;
           }
@@ -125,7 +125,7 @@ export default {
     },
     refreshTransList() {
       if (this.account != null) {
-        SU_AccountService.fetchTransactionList(this.account.xid).then((res) => {
+        SU_AccountService.fetchTransactionList(this.account.id).then((res) => {
           if (res && res.status) {
             this.transList = res.data;
           }

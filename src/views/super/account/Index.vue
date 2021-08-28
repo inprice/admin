@@ -58,7 +58,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="row in searchResult" :key="row.xid" :style="(CURSTAT.accountId && CURSTAT.accountId == row.xid ? 'background-color: lightcyan' : '')">
+              <tr v-for="row in searchResult" :key="row.id" :style="(CURSTAT.accountId && CURSTAT.accountId == row.id ? 'background-color: lightcyan' : '')">
                 <td style="padding: 3px 10px">
                   <div class="caption font-weight-thin">{{ row.email }}</div>
                   {{ row.name }}
@@ -75,12 +75,12 @@
                     </template>
 
                     <v-list dense>
-                      <v-list-item @click="unbindAccount(row.xid)" v-if="CURSTAT.accountId && CURSTAT.accountId == row.xid">
+                      <v-list-item @click="unbindAccount(row.id)" v-if="CURSTAT.accountId && CURSTAT.accountId == row.id">
                         <v-list-item-title>
                           UNBIND THIS
                         </v-list-item-title>
                       </v-list-item>
-                      <v-list-item @click="bindAccount(row.xid)" v-else>
+                      <v-list-item @click="bindAccount(row.id)" v-else>
                         <v-list-item-title>
                           BIND THIS
                         </v-list-item-title>
@@ -88,19 +88,19 @@
 
                       <v-divider></v-divider>
 
-                      <v-list-item link :to="{ name: 'sys-account-details', params: { aid: row.xid } }">
+                      <v-list-item link :to="{ name: 'sys-account-details', params: { aid: row.id } }">
                         <v-list-item-title>DETAILS</v-list-item-title>
                       </v-list-item>
-                      <v-list-item link :to="{ name: 'sys-account-logs', params: { aid: row.xid }, query: { name: row.name } }">
+                      <v-list-item link :to="{ name: 'sys-account-logs', params: { aid: row.id }, query: { name: row.name } }">
                         <v-list-item-title>ACCESS LOGS</v-list-item-title>
                       </v-list-item>
-                      <v-list-item @click="openCreateCouponDialog(row.xid, row.name)">
+                      <v-list-item @click="openCreateCouponDialog(row.id, row.name)">
                         <v-list-item-title>CREATE COUPON</v-list-item-title>
                       </v-list-item>
 
                       <v-divider></v-divider>
 
-                      <v-list-item @click="makeAnAnnouncement(row.xid, row.name)">
+                      <v-list-item @click="makeAnAnnouncement(row.id, row.name)">
                         <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
                       </v-list-item>
                     </v-list>

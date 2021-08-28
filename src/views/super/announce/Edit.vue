@@ -41,7 +41,7 @@
                 v-model="form.startingAt"
                 :rules="rules.startingAt"
                 label="Starting At"
-                class="pr-2"
+                class="pr-1"
               ></v-text-field>
 
               <v-text-field
@@ -51,7 +51,7 @@
                 v-model="form.endingAt"
                 :rules="rules.endingAt"
                 label="Ending At"
-                class="pl-2"
+                class="pl-1"
               ></v-text-field>
             </div>
 

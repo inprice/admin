@@ -67,6 +67,12 @@
             </v-list-item-content>
           </v-list-item>
 
+          <v-list-item link :to="{name: 'sys-platforms'}">
+            <v-list-item-content>
+              <v-list-item-title>Platforms</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
         </v-list-group>
 
       </v-list>

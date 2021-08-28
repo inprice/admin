@@ -263,6 +263,15 @@ export default {
         this.statuses = statuses[data.topic];
         this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
         if (data.id) this.stepNo = 3;
+      } else {
+        delete this.form.id;
+        this.form.subject = 'STATUS';
+        this.form.subjectWhen = 'CHANGED';
+        this.form.certainStatus = 'ACTIVE';
+        this.form.amountLowerLimit = 0;
+        this.form.amountUpperLimit = 0;
+        delete this.hint.amountLowerLimit;
+        delete this.hint.amountUpperLimit;
       }
       this.$nextTick(() => this.formatPrices());
     },

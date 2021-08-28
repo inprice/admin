@@ -61,7 +61,7 @@
 
     <v-card-actions>
 
-      <div class="mr-2 caption text-right pr-2" >
+      <div class="mr-2 pr-2 caption text-right" >
         <div>
           <span>Created at</span> <ago class="d-inline font-weight-medium" :date="ticket.createdAt" />
         </div>

@@ -117,6 +117,11 @@ const router = new VueRouter({
           component: () => import('./views/super/announce/Index.vue')
         },
         {
+          name: 'sys-platforms',
+          path: 'platforms',
+          component: () => import('./views/super/platform/Index.vue')
+        },
+        {
           name: 'sys-user-logs',
           path: 'user-logs/:uid',
           component: () => import('./views/super/user/AccessLogIndex.vue')

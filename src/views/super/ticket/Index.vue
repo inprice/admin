@@ -125,7 +125,7 @@
                     dense
                     outlined
                     hide-details
-                    class="col pr-1"
+                    class="pr-1"
                     label="Seen ?"
                     v-model="searchForm.seen"
                     :items="seenItems"
@@ -135,7 +135,7 @@
                     dense
                     outlined
                     hide-details
-                    class="col pl-1"
+                    class="pl-1"
                     label="Row Limit"
                     v-model="searchForm.rowLimit"
                     :items="rowLimitItems"
@@ -147,7 +147,7 @@
                     dense
                     outlined
                     hide-details
-                    class="col pr-1"
+                    class="pr-1"
                     label="Order By"
                     v-model="searchForm.orderBy"
                     :items="orderByItems"
@@ -157,7 +157,7 @@
                     dense
                     outlined
                     hide-details
-                    class="col pl-1"
+                    class="pl-1"
                     label="Order Dir"
                     v-model="searchForm.orderDir"
                     :items="orderDirItems"

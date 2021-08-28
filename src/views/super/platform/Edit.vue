@@ -9,7 +9,7 @@
     >
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
-          <span>{{ form.id ? 'Edit' : 'New' }} Group</span>
+          <span>Edit Platform</span>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 
@@ -27,26 +27,52 @@
               label="Name"
               v-model="form.name"
               :rules="rules.name"
-              type="text"
               maxlength="50"
             />
 
             <v-text-field
-              label="Description"
-              v-model="form.description"
-              :rules="rules.description"
-              maxlength="128"
+              label="Queue"
+              v-model="form.queue"
+              :rules="rules.queue"
+              maxlength="50"
             />
 
             <v-text-field
-              label="Price"
-              v-model="form.price"
-              :rules="rules.price"
-              @blur="formatPrice"
-              maxlength="10"
-              type="number"
-              messages="For competitive pricing, please specify a price greater than zero!"
-            ></v-text-field>
+              label="Profile"
+              v-model="form.profile"
+              :rules="rules.profile"
+              maxlength="15"
+            />
+
+            <v-text-field
+              label="Currency"
+              v-model="form.currencyCode"
+              :rules="rules.currencyCode"
+              maxlength="3"
+            />
+
+            <v-text-field
+              label="Format"
+              v-model="form.currencyFormat"
+              :rules="rules.currencyFormat"
+              maxlength="30"
+            />
+
+            <div class="d-flex justify-space-between">
+              <v-switch
+                label="Parked ?"
+                color="red"
+                v-model="form.parked"
+                hide-details
+              />
+
+              <v-switch
+                label="Blocked ?"
+                color="red"
+                v-model="form.blocked"
+                hide-details
+              />
+            </div>
 
           </v-form>
         </v-card-text>
@@ -65,7 +91,7 @@
             text
             @click="save"
             color="success"
-            :disabled="$store.get('session/isNotEditor')"
+            :disabled="$store.get('session/isNotSuperUser')"
           >
             Save
           </v-btn>
@@ -95,8 +121,12 @@ export default {
       rules: {},
       form: {
         name: '',
-        description: '',
-        price: 0,
+        queue: '',
+        profile: '',
+        currencyCode: '',
+        currencyFormat: '',
+        parked: false,
+        blocked: false
       },
     };
   },
@@ -107,26 +137,23 @@ export default {
       if (data) {
         this.form.id = data.id;
         this.form.name = data.name;
-        this.form.description = data.description;
-        this.form.price = data.price;
-      } else {
-        delete this.form.id;
-        this.form.name = '';
-        this.form.description = '';
-        this.form.price = 0;
+        this.form.queue = data.queue;
+        this.form.profile = data.profile;
+        this.form.currencyCode = data.currencyCode;
+        this.form.currencyFormat = data.currencyFormat;
+        this.form.parked = data.parked;
+        this.form.blocked = data.blocked;
       }
 
       let self = this;
       this.$nextTick(() => {
         self.$refs.form.resetValidation();
-        self.formatPrice();
       });
     },
     async save() {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
-        this.form.price = parseFloat(this.form.price);
         this.$emit('saved', this.form);
         this.close();
       }
@@ -141,17 +168,22 @@ export default {
           v => !!v || "Required",
           v => (v && v.length >= 3 && v.length <= 50) || "Name must be between 3-50 chars"
         ],
-        description: [
-          v => (!v || (v.length <= 128)) || "Can be up to 128 chars"
-        ],
-        price: [
+        queue: [
           v => !!v || "Required",
-          v => (parseFloat(v) > -1) || "Base Price must be greater or equal than 0"
+          v => (v && v.length >= 5 && v.length <= 50) || "Name must be between 5-50 chars"
+        ],
+        profile: [
+          v => !!v || "Required",
+          v => (v && v.length >= 3 && v.length <= 15) || "Name must be between 3-15 chars"
+        ],
+        currencyCode: [
+          v => (!v || (v.length != 128)) || "Must be 3 chars"
+        ],
+        currencyFormat: [
+          v => !!v || "Required",
+          v => (v && v.length >= 3 && v.length <= 30) || "Must be between 3-30 chars"
         ],
       }
-    },
-    formatPrice() {
-      this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);
     }
   },
 };
