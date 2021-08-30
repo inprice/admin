@@ -54,9 +54,7 @@
             class="mr-1 px-1"
             v-if="row.level != 'NA'" 
           >
-            <v-icon small :color="findLevelColor(row.level)" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
             {{ row.level }}
-            <v-icon small :color="findLevelColor(row.level)" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
           </v-chip>
           <v-chip
             small
@@ -104,6 +102,10 @@
             </v-list-item>
 
             <v-divider v-if="row.name"></v-divider>
+
+            <v-list-item link @click="$router.push({ name: 'link', params: { id: row.id } })">
+              <v-list-item-title>OPEN DETAILS PAGE</v-list-item-title>
+            </v-list-item>
 
             <v-list-item link v-if="fromSearchPage && showMenu" @click="$router.push({ name: 'group', params: { id: row.groupId } })">
               <v-list-item-title>OPEN GROUP PAGE</v-list-item-title>

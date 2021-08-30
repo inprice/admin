@@ -60,8 +60,8 @@
             <tbody>
               <tr v-for="row in searchResult" :key="row.id" :style="(CURSTAT.accountId && CURSTAT.accountId == row.id ? 'background-color: lightcyan' : '')">
                 <td style="padding: 3px 10px">
-                  <div class="caption font-weight-thin">{{ row.email }}</div>
                   {{ row.name }}
+                  <div class="caption font-weight-light">{{ row.email }}</div>
                 </td>
                 <td>{{ row.plan }}</td>
                 <td>{{ row.status }}</td>

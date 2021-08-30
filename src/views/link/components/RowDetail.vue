@@ -128,14 +128,14 @@
       <v-tab-item>
 
         <table 
-          class="py-4" 
+          class="pl-3 py-4 d-block" 
           v-if="data && data.specList && data.specList.length" 
-          style="width: 100%; max-height: 200px; overflow-y: auto;"
+          style="max-height: 200px; overflow: auto;"
         >
           <tbody>
             <tr v-for="row in data.specList" :key="row.id">
-              <th class="subtitle-2 text-right pr-2" width="20%">{{ row.key }} :</th>
-              <td class="body-2 text-truncate">{{ row.value }}</td>
+              <th class="subtitle-2 text-right px-2" style="white-space: normal; max-width: 120px">{{ row.key }} :</th>
+              <td class="body-2 pl-1" style="white-space: normal">{{ row.value }}</td>
             </tr>
           </tbody>
         </table>

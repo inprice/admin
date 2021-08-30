@@ -53,6 +53,6 @@ export default {
 
     const res = await Helper.call('Toggle Status', { method: 'put', url: baseURL + '/toggle/' + id });
     return res.status;
-  }
+  },
 
 };

@@ -209,10 +209,8 @@
                 </td>
                 <td>
                   <div v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')">{{ row.statusDesc }}</div>
-                  <div v-else>
-                    <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
+                  <div v-else :class="{ 'green--text font-weight-bold': row.level == 'LOWEST', 'red--text font-weight-bold': row.level == 'HIGHEST' }">
                     {{ row.level }}
-                    <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
                   </div>
                 </td>
               </tr>

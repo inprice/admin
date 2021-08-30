@@ -192,6 +192,11 @@ const router = new VueRouter({
           component: () => import('./views/link/Index.vue')
         },
         {
+          name: 'link',
+          path: 'link/:id',
+          component: () => import('./views/link/detail/Index.vue')
+        },
+        {
           name: 'user-settings',
           path: 'user-settings',
           component: () => import('./views/user/Index.vue')

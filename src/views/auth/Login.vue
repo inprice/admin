@@ -146,11 +146,10 @@ export default {
         if (result.status && result.data) {
           const resData = result.data;
           let ses = resData.sessions[resData.sessionNo];
-          if (ses == undefined && resData.sessionNo != 0 && resData.sessions[0]) {
+          if (ses) {
             ses = resData.sessions[0];
             this.$store.commit('session/SET_CURRENT', ses, 0);
-          }
-          if (ses) {
+
             if (resData.isPriviledge) {
               this.$router.push({ name: 'sys-dashboard', params: { sid: 0 } });
             } else {

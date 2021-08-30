@@ -14,4 +14,10 @@ export default {
     return res;
   },
 
+  async search(term) {
+    const res = await Helper.call('Search', { method: 'get', url: baseURL + '/search?term=' + term }, true);
+    if (res.status == true && res.data) return res;
+    return null;
+  },
+
 };
