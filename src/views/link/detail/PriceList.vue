@@ -21,8 +21,8 @@
               <thead>
                 <tr>
                   <th class="text-center" :width="RESPROPS.table.date">Date</th>
-                  <th class="text-right" :width="RESPROPS.table.diff">Amount</th>
-                  <th class="text-right" :width="RESPROPS.table.diff">Diff.</th>
+                  <th class="text-right" :width="RESPROPS.table.diff">Diff.Amount</th>
+                  <th class="text-right" :width="RESPROPS.table.diff">Diff.Rate</th>
                   <th :width="RESPROPS.table.dir">Dir</th>
                 </tr>
               </thead>

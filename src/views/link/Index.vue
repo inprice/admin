@@ -306,7 +306,7 @@ export default {
     }
   },
   components: {
-    List: () => import('./List'),
+    List: () => import('./List.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 }

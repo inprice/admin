@@ -29,6 +29,10 @@
             </template>
 
             <v-list dense>
+              <v-list-item link @click="changeMultipleStatus('REFRESHED')">
+                <v-list-item-title>REFRESHED</v-list-item-title>
+              </v-list-item>
+
               <v-list-item link @click="changeMultipleStatus('RESOLVED')">
                 <v-list-item-title>RESOLVED</v-list-item-title>
               </v-list-item>

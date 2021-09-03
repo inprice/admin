@@ -138,12 +138,12 @@
 
             <v-divider v-if="$store.get('session/isSuperUser')"></v-divider>
 
-            <v-list-item 
-              link 
-              v-if="$store.get('session/isSuperUser') && (row.statusGroup == 'ACTIVE' || row.statusGroup == 'TRYING')"
-              @click="$emit('changeOneStatus', { row, newStatus: 'PAUSED' })" 
+            <v-list-item
+              link
+              v-if="$store.get('session/isSuperUser') && row.status != 'REFRESHED'"
+              @click="$emit('changeOneStatus', { row, newStatus: 'REFRESHED' })"
             >
-              <v-list-item-title>PAUSE</v-list-item-title>
+              <v-list-item-title>REFRESHED</v-list-item-title>
             </v-list-item>
 
             <v-list-item
@@ -151,7 +151,15 @@
               v-if="$store.get('session/isSuperUser') && row.status == 'TOBE_IMPLEMENTED'"
               @click="$emit('changeOneStatus', { row, newStatus: 'RESOLVED' })"
             >
-              <v-list-item-title>MARK AS RESOLVED</v-list-item-title>
+              <v-list-item-title>RESOLVED</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item 
+              link 
+              v-if="$store.get('session/isSuperUser') && (row.statusGroup == 'ACTIVE' || row.statusGroup == 'TRYING')"
+              @click="$emit('changeOneStatus', { row, newStatus: 'PAUSED' })" 
+            >
+              <v-list-item-title>PAUSE</v-list-item-title>
             </v-list-item>
 
             <v-list-item

@@ -24,8 +24,8 @@ export default {
     }
 
     const res = await Helper.call('Link Delete', { method: 'delete', url: baseURL, data: { fromGroupId: from_group_id, linkIdSet: ids } });
-    if (res.status == true && res.data) return res.data;
-    return null;
+    if (res.status == true && res.data && from_group_id) return res.data;
+    return (res && res.status);
   },
 
   async moveTo(form) {
@@ -36,7 +36,7 @@ export default {
 
     const res = await Helper.call('Link Move', { url: baseURL + '/move', data: form });
     if (res.status == true && res.data) return res.data;
-    return null;
+    return (res && res.status);
   },
 
   async getDetails(id) {

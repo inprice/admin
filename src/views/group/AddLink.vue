@@ -117,6 +117,7 @@ export default {
         this.activateRules();
         await this.$refs.form.validate();
         if (this.valid) {
+          this.lines = 0;
           this.$emit("added", this.form.linksText);
           this.close();
         }

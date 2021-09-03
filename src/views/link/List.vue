@@ -122,7 +122,7 @@ export default {
     deleteOne(row) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', (row.name || row.url)).then(async (confirm) => {
         if (confirm == true) {
-          const result = await LinkService.remove([ row.id ], this.groupId);
+          const result = await LinkService.remove([ row.id ]);
           if (result) {
             this.selected = 0;
             this.$store.commit('snackbar/setMessage', { text: 'Link successfully deleted.' });

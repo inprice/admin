@@ -72,15 +72,15 @@
         <v-simple-table class="property-table pt-3 pb-2" dense>
           <template v-slot:default>
             <tbody>
-              <property :valueClass="COLUMNS.five" name="SKU" :value="link.info.sku" v-if="link.info.statusGroup != 'PROBLEM' || link.info.price > 0"/>
-              <property :valueClass="COLUMNS.seven" name="Brand" :value="link.info.brand" v-if="link.info.statusGroup != 'PROBLEM' || link.info.price > 0"/>
-              <property :valueClass="COLUMNS.seven" name="Seller" :value="link.info.seller" v-if="link.info.statusGroup != 'PROBLEM' || link.info.price > 0"/>
-              <property :valueClass="COLUMNS.seven" name="Shipment" :value="link.info.shipment" v-if="link.info.statusGroup != 'PROBLEM' || link.info.price > 0"/>
-              <property :valueClass="COLUMNS.five" name="Price" :value="link.info.price | toCurrency" v-if="link.info.statusGroup != 'PROBLEM' || link.info.price > 0"/>
-              <property :valueClass="COLUMNS.five" name="Level" :value="link.info.level" v-if="link.info.statusGroup != 'PROBLEM' || link.info.price > 0"/>
+              <property :valueClass="COLUMNS.five" name="SKU" :value="link.info.sku" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
+              <property :valueClass="COLUMNS.seven" name="Brand" :value="link.info.brand" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
+              <property :valueClass="COLUMNS.seven" name="Seller" :value="link.info.seller" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
+              <property :valueClass="COLUMNS.seven" name="Shipment" :value="link.info.shipment" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
+              <property :valueClass="COLUMNS.five" name="Price" :value="link.info.price | toCurrency" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
+              <property :valueClass="COLUMNS.five" name="Level" :value="link.info.level" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
               <property :valueClass="COLUMNS.five" name="Status" :value="link.info.statusGroup" />
               <property :valueClass="COLUMNS.eight" name="Checked" :value="link.info.checkedAt" />
-              <property :valueClass="COLUMNS.eight" name="Updated" :value="link.info.updated || 'Not yet'" v-if="link.info.statusGroup != 'PROBLEM' || link.info.price > 0"/>
+              <property :valueClass="COLUMNS.eight" name="Updated" :value="link.info.updatedAt || 'Not yet'" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
             </tbody>
           </template>
         </v-simple-table>

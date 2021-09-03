@@ -134,7 +134,7 @@
         >
           <tbody>
             <tr v-for="row in data.specList" :key="row.id">
-              <th class="subtitle-2 text-right px-2" style="white-space: normal; max-width: 120px">{{ row.key }} :</th>
+              <th class="subtitle-2 text-right px-2" style="white-space: normal; max-width: 120px">{{ row.key }}</th>
               <td class="body-2 pl-1" style="white-space: normal">{{ row.value }}</td>
             </tr>
           </tbody>
@@ -184,9 +184,20 @@ export default {
   .v-timeline-item__body .row:not(.last-row) {
     border-bottom: 1px solid #ddd !important;
   }
+  table {
+    border-collapse: collapse;
+  }
   th, td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    border: 1px solid #eee;
+    padding: 5px 10px;
+  }
+  tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, .05);
+  }
+  td {
+    width: 100%;
   }
 </style>
