@@ -181,14 +181,26 @@
 
         <v-list-item @click="openCreateAccount" v-if="$store.get('session/isNotSuperUser')">
           <v-list-item-action>
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>mdi-folder-plus-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Create a New Account</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
+      </v-list>
+
+      <v-list>
         <v-divider inset></v-divider>
+
+        <v-list-item :href="`/login?m=addNew`" target="_blank" v-if="$store.get('session/isNotSuperUser')">
+          <v-list-item-action>
+            <v-icon>mdi-plus</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Login to another</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
         <v-list-item @click="$store.dispatch('session/logout', false)">
           <v-list-item-action>
@@ -198,11 +210,10 @@
             <v-list-item-title>Logout</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
       </v-list>
 
       <template v-slot:append>
-        <v-divider />
+        <v-divider inset></v-divider>
 
         <v-list v-if="CURSTAT" class="pa-0">
           <v-list-item class="text-center black--text text-truncate">
@@ -221,13 +232,65 @@
 
     </v-navigation-drawer>
 
-    <v-app-bar app clipped-left color="blue-grey"  dark>
+    <v-app-bar app clipped-left color="blue-grey" dark>
 
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
       <div class="hidden-sm-and-down ml-4 mt-2">
         <img :src="brandNameW" :width="150" />
       </div>
+
+      <v-spacer v-if="$store.get('session/isNotSuperUser') || CURSTAT.accountId"></v-spacer>
+
+      <v-autocomplete
+        v-if="$store.get('session/isNotSuperUser') || CURSTAT.accountId"
+        solo
+        chips
+        dense
+        light
+        hide-details
+        hide-selected
+        v-model="search.model"
+        :items="search.items"
+        :loading="search.isLoading"
+        :search-input.sync="search.term"
+        item-value="id"
+        item-text="name"
+        label="Search..."
+        maxlength="128"
+        prepend-inner-icon="mdi-database-search-outline"
+        class="search-box"
+        menu-props="closeOnContentClick"
+      >
+        <template v-slot:no-data>
+          <v-list-item>
+            <v-list-item-title>
+              Search for your
+              <strong>links and groups</strong>
+            </v-list-item-title>
+          </v-list-item>
+        </template>
+
+        <template v-slot:selection="{ item }">
+          <span v-text="item.name"></span>
+        </template>
+
+        <template v-slot:item="{ item }">
+          <v-list-item link :to="findPageObject(item)">
+            <v-list-item-avatar
+              size="24"
+              :color="item.type == 'L' ? 'orange' : 'cyan' "
+              class="font-weight-medium white--text"
+            >
+              {{ item.type }}
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+              <v-list-item-subtitle class="caption font-weight-light">{{ item.description }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+      </v-autocomplete>
 
       <v-spacer></v-spacer>
 
@@ -263,6 +326,7 @@
 </template>
 
 <script>
+import SystemService from '@/service/system';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -274,6 +338,12 @@ export default {
       brandNameW: require('@/assets/app/brand-horWR.svg'),
       drawer: (this.$vuetify.breakpoint.mdAndUp),
       fab: false,
+      search: {
+        isLoading: false,
+        items: [],
+        model: null,
+        term: null,
+      }
     };
   },
   methods: {
@@ -287,22 +357,49 @@ export default {
     },
     toTop () {
       this.$vuetify.goTo(0)
-    }
+    },
+    findPageObject(item) {
+      let pageTo = { params: { id: item.id } };
+      if (item.type == 'G')
+        pageTo.name = 'group';
+      else
+        pageTo.name = 'link';
+      return pageTo;
+    },
+  },
+  watch: {
+    'search.term'() {
+      if (!this.search.term) {
+        this.search.items = [];
+        return;
+      }
+      this.search.isLoading = true;
+      SystemService.search(this.search.term).then((res) => {
+        if (res && res.data) {
+          this.search.items = res.data;
+        } else {
+          this.search.items = [];
+        }
+      }).finally(() => this.search.isLoading = false);
+    },
   },
   components: {
-    NotificationMenu: () => import('./NotificationMenu.vue'),
     UserMenu: () => import('./UserMenu.vue'),
+    NotificationMenu: () => import('./NotificationMenu.vue'),
     AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
 };
 </script>
 
+<style>
+  .v-menu__content, .search-box {
+    max-width: 500px !important;
+  }
+</style>
+
 <style scoped>
   .v-divider--inset {
     margin-left: 2px !important;
     max-width: 100% !important;
-  }
-  .searchTable {
-    cursor: pointer;
   }
 </style>

@@ -92,6 +92,7 @@ export default {
           if (result.remainingLink) {
             this.opened = true;
             this.rowLimit = (result.remainingLink <= 100 ? result.remainingLink : 100);
+            if (this.rowLimit < 0) this.rowLimit = 0;
 
             let self = this;
             this.$nextTick(() => {
@@ -116,6 +117,7 @@ export default {
         this.activateRules();
         await this.$refs.form.validate();
         if (this.valid) {
+          this.lines = 0;
           this.$emit("added", this.form.linksText);
           this.close();
         }

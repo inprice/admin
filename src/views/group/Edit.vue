@@ -45,7 +45,7 @@
               @blur="formatPrice"
               maxlength="10"
               type="number"
-              messages="For competitive pricing, please specify a price greater than zero!"
+              messages="For competitive pricing, please enter a price greater than zero!"
             ></v-text-field>
 
           </v-form>

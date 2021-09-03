@@ -107,7 +107,7 @@
                 style="cursor: pointer"
                 link @click="$router.push({ name: 'group', params: { id: row.id } })"
                 v-for="(row) in report.groups.extremePrices.LOWEST" :key="row.id">
-                <td>{{ row.name }}</td>
+                <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
                 <td class="text-right">{{ row.price | toPrice }}</td>
                 <td class="text-center">{{ row.actives + '/' + row.total }}</td>
                 <td class="text-center">
@@ -157,7 +157,7 @@
                 style="cursor: pointer"
                 link @click="$router.push({ name: 'group', params: { id: row.id } })"
                 v-for="(row) in report.groups.extremePrices.HIGHEST" :key="row.id">
-                <td>{{ row.name }}</td>
+                <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
                 <td class="text-right">{{ row.price | toPrice }}</td>
                 <td class="text-center">{{ row.actives + '/' + row.total }}</td>
                 <td class="text-center">
@@ -197,11 +197,15 @@
                 <th :width="RESPROPS.linksTable.seller" class="text-truncate">Name</th>
                 <th :width="RESPROPS.linksTable.price" class="text-right">Price</th>
                 <th :width="RESPROPS.linksTable.time">Time</th>
-                <th :width="RESPROPS.linksTable.seller" class="text-truncate">Status</th>
+                <th :width="RESPROPS.linksTable.status" class="text-truncate">Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, index) in report.links.mru25" :key="index" :title="row.groupName">
+              <tr 
+              style="cursor: pointer"
+              link @click="$router.push({ name: 'link', params: { id: row.id } })"
+              :title="row.groupName"
+              v-for="(row, index) in report.links.mru25" :key="index">
                 <td>{{ (row.name || row.url) }}</td>
                 <td class="text-right">{{ row.price | toPrice }}</td>
                 <td>
@@ -209,10 +213,8 @@
                 </td>
                 <td>
                   <div v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')">{{ row.statusDesc }}</div>
-                  <div v-else>
-                    <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
+                  <div v-else :class="{ 'green--text font-weight-bold': row.level == 'LOWEST', 'red--text font-weight-bold': row.level == 'HIGHEST' }">
                     {{ row.level }}
-                    <v-icon small color="cyan" v-if="row.level == 'LOWEST' || row.level == 'HIGHEST'">mdi-star</v-icon>
                   </div>
                 </td>
               </tr>
@@ -256,15 +258,15 @@ export default {
         case 'xl': {
           return {
             'table-layout': '',
-            linksTable: { seller: '', price: '15%', status: '14%', time: '18%' },
-            priceTable: { name: '', price: '15%', links: '10%', date: '18%', action: '10%' }
+            linksTable: { seller: '', price: '10%', time: '15%', status: '12%' },
+            priceTable: { name: '', price: '10%', links: '10%', date: '15%', action: '10%' }
           };
         }
         default: {
           return {
             'table-layout': 'fixed',
-            linksTable: { seller: '300px', price: '150px', status: '120px', time: '150px' },
-            priceTable: { name: '300px', price: '150px', links: '80px', date: '150px', action: '100px' }
+            linksTable: { seller: '300px', price: '100px', time: '150px', status: '120px' },
+            priceTable: { name: '300px', price: '100px', links: '80px', date: '150px', action: '100px' }
           };
         }
       }

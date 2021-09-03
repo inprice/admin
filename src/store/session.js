@@ -64,13 +64,13 @@ function buildCurrent(state) {
   const selected = state.list[state.no];
   if (selected) {
     stat = {
-      accountId : selected.accountId,
       isActive : false,
       isSubscriber: false,
       isFree : false,
       hasTime : false,
       daysToRenewal : 0,
       account: selected.account,
+      accountId: selected.accountId,
       status: selected.accountStatus,
       planId: selected.planId,
       planName: selected.planName,

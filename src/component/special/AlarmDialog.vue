@@ -8,9 +8,9 @@
       @keydown.esc="opened = false"
     >
       <v-card>
-        <v-card-title class="pr-3 justify-space-between">
+        <div class="pa-3 justify-space-between d-flex" :max-width="findDialogWidth">
           <div>
-            <div>
+            <div class="title">
               {{ form.id ? 'Edit' : 'New' }} 
               <span class="text-capitalize">{{ topic.toLowerCase() }}</span>
               Alarm
@@ -18,7 +18,7 @@
             <div class="caption">For {{ name }}</div>
           </div>
           <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </v-card-title>
+        </div>
 
         <v-divider></v-divider>
 
@@ -85,16 +85,16 @@
             <v-btn
               small
               class="mb-3 mr-1"
-              @click="stepNo = 1"
+              @click="stepNo = 3"
             >
-              Prev
+              Next
             </v-btn>
             <v-btn
               small
               class="mb-3 ml-1"
-              @click="stepNo = 3"
+              @click="stepNo = 1"
             >
-              Next
+              Prev
             </v-btn>
           </v-stepper-content>
 

@@ -1,12 +1,12 @@
 <template>
-  <v-card class="mt-3 pa-1 pb-2" tile>
+  <v-card class="my-5 pa-1 pb-3" tile>
 
     <!-- ------ -->
     <!-- INFO   -->
     <!-- ------ -->
     <v-card-title class="py-1 justify-space-between">
       <div @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
-        <div>{{ group.name }}</div>
+        <div style="font-weight: normal">{{ group.name }}</div>
         <div class="caption">{{ group.description }}</div>
       </div>
 
@@ -66,6 +66,7 @@
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
         :style="{ 'min-width': findMinWidthForCells }"
+        style="text-align: center"
       >
         <div class="caption text-uppercase font-weight-light">
           Minimum Price
@@ -89,6 +90,7 @@
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
         :style="{ 'min-width': findMinWidthForCells }"
+        style="text-align: center"
       >
         <div class="caption text-uppercase font-weight-light">
           Average Price
@@ -112,6 +114,7 @@
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
         :style="{ 'min-width': findMinWidthForCells }"
+        style="text-align: center"
       >
         <div class="caption text-uppercase font-weight-light">
           Maximum Price
@@ -135,6 +138,7 @@
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
         :style="{ 'min-width': findMinWidthForCells }"
+        style="text-align: center"
       >
         <div class="caption text-uppercase font-weight-light">
           Total
@@ -158,6 +162,7 @@
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
         :style="{ 'min-width': findMinWidthForCells }"
+        style="text-align: center"
       >
         <div class="caption text-uppercase font-weight-light">
           Your Price
@@ -172,9 +177,7 @@
         </div>
 
         <span :class="findLevelColor(group.level) +'--text caption font-weight-medium'">
-          <v-icon small color="cyan">mdi-star</v-icon>
           {{ group.level }}
-          <v-icon small color="cyan">mdi-star</v-icon>
         </span>
       </v-card>
 
@@ -184,6 +187,7 @@
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
         :style="{ 'min-width': findMinWidthForCells }"
+        style="text-align: center"
       >
         <div class="caption text-uppercase font-weight-light">
           Links
@@ -217,6 +221,7 @@
     </div>
 
     <alarm-note
+      v-if="group.alarm"
       :alarm="group.alarm"
       class="pl-2 pt-3"
       @clicked="openAlarmDialog"
@@ -328,3 +333,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .text-h6 {
+    font-weight: normal;
+  }
+</style>

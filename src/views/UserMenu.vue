@@ -21,10 +21,6 @@
 
             <v-list-item-title class="title" style="white-space: normal">{{ CURSTAT.account }}</v-list-item-title>
 
-            <v-list-item-subtitle v-if="$store.get('session/isSuperUser')">
-              {{ CURSTAT.email }}
-            </v-list-item-subtitle>
-
             <v-list-item-subtitle class="py-3" v-if="CURSTAT.isActive">
               <v-chip outlined class="font-weight-medium">
                 <div>{{ CURSTAT.planName }} |</div>
@@ -39,6 +35,7 @@
             >
               <v-btn
                 text
+                outlined
                 v-if="!CURSTAT.accountId && $store.get('session/isSuperUser')"
                 :to="{ name: 'sys-accounts' }"
                 @click="menu=false"
@@ -47,6 +44,7 @@
               </v-btn>
               <v-btn
                 text
+                outlined
                 v-else-if="$store.get('session/isSuperUser')"
                 @click="unbindAccount"
               >
