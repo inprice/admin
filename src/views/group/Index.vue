@@ -15,7 +15,6 @@
 
       <div class="col-8 pl-0">
         <v-text-field 
-          autofocus
           v-model="searchForm.term"
           @keyup="isSearchable($event)"
           dense solo light

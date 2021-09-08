@@ -43,7 +43,6 @@
             />
 
             <v-text-field
-              autofocus
               outlined
               dense
               label="Description"

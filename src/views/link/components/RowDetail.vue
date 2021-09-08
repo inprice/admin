@@ -32,9 +32,15 @@
               </v-col>
               <v-col class="py-1" cols="3">
                 <div class="caption">
-                  Price
+                  Old Price
                 </div>
-                <span class="subtitle-2">{{ row.price | toPrice }}</span>
+                <span class="subtitle-2">{{ row.oldPrice | toPrice }}</span>
+              </v-col>
+              <v-col class="py-1" cols="3">
+                <div class="caption">
+                  New Price
+                </div>
+                <span class="subtitle-2">{{ row.newPrice | toPrice }}</span>
               </v-col>
               <v-col class="py-1">
                 <div 

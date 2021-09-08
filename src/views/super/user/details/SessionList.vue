@@ -48,7 +48,7 @@
                   <td>{{ row.ip }}</td>
                   <td class="text-center">{{ row.os }}</td>
                   <td class="text-center">{{ row.browser }}</td>
-                  <td class="text-center">{{ row.accessedAt }}</td>
+                  <td class="text-center">{{ row.accessedAt | formatPlainDate }}</td>
 
                   <td style="padding: 0px !important; text-align: center !important;">
                     <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">

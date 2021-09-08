@@ -43,7 +43,7 @@
               <tbody>
                 <tr v-for="row in list" :key="row.id">
                   <td>{{ row.type }}</td>
-                  <td class="text-center">{{ row.createdAt }}</td>
+                  <td class="text-center">{{ row.createdAt | formatPlainDate }}</td>
                   <td class="text-center">{{ row.whitelisted ? 'YES' : 'NO' }}</td>
 
                   <td style="padding: 0px !important; text-align: center !important;">

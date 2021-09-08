@@ -56,7 +56,6 @@
             </div>
 
             <v-text-field
-              autofocus
               dense
               outlined
               label="Title"

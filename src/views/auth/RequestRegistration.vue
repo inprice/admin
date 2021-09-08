@@ -2,12 +2,23 @@
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
     <div :style="'width: ' + findWidth">
 
-      <div class="text-center mb-8">
-        <img :src="verticalBrand" :width="140" />
+      <div class="text-center">
+        <img :src="verticalBrand" :width="200" />
       </div>
 
-      <v-card class="pb-0" tile>
-        <v-card-title class="form-title elevation-1 mb-2">Register</v-card-title>
+      <v-card class="pb-0 elevation-0">
+
+        <v-alert
+          dense
+          dismissible
+          outlined
+          type="error"
+          class="ma-4"
+          v-model="showError"
+        >
+          {{ errorMessage }}
+        </v-alert>
+        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please fill this form to register your account</div>
 
         <v-card-text>
           <v-form 
@@ -17,7 +28,7 @@
             @keyup.native.enter="valid && submit($event)"
           >
             <v-text-field
-              autofocus
+              outlined dense
               label="Account Name"
               v-model="form.accountName"
               :rules="rules.accountName"
@@ -26,6 +37,7 @@
             />
 
             <v-text-field
+              outlined dense
               label="E-mail"
               v-model="form.email"
               type="email"
@@ -34,6 +46,7 @@
             />
 
             <v-text-field
+              outlined dense
               label="Password"
               v-model="form.password"
               :rules="rules.password"
@@ -44,6 +57,7 @@
             />
 
             <v-text-field
+              outlined dense
               label="Repeat Password"
               v-model="form.repeatPassword"
               :rules="rules.repeatPassword"
@@ -58,7 +72,7 @@
           <v-card-actions class="px-0">
             <v-btn 
               block
-              color="info" 
+              color="success" 
               @click="submit" 
               :loading="loading" 
               :disabled="loading">Sign Up</v-btn>
@@ -71,7 +85,9 @@
         </v-card-text>
       </v-card>
 
-      <div class="text-center font-weight-light mt-6">
+      <v-divider></v-divider>
+
+      <div class="text-center small-font mt-6">
         By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
       </div>
 
@@ -97,7 +113,9 @@ export default {
         password: '',
         repeatPassword: ''
       },
-      verticalBrand: require('@/assets/app/brand-verC.svg')
+      showError: false,
+      errorMessage: '',
+      verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
   },
   computed: {
@@ -118,9 +136,15 @@ export default {
       if (this.valid) {
         this.loading = true;
         const result = await AuthService.requestRegistration(this.form);
-        if (result == true) {
+        if (result.status) {
+          this.showError = false;
+          this.errorMessage = '';
+
           this.$router.push('/complete-registration');
           return;
+        } else {
+          this.errorMessage = result.error;
+          this.showError = true;
         }
         this.loading = false;
       }
@@ -152,12 +176,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  .form-title {
-    padding: 0 10px;
-    height: 50px;
-    color: #606060;
-    background-color: #f8f8f8;
-  }
-</style>

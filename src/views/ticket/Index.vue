@@ -16,7 +16,6 @@
       <div class="col-10 pl-0 d-flex">
         <v-text-field 
           ref="term"
-          autofocus
           outlined dense
           hide-details
           maxlength="100"

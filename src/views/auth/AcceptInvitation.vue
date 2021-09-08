@@ -2,26 +2,23 @@
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
     <div :style="'width: ' + findWidth">
 
-      <div class="text-center mb-8">
-        <img :src="verticalBrand" :width="140" />
+      <div class="text-center">
+        <img :src="verticalBrand" :width="200" />
       </div>
 
-      <v-alert
-        large
-        dismissible
-        colored-border
-        type="warning"
-        border="left"
-        elevation="2"
-        color="pink"
-        transition="fade-transition"
-        v-model="errorAlert"
-      >
-        {{ errorMessage }}
-      </v-alert>
+      <v-card class="pb-0 elevation-0">
 
-      <v-card>
-        <v-card-title class="form-title elevation-1 mb-2">Accept Invitation</v-card-title>
+        <v-alert
+          dense
+          dismissible
+          outlined
+          type="error"
+          class="ma-4"
+          v-model="showError"
+        >
+          {{ errorMessage }}
+        </v-alert>
+        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please specify your password to accept invitation</div>
 
         <v-card-text>
           <v-form 
@@ -31,7 +28,7 @@
             @keyup.native.enter="valid && submit($event)"
           >
             <v-text-field
-              autofocus
+              outlined dense
               label="Password"
               v-model="form.password"
               :rules="rules.password"
@@ -42,6 +39,7 @@
             />
 
             <v-text-field
+              outlined dense
               label="Repeat Password"
               v-model="form.repeatPassword"
               :rules="rules.repeatPassword"
@@ -52,23 +50,26 @@
             />
           </v-form>
 
-          <v-card-actions class="px-0 d-block">
+          <v-card-actions class="px-0">
             <v-btn 
               block
-              color="info"
+              color="success"
               @click="submit" 
               :loading="loading" 
               :disabled="loading">
                 Accept
             </v-btn>
-
-            <div class="pt-4">
-              Already have an account?
-              <router-link to="login" class="ml-5" tabindex="-1">Sign In</router-link>
-            </div>
           </v-card-actions>
+
+          <div class="d-flex mt-4 justify-space-between">
+            Already have an account?
+            <router-link to="login" class="ml-5" tabindex="-1">Sign In</router-link>
+          </div>
+
         </v-card-text>
       </v-card>
+
+      <v-divider></v-divider>
 
       <div class="text-center font-weight-light mt-6">
         By clicking "Accept", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
@@ -85,9 +86,6 @@ import Utility from '@/helpers/utility';
 export default {
   data() {
     return {
-      errorAlert: false,
-      errorMessage: null,
-
       loading: false,
       valid: false,
       showPass1: false,
@@ -98,7 +96,9 @@ export default {
         password: '',
         repeatPassword: ''
       },
-      verticalBrand: require('@/assets/app/brand-verC.svg')
+      showError: false,
+      errorMessage: '',
+      verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
   },
   computed: {
@@ -124,12 +124,15 @@ export default {
         this.loading = true;
         const result = await AuthService.acceptInvitation(this.form);
         if (result.status) {
+          this.showError = false;
+          this.errorMessage = '';
+
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
-          this.$store.commit('snackbar/setMessage', { text: 'Your have successfully activated your member' });
+          this.$store.commit('snackbar/setMessage', { text: 'Your have successfully activated your membership' });
           return;
         } else {
           this.errorMessage = result.error;
-          this.errorAlert = true;
+          this.showError = true;
         }
         this.loading = false;
       }
@@ -142,7 +145,7 @@ export default {
         ],
         repeatPassword: [
           v => !!v || "Repeat Password required",
-          v => v === this.form.password || "Passwords must be the same"
+          v => v == this.form.password || "Passwords must be the same"
         ],
       }
     }
@@ -153,11 +156,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  .form-title {
-    padding: 0 10px;
-    height: 50px;
-    background-color: #f3f3f3;
-  }
-</style>

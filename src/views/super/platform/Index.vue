@@ -13,7 +13,6 @@
     <div class="col-10 pl-0 d-flex">
       <v-text-field 
         ref="term"
-        autofocus
         outlined dense
         hide-details
         maxlength="100"
@@ -61,7 +60,6 @@
                 <v-divider class="pb-2"></v-divider>
 
                 <v-select
-                  autofocus
                   dense
                   outlined
                   hide-details

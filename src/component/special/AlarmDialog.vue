@@ -214,7 +214,7 @@ const whens = {
 };
 
 const statuses = {
-  LINK:  ['ACTIVE', 'TRYING', 'WAITING', 'PROBLEM'],
+  LINK:  ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'],
   GROUP: ['NA', 'LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST']
 };
 

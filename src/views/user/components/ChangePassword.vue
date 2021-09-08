@@ -22,7 +22,6 @@
 
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
-              autofocus
               label="Old Password"
               v-model="form.oldPassword"
               :rules="rules.oldPassword"

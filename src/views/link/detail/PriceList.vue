@@ -21,14 +21,18 @@
               <thead>
                 <tr>
                   <th class="text-center" :width="RESPROPS.table.date">Date</th>
-                  <th class="text-right" :width="RESPROPS.table.diff">Diff.Amount</th>
-                  <th class="text-right" :width="RESPROPS.table.diff">Diff.Rate</th>
+                  <th class="text-right" :width="RESPROPS.table.diff">Old Price</th>
+                  <th class="text-right" :width="RESPROPS.table.diff">New Price</th>
+                  <th class="text-right" :width="RESPROPS.table.diff">Diff</th>
+                  <th class="text-right" :width="RESPROPS.table.diff">Rate</th>
                   <th :width="RESPROPS.table.dir">Dir</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="row in list" :key="row.id">
-                  <td class="text-center">{{ row.createdAt }}</td>
+                  <td class="text-center">{{ row.createdAt | formatPlainDate }}</td>
+                  <td class="text-right">{{ row.oldPrice | toPrice }}</td>
+                  <td class="text-right">{{ row.newPrice | toPrice }}</td>
                   <td class="text-right">{{ row.diffAmount | toPrice }}</td>
                   <td class="text-right" >{{ row.diffRate }}%</td>
                   <td>{{ row.diffRate == 0 ? '-' : (row.diffRate > 0 ? 'UP' : 'DOWN') }}</td>

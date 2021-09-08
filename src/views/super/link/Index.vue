@@ -13,7 +13,6 @@
     <div class="col-10 pl-0 d-flex">
       <v-text-field 
         ref="term"
-        autofocus
         outlined dense
         hide-details
         maxlength="100"
@@ -61,7 +60,6 @@
                 <v-divider class="pb-2"></v-divider>
 
                 <v-select
-                  autofocus
                   dense
                   outlined
                   hide-details
@@ -202,7 +200,7 @@ import SU_AccountService from '@/service/super/account';
 
 const searchByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM'];
 const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL'];
-const statusItems = ['WAITING', 'ACTIVE', 'TRYING', 'PROBLEM'];
+const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
 const orderByItems = [...searchByItems, 'LEVEL', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];

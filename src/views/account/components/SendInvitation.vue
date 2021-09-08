@@ -18,7 +18,6 @@
         <v-card-text class="pb-2">
           <v-form ref="form" v-model="valid">
             <v-text-field
-              autofocus
               label="E-mail"
               v-model="form.email"
               :rules="rules.email"

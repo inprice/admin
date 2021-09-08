@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div v-if="rows.length">
+    <v-card elevation="0" :loading="loading" v-if="!loading && rows.length">
 
       <div class="d-flex" style="align-items: end;" v-if="rows.length > 1">
         <v-checkbox
@@ -43,6 +43,7 @@
         :loading="detailLoading && loadingId==row.id"
         :class="(showingId==row.id && showDetails==true ? 'elevation-5' : '')"
         :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important' : 'margin: 10px 0')"
+        transition="fade-transition"
       >
         <template slot="progress">
           <v-progress-linear color="green" indeterminate></v-progress-linear>
@@ -62,11 +63,11 @@
           @openAlarmDialog="openAlarmDialog"
         />
       </v-card>
-    </div>
+    </v-card>
 
     <block-message 
       v-else dense
-      :message="`No link found.`"
+      :message="loading ? 'Loading, please wait...' : 'No link found.'"
     />
 
     <alarm-dialog
@@ -87,7 +88,7 @@ import LinkService from '@/service/link';
 import AlarmService from '@/service/alarm';
 
 export default {
-  props: ['rows'],
+  props: ['rows', 'loading'],
   data() {
     return {
       showingId: 0,

@@ -41,7 +41,7 @@
               </thead>
               <tbody>
                 <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.createdAt }}</td>
+                  <td>{{ row.createdAt | formatPlainDate }}</td>
                   <td>{{ row.status }}</td>
                   <td>{{ row.planName }}</td>
                 </tr>

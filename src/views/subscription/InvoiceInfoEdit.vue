@@ -17,7 +17,6 @@
 
         <v-form ref="form" v-model="valid" class="mt-5" @submit.prevent>
           <v-text-field class="mx-5"
-            autofocus
             outlined dense
             label="Title"
             v-model="form.title"

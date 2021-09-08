@@ -42,7 +42,7 @@
               </thead>
               <tbody>
                 <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.createdAt }}</td>
+                  <td>{{ row.createdAt | formatPlainDate }}</td>
                   <td>{{ row.event }} - {{ row.eventId }}</td>
                   <td v-if="row.fileUrl"><a :href="row.fileUrl">row.fileUrl</a></td>
                   <td v-else>{{ row.reason || row.description }}</td>

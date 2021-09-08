@@ -21,7 +21,6 @@
 
         <v-form ref="form" v-model="valid" @submit.prevent>
           <v-textarea
-            autofocus
             outlined
             v-model="form.linksText"
             :label="`${rowLimit - lines} links can be added.`"

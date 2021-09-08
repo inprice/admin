@@ -24,7 +24,6 @@
           
           <v-form ref="form" v-model="valid" class="mt-5">
             <v-text-field
-              autofocus
               label="Name"
               v-model="form.name"
               :rules="rules.name"

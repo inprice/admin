@@ -31,7 +31,7 @@
         @click="$emit('selected', row.id)"
       >
         <div class="col-2">
-          {{ row.createdAt }}
+          {{ row.createdAt | formatPlainDate }}
         </div>
         <div class="col">
           {{ row.path }} {{ row.pathExt }}

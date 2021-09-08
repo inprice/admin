@@ -14,12 +14,11 @@
     <div class="d-flex justify-space-between">
       <div class="col-8 pl-0">
         <v-text-field 
-          autofocus
+          dense solo light
+          hide-details
+          maxlength="100"
           v-model="searchForm.term"
           @keyup="isSearchable($event)"
-          dense solo light
-          maxlength="100"
-          hide-details
           placeholder="Search by Name"
         >
           <template slot="append">

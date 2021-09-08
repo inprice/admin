@@ -23,7 +23,6 @@
           <v-form ref="form" v-model="valid" @submit.prevent>
 
             <v-text-field
-              autofocus
               outlined
               dense
               label="Reason"

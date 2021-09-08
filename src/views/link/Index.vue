@@ -16,7 +16,6 @@
       <div class="col-10 pl-0 d-flex">
         <v-text-field 
           ref="term"
-          autofocus
           outlined dense
           hide-details
           maxlength="100"
@@ -64,7 +63,6 @@
                   <v-divider class="pb-2"></v-divider>
 
                   <v-select
-                    autofocus
                     dense
                     outlined
                     hide-details
@@ -173,6 +171,7 @@
     <div class="col pa-0" v-if="CURSTAT.planId">
       <list
         ref="list"
+        :loading="listLoading"
         :rows="searchResult"
         @refreshList="search"
       />
@@ -209,7 +208,7 @@ import { get } from 'vuex-pathify'
 
 const searchByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM'];
 const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL'];
-const statusItems = ['WAITING', 'ACTIVE', 'TRYING', 'PROBLEM'];
+const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
 const orderByItems = [...searchByItems, 'LEVEL', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
@@ -247,6 +246,7 @@ export default {
       rowLimitItems,
       alarmItems,
       baseSearchForm,
+      listLoading: true,
     };
   },
   methods: {
@@ -256,6 +256,7 @@ export default {
       this.$refs.term.focus();
     },
     search() {
+      this.listLoading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -284,7 +285,7 @@ export default {
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      });
+      }).finally(() => this.listLoading = false);
     },
     resetForm() {
       this.searchMenuOpen = false;

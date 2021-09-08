@@ -131,9 +131,9 @@ export default {
       detailLoading: false,
       groups: {
         ACTIVE: { links: [], selected: 0 },
-        PROBLEM: { links: [], selected: 0 },
-        TRYING: { links: [], selected: 0 },
         WAITING: { links: [], selected: 0 },
+        TRYING: { links: [], selected: 0 },
+        PROBLEM: { links: [], selected: 0 },
       },
       linkRefresherKey: 0
     }
@@ -258,9 +258,9 @@ export default {
       if (this.links) {
         this.groups = {
           ACTIVE: { links: [], selected: 0 },
-          PROBLEM: { links: [], selected: 0 },
-          TRYING: { links: [], selected: 0 },
           WAITING: { links: [], selected: 0 },
+          TRYING: { links: [], selected: 0 },
+          PROBLEM: { links: [], selected: 0 },
         };
         this.links.forEach(link => {
           link.selected = false;

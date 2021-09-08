@@ -6,7 +6,7 @@ export default {
   mounted() {
     this.renderChart(
       {
-        labels: ['ACTIVES','TRYINGS','WAITINGS','PROBLEMS'],
+        labels: ['ACTIVES','WAITINGS','TRYINGS','PROBLEMS'],
         datasets: [
           {
             backgroundColor: [

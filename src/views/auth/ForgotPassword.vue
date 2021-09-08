@@ -3,7 +3,7 @@
     <div :style="'width: ' + findWidth">
 
       <div class="text-center mb-8">
-        <img :src="verticalBrand" :width="140" />
+        <img :src="verticalBrand" :width="200" />
       </div>
 
       <v-card class="pa-3 mb-10 body-2" :color="successful ? 'green lighten-5' : 'yellow lighten-5'">
@@ -18,7 +18,7 @@
         <div v-else>
           <div class="title text-center mb-2">Forgot password</div>
           <v-divider></v-divider>
-          <p class="ma-4">
+          <p class="ma-4 small-font">
             Please provide your email address that you used when you signed up for your inprice account. We will send
             you an email that will allow you to reset your password.
           </p>
@@ -33,7 +33,6 @@
         @keyup.native.enter="valid && submit($event)"
       >
         <v-text-field
-          autofocus
           outlined dense
           v-model="form.email"
           :rules="rules.email"
@@ -45,14 +44,15 @@
 
       <v-btn 
         block
-        color="info"
+        color="success"
         class="mt-2"
         @click="submit" 
         :loading="loading" 
         :disabled="loading">Submit</v-btn>
 
-      <div class="text-center font-weight-light mt-4">
-        Remember your password? <router-link to="login">Sign In</router-link>
+      <div class="mt-4 d-flex justify-space-between">
+        <span class="small-font">Remember your password?</span>
+        <router-link to="login" tabindex="-1" class="small-font">Sign in</router-link>
       </div>
 
     </div>
@@ -73,7 +73,7 @@ export default {
       form: {
         email: ''
       },
-      verticalBrand: require('@/assets/app/brand-verC.svg')
+      verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
   },
   computed: {
@@ -93,7 +93,9 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        this.successful = await AuthService.forgotPassword(this.form.email);
+        this.successful = false;
+        await AuthService.forgotPassword(this.form.email);
+        this.successful = true;
         this.loading = false;
       }
     },
@@ -109,9 +111,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-  .v-card > div {
-    min-height: 130px;
-  }
-</style>

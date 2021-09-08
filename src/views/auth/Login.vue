@@ -2,54 +2,23 @@
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
     <div :style="'width: ' + findWidth">
 
-      <div class="text-center mb-8">
-        <img :src="verticalBrand" :width="140" />
+      <div class="text-center">
+        <img :src="verticalBrand" :width="200" />
       </div>
 
-      <v-alert
-        large
-        dismissible
-        colored-border
-        type="success"
-        border="left"
-        elevation="2"
-        color="cyan lighten-2"
-        transition="fade-transition"
-        v-model="successAlert"
-      >
-        {{ successMessage }}
-      </v-alert>
+      <v-card class="pb-0 elevation-0">
 
-      <v-alert
-        large
-        dismissible
-        colored-border
-        type="info"
-        border="left"
-        elevation="2"
-        color="purple lighten-2"
-        transition="fade-transition"
-        v-model="infoAlert"
-      >
-        {{ infoMessage }}
-      </v-alert>
-
-      <v-alert
-        large
-        dismissible
-        colored-border
-        type="error"
-        border="left"
-        elevation="2"
-        color="pink"
-        transition="fade-transition"
-        v-model="errorAlert"
-      >
-        {{ errorMessage }}
-      </v-alert>
-
-      <v-card class="pb-0" tile>
-        <v-card-title class="form-title elevation-1 mb-2">Login</v-card-title>
+        <v-alert
+          dense
+          dismissible
+          outlined
+          type="error"
+          class="ma-4"
+          v-model="showError"
+        >
+          {{ errorMessage }}
+        </v-alert>
+        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please sign in to your account</div>
 
         <v-card-text>
           <v-form 
@@ -59,7 +28,7 @@
             @keyup.native.enter="valid && submit($event)"
           >
             <v-text-field
-              autofocus
+              outlined dense
               label="E-mail"
               v-model="form.email"
               :rules="rules.email"
@@ -68,6 +37,7 @@
             />
 
             <v-text-field
+              outlined dense
               label="Password"
               v-model="form.password"
               :rules="rules.password"
@@ -81,7 +51,7 @@
           <v-card-actions class="px-0">
             <v-btn 
               block
-              color="info"
+              color="success"
               @click="submit" 
               :loading="loading" 
               :disabled="loading">
@@ -106,13 +76,6 @@ import Utility from '@/helpers/utility';
 export default {
   data() {
     return {
-      infoAlert: false,
-      successAlert: false,
-      errorAlert: false,
-      infoMessage: null,
-      successMessage: null,
-      errorMessage: null,
-
       loading: false,
       valid: false,
       showPass: false,
@@ -121,7 +84,9 @@ export default {
         email: "",
         password: ""
       },
-      verticalBrand: require('@/assets/app/brand-verC.svg')
+      showError: false,
+      errorMessage: '',
+      verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
   },
   computed: {
@@ -144,6 +109,9 @@ export default {
         const result = await this.$store.dispatch('session/login', this.form);
 
         if (result.status && result.data) {
+          this.showError = false;
+          this.errorMessage = '';
+
           const resData = result.data;
           let ses = resData.sessions[resData.sessionNo];
           if (ses) {
@@ -165,10 +133,8 @@ export default {
             }
           }
         } else {
-          this.infoAlert = false;
-          this.successAlert = false;
           this.errorMessage = result.error;
-          this.errorAlert = true;
+          this.showError = true;
         }
         this.loading = false;
       }
@@ -190,41 +156,12 @@ export default {
   mounted() {
     this.$nextTick(() => Utility.removeTabIndexFromIconButtons(this.$el));
 
-    this.infoMessage = null;
-    this.successMessage = null;
-    this.errorMessage= null;
-    this.infoAlert = false;
-    this.successAlert = false;
-    this.errorAlert = false;
-
     const message = this.$route.query.m;
     switch (message) {
       case '1nqq':
-        this.infoMessage = "Your session expired. Please login again.";
-        this.infoAlert = true;
-        break;
-      case 'plfw':
-        this.successMessage = 'We have just sent an activation link to your email address. Please check it.';
-        this.successAlert = true;
-        break;
-      case 'ap17':
-        this.successMessage = "You have successfully activated your member. Please login.";
-        this.successAlert = true;
-        break;
-      case 'mqn6':
-        this.errorMessage = "Your activation link is invalid or expired. Please ask again.";
-        this.errorAlert = true;
+        this.$store.commit('snackbar/setMessage', { text: 'Your session expired. Please login again.' });
         break;
     }
   }
 };
 </script>
-
-<style scoped>
-  .form-title {
-    padding: 0 10px;
-    height: 50px;
-    color: #606060;
-    background-color: #f8f8f8;
-  }
-</style>

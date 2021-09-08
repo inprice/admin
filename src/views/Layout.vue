@@ -190,7 +190,7 @@
 
       </v-list>
 
-      <v-list>
+      <v-list dense nav class="text-uppercase font-weight-light" v-if="$store.get('session/hasASession')">
         <v-divider inset></v-divider>
 
         <v-list-item :href="`/login?m=addNew`" target="_blank" v-if="$store.get('session/isNotSuperUser')">
@@ -294,7 +294,7 @@
 
       <v-spacer></v-spacer>
 
-      <notification-menu v-if="CURSTAT.role != 'SUPER' && $route.name != 'announce'"></notification-menu>
+      <notification-menu v-if="CURSTAT.role != 'SUPER'"></notification-menu>
       <user-menu></user-menu>
 
     </v-app-bar>

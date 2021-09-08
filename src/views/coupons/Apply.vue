@@ -22,7 +22,6 @@
         <v-card-text class="py-2">
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
-              autofocus
               label="Coupon Code"
               v-model="form.code"
               :rules="rules.code"

@@ -18,13 +18,12 @@
         <div
           v-if="fromSearchPage"
           class="caption"
-          style="color: #00748B; line-height: inherit"
+          style="color: #00748B;"
         >
           <v-badge
-            dot
-            left
+            dot left
+            class="ma-2"
             color="pink"
-            title="Alarmed"
             :value="row.alarmId != undefined && fromSearchPage"
           >
             {{ row.groupName }}
@@ -132,7 +131,7 @@
 
             <v-divider></v-divider>
 
-            <v-list-item link @click="$emit('openAlarmDialog')" v-if="showMenu" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item link @click="$emit('openAlarmDialog', row)" v-if="showMenu" :disabled="$store.get('session/isNotEditor')">
               <v-list-item-title>SET ALARM</v-list-item-title>
             </v-list-item>
 

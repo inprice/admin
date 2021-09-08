@@ -2,12 +2,23 @@
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
     <div :style="'width: ' + findWidth">
 
-      <div class="text-center mb-8">
-        <img :src="verticalBrand" :width="140" />
+      <div class="text-center">
+        <img :src="verticalBrand" :width="200" />
       </div>
 
-      <v-card>
-        <v-card-title class="form-title elevation-1 mb-2">Reset Password</v-card-title>
+      <v-card class="pb-0 elevation-0">
+
+        <v-alert
+          dense
+          dismissible
+          outlined
+          type="error"
+          class="ma-4"
+          v-model="showError"
+        >
+          {{ errorMessage }}
+        </v-alert>
+        <div v-if="!showError" class="text-center ma-4 font-weight-light">Reset password</div>
 
         <v-card-text>
           <v-form 
@@ -17,7 +28,7 @@
             @keyup.native.enter="valid && submit($event)"
           >
             <v-text-field
-              autofocus
+              outlined dense
               label="Password"
               v-model="form.password"
               :rules="rules.password"
@@ -28,6 +39,7 @@
             />
 
             <v-text-field
+              outlined dense
               label="Repeat Password"
               v-model="form.repeatPassword"
               :rules="rules.repeatPassword"
@@ -41,8 +53,8 @@
 
           <v-card-actions class="px-0">
             <v-btn 
-              large block
-              color="info"
+              block
+              color="success"
               class="mt-2"
               @click="submit" 
               :loading="loading" 
@@ -51,8 +63,9 @@
         </v-card-text>
       </v-card>
       
-      <div class="text-center font-weight-light mt-6">
-        Remember your password? <router-link to="login">Sign In</router-link>
+      <div class="small-font ma-4 d-flex justify-space-between">
+        <span>Remember your password?</span>
+        <router-link to="login">Sign In</router-link>
       </div>
 
     </div>
@@ -75,7 +88,9 @@ export default {
         repeatPassword: '',
         token: ''
       },
-      verticalBrand: require('@/assets/app/brand-verC.svg')
+      showError: false,
+      errorMessage: '',
+      verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
   },
   computed: {
@@ -100,10 +115,16 @@ export default {
       if (this.valid) {
         this.loading = true;
         const result = await AuthService.resetPassword(this.form);
-        if (result == true) {
+        if (result.status) {
+          this.showError = false;
+          this.errorMessage = '';
+
           this.$router.push('/login');
           this.$store.commit('snackbar/setMessage', { text: 'Your password has been successfully reset' });
           return;
+        } else {
+          this.errorMessage = result.error;
+          this.showError = true;
         }
         this.loading = false;
       }

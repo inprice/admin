@@ -20,7 +20,6 @@
       </div>
 
       <v-combobox
-        autofocus
         dense
         outlined
         class="pa-4 mt-2 pb-1"

@@ -61,14 +61,14 @@ Vue.mixin({
     },
     findStatusColor(status) {
       if (status == 'ACTIVE') return 'green';
-      if (status == 'TRYING') return 'orange';
       if (status == 'WAITING') return 'blue';
+      if (status == 'TRYING') return 'orange';
       return 'red';
     },
     findStatusBackColor(status) {
       if (status == 'ACTIVE') return '#daffa6';
-      if (status == 'TRYING') return '#ffe069';
       if (status == 'WAITING') return '#b4ffff';
+      if (status == 'TRYING') return '#ffe069';
       return '#fffebe';
     },
     deepEqual,

@@ -47,7 +47,7 @@
                   <td class="text-center">{{ row.role }}</td>
                   <td class="text-center">{{ row.status }}</td>
                   <td class="text-center">{{ row.retry }}</td>
-                  <td class="text-center">{{ row.createdAt }}</td>
+                  <td class="text-center">{{ row.createdAt | formatPlainDate }}</td>
                 </tr>
               </tbody>
             </table>

@@ -3,11 +3,10 @@
     <div :style="'width: ' + findWidth">
 
       <div class="text-center mb-8">
-        <img :src="verticalBrand" :width="140" />
+        <img :src="verticalBrand" :width="200" />
       </div>
 
       <v-card class="pa-3 mb-8 body-2" color="yellow lighten-5">
-
         <div>
           <div class="title text-center mb-2">Please check your email</div>
           <v-divider></v-divider>
@@ -26,24 +25,32 @@
         @keyup.native.enter="valid && submit($event)"
       >
 
-        <div class="text-center">Activation Code</div>
-        <v-text-field
-          autofocus
+        <v-alert
+          dense
+          dismissible
           outlined
-          x-large
+          type="error"
+          v-model="showError"
+        >
+          {{ errorMessage }}
+        </v-alert>
+        <div v-if="!showError" class="text-center">Activation Code</div>
+
+        <v-text-field
+          outlined
           v-model="form.code"
           :rules="rules.code"
           v-mask="'###-###'"
           type="text"
-          class="display-1 centered-input"
+          class="text-h4 centered-input"
           maxlength="7"
         />
       </v-form>
 
       <v-card-actions class="px-0">
         <v-btn 
-          large block
-          color="info"
+          block large
+          color="success"
           @click="submit" 
         >
           Sign Up
@@ -68,7 +75,9 @@ export default {
       form: {
         code: ''
       },
-      verticalBrand: require('@/assets/app/brand-verC.svg')
+      showError: false,
+      errorMessage: '',
+      verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
   },
   computed: {
@@ -89,10 +98,16 @@ export default {
       if (this.valid) {
         this.overlay = true;
         const result = await AuthService.completeRegistration(this.form.code.replaceAll('-', ''));
-        if (result == true) {
+        if (result.status) {
+          this.showError = false;
+          this.errorMessage = '';
+
           this.$router.push({ name: 'plans', params: { sid: 0 } });
           this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your account.' });
           return;
+        } else {
+          this.errorMessage = result.error;
+          this.showError = true;
         }
         this.overlay = false;
       }

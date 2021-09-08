@@ -53,7 +53,6 @@
             ></v-select>
 
             <v-textarea
-              autofocus
               counter
               outlined
               v-model="form.body"

@@ -112,7 +112,7 @@
                   </thead>
                   <tbody>
                     <tr v-for="row in ticket.historyList" :key="row.id">
-                      <td>{{ row.createdAt }}</td>
+                      <td>{{ row.createdAt | formatPlainDate }}</td>
                       <td>{{ row.status }}</td>
                       <td>{{ row.priority }}</td>
                       <td>{{ row.type }}</td>

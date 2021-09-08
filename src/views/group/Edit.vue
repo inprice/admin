@@ -23,7 +23,6 @@
             <input type="hidden" :value="form.id" >
 
             <v-text-field
-              autofocus
               label="Name"
               v-model="form.name"
               :rules="rules.name"

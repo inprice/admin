@@ -23,7 +23,6 @@
 
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
-              autofocus
               label="Password"
               v-model="form.password"
               :rules="rules.password"
