@@ -186,39 +186,36 @@
           <div class="caption">Most recently updated 10 links.</div>
         </div>
       </v-card-title>
-      <v-divider></v-divider>
 
-      <div class="v-data-table v-data-table--dense theme--light put-behind" v-if="report && report.links && report.links.mru25.length">
-        <div class="v-data-table__wrapper">
-          <table class="pb-2">
-            <thead>
-              <tr>
-                <th width="400px" class="text-truncate">Name</th>
-                <th width="100px" class="text-right">Price</th>
-                <th width="200px">Seller</th>
-                <th width="150px" class="text-truncate">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr 
-              style="cursor: pointer"
-              link @click="$router.push({ name: 'link', params: { id: row.id } })"
-              :title="row.groupName"
-              v-for="(row, index) in report.links.mru25" :key="index">
-                <td>{{ (row.name || row.url) }}</td>
-                <td class="text-right">{{ row.price | toPrice }}</td>
-                <td>{{ row.seller }}</td>
-                <td>
-                  <div v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')">{{ row.statusDesc }}</div>
-                  <div v-else :class="{ 'green--text font-weight-bold': row.level == 'LOWEST', 'red--text font-weight-bold': row.level == 'HIGHEST' }">
-                    {{ row.level }}
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <v-list dense two-line v-if="report && report.links && report.links.mru25.length">
+        <template v-for="(row, index) in report.links.mru25">
+          <v-divider
+            :key="index"
+          ></v-divider>
+
+          <v-list-item :key="row.id" link @click="$router.push({ name: 'link', params: { id: row.id } })">
+
+            <v-list-item-avatar>
+              <v-icon :color="findLevelColor(row.level)">mdi-star</v-icon>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <div class="caption">{{ row.seller || row.groupName }}</div>
+              <div class="subtitle font-weight-light">{{ row.name || row.url }}</div>
+              <div class="caption">{{ row.platform }}</div>
+            </v-list-item-content>
+
+            <v-list-action class="text-right">
+              <div v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')" class="caption">-{{ row.statusDesc.replaceAll('_', ' ') }}-</div>
+              <div v-else class="caption" :class="{ 'green--text font-weight-bold': row.level == 'LOWEST', 'red--text font-weight-bold': row.level == 'HIGHEST' }">
+                {{ row.level }}
+              </div>
+              <div class="subtitle">{{ row.price | toCurrency }}</div>
+              <div class="caption">{{ row.updatedAt | formatDate }}</div>
+            </v-list-action>
+          </v-list-item>
+        </template>
+      </v-list>
 
       <block-message 
         v-else dense
@@ -295,9 +292,6 @@ export default {
   .row > .v-card {
     margin: 5px;
     min-width: 250px;
-  }
-  table {
-    table-layout: fixed;
   }
   td, th {
     padding: 0 3px;

@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build-for-test": "cross-env VUE_APP_BASE_URL=https://test.api.inprice.io vue-cli-service build",
+    "build-staging": "vue-cli-service build --mode staging",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -37,7 +37,6 @@
     "@vue/cli-plugin-eslint": "^4.2.0",
     "@vue/cli-service": "^4.2.0",
     "babel-eslint": "^10.0.3",
-    "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.1.2",
     "sass": "^1.19.0",

@@ -14,7 +14,7 @@
         <div 
           class="v-data-table v-data-table--dense theme--light put-behind">
           <div class="v-data-table__wrapper">
-            <table style="table-layout: fixed">
+            <table>
               <thead>
                 <tr>
                   <th class="t-head">Name</th>
