@@ -1,31 +1,24 @@
 <template>
   <div>
-    <div class="mt-2 d-flex justify-space-between">
-      <span class="title">Link details</span>
-      <v-btn 
-        small
-        @click="$router.go(-1)"
-      >
-        Go Back
-      </v-btn>
-    </div>
+    <v-btn 
+      small
+      @click="$router.go(-1)"
+    >
+      Back
+    </v-btn>
+
+    <div class="title my-5 mb-3">Details</div>
 
     <div v-if="link">
+      <v-card tile>
 
-      <!-- ------ -->
-      <!--  INFO  -->
-      <!-- ------ -->
-      <v-card class="mt-3 pa-1 pb-2">
-        <div class="pa-3 d-flex justify-space-between">
-          <div class="text-truncate">
-            <div class="subtitle">{{ link.info.name }}</div>
-            <div class="caption font-weight-light">{{ link.info.url }}</div>
-          </div>
+        <div class="d-flex justify-space-between pt-5 pa-3">
+          <div>{{ link.info.name }}</div>
 
-          <div class="d-flex my-auto pl-3">
-            <div class="mx-2 font-weight-medium" v-if="link.info.price"> {{ link.info.price | toPrice }}</div>
+          <div class="d-flex my-auto">
+            <div class="font-weight-medium" v-if="link.info.price"> {{ link.info.price | toPrice }}</div>
             <div>
-              <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
+              <v-menu offset-y bottom left>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     small icon
@@ -67,36 +60,94 @@
 
         </div>
 
-        <v-divider class="py-2"></v-divider>
+        <v-divider></v-divider>
 
-        <v-simple-table class="property-table pt-3 pb-2" dense>
-          <template v-slot:default>
-            <tbody>
-              <property :valueClass="COLUMNS.five" name="SKU" :value="link.info.sku" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
-              <property :valueClass="COLUMNS.seven" name="Brand" :value="link.info.brand" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
-              <property :valueClass="COLUMNS.seven" name="Seller" :value="link.info.seller" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
-              <property :valueClass="COLUMNS.seven" name="Shipment" :value="link.info.shipment" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
-              <property :valueClass="COLUMNS.five" name="Price" :value="link.info.price | toCurrency" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
-              <property :valueClass="COLUMNS.five" name="Level" :value="link.info.level" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
-              <property :valueClass="COLUMNS.five" name="Status" :value="link.info.statusGroup" />
-              <property :valueClass="COLUMNS.eight" name="Checked" :value="link.info.checkedAt | formatPlainDate" />
-              <property :valueClass="COLUMNS.eight" name="Updated" :value="link.info.updatedAt | formatPlainDate" v-if="link.info.statusGroup != 'PROBLEM' && link.info.name"/>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <div class="d-flex">
+          <v-list dense class="col pa-1">
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption font-weight-light">SKU</div>
+                <div class="body-2">{{ link.info.sku }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption font-weight-light">Seller</div>
+                <div class="body-2">{{ link.info.seller }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption font-weight-light">Brand</div>
+                <div class="body-2">{{ link.info.brand }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption font-weight-light">Shipment</div>
+                <div class="body-2">{{ link.info.shipment }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+          </v-list>
+
+          <v-list dense class="col pa-1">
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption font-weight-light">Level</div>
+                <div class="body-2">{{ link.info.level }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption font-weight-light">Status</div>
+                <div class="body-2">{{ link.info.status }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption font-weight-light">Checked</div>
+                <div class="body-2">{{ link.info.checkedAt | formatPlainDate }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption font-weight-light">Updated</div>
+                <div class="body-2">{{ link.info.updatedAt | formatPlainDate }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+          </v-list>
+        </div>
+
+        <v-list class="pa-0">
+          <v-list-item link :href="link.info.url" target="_blank" class="px-3">
+            <v-list-item-content>
+              <div class="caption font-italic font-weight-light">{{ link.info.url }}</div>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
       </v-card>
-
-      <!-- ------ -->
-      <!-- ALARM  -->
-      <!-- ------ -->
-      <v-card class="mt-5">
-        <alarm-note
-          class="pa-4"
-          :alarm="link.info.alarm"
-          @clicked="openAlarmDialog"
-        ></alarm-note>
-      </v-card>
-
 
       <price-list :list="link.priceList"></price-list>
       <history-list :list="link.historyList"></history-list>
@@ -109,10 +160,12 @@
       ></alarm-dialog>
 
       <confirm ref="confirm"></confirm>
-
     </div>
 
-    <block-message v-else :message="'Link not found!'" />
+    <block-message 
+      v-else dense
+      :message="'Unknown link.'"
+    />
 
   </div>
 </template>
@@ -126,22 +179,6 @@ export default {
     return {
       link: null,
     };
-  },
-  computed: {
-    COLUMNS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': {
-          return {
-            five: 'col-5', seven: 'col-7', eight: 'col-8'
-          };
-        }
-        default: {
-          return {
-            five: 'col-3', seven: 'col-5', eight: 'col-6'
-          };
-        }
-      }
-    },
   },
   methods: {
     remove() {
@@ -216,10 +253,8 @@ export default {
     PriceList: () => import('./PriceList.vue'),
     HistoryList: () => import('./HistoryList.vue'),
     SpecList: () => import('./SpecList.vue'),
-    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
     AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
-    Property: () => import('@/component/app/Property.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
 };

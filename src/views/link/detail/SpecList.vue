@@ -1,42 +1,34 @@
 <template>
   <div class="mt-5">
-    <v-card>
-      <v-card-title class="d-block pb-2">
-        <div class="d-flex">
-          <v-icon class="mr-4">mdi-clipboard-edit-outline</v-icon>
-          <div>Spec List</div>
-        </div>
-      </v-card-title>
+    <v-card elevation="0">
+      <v-card-title>Specs</v-card-title>
 
-      <div v-if="list.length">
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th class="t-head">Name</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in list" :key="row.id">
-                  <th class="t-head">{{ row.key }}</th>
-                  <td :title="row.value">{{ row.value }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <v-list dense v-if="list.length">
+        <template v-for="(row, index) in list">
+
+          <v-list-item :key="index" >
+            <v-list-item-avatar>
+              <v-icon style="font-size:40px;" color="light-blue">mdi-circle-small</v-icon>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <div class="caption font-weight-light">{{ row.key }}</div>
+              <div class="body-2">{{ row.value }}</div>
+            </v-list-item-content>
+
+          </v-list-item>
+
+          <v-divider :key="(index+1)*-1"></v-divider>
+
+        </template>
+      </v-list>
 
       <block-message 
         v-else dense
         :message="'No spec found.'"
       />
-
     </v-card>
 
   </div>
@@ -50,10 +42,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-  .t-head {
-    width: 15%;
-    text-align: right !important;
-  }
-</style>

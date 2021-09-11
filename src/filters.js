@@ -4,7 +4,8 @@ import numFormatter from 'number-format.js';
 
 const SESSION = 'session/getCurrentStatus';
 
-const longDateFormat = "YYYY-MM-DD HH:mm:ss";
+const longDateFormat_lg = "YYYY-MM-DD HH:mm";
+const longDateFormat_sm = "DD MMM, HH:mm";
 
 export default (Vue) => {
 
@@ -29,14 +30,20 @@ export default (Vue) => {
     return 0;
   });
 
-  Vue.filter('formatPlainDate', (value) => {
+  Vue.filter('formatPlainDate', (value, screen) => {
     try {
+
+      let format = longDateFormat_lg;
+      if (screen && (screen == 'xs' || screen == 'sm')) {
+        format = longDateFormat_sm;
+      }
+
       const tz = store.get(SESSION+'@timezone');
       if (value) {
         if (tz) {
-          return moment(value).tz(tz).format(longDateFormat);
+          return moment(value).tz(tz).format(format);
         } else {
-          return moment(value).format(longDateFormat);
+          return moment(value).format(format);
         }
       }
       /* eslint-disable no-empty */
@@ -61,6 +68,13 @@ export default (Vue) => {
       console.error('Failed to format date', value, error);
      }
     return 'NA';
+  });
+
+  Vue.filter('formatRate', (value) => {
+    if (value) {
+      return value.toFixed(2) +' %';
+    } 
+    return value;
   });
 
   Vue.filter('formatUSDate', (value) => {

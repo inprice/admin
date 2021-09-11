@@ -22,20 +22,20 @@
 
     <div class="px-2 row">
       <!-- ------------------------------- -->
-      <!-- Groups' position distributions   -->
+      <!-- Links' position distributions   -->
       <!-- ------------------------------- -->
-      <v-card class="col" v-if="report && report.groups && report.groups.levelSeries">
+      <v-card class="col" v-if="report && report.links && report.links.levelSeries">
         <v-card-title class="pb-2">
           <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
           <div class="col pa-0">
-            <div>Group levels</div>
-            <div class="caption">The levels of your groups.</div>
+            <div>Link levels</div>
+            <div class="caption">The levels of your links.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
         <positions-bar-chart
           :width="300" :height="300"
-          :series="report.groups.levelSeries" 
+          :series="report.links.levelSeries" 
         />
       </v-card>
       <!-- ------------------------------- -->
@@ -56,24 +56,23 @@
         />
       </v-card>
       <!-- ------------------------------- -->
-      <!-- Links' position distributions   -->
+      <!-- Groups' position distributions   -->
       <!-- ------------------------------- -->
-      <v-card class="col" v-if="report && report.links && report.links.levelSeries">
+      <v-card class="col" v-if="report && report.groups && report.groups.levelSeries">
         <v-card-title class="pb-2">
           <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
           <div class="col pa-0">
-            <div>Link levels</div>
-            <div class="caption">The levels of your links.</div>
+            <div>Group levels</div>
+            <div class="caption">The levels of your groups.</div>
           </div>
         </v-card-title>
         <v-divider class="mb-2"></v-divider>
         <positions-bar-chart
           :width="300" :height="300"
-          :series="report.links.levelSeries" 
+          :series="report.groups.levelSeries" 
         />
       </v-card>
     </div>
-
 
     <!-- ------------------------------------ -->
     <!-- N Groups having the lowest prices -->
@@ -188,31 +187,28 @@
       </v-card-title>
 
       <v-list dense two-line v-if="report && report.links && report.links.mru25.length">
-        <template v-for="(row, index) in report.links.mru25">
-          <v-divider
-            :key="index"
-          ></v-divider>
+        <template v-for="row in report.links.mru25">
+
+          <v-divider inset :key="row.id*-1"></v-divider>
 
           <v-list-item :key="row.id" link @click="$router.push({ name: 'link', params: { id: row.id } })">
-
             <v-list-item-avatar>
               <v-icon :color="findLevelColor(row.level)">mdi-star</v-icon>
             </v-list-item-avatar>
 
             <v-list-item-content>
               <div class="caption">{{ row.seller || row.groupName }}</div>
-              <div class="subtitle font-weight-light">{{ row.name || row.url }}</div>
-              <div class="caption">{{ row.platform }}</div>
+              <div class="subtitle" :class="{'subtitle-2 font-weight-light' : $vuetify.breakpoint.smAndDown || !row.name}">{{ row.name || row.url }}</div>
             </v-list-item-content>
 
-            <v-list-action class="text-right">
+            <v-list-item-action>
               <div v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')" class="caption">-{{ row.statusDesc.replaceAll('_', ' ') }}-</div>
               <div v-else class="caption" :class="{ 'green--text font-weight-bold': row.level == 'LOWEST', 'red--text font-weight-bold': row.level == 'HIGHEST' }">
                 {{ row.level }}
               </div>
-              <div class="subtitle">{{ row.price | toCurrency }}</div>
+              <div class="subtitle">{{ row.price | toPrice }}</div>
               <div class="caption">{{ row.updatedAt | formatDate }}</div>
-            </v-list-action>
+            </v-list-item-action>
           </v-list-item>
         </template>
       </v-list>
@@ -287,32 +283,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  .row > .v-card {
-    margin: 5px;
-    min-width: 250px;
-  }
-  td, th {
-    padding: 0 3px;
-  }
-  td {
-    max-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .v-card__title {
-    padding: 0 0 0.8rem 0;
-  }
-  .row {
-    margin-top: 7px;
-  }
-  .linear-table tr td {
-    border-bottom: none !important;
-  }
-  .circular-table tr td {
-    padding: 4px 0;
-    border-bottom: none !important;
-  }
-</style>

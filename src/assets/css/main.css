@@ -1,71 +1,3 @@
-.property-table .prop-name {
-  text-align: right !important;
-  width: 15% !important;
-  padding: 0 8px !important;
-}
-
-.property-table .prop-value {
-  max-height: 30px;
-  background-color: #f9f9f9 !important;
-  padding: 3px 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.property-table tr:hover {
-  background-color: transparent !important;
-}
-
-.property-table td {
-  padding: 0 !important;
-  height: 32px !important;
-  border-bottom: none !important;
-}
-
-.property-table td:nth-child(2) {
-  display: grid;
-}
-
-.property-table .v-card {
-  margin: 2px 0 !important;
-}
-
-.property-table table {
-  border-collapse: separate;
-  border-spacing: 3px !important;
-}
-
-.featuresTable {
-  border-collapse: collapse;
-  border-radius: 4px;
-  border-style: hidden;
-  box-shadow: 0 0 0 1px #bbb;
-}
-
-.featuresTable tr {
-  max-height: 25px; 
-}
-
-.featuresTable th {
-  padding: 0 4px;
-  font-weight: 550;
-  background-color: rgba(220, 220, 220, 0.3);
-  border: 1px solid #ccc;
-}
-.featuresTable td {
-  padding: 0 4px;
-  border: 1px solid #ccc; 
-}
-
-.v-expansion-panel-content__wrap {
-  padding: 0 !important;
-}
-
-.v-expansion-panel--active > .v-expansion-panel-header {
-  min-height: auto !important;
-}
-
 @font-face {
   font-family: 'dotsfont';
   src: url('../font/dotsfont.eot');
@@ -80,63 +12,10 @@
   letter-spacing: -4px;
 }
 
-.put-behind {
-  z-index: 0;
-  position: relative;
-}
-
-.sample-data {
-  white-space: nowrap;
-  overflow-x: auto;
-  padding: 5px;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: 800;
-}
-
-div, span {
-  word-break: initial;
-}
-
-.mdi-checkbox-blank-outline {
-  font-size: 20px !important;
-}
-
-.v-text-field--outlined fieldset {
-  border-color: rgba(50, 150, 250, 0.9) !important;
-}
-
-.v-tabs-bar {
-  display: none;
-}
-
-@media screen and (min-width: 600px) {
-  .v-timeline-item__divider {
-    display: flex;
-  }
-  .v-timeline-item__body {
-    max-width: calc(100% - 96px);
-  }
-  .v-application--is-ltr .v-timeline--dense:not(.v-timeline--reverse)::before {
-    display: flex !important;
-    left: calc(48px - 1px) !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .v-timeline-item__divider {
-    display: none !important;
-  }
-  .v-timeline-item__body {
-    max-width: 100% !important;
-  }
-  .v-application--is-ltr .v-timeline--dense:not(.v-timeline--reverse)::before {
-    display: none !important;
-  }
-}
-
 .small-font {
-  font-size: 0.875rem;
-  font-weight: 350;
-  line-height: 1.375rem;
-  letter-spacing: 0.0071428571em;
+  font-size: 0.85rem;
+}
+
+.v-data-table--dense > .v-data-table__wrapper > table > tbody > tr > td, .v-data-table--dense > .v-data-table__wrapper > table > thead > tr > td, .v-data-table--dense > .v-data-table__wrapper > table > tfoot > tr > td {
+  height: 38px;
 }

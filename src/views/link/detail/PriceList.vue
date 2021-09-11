@@ -1,47 +1,46 @@
 <template>
   <div class="mt-5">
-    <v-card>
-      <v-card-title class="d-block pb-2">
-        <div class="d-flex">
-          <v-icon class="mr-4 hidden-xs-only">mdi-cash-100</v-icon>
-          <div class="d-inline">
-            <div>Price List</div>
-            <div class="caption">All the changing prices by time</div>
-          </div>
-        </div>
-      </v-card-title>
+    <v-card elevation="0">
+      <v-card-title>Price Movements</v-card-title>
 
-      <div v-if="list.length">
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}">
-              <thead>
-                <tr>
-                  <th class="text-center" :width="RESPROPS.table.date">Date</th>
-                  <th class="text-right" :width="RESPROPS.table.diff">Old Price</th>
-                  <th class="text-right" :width="RESPROPS.table.diff">New Price</th>
-                  <th class="text-right" :width="RESPROPS.table.diff">Diff</th>
-                  <th class="text-right" :width="RESPROPS.table.diff">Rate</th>
-                  <th :width="RESPROPS.table.dir">Dir</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in list" :key="row.id">
-                  <td class="text-center">{{ row.createdAt | formatPlainDate }}</td>
-                  <td class="text-right">{{ row.oldPrice | toPrice }}</td>
-                  <td class="text-right">{{ row.newPrice | toPrice }}</td>
-                  <td class="text-right">{{ row.diffAmount | toPrice }}</td>
-                  <td class="text-right" >{{ row.diffRate }}%</td>
-                  <td>{{ row.diffRate == 0 ? '-' : (row.diffRate > 0 ? 'UP' : 'DOWN') }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <v-simple-table dense v-if="list && list.length">
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th class="text-right hidden-sm-and-down">Old Price</th>
+              <th class="text-right">New Price</th>
+              <th class="text-right">Diff</th>
+              <th class="text-right">Rate</th>
+              <th width="50px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in list" :key="row.id">
+              <td>{{ row.createdAt | formatPlainDate($vuetify.breakpoint.name) }}</td>
+              <td class="text-right hidden-sm-and-down">{{ row.oldPrice | toPrice }}</td>
+              <td class="text-right">{{ row.newPrice | toPrice }}</td>
+              <td class="text-right">{{ row.diffAmount | toPrice }}</td>
+              <td class="text-right pr-0">
+                {{ row.diffRate | formatRate }}
+              </td>
+              <td class="text-left pl-0">
+                <v-icon 
+                  class="ml-2"
+                  style="font-size:1.30rem"
+                  :color="findDiffColor(row.diffAmount)"
+                >
+                  {{ findDiffIcon(row.diffAmount) }}
+                </v-icon>
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+
+      <v-divider v-if="list && list.length"></v-divider>
 
       <block-message 
         v-else dense
@@ -58,31 +57,6 @@ export default {
   props: ['list'],
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
-  },
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { date: '200px', amount: '150px', diff: '100px', dir: '70px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { date: '20%', amount: '15%', diff: '10%', dir: '8%' },
-          };
-        }
-      }
-    },
-  },
+  }
 }
 </script>
-
-<style scoped>
-  .v-data-table th {
-    height: 30px;
-  }
-</style>

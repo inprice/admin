@@ -49,20 +49,20 @@ Vue.mixin({
         case 'HIGHEST': return 'pink';
       }
     },
-    findDiffIcon(diffAmount) {
-      if (diffAmount < 0) return 'mdi-arrow-down';
-      if (diffAmount == 0) return 'mdi-arrow-minus';
-      return 'mdi-arrow-up';
-    },
     findDiffColor(diffAmount) {
       if (diffAmount < 0) return 'green';
       if (diffAmount == 0) return 'blue';
       return 'red';
     },
+    findDiffIcon(diffAmount) {
+      if (diffAmount < 0) return 'mdi-arrow-bottom-left';
+      if (diffAmount == 0) return 'mdi-minus';
+      return 'mdi-arrow-top-right';
+    },
     findStatusColor(status) {
       if (status == 'ACTIVE') return 'green';
-      if (status == 'WAITING') return 'blue';
-      if (status == 'TRYING') return 'orange';
+      if (status == 'WAITING') return 'orange';
+      if (status == 'TRYING') return 'cyan';
       return 'red';
     },
     findStatusBackColor(status) {
@@ -70,6 +70,12 @@ Vue.mixin({
       if (status == 'WAITING') return '#b4ffff';
       if (status == 'TRYING') return '#ffe069';
       return '#fffebe';
+    },
+    findStatusIcon(status) {
+      if (status == 'ACTIVE') return 'mdi-play-circle-outline';
+      if (status == 'WAITING') return 'mdi-pause-circle-outline';
+      if (status == 'TRYING') return 'mdi-stop';
+      return 'mdi-close-circle-outline';
     },
     deepEqual,
     async copyToClipboard(sourceText) {
