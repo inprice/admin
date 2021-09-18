@@ -60,49 +60,44 @@
       <div v-if="coupons.length">
         <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.table.code">Code</th>
-                  <th :width="RESPROPS.table.days">Days</th>
-                  <th :width="RESPROPS.table.status">Status</th>
-                  <th :width="RESPROPS.table.issuedAt">Issued At</th>
-                  <th :width="RESPROPS.table.description">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="cpn in coupons" :key="cpn.id">
-                  <td class="font-weight-bold">{{ maskCode(cpn) }}</td>
-                  <td class="font-weight-bold">{{ cpn.days }}</td>
-                  <td>
-                    <v-chip small label outlined v-if="cpn.issuedAt">USED</v-chip>
-                    <div v-else>
-                      <v-chip small label outlined dark v-if="$store.get('session/isAdmin')" color="teal">AVAILABLE</v-chip>
-                      <v-chip small label outlined dark v-else color="red">ADMIN NEEDED</v-chip>
-                    </div>
-                  </td>
-                  <td>
-                    <ago :date="cpn.issuedAt" v-if="cpn.issuedAt" />
-                    <v-btn
-                      v-else small dark
-                      class="my-1"
-                      color="light-blue"
-                      :disabled="loading.apply || CURSTAT.isActive == true || $store.get('session/isNotAdmin')"
-                      @click="apply(cpn.code)"
-                      style="min-width: 75%; max-height: 80%"
-                    >
-                      Use
-                    </v-btn>
-                  </td>
-                  <td>{{ cpn.description }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <table class="pb-2 info-table">
+          <thead>
+            <tr>
+              <th width="10%">Code</th>
+              <th width="10%">Days</th>
+              <th width="15%">Status</th>
+              <th width="15%">Issued At</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="cpn in coupons" :key="cpn.id">
+              <td class="font-weight-bold">{{ maskCode(cpn) }}</td>
+              <td class="font-weight-bold">{{ cpn.days }}</td>
+              <td>
+                <v-chip small label outlined v-if="cpn.issuedAt">USED</v-chip>
+                <div v-else>
+                  <v-chip small label outlined dark v-if="$store.get('session/isAdmin')" color="teal">AVAILABLE</v-chip>
+                  <v-chip small label outlined dark v-else color="red">ADMIN NEEDED</v-chip>
+                </div>
+              </td>
+              <td>
+                <ago :date="cpn.issuedAt" v-if="cpn.issuedAt" />
+                <v-btn
+                  v-else small dark
+                  class="my-1"
+                  color="light-blue"
+                  :disabled="loading.apply || CURSTAT.isActive == true || $store.get('session/isNotAdmin')"
+                  @click="apply(cpn.code)"
+                  style="min-width: 75%; max-height: 80%"
+                >
+                  Use
+                </v-btn>
+              </td>
+              <td>{{ cpn.description }}</td>
+            </tr>
+          </tbody>
+        </table>
 
       </div>
 
@@ -130,23 +125,6 @@ import { get } from 'vuex-pathify'
 export default {
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { code: '120px', days: '100px', status: '120px', issuedAt: '150px', description: '350px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { code: '12%', days: '10%', status: '12%', issuedAt: '15%', description: '' },
-          };
-        }
-      }
-    },
   },
   data() {
     return {

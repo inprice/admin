@@ -1,19 +1,15 @@
 <template>
   <div class="body-2 d-flex" :style="editable ? 'cursor: pointer' : ''" @click="$emit('clicked')">
     <div v-if="alarm">
-      <v-icon class="mr-1">mdi-{{ hasIcon ? 'alarm' : 'shield-alert-outline' }}</v-icon>
       <span v-if="!hasIcon">Alarm </span>
       will be triggered when
       <span class="text-capitalize green--text"><b>{{ alarm.subject.toLowerCase()}}</b></span> 
       <span v-html="findLastPart()"></span>
     </div>
     <div v-else>
-      <v-icon class="mr-1">mdi-alarm-off</v-icon>
+      <span class="mr-1">No alarm.</span>
       <span v-if="editable">
-        Click here to set alarm
-      </span>
-      <span v-else>
-        No alarm set!
+        Click here to set for this.
       </span>
     </div>
   </div>

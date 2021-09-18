@@ -30,7 +30,6 @@
           </ul>
         </div>
       </v-card-text>
-
     </v-card>
 
     <password-confirm-dialog ref="passwordConfirmDialog" @confirmed="confirmed"/>

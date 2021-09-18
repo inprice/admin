@@ -9,12 +9,7 @@
     >
       <v-card>
         <div class="d-flex justify-space-between pa-3">
-          <div>
-            <div class="title">{{ isInsert ? 'New account' : 'Account info' }}</div>
-            <div class="caption" v-if="isInsert">
-              You will be able to see new account after sign in again.
-            </div>
-          </div>
+          <div class="title">{{ isInsert ? 'New account' : 'Account info' }}</div>
           <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </div>
 

@@ -12,7 +12,7 @@
         <v-card-title class="justify-space-between">
           <div>
             Add New Links
-            <div class="caption">For {{ this.groupName }}</div>
+            <div class="caption">For {{ this.productName }}</div>
           </div>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
@@ -60,7 +60,7 @@ import Utility from '@/helpers/utility';
 import SystemService from '@/service/system';
 
 export default {
-  props: ["groupId", "groupName"],
+  props: ["productId", "productName"],
   computed: {
     findDialogWidth() {
       switch (this.$vuetify.breakpoint.name) {

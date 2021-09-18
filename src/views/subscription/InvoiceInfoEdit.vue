@@ -153,9 +153,9 @@ export default {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs': return '80%';
         case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
+        case 'md': return '45%';
+        case 'lg': return '37%';
+        default: return '20%';
       }
     },
   },

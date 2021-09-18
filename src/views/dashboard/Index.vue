@@ -20,102 +20,105 @@
 
     <v-divider class="my-2"></v-divider>
 
-    <div class="px-2 row">
+    <div class="row justify-space-around">
       <!-- ------------------------------- -->
       <!-- Links' position distributions   -->
       <!-- ------------------------------- -->
-      <v-card class="col" v-if="report && report.links && report.links.levelSeries">
-        <v-card-title class="pb-2">
-          <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
-          <div class="col pa-0">
-            <div>Link levels</div>
-            <div class="caption">The levels of your links.</div>
-          </div>
-        </v-card-title>
-        <v-divider class="mb-2"></v-divider>
-        <positions-bar-chart
-          :width="300" :height="300"
-          :series="report.links.levelSeries" 
-        />
-      </v-card>
+      <div class="col-sm-4 col-xs-12 ">
+        <v-card class="pa-2" v-if="report && report.links && report.links.levelSeries">
+          <v-card-title class="pb-2">
+            <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
+            <div class="col pa-0">
+              <div>Link levels</div>
+              <div class="caption">The levels of your links.</div>
+            </div>
+          </v-card-title>
+          <v-divider class="mb-2"></v-divider>
+          <positions-bar-chart
+            :width="300" :height="300"
+            :series="report.links.levelSeries" 
+          />
+        </v-card>
+      </div>
       <!-- ------------------------------- -->
       <!-- Links' status distributions   -->
       <!-- ------------------------------- -->
-      <v-card class="col" v-if="report && report.links && report.links.statusGroupSeries">
-        <v-card-title class="pb-2">
-          <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
-          <div class="col pa-0">
-            <div>Links statuses</div>
-            <div class="caption">The statuses of your links.</div>
-          </div>
-        </v-card-title>
-        <v-divider class="mb-2"></v-divider>
-        <level-pie-chart
-          :width="300" :height="300"
-          :series="report.links.statusGroupSeries"
-        />
-      </v-card>
+      <div class="col-sm-4 col-xs-12 ">
+        <v-card class="pa-2" v-if="report && report.links && report.links.grupSeries">
+          <v-card-title class="pb-2">
+            <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
+            <div class="col pa-0">
+              <div>Links statuses</div>
+              <div class="caption">The statuses of your links.</div>
+            </div>
+          </v-card-title>
+          <v-divider class="mb-2"></v-divider>
+          <level-pie-chart
+            :width="300" :height="300"
+            :series="report.links.grupSeries"
+          />
+        </v-card>
+      </div>
       <!-- ------------------------------- -->
-      <!-- Groups' position distributions   -->
+      <!-- Products' position distributions   -->
       <!-- ------------------------------- -->
-      <v-card class="col" v-if="report && report.groups && report.groups.levelSeries">
-        <v-card-title class="pb-2">
-          <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
-          <div class="col pa-0">
-            <div>Group levels</div>
-            <div class="caption">The levels of your groups.</div>
-          </div>
-        </v-card-title>
-        <v-divider class="mb-2"></v-divider>
-        <positions-bar-chart
-          :width="300" :height="300"
-          :series="report.groups.levelSeries" 
-        />
-      </v-card>
+      <div class="col-sm-4 col-xs-12 ">
+        <v-card class="pa-2" v-if="report && report.products && report.products.levelSeries">
+          <v-card-title class="pb-2">
+            <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
+            <div class="col pa-0">
+              <div>Product levels</div>
+              <div class="caption">The levels of your products.</div>
+            </div>
+          </v-card-title>
+          <v-divider class="mb-2"></v-divider>
+          <positions-bar-chart
+            :width="300" :height="300"
+            :series="report.products.levelSeries" 
+          />
+        </v-card>
+      </div>
     </div>
 
     <!-- ------------------------------------ -->
-    <!-- N Groups having the lowest prices -->
+    <!-- N Products having the lowest prices -->
     <!-- ------------------------------------ -->
     <v-card class="mt-4" :loading="loading">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-down-circle-outline</v-icon>
         <div>
           <div>Low prices</div>
-          <div class="caption">Top 5 groups with low prices</div>
+          <div class="caption">Top 5 products with low prices</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
 
-      <div 
-        class="v-data-table v-data-table--dense theme--light put-behind" 
+      <table 
+        class="pb-2 info-table"
         v-if="report && report.groups && report.groups.extremePrices.LOWEST && report.groups.extremePrices.LOWEST.length">
-        <div class="v-data-table__wrapper">
-          <table class="pb-2">
-            <thead>
-              <tr>
-                <th width="350px">Name</th>
-                <th width="100px" class="text-right">Price</th>
-                <th width="100px" class="text-center">Links</th>
-                <th width="120px" class="text-center">Updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                style="cursor: pointer"
-                link @click="$router.push({ name: 'group', params: { id: row.id } })"
-                v-for="(row) in report.groups.extremePrices.LOWEST" :key="row.id">
-                <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
-                <td class="text-right">{{ row.price | toPrice }}</td>
-                <td class="text-center">{{ row.actives + '/' + row.total }}</td>
-                <td class="text-center">
-                  <ago :date="row.updatedAt" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      >
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th width="15%" class="text-right">Price</th>
+            <th width="10%" class="text-center">Links</th>
+            <th width="15%" class="text-center">Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            style="cursor: pointer"
+            link @click="$router.push({ name: 'product', params: { id: row.id } })"
+            v-for="(row) in report.products.extremePrices.LOWEST" :key="row.id">
+            <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
+            <td class="text-right">{{ row.price | toPrice }}</td>
+            <td class="text-center">{{ row.actives + '/' + row.total }}</td>
+            <td class="text-center">
+              <ago :date="row.updatedAt" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
       <block-message 
         v-else dense
@@ -125,47 +128,44 @@
     </v-card>
 
     <!-- ------------------------------------- -->
-    <!-- N Groups having the highest prices -->
+    <!-- N Products having the highest prices -->
     <!-- ------------------------------------- -->
     <v-card class="mt-4" :loading="loading">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-up-circle-outline</v-icon>
         <div>
           <div>High prices</div>
-          <div class="caption">Top 5 groups with high prices</div>
+          <div class="caption">Top 5 products with high prices</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
 
-      <div 
-        class="v-data-table v-data-table--dense theme--light put-behind" 
-        v-if="report && report.groups && report.groups.extremePrices.HIGHEST && report.groups.extremePrices.HIGHEST.length">
-        <div class="v-data-table__wrapper">
-          <table class="pb-2">
-            <thead>
-              <tr>
-                <th width="350px">Name</th>
-                <th width="100px" class="text-right">Price</th>
-                <th width="100px" class="text-center">Links</th>
-                <th width="120px" class="text-center">Updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr 
-                style="cursor: pointer"
-                link @click="$router.push({ name: 'group', params: { id: row.id } })"
-                v-for="(row) in report.groups.extremePrices.HIGHEST" :key="row.id">
-                <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
-                <td class="text-right">{{ row.price | toPrice }}</td>
-                <td class="text-center">{{ row.actives + '/' + row.total }}</td>
-                <td class="text-center">
-                  <ago :date="row.updatedAt" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <table 
+        class="pb-2 info-table"
+        v-if="report && report.groups && report.groups.extremePrices.LOWEST && report.groups.extremePrices.HIGHEST.length">
+      >
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th width="15%" class="text-right">Price</th>
+            <th width="10%" class="text-center">Links</th>
+            <th width="15%" class="text-center">Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr 
+            style="cursor: pointer"
+            link @click="$router.push({ name: 'product', params: { id: row.id } })"
+            v-for="(row) in report.products.extremePrices.HIGHEST" :key="row.id">
+            <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
+            <td class="text-right">{{ row.price | toPrice }}</td>
+            <td class="text-center">{{ row.actives + '/' + row.total }}</td>
+            <td class="text-center">
+              <ago :date="row.updatedAt" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
       <block-message 
         v-else dense
@@ -186,32 +186,37 @@
         </div>
       </v-card-title>
 
-      <v-list dense two-line v-if="report && report.links && report.links.mru25.length">
-        <template v-for="row in report.links.mru25">
+      <v-divider></v-divider>
 
-          <v-divider inset :key="row.id*-1"></v-divider>
+      <table class="list-table" v-if="report && report.links && report.links.mru25.length">
+        <tr
+          style="cursor: pointer"
+          v-for="row in report.links.mru25" :key="row.id" 
+          @click="$router.push({ name: 'link', params: { id: row.id } })"
+        >
+          <td width="3%">
+            <v-icon style="font-size: 18px" :color="findLevelColor(row.level)">mdi-star</v-icon>
+          </td>
 
-          <v-list-item :key="row.id" link @click="$router.push({ name: 'link', params: { id: row.id } })">
-            <v-list-item-avatar>
-              <v-icon :color="findLevelColor(row.level)">mdi-star</v-icon>
-            </v-list-item-avatar>
+          <td>
+            <div class="caption teal--text">{{ row.seller || row.productName }}</div>
+            <div class="body-2" :class="{'caption font-italic' : !row.name}">{{ row.name || row.url }}</div>
+          </td>
 
-            <v-list-item-content>
-              <div class="caption">{{ row.seller || row.groupName }}</div>
-              <div class="subtitle" :class="{'subtitle-2 font-weight-light' : $vuetify.breakpoint.smAndDown || !row.name}">{{ row.name || row.url }}</div>
-            </v-list-item-content>
-
-            <v-list-item-action>
-              <div v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')" class="caption">-{{ row.statusDesc.replaceAll('_', ' ') }}-</div>
-              <div v-else class="caption" :class="{ 'green--text font-weight-bold': row.level == 'LOWEST', 'red--text font-weight-bold': row.level == 'HIGHEST' }">
-                {{ row.level }}
-              </div>
-              <div class="subtitle">{{ row.price | toPrice }}</div>
-              <div class="caption">{{ row.updatedAt | formatDate }}</div>
-            </v-list-item-action>
-          </v-list-item>
-        </template>
-      </v-list>
+          <td width="12%" class="text-right">
+            <div 
+              class="caption"
+              v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')" 
+            >
+              NOT YET
+            </div>
+            <div v-else class="caption" :class="{ 'green--text font-weight-bold': row.level == 'LOWEST', 'red--text font-weight-bold': row.level == 'HIGHEST' }">
+              {{ row.level }}
+            </div>
+            <div class="body-2">{{ row.price | toPrice }}</div>
+          </td>
+        </tr>
+      </table>
 
       <block-message 
         v-else dense
@@ -235,7 +240,7 @@ export default {
       loading: false,
       report: {},
       total: {
-        group: 0,
+        product: 0,
         link: 0
       }
     };
@@ -244,32 +249,32 @@ export default {
     CURSTAT: get('session/getCurrentStatus'),
   },
   methods: {
-    async refresh() {
+    refresh() {
       this.loading = true;
-      const result = await DashboardService.refresh();
-      this.report = result.data;
-      if (this.report && this.report.account && this.report.account.subsRenewalAt) {
-        this.report.account.daysToRenewal = moment(this.report.account.subsRenewalAt).diff(moment(), 'days')+1;
-      }
-
-      if (this.report && this.report.groups && this.report.groups.positionSeries) {
-        let linkCount = 0;
-        for (var i = 0; i < this.report.groups.positionSeries.length; i++) {
-          const dist = this.report.groups.positionSeries[i];
-          linkCount += dist.count;
+      DashboardService.refresh().then(result => {
+        this.report = result.data;
+        if (this.report && this.report.account && this.report.account.subsRenewalAt) {
+          this.report.account.daysToRenewal = moment(this.report.account.subsRenewalAt).diff(moment(), 'days')+1;
         }
-        this.total.group = linkCount;
 
-        let compCount = 0;
-        if (this.report.links.statusSeries) {
-          for (var j = 0; j < this.report.links.statusSeries.length; j++) {
-            const comp = this.report.links.statusSeries[j];
-            compCount += comp.count;
+        if (this.report && this.report.products && this.report.products.positionSeries) {
+          let linkCount = 0;
+          for (var i = 0; i < this.report.products.positionSeries.length; i++) {
+            const dist = this.report.products.positionSeries[i];
+            linkCount += dist.count;
           }
+          this.total.product = linkCount;
+
+          let compCount = 0;
+          if (this.report.links.statusSeries) {
+            for (var j = 0; j < this.report.links.statusSeries.length; j++) {
+              const comp = this.report.links.statusSeries[j];
+              compCount += comp.count;
+            }
+          }
+          this.total.link = compCount;
         }
-        this.total.link = compCount;
-      }
-      this.loading = false;
+      }).finally(() => this.loading = false);
     },  
   },
   mounted() {
@@ -283,3 +288,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  td {
+    padding: 15px 10px;
+  }
+</style>

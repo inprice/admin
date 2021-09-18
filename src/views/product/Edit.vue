@@ -9,7 +9,7 @@
     >
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
-          <span>{{ form.id ? 'Edit' : 'New' }} Group</span>
+          <span>{{ form.id ? 'Edit' : 'New' }} Product</span>
           <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
 

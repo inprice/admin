@@ -48,9 +48,9 @@
       <v-btn
         class="mt-10"
         color="primary"
-        @click="$router.push({ name: 'groups' })"
+        @click="$router.push({ name: 'products' })"
       >
-        Go to groups page
+        Go to products page
       </v-btn>
     </div>
 

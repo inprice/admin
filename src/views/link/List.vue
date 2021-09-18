@@ -1,86 +1,103 @@
 <template>
-  <div>
+  <v-card>
+    <table class="list-table">
+      <thead>
+        <tr>
+          <th width="5%">
+            <v-checkbox
+              class="pa-0 pl-2 pb-2"
+              hide-details
+              v-model="selectAll"
+              @click.stop="checkAll"
+              :indeterminate="indeterminate"
+            />
+          </th>
+          <th>Name</th>
+          <th width="15%" class="text-right">Price</th>
+          <th width="5%"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr 
+          style="cursor: pointer"
+          v-for="row in links" :key="row.id"
+          @click="$router.push({ name: 'row', params: { id: row.id } })"
+        >
+          <td>
+            <v-checkbox
+              class="pa-0 pl-2 pb-2"
+              hide-details
+              v-model="row.selected"
+              @click.stop="checkOne"
+            />
+          </td>
+          <td>
+            <v-icon
+              class="mr-2"
+              style="font-size:18px"
+              :color="findLevelColor(row.level)"
+            >
+              mdi-star
+            </v-icon>
+            <span>{{ row.name || row.url }}</span>
+          </td>
+          <td class="text-right">{{ row.price | toPrice }}</td>
+          <td>
+            <v-menu offset-y bottom left>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  small icon
+                  class="mx-1"
+                  v-on="on"
+                  v-bind="attrs"
+                >
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
 
-    <v-card elevation="0" :loading="loading" v-if="!loading && rows.length">
+              <v-list dense>
+                <v-list-item row @click="copyTheLink(row.url)">
+                  <v-list-item-title>COPY URL</v-list-item-title>
+                </v-list-item>
 
-      <div class="d-flex" style="align-items: end;" v-if="rows.length > 1">
-        <v-checkbox
-          hide-details="true"
-          class="mx-2"
-          style="min-width: 120px;"
-          :label="(!selected ? 'Select All' : 'Deselect All')"
-          :value="selected == rows.length"
-          :indeterminate="selected > 0 && selected != rows.length"
-          @click="changeAllSelection"
-        ></v-checkbox>
+                <v-list-item row target="_blank" :href="row.url">
+                  <v-list-item-title>OPEN WEBPAGE</v-list-item-title>
+                </v-list-item>
 
-        <div>
-          <v-btn
-            small
-            class="mx-1"
-            @click="moveMultiple"
-            :disabled="!selected || $store.get('session/isNotEditor')"
-          >
-            Move
-          </v-btn>
+                <v-divider></v-divider>
 
-          <v-btn 
-            small
-            class="mx-1"
-            @click="deleteMultiple"
-            :disabled="!selected || $store.get('session/isNotEditor')"
-          >
-            Delete ({{ selected }})
-          </v-btn>
-        </div>
-      </div>
+                <v-list-item row @click="openAlarmDialog(row)" :disabled="$store.get('session/isNotEditor')">
+                  <v-list-item-title>SET ALARM</v-list-item-title>
+                </v-list-item>
 
-      <v-card 
-        tile 
-        v-for="(row, index) in rows" 
-        class="pa-2 pt-0"
-        :key="row.id" 
-        :loading="detailLoading && loadingId==row.id"
-        :class="(showingId==row.id && showDetails==true ? 'elevation-5' : '')"
-        :style="(showingId==row.id && showDetails==true ? 'margin: 15px 0; border-left: 5px solid red !important' : 'margin: 10px 0')"
-        transition="fade-transition"
-      >
-        <template slot="progress">
-          <v-progress-linear color="green" indeterminate></v-progress-linear>
-        </template>
-        <link-row
-          :row="row"
-          :details="row.details"
-          :linksCount="rows.length"
-          :showingId="showingId"
-          :showDetails="showDetails"
-          :isChecked="row.selected == true"
-          :fromSearchPage="true"
-          @rowSelected="changeRowSelection(index)"
-          @moveOne="moveOne"
-          @deleteOne="deleteOne"
-          @toggleDetails="toggleDetails"
-          @openAlarmDialog="openAlarmDialog"
-        />
-      </v-card>
-    </v-card>
+                <v-list-item row @click="moveOne(row)" :disabled="$store.get('session/isNotEditor')">
+                  <v-list-item-title>MOVE UNDER ANOTHER PRODUCT</v-list-item-title>
+                </v-list-item>
 
-    <block-message 
-      v-else dense
-      :message="loading ? 'Loading, please wait...' : 'No link found.'"
-    />
+                <v-divider></v-divider>
+
+                <v-list-item row @click="deleteOne(row)" :disabled="$store.get('session/isNotEditor')">
+                  <v-list-item-title>DELETE THIS</v-list-item-title>
+                </v-list-item>
+
+              </v-list>
+            </v-menu>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <confirm ref="confirm" />
 
     <alarm-dialog
       ref="alarmDialog"
+      :key="alarmRefresher"
       @setOff="setAlarmOff"
       @saved="saveAlarm"
     ></alarm-dialog>
 
-    <confirm ref="confirm"></confirm>
-    <group-select ref="groupSelect"></group-select>
-
-  </div>
-
+    <product-select-dialog ref="productSelectDialog"></product-select-dialog>
+  </v-card>
 </template>
 
 <script>
@@ -88,130 +105,41 @@ import LinkService from '@/service/link';
 import AlarmService from '@/service/alarm';
 
 export default {
-  props: ['rows', 'loading'],
+  props: ['links', 'productId'],
   data() {
     return {
-      showingId: 0,
-      showDetails: false,
-      loadingId: 0,
-      detailLoading: false,
-      selected: 0
+      selectAll: false,
+      indeterminate: false,
+      alarmRefresher: 0
     }
   },
   methods: {
-    async toggleDetails(row) {
-      if (this.showingId != row.id) {
-        if (!row.details) {
-          this.loadingId = row.id;
-          this.detailLoading = true;
-          const res = await LinkService.getDetails(row.id);
-          if (res && res.data) {
-            row.details = {
-              historyList: res.data.historyList,
-              priceList: res.data.priceList,
-              specList: res.data.specList
-            };
-          }
-          this.detailLoading = false;
-        }
-        this.showingId = row.id;
-        this.showDetails = true;
-      } else {
-        this.showDetails = !this.showDetails;
-      }
-    },
-    deleteOne(row) {
+    async deleteOne(row) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', (row.name || row.url)).then(async (confirm) => {
         if (confirm == true) {
-          const result = await LinkService.remove([ row.id ]);
-          if (result) {
-            this.selected = 0;
-            this.$store.commit('snackbar/setMessage', { text: 'Link successfully deleted.' });
-            this.$emit('refreshList');
+          const result = await LinkService.remove([ row.id ], this.productId);
+          if (result && result.data) {
+            this.data = result.data;
+            this.refreshPanels();
           }
         }
       });
     },
-    moveOne(row) {
-      this.$refs.groupSelect.open('For the selected link, please select a group to move', this.groupId).then(async (data) => {
+    async moveOne(row) {
+      this.$refs.productSelectDialog.open('For the selected row, please select a product to move', this.productId).then(async (data) => {
         if (data && (data.id || data.name)) {
           const result = await LinkService.moveTo({
-            fromGroupId: this.groupId,
-            toGroupId: data.id,
-            toGroupName: data.name,
+            fromProductId: this.productId,
+            toProductId: data.id,
+            toProductName: data.name,
             linkIdSet: [ row.id ],
           });
-          if (result) {
-            this.selected = 0;
-            this.$store.commit('snackbar/setMessage', { text: 'Link successfully moved.' });
-            this.$emit('refreshList');
+          if (result && result.data) {
+            this.data = result.data;
+            this.refreshPanels();
           }
         }
       });
-    },
-    deleteMultiple() {
-      let selection = this.findSelectedIds();
-      if (selection.length) {
-        const title = `${selection.length} links`;
-        this.$refs.confirm.open('Delete', ' will be deleted. Are you sure?', title).then(async (confirm) => {
-          if (confirm == true) {
-            const result = await LinkService.remove(selection, this.groupId);
-            if (result) {
-              this.selected = 0;
-              this.$store.commit('snackbar/setMessage', { text: title + ' successfully deleted.' });
-              this.$emit('refreshList');
-            }
-          }
-        });
-      }
-    },
-    moveMultiple() {
-      let selection = this.findSelectedIds();
-      if (selection.length) {
-        const title = `${selection.length} links`;
-        this.$refs.groupSelect.open(`For selected ${title}, please select a group to move`, this.groupId).then(async (data) => {
-          if (data && (data.id || data.name)) {
-            const result = await LinkService.moveTo({
-              fromGroupId: this.groupId,
-              toGroupId: data.id,
-              toGroupName: data.name,
-              linkIdSet: selection,
-            });
-            if (result) {
-              this.selected = 0;
-              this.$store.commit('snackbar/setMessage', { text: title + ' successfully moved.' });
-              this.$emit('refreshList');
-            }
-          }
-        });
-      }
-    },
-    findSelectedIds() {
-      let selection = [];
-      for (var i=0; i<this.rows.length; i++) {
-        const link = this.rows[i];
-        if (link.selected) selection.push(link.id);
-      }
-      return selection;
-    },
-    changeRowSelection(index) {
-      if (this.rows[index].selected) {
-        this.selected += 1;
-      } else {
-        this.selected -= 1;
-      }
-    },
-    changeAllSelection() {
-      let selectAll = (!this.selected || this.selected == 0);
-      this.rows.forEach((link) => link.selected = selectAll);
-      if (selectAll == false) {
-        this.selected = 0;
-      } else {
-        this.selected = this.rows.length;
-      }
-    },
-    clearSelected() {
-      this.selected = 0;
     },
     openAlarmDialog(row) {
       let cloned = {};
@@ -228,47 +156,50 @@ export default {
       cloned.topic = 'LINK';
       cloned.linkId = row.id;
       cloned.name = row.name || row.url;
-
       this.$refs.alarmDialog.open(cloned);
     },
-    async saveAlarm(selected) {
-      const result = await AlarmService.save(selected);
+    async saveAlarm(form) {
+      const result = await AlarmService.save(form);
       if (result && result.status) {
-        this.$emit('refreshList');
+        this.data.product.alarm = result.data;
+        this.alarmRefresher++;
       }
     },
-    setAlarmOff(selected) {
-      this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
-        if (confirm == true) {
-          AlarmService.remove(selected.id).then((res) => {
-            if (res && res.status) {
-              this.$emit('refreshList');
-            }
-          });
+    setAlarmOff(form) {
+      AlarmService.remove(form.id).then((res) => {
+        if (res && res.status) {
+          this.data.product.alarm = null;
+          this.alarmRefresher++;
         }
       });
     },
+    copyTheLink(url) {
+      this.copyToClipboard(url);
+      this.$store.commit('snackbar/setMessage', { text: 'Url copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+    },
+    checkOne() {
+      let selected = 0;
+      let notselected = 0;
+      this.links.forEach(row => {
+        if (row.selected) 
+          selected++;
+        else
+          notselected++;
+      });
+      this.selectAll = (selected > 0 && selected == this.links.length);
+      this.indeterminate = (this.selectAll && selected != 0 || notselected != 0);
+      this.$emit('checked');
+    },
+    checkAll() {
+      this.links.forEach(row => row.selected = this.selectAll);
+      this.$emit('checked');
+      this.indeterminate = false;
+    }
   },
   components: {
-    LinkRow: () => import('./components/Row.vue'),
-    GroupSelect: () => import('@/views/group/Select.vue'),
-    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
+    ProductSelectDialog: () => import('@/views/product/Select.vue'),
   }
-};
+}
 </script>
-
-<style>
-  tr {
-    cursor: pointer;
-  }
-  td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .v-card {
-    overflow-wrap: normal;
-  }
-</style>

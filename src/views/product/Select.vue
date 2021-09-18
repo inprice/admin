@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-card-title class="justify-space-between">
-        <div class="subtitle-1">Please select a group</div>
+        <div class="subtitle-1">Please select a product</div>
         <v-btn icon @click.native="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
@@ -16,15 +16,15 @@
 
       <div class="body-2 mx-3 mb-2 mt-5 font-weight-light">
         <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
-        You can either select or create a new group by typing.
+        You can either select or create a new product by typing.
       </div>
 
       <v-combobox
         dense
         outlined
         class="pa-4 mt-2 pb-1"
-        label="Group"
-        :items="groupNames"
+        label="Product"
+        :items="productNames"
         :messages="messages"
         :error="messages != null"
         v-model="selectedName"
@@ -48,10 +48,10 @@
 </template>
 
 <script>
-import GroupService from '@/service/group';
+import ProductService from '@/service/product';
 
 export default {
-  name: 'GroupSelect',
+  name: 'ProductSelect',
   computed: {
     findDialogWidth() {
       switch (this.$vuetify.breakpoint.name) {
@@ -69,43 +69,43 @@ export default {
       resolve: null,
       title: null,
       callback: null,
-      groups: [],
-      groupNames: [],
+      products: [],
+      productNames: [],
       selectedName: null,
-      callerGroupId: null,
+      callerProductId: null,
       messages: null,
     };
   },
   methods: {
-    open(title, callerGroupId) {
+    open(title, callerProductId) {
       this.dialog = true;
       this.title = title;
-      this.callerGroupId = callerGroupId;
+      this.callerProductId = callerProductId;
 
-      GroupService.getIdNameList().then((res) => {
+      ProductService.getIdNameList().then((res) => {
         if (res && res.data) {
           const names = [];
-          res.data.forEach(group => {
-            this.groups[group.right.toLowerCase()] = group.left; //in order to finding id by name!
-            if (group.left != callerGroupId) {
-              names.push(group.right);
+          res.data.forEach(product => {
+            this.products[product.right.toLowerCase()] = product.left; //in order to finding id by name!
+            if (product.left != callerProductId) {
+              names.push(product.right);
             }
           });
-          this.groupNames = names;
+          this.productNames = names;
         }
       });
       return new Promise((callback) => this.callback = callback);
     },
     agree() {
       if (this.selectedName) {
-        const id = this.groups[this.selectedName.toLowerCase()];
-        if (!id || id != this.callerGroupId) {
+        const id = this.products[this.selectedName.toLowerCase()];
+        if (!id || id != this.callerProductId) {
           this.close({ id, name: this.selectedName });
         } else {
-          this.messages = 'Same group, please select different one!';
+          this.messages = 'Same product, please select different one!';
         }
       } else {
-        this.messages = 'Please select a group!';
+        this.messages = 'Please select a product!';
       }
     },
     close(selected) {
@@ -113,8 +113,8 @@ export default {
       this.dialog = false;
       this.selectedName = null;
       this.messages = null;
-      this.groups = {};
-      this.groupNames = [];
+      this.products = {};
+      this.productNames = [];
     }
   }
 }

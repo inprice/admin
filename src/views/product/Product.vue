@@ -6,12 +6,12 @@
     <!-- ------ -->
     <v-card-title class="py-1 justify-space-between">
       <div @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
-        <div style="font-weight: normal">{{ group.name }}</div>
-        <div class="caption">{{ group.description }}</div>
+        <div style="font-weight: normal">{{ product.name }}</div>
+        <div class="caption">{{ product.description }}</div>
       </div>
 
       <div>
-        <span v-if="group.price"> {{ group.price | toCurrency }}</span>
+        <span v-if="product.price"> {{ product.price | toCurrency }}</span>
 
         <div class="d-inline">
           <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
@@ -61,7 +61,7 @@
     <div class="d-flex flex-wrap justify-start px-1" @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
 
       <v-card
-        v-if="group.minPrice"
+        v-if="product.minPrice"
         tile
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
@@ -73,19 +73,19 @@
         </div>
         <div class="text-h6">
           <span v-if="$vuetify.breakpoint.smAndDown">
-            {{ group.minPrice | toPrice }}
+            {{ product.minPrice | toPrice }}
           </span>
           <span v-else>
-            {{ group.minPrice | toCurrency }}
+            {{ product.minPrice | toCurrency }}
           </span>
         </div>
         <div class="caption">
-          <span class="font-weight-medium">{{ group.minSeller }}</span> | {{ group.minPlatform }}
+          <span class="font-weight-medium">{{ product.minSeller }}</span> | {{ product.minPlatform }}
         </div>
       </v-card>
 
       <v-card
-        v-if="group.avgPrice"
+        v-if="product.avgPrice"
         tile
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
@@ -97,19 +97,19 @@
         </div>
         <div class="text-h6">
           <span v-if="$vuetify.breakpoint.smAndDown">
-            {{ group.avgPrice | toPrice }}
+            {{ product.avgPrice | toPrice }}
           </span>
           <span v-else>
-            {{ group.avgPrice | toCurrency }}
+            {{ product.avgPrice | toCurrency }}
           </span>
         </div>
         <div>
-          <span class="font-weight-medium">{{ group.actives }}</span> <span class="caption">active links</span>
+          <span class="font-weight-medium">{{ product.actives }}</span> <span class="caption">active links</span>
         </div>
       </v-card>
 
       <v-card
-        v-if="group.maxPrice"
+        v-if="product.maxPrice"
         tile
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
@@ -121,19 +121,19 @@
         </div>
         <div class="text-h6">
           <span v-if="$vuetify.breakpoint.smAndDown">
-            {{ group.maxPrice | toPrice }}
+            {{ product.maxPrice | toPrice }}
           </span>
           <span v-else>
-            {{ group.maxPrice | toCurrency }}
+            {{ product.maxPrice | toCurrency }}
           </span>
         </div>
         <div class="caption">
-          <span class="font-weight-medium">{{ group.maxSeller }}</span> | {{ group.maxPlatform }}
+          <span class="font-weight-medium">{{ product.maxSeller }}</span> | {{ product.maxPlatform }}
         </div>
       </v-card>
 
       <v-card
-        v-if="!group.price && group.total"
+        v-if="!product.price && product.total"
         tile
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
@@ -145,19 +145,19 @@
         </div>
         <div class="text-h6">
           <span v-if="$vuetify.breakpoint.smAndDown">
-            {{ group.total | toPrice }}
+            {{ product.total | toPrice }}
           </span>
           <span v-else>
-            {{ group.total | toCurrency }}
+            {{ product.total | toCurrency }}
           </span>
         </div>
         <div>
-          <span class="font-weight-medium">{{ group.linkCount }}</span> <span class="caption">total links</span>
+          <span class="font-weight-medium">{{ product.linkCount }}</span> <span class="caption">total links</span>
         </div>
       </v-card>
 
       <v-card
-        v-if="group.price"
+        v-if="product.price"
         tile
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
@@ -169,20 +169,20 @@
         </div>
         <div class="text-h6">
           <span v-if="$vuetify.breakpoint.smAndDown">
-            {{ group.price | toPrice }}
+            {{ product.price | toPrice }}
           </span>
           <span v-else>
-            {{ group.price | toCurrency }}
+            {{ product.price | toCurrency }}
           </span>
         </div>
 
-        <span :class="findLevelColor(group.level) +'--text caption font-weight-medium'">
-          {{ group.level }}
+        <span :class="findLevelColor(product.level) +'--text caption font-weight-medium'">
+          {{ product.level }}
         </span>
       </v-card>
 
       <v-card
-        v-if="!group.minPrice"
+        v-if="!product.minPrice"
         tile
         outlined
         class="col elevation-1 mr-1 mt-1 py-1"
@@ -194,24 +194,24 @@
         </div>
         <div class="d-flex">
           <div class="mr-2">
-            <span v-if="group.actives" class="font-weight-medium">{{ group.actives }}</span>
+            <span v-if="product.actives" class="font-weight-medium">{{ product.actives }}</span>
             <span v-else class="font-weight-medium">no</span>
             <span class="caption ml-1">active links,</span>
           </div>
           <div>
-            <span v-if="group.waitings" class="font-weight-medium">{{ group.waitings }}</span>
+            <span v-if="product.waitings" class="font-weight-medium">{{ product.waitings }}</span>
             <span v-else class="font-weight-medium">no</span>
             <span class="caption ml-1">waiting links</span>
           </div>
         </div>
         <div class="d-flex">
           <div class="mr-2">
-            <span v-if="group.tryings" class="font-weight-medium">{{ group.tryings }}</span>
+            <span v-if="product.tryings" class="font-weight-medium">{{ product.tryings }}</span>
             <span v-else class="font-weight-medium">no</span>
             <span class="caption ml-1">trying links,</span>
           </div>
           <div>
-            <span v-if="group.problems" class="font-weight-medium">{{ group.problems }}</span>
+            <span v-if="product.problems" class="font-weight-medium">{{ product.problems }}</span>
             <span v-else class="font-weight-medium">no</span>
             <span class="caption ml-1">problem links</span>
           </div>
@@ -221,8 +221,8 @@
     </div>
 
     <alarm-note
-      v-if="group.alarm"
-      :alarm="group.alarm"
+      v-if="product.alarm"
+      :alarm="product.alarm"
       class="pl-2 pt-3"
       @clicked="openAlarmDialog"
       :key="alarmNoteRefresherKey"
@@ -241,11 +241,11 @@
 </template>
 
 <script>
-import GroupService from '@/service/group';
+import ProductService from '@/service/product';
 import AlarmService from '@/service/alarm';
 
 export default {
-  props: ['fromSearchPage', 'group'],
+  props: ['fromSearchPage', 'product'],
   computed: {
     findMinWidthForCells() {
       switch (this.$vuetify.breakpoint.name) {
@@ -263,32 +263,32 @@ export default {
   },
   methods: {
     openEditDialog() {
-      let cloned = JSON.parse(JSON.stringify(this.group));
+      let cloned = JSON.parse(JSON.stringify(this.product));
       this.$refs.editDialog.open(cloned);
     },
     remove() {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.group.name).then(async (confirm) => {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.product.name).then(async (confirm) => {
         if (confirm == true) {
-          const result = await GroupService.remove(this.group.id);
-          if (result && result.status) this.$emit('removed', this.group);
+          const result = await ProductService.remove(this.product.id);
+          if (result && result.status) this.$emit('removed', this.product);
         }
       });
     },
     async save(form) {
-      const result = await GroupService.save(form);
+      const result = await ProductService.save(form);
       if (result && result.status) {
-        this.$emit('saved', result.data.group);
+        this.$emit('saved', result.data.product);
       }
     },
     openDetails() {
       if (this.fromSearchPage) {
-        this.$router.push({ name: 'group', params: {id: this.group.id} });
+        this.$router.push({ name: 'product', params: {id: this.product.id} });
       }
     },
     openAlarmDialog() {
       let cloned = {};
-      if (this.group.alarm) {
-        cloned = JSON.parse(JSON.stringify(this.group.alarm));
+      if (this.product.alarm) {
+        cloned = JSON.parse(JSON.stringify(this.product.alarm));
       } else {
         cloned = {
           subject: 'STATUS',
@@ -297,16 +297,16 @@ export default {
           amountUpperLimit: 0,
         };
       }
-      cloned.topic = 'GROUP';
-      cloned.name = this.group.name;
+      cloned.topic = 'PRODUCT';
+      cloned.name = this.product.name;
       this.$refs.alarmDialog.open(cloned);
     },
     async saveAlarm(form) {
-      form.groupId = this.group.id;
+      form.productId = this.product.id;
       const result = await AlarmService.save(form);
       if (result && result.status) {
-        this.group.alarm = result.data;
-        this.group.alarmId = result.data.id;
+        this.product.alarm = result.data;
+        this.product.alarmId = result.data.id;
         this.alarmNoteRefresherKey++;
       }
     },
@@ -316,8 +316,8 @@ export default {
           const self = this;
           AlarmService.remove(form.id).then((res) => {
             if (res && res.status) {
-              self.group.alarmId = null;
-              self.group.alarm = null;
+              self.product.alarmId = null;
+              self.product.alarm = null;
               self.alarmNoteRefresherKey++;
             }
           });

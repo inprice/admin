@@ -12,14 +12,15 @@
     <!-- Filter and Rows -->
     <!-- --------------- -->
     <div class="d-flex justify-space-between">
-      <div class="col-8 pl-0">
+      <div class="col-6 pl-0">
         <v-text-field 
+          :loading="loading"
           dense solo light
           hide-details
           maxlength="100"
+          placeholder="Search..."
           v-model="searchForm.term"
           @keyup="isSearchable($event)"
-          placeholder="Search by Name"
         >
           <template slot="append">
             <v-icon @click="clear">mdi-window-close</v-icon>
@@ -27,94 +28,84 @@
         </v-text-field>
       </div>
 
-      <div class="my-auto">
-        <v-btn
-          small
-          @click="unbindAccount"
-          :disabled="!CURSTAT.accountId || $store.get('session/isNotSuperUser')"
-        >
-          Unbind Current
-        </v-btn>
-      </div>
+      <v-btn
+        color="white"
+        class="my-auto"
+        @click="unbindAccount"
+        :disabled="!CURSTAT.accountId || $store.get('session/isNotSuperUser')"
+      >
+        Unbind Current
+      </v-btn>
     </div>
 
     <v-card v-if="searchResult && searchResult.length">
-      <div class="v-data-table v-data-table--dense theme--light put-behind">
-        <div class="v-data-table__wrapper">
+      <table class="pb-2 list-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th width="20%">Plan</th>
+            <th width="15%">Status</th>
+            <th width="15%">Updated</th>
+            <th width="5%">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in searchResult" :key="row.id" :style="(CURSTAT.accountId && CURSTAT.accountId == row.id ? 'background-color: lightcyan' : '')">
+            <td style="padding: 3px 10px">
+              {{ row.name }}
+              <div class="caption font-weight-light">{{ row.email }}</div>
+            </td>
+            <td>{{ row.plan }}</td>
+            <td>{{ row.status }}</td>
+            <td>{{ row.lastStatusUpdated }}</td>
+            <td style="padding: 0px !important; text-align: center !important;">
+              <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
+                <template v-slot:activator="{ on }">
+                  <v-btn small icon v-on="on">
+                    <v-icon dark>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
 
-          <table
-            class="pb-2"
-            :style="{'table-layout': RESPROPS['table-layout']}"
-            style="border-collapse: collapse;line-height: 40px;"
-          >
-            <thead>
-              <tr>
-                <th :width="RESPROPS.table.name">Name</th>
-                <th :width="RESPROPS.table.plan">Plan</th>
-                <th :width="RESPROPS.table.status">Status</th>
-                <th :width="RESPROPS.table.date">Updated</th>
-                <th :width="RESPROPS.table.action">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in searchResult" :key="row.id" :style="(CURSTAT.accountId && CURSTAT.accountId == row.id ? 'background-color: lightcyan' : '')">
-                <td style="padding: 3px 10px">
-                  {{ row.name }}
-                  <div class="caption font-weight-light">{{ row.email }}</div>
-                </td>
-                <td>{{ row.plan }}</td>
-                <td>{{ row.status }}</td>
-                <td>{{ row.lastStatusUpdated }}</td>
-                <td style="padding: 0px !important; text-align: center !important;">
-                  <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
-                    <template v-slot:activator="{ on }">
-                      <v-btn small icon v-on="on">
-                        <v-icon dark>mdi-dots-vertical</v-icon>
-                      </v-btn>
-                    </template>
+                <v-list dense>
+                  <v-list-item @click="unbindAccount(row.id)" v-if="CURSTAT.accountId && CURSTAT.accountId == row.id">
+                    <v-list-item-title>
+                      UNBIND THIS
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="bindAccount(row.id)" v-else>
+                    <v-list-item-title>
+                      BIND THIS
+                    </v-list-item-title>
+                  </v-list-item>
 
-                    <v-list dense>
-                      <v-list-item @click="unbindAccount(row.id)" v-if="CURSTAT.accountId && CURSTAT.accountId == row.id">
-                        <v-list-item-title>
-                          UNBIND THIS
-                        </v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="bindAccount(row.id)" v-else>
-                        <v-list-item-title>
-                          BIND THIS
-                        </v-list-item-title>
-                      </v-list-item>
+                  <v-divider></v-divider>
 
-                      <v-divider></v-divider>
+                  <v-list-item link :to="{ name: 'sys-account-details', params: { aid: row.id } }">
+                    <v-list-item-title>DETAILS</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link :to="{ name: 'sys-account-logs', params: { aid: row.id }, query: { name: row.name } }">
+                    <v-list-item-title>ACCESS LOGS</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="openCreateCouponDialog(row.id, row.name)">
+                    <v-list-item-title>CREATE COUPON</v-list-item-title>
+                  </v-list-item>
 
-                      <v-list-item link :to="{ name: 'sys-account-details', params: { aid: row.id } }">
-                        <v-list-item-title>DETAILS</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item link :to="{ name: 'sys-account-logs', params: { aid: row.id }, query: { name: row.name } }">
-                        <v-list-item-title>ACCESS LOGS</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="openCreateCouponDialog(row.id, row.name)">
-                        <v-list-item-title>CREATE COUPON</v-list-item-title>
-                      </v-list-item>
+                  <v-divider></v-divider>
 
-                      <v-divider></v-divider>
-
-                      <v-list-item @click="makeAnAnnouncement(row.id, row.name)">
-                        <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+                  <v-list-item @click="makeAnAnnouncement(row.id, row.name)">
+                    <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
       <v-divider></v-divider>
 
       <div class="pl-3 py-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
       </div>
       
     </v-card>
@@ -145,6 +136,7 @@ export default {
         rowCount: 0,
         loadMore: false
       },
+      loading: false,
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
@@ -159,6 +151,7 @@ export default {
       this.search();
     },
     search() {
+      this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -179,12 +172,12 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
           }
-      });
+      }).finally(() => this.loading = false);
     },
     async bindAccount(id) {
       const res = await SU_AccountService.bind(id);
@@ -213,7 +206,7 @@ export default {
     },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
-      if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
+      if (char == 8 || char == 46 || (char > 47 && char < 91) || (char > 96 && char < 123)) {
         return this.search();
       }
     },
@@ -233,29 +226,6 @@ export default {
   },
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { name: '250px', email: '250px', currency: '80px', country: '120px', action: '70px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { name: '', email: '', currency: '8%', country: '15%', action: '8%' },
-          };
-        }
-      }
-    },
   },
 }
 </script>
-
-<style scoped>
-  td {
-    line-height: 25px;
-  }
-</style>

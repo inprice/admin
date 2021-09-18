@@ -125,7 +125,7 @@ export default {
                 if (ses.linkCount > 0) {
                   this.$router.push({ name: 'dashboard', params: { sid: resData.sessionNo } });
                 } else {
-                  this.$router.push({ name: 'groups', params: { sid: resData.sessionNo } });
+                  this.$router.push({ name: 'products', params: { sid: resData.sessionNo } });
                 }
               } else {
                 this.$router.push({ name: 'plans', params: { sid: resData.sessionNo } });

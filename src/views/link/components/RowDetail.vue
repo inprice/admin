@@ -93,7 +93,7 @@
             small
             class="pb-0"
             v-for="(row, index) in data.historyList" :key="row.id"
-            :color="findStatusColor(row.statusGroup)"
+            :color="findStatusColor(row.grup)"
           >
             <v-row class="pa-0 ma-0 py-1" :class="index == data.historyList.length-1 ? 'last-row' : ''">
               <v-col class="py-1" cols="3">
@@ -107,11 +107,11 @@
                   small
                   label
                   outlined
-                  :color="findStatusColor(row.statusGroup)"
+                  :color="findStatusColor(row.grup)"
                   class="subtitle-2"
                   style="min-width: 100px; text-align: center; display: inline-block; margin: 10px auto;"
                 >
-                  {{ row.statusGroup }}
+                  {{ row.grup }}
                 </v-chip>
               </v-col>
               <v-col class="py-1">
@@ -134,7 +134,7 @@
       <v-tab-item>
 
         <table 
-          class="pl-3 py-4 d-block" 
+          class="pl-3 info-table"
           v-if="data && data.specList && data.specList.length" 
           style="max-height: 200px; overflow: auto;"
         >
@@ -185,25 +185,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .v-timeline-item__body .row:not(.last-row) {
-    border-bottom: 1px solid #ddd !important;
-  }
-  table {
-    border-collapse: collapse;
-  }
-  th, td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border: 1px solid #eee;
-    padding: 5px 10px;
-  }
-  tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, .05);
-  }
-  td {
-    width: 100%;
-  }
-</style>

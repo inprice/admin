@@ -11,65 +11,39 @@
     <!-- Filter and Rows -->
     <!-- --------------- -->
     <div class="d-flex justify-space-between">
-
-      <div class="col-10 pl-0 d-flex">
+      <div class="col-6 pl-0 d-flex">
         <v-text-field 
-          ref="term"
-          outlined dense
-          hide-details
-          maxlength="100"
+          :loading="loading"
           v-model="searchForm.term"
-          :label="searchForm.searchBy"
-          :placeholder="'Search by ' + searchForm.searchBy"
+          dense solo
+          maxlength="100"
+          hide-details
+          placeholder="Search..."
         >
           <template v-slot:append>
             <v-menu
               offset-y
               bottom left
-              v-model="searchMenuOpen"
+              v-model="filterPanelShow"
               :close-on-content-click="false"
-              max-width="400">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  icon small
-                  v-bind="attrs"
-                  v-on="on"
-                  tabindex="-1"
-                >
-                  <v-badge
-                    dot overlap
-                    color="red"
-                    :value="!deepEqual(searchForm, baseSearchForm)"
-                  >
-                    <v-icon>mdi-filter-menu-outline</v-icon>
-                  </v-badge>
-                </v-btn>
-              </template>
-
-              <v-card>
-                <v-card-text class="pb-2">
-                  <div class="subtitle-1 pb-1 d-flex justify-space-between">
-                    <span>Search Options</span>
+              transition="scale-x-transition"
+            >
+							<template v-slot:activator="{ on }">
+                <v-icon v-on="on">mdi-filter-menu-outline</v-icon>
+							</template>
+            
+              <v-card style="max-width:350px">
+                <v-card-text class="pb-1">
+                  <div class="body-1 pb-2 d-flex justify-space-between">
+                    <span class="my-auto">Filters</span>
                     <v-btn
                       icon
-                      @click="searchMenuOpen = false"
                       tabindex="-1"
+                      @click="filterPanelShow = false"
                     >
                       <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </div>
-                  
-                  <v-divider class="py-2"></v-divider>
-
-                  <v-select
-                    dense
-                    outlined
-                    hide-details
-                    label="Search By"
-                    v-model="searchForm.searchBy"
-                    :items="searchByItems"
-                    class="mb-4"
-                  ></v-select>
 
                   <v-select
                     dense
@@ -214,12 +188,12 @@
       </div>
 
       <v-btn 
-        small
+        color="white"
         class="my-auto"
         @click="addAnAnnouncement"
         :disabled="$store.get('session/isNotSuperUser')"
       >
-        New Announce
+        New
       </v-btn>
     </div>
 
@@ -326,7 +300,7 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
     </div>
 
     <confirm ref="confirm"></confirm>
@@ -340,7 +314,6 @@
 import SU_AnnounceService from '@/service/super/announce';
 import moment from 'moment';
 
-const searchByItems = ['TITLE', 'BODY'];
 const typeItems = ['USER', 'ACCOUNT', 'SYSTEM'];
 const levelItems = ['INFO', 'WARNING'];
 const orderByItems = ['TITLE', 'TYPE', 'LEVEL', 'STARTING_AT', 'ENDING_AT', 'CREATED_AT'];
@@ -349,7 +322,6 @@ const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  searchBy: searchByItems[0],
   types: null,
   levels: null,
   startingAt: null,
@@ -364,7 +336,7 @@ export default {
   data() {
     return {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
-      searchMenuOpen: false,
+      filterPanelShow: false,
       startingAtMenuOpen: false,
       endingAtMenuOpen: false,
       searchResult: [],
@@ -372,13 +344,13 @@ export default {
       isLoadMoreClicked: false,
       showingId: 0,
       showDetails: false,
-      searchByItems,
       typeItems,
       levelItems,
       orderByItems,
       orderDirItems,
       rowLimitItems,
       baseSearchForm,
+      loading: false,
     };
   },
   methods: {
@@ -415,11 +387,11 @@ export default {
       this.search();
     },
     applyOptions() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.search();
-      this.$refs.term.focus();
     },
     search() {
+      this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -428,12 +400,10 @@ export default {
       }
 
       const loadMore = this.isLoadMoreClicked;
-      this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
       SU_AnnounceService.search(this.searchForm, true)
         .then((res) => {
-          this.isListLoading = false;
           this.isLoadMoreDisabled = true;
           if (res?.length) {
             if (loadMore == true) {
@@ -442,21 +412,20 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      });
+      }).finally(() => this.loading = false);
     },
     isNotEditable(announce) {
       return moment(announce.endingAt).isBefore();
     },
     resetForm() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
-      this.$refs.term.focus();
     },
     findTypeColor(type) {
       switch (type) {

@@ -31,49 +31,44 @@
       <div v-if="invitations.length">
         <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.table.account">Account</th>
-                  <th :width="RESPROPS.table.role">Role</th>
-                  <th :width="RESPROPS.table.date">Date</th>
-                  <th :width="RESPROPS.table.action" class="text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in invitations" :key="row.id">
-                  <td>{{ row.name }}</td>
-                  <td>{{ row.role }}</td>
-                  <td><ago :date="row.date"/></td>
-                  <td class="text-right py-2">
-                    <v-btn
-                      small
-                      class="mr-1"
-                      :loading="loading.reject" 
-                      @click="reject(row.id, row.name)"
-                      :disabled="loading.reject || $store.get('session/isSuperUser')"
-                    >
-                      Reject
-                    </v-btn>
-                    <v-btn
-                      small
-                      class="ml-1"
-                      color="success"
-                      :loading="loading.accept" 
-                      @click="accept(row.id)"
-                      :disabled="loading.accept || $store.get('session/isSuperUser')"
-                    >
-                      Accept
-                    </v-btn>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th width="15%">Role</th>
+              <th width="15%">Date</th>
+              <th width="7%" class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in invitations" :key="row.id">
+              <td>{{ row.name }}</td>
+              <td>{{ row.role }}</td>
+              <td><ago :date="row.date"/></td>
+              <td class="text-right py-2">
+                <v-btn
+                  small
+                  class="mr-1"
+                  :loading="loading.reject" 
+                  @click="reject(row.id, row.name)"
+                  :disabled="loading.reject || $store.get('session/isSuperUser')"
+                >
+                  Reject
+                </v-btn>
+                <v-btn
+                  small
+                  class="ml-1"
+                  color="success"
+                  :loading="loading.accept" 
+                  @click="accept(row.id)"
+                  :disabled="loading.accept || $store.get('session/isSuperUser')"
+                >
+                  Accept
+                </v-btn>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <block-message 
@@ -92,25 +87,6 @@
 import UserService from '@/service/user';
 
 export default {
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { account: '250px', role: '120px', date: '200px', action: '210px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { account: '', role: '12%', date: '15%', action: '25%' },
-          };
-        }
-      }
-    },
-  },
   data() {
     return {
       loading: {
@@ -161,9 +137,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .v-data-table th {
-    height: 30px;
-  }
-</style>

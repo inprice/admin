@@ -26,7 +26,7 @@
             color="pink"
             :value="row.alarmId != undefined && fromSearchPage"
           >
-            {{ row.groupName }}
+            {{ row.productName }}
           </v-badge>
         </div>
 
@@ -59,11 +59,11 @@
             small
             label
             outlined
-            :color="findStatusColor(row.statusGroup)"
+            :color="findStatusColor(row.grup)"
             class="ml-1 px-1"
             v-if="fromSearchPage"
           >
-            {{ row.statusGroup }}
+            {{ row.grup }}
           </v-chip>
         </div>
         <div 
@@ -76,7 +76,7 @@
         <div
           v-if="!row.price"
           class="caption text-right d-inline">
-            <span>{{ row.statusGroup != 'WAITING' ? 'Checked' : 'Added' }}</span>
+            <span>{{ row.grup != 'WAITING' ? 'Checked' : 'Added' }}</span>
             <ago :class="{ 'd-inline' : fromSearchPage || row.level == 'NA' }" :date="(row.checkedAt || row.createdAt)" />
         </div>
       </div>
@@ -106,8 +106,8 @@
               <v-list-item-title>OPEN DETAILS PAGE</v-list-item-title>
             </v-list-item>
 
-            <v-list-item link v-if="fromSearchPage && showMenu" @click="$router.push({ name: 'group', params: { id: row.groupId } })">
-              <v-list-item-title>OPEN GROUP PAGE</v-list-item-title>
+            <v-list-item link v-if="fromSearchPage && showMenu" @click="$router.push({ name: 'product', params: { id: row.productId } })">
+              <v-list-item-title>OPEN PRODUCT PAGE</v-list-item-title>
             </v-list-item>
 
             <v-divider v-if="row.name"></v-divider>
@@ -155,7 +155,7 @@
 
             <v-list-item 
               link 
-              v-if="$store.get('session/isSuperUser') && (row.statusGroup == 'ACTIVE' || row.statusGroup == 'TRYING')"
+              v-if="$store.get('session/isSuperUser') && (row.grup == 'ACTIVE' || row.grup == 'TRYING')"
               @click="$emit('changeOneStatus', { row, newStatus: 'PAUSED' })" 
             >
               <v-list-item-title>PAUSE</v-list-item-title>
@@ -210,7 +210,7 @@
           <div class="caption">SHIPMENT</div>
           <div class="caption font-weight-medium">{{ row.shipment }}</div>
         </div>
-        <div v-if="row.statusGroup == 'PROBLEM' || row.statusGroup == 'TRYING'">
+        <div v-if="row.grup == 'PROBLEM' || row.grup == 'TRYING'">
           <div class="caption">PROBLEM</div>
           <div class="body-2 font-weight-medium">
             {{ row.statusDescription }}

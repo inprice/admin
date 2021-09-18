@@ -28,27 +28,22 @@
       <div v-if="list.length">
         <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.table.width">Date</th>
-                  <th :width="RESPROPS.table.width">Status</th>
-                  <th :width="RESPROPS.table.width">Plan</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.createdAt | formatPlainDate }}</td>
-                  <td>{{ row.status }}</td>
-                  <td>{{ row.planName }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th width="15%">Date</th>
+              <th width="20%">Status</th>
+              <th>Plan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in list" :key="row.id">
+              <td>{{ row.createdAt | formatPlainDate }}</td>
+              <td>{{ row.status }}</td>
+              <td>{{ row.planName }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <block-message 
@@ -67,30 +62,5 @@ export default {
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { width: '300px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { service: '33%' },
-          };
-        }
-      }
-    },
-  },
 }
 </script>
-
-<style scoped>
-  .v-data-table th {
-    height: 30px;
-  }
-</style>

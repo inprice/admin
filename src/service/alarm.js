@@ -17,13 +17,7 @@ export default {
       return;
     }
 
-    let method = 'post', opType = 'added';
-    if (form.id && form.id > 0) {
-      method = 'put'; opType = 'edited';
-    }
-
-    const res = await Helper.call('Save Alarm', { method, url: baseURL, data: form });
-    if (res.status == true) store.commit('snackbar/setMessage', { text: `Your alarm has been successfully ${opType}` });
+    const res = await Helper.call('Save Alarm', { method: (form.id && form.id > 0 ? 'put' : 'post'), url: baseURL, data: form });
     return res;
   },
 
@@ -34,7 +28,6 @@ export default {
     }
 
     const res = await Helper.call('Delete Alarm', { method: 'delete', url: baseURL + '/' + id });
-    if (res.status == true) store.commit('snackbar/setMessage', { text: 'Your alarm has been successfully removed' });
     return res;
   },
 

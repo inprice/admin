@@ -30,27 +30,22 @@
       <div v-if="sesList.length">
         <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.table.ip">IP</th>
-                  <th :width="RESPROPS.table.system">System</th>
-                  <th :width="RESPROPS.table.date">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(row, index) in sesList" :key="index">
-                  <td>{{ row.ip }}</td>
-                  <td>{{ row.browser }} on {{ row.os }}</td>
-                  <td><ago :date="row.accessedAt" /></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th width="15%">IP</th>
+              <th>System</th>
+              <th width="15%">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in sesList" :key="index">
+              <td>{{ row.ip }}</td>
+              <td>{{ row.browser }} on {{ row.os }}</td>
+              <td><ago :date="row.accessedAt" /></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <block-message 
@@ -66,25 +61,6 @@
 import UserService from '@/service/user';
 
 export default {
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { ip: '170px', system: '300px', date: '200px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { ip: '15%', system: '', date: '25%' },
-          };
-        }
-      }
-    },
-  },
   data() {
     return {
       loading: {
@@ -120,9 +96,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .v-data-table th {
-    height: 30px;
-  }
-</style>

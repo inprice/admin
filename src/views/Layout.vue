@@ -88,12 +88,12 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link :to="{name: 'groups'}">
+        <v-list-item link :to="{name: 'products'}">
           <v-list-item-action>
             <v-icon>mdi-package-variant-closed</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Groups</v-list-item-title>
+            <v-list-item-title>Products</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -179,15 +179,6 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item @click="openCreateAccount" v-if="$store.get('session/isNotSuperUser')">
-          <v-list-item-action>
-            <v-icon>mdi-folder-plus-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Create a New Account</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
       </v-list>
 
       <v-list dense nav class="text-uppercase font-weight-light" v-if="$store.get('session/hasASession')">
@@ -242,7 +233,7 @@
 
       <v-spacer v-if="$store.get('session/isNotSuperUser') || CURSTAT.accountId"></v-spacer>
 
-      <v-autocomplete
+      <!--v-autocomplete
         v-if="$store.get('session/isNotSuperUser') || CURSTAT.accountId"
         solo
         chips
@@ -266,7 +257,7 @@
           <v-list-item>
             <v-list-item-title>
               Search for your
-              <strong>links and groups</strong>
+              <strong>links and products</strong>
             </v-list-item-title>
           </v-list-item>
         </template>
@@ -292,7 +283,7 @@
         </template>
       </v-autocomplete>
 
-      <v-spacer></v-spacer>
+      <v-spacer></v-spacer-->
 
       <notification-menu v-if="CURSTAT.role != 'SUPER'"></notification-menu>
       <user-menu></user-menu>
@@ -326,7 +317,7 @@
 </template>
 
 <script>
-import SystemService from '@/service/system';
+//import SystemService from '@/service/system';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -361,12 +352,13 @@ export default {
     findPageObject(item) {
       let pageTo = { params: { id: item.id } };
       if (item.type == 'G')
-        pageTo.name = 'group';
+        pageTo.name = 'product';
       else
         pageTo.name = 'link';
       return pageTo;
     },
   },
+  /*
   watch: {
     'search.term'() {
       if (!this.search.term) {
@@ -383,6 +375,7 @@ export default {
       }).finally(() => this.search.isLoading = false);
     },
   },
+  */
   components: {
     UserMenu: () => import('./UserMenu.vue'),
     NotificationMenu: () => import('./NotificationMenu.vue'),

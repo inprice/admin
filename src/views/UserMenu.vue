@@ -153,7 +153,7 @@ export default {
         if (session.linkCount > 0) {
           toPage = 'dashboard';
         } else {
-          toPage = 'groups';
+          toPage = 'products';
         }
       }
       return `/${sesNo}/app/${toPage}`;

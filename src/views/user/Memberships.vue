@@ -31,40 +31,35 @@
       <div v-if="members.length">
         <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.table.account">Account</th>
-                  <th :width="RESPROPS.table.role">Role</th>
-                  <th :width="RESPROPS.table.date">Date</th>
-                  <th :width="RESPROPS.table.action" class="text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in members" :key="row.id">
-                  <td>{{ row.name }}</td>
-                  <td>{{ row.role }}</td>
-                  <td><ago :date="row.date"/></td>
-                  <td class="text-center py-2">
-                    <v-btn
-                      small
-                      v-if="row.role != 'ADMIN'"
-                      :loading="loading.leave" 
-                      @click="leave(row.id, row.account)"
-                      :disabled="loading.leave || $store.get('session/isSuperUser')"
-                    >
-                      Leave
-                    </v-btn>
-                    <v-chip outlined label color="success" small v-else>YOURS</v-chip>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th width="15%">Role</th>
+              <th width="15%">Date</th>
+              <th width="7%" class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in members" :key="row.id">
+              <td>{{ row.name }}</td>
+              <td>{{ row.role }}</td>
+              <td><ago :date="row.date"/></td>
+              <td class="text-center py-2">
+                <v-btn
+                  small
+                  v-if="row.role != 'ADMIN'"
+                  :loading="loading.leave" 
+                  @click="leave(row.id, row.account)"
+                  :disabled="loading.leave || $store.get('session/isSuperUser')"
+                >
+                  Leave
+                </v-btn>
+                <v-chip outlined label color="success" small v-else>YOURS</v-chip>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <block-message 
@@ -83,25 +78,6 @@
 import UserService from '@/service/user';
 
 export default {
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { account: '250px', role: '120px', date: '200px', action: '210px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { account: '', role: '12%', date: '15%', action: '12%' },
-          };
-        }
-      }
-    },
-  },
   data() {
     return {
       loading: {
@@ -143,9 +119,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .v-data-table th {
-    height: 30px;
-  }
-</style>

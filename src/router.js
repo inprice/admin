@@ -142,14 +142,14 @@ const router = new VueRouter({
           component: () => import('./views/dashboard/Index.vue')
         },
         {
-          name: 'groups',
-          path: 'groups',
-          component: () => import('./views/group/Index.vue')
+          name: 'products',
+          path: 'products',
+          component: () => import('./views/product/Index.vue')
         },
         {
-          name: 'group',
-          path: 'group/:id',
-          component: () => import('./views/group/Detail.vue')
+          name: 'product',
+          path: 'product/:id',
+          component: () => import('./views/product/Detail.vue')
         },
         {
           name: 'plans',

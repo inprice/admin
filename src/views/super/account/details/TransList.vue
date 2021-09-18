@@ -28,30 +28,25 @@
       <div v-if="list.length">
         <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.table.date">Date</th>
-                  <th :width="RESPROPS.table.event">Event</th>
-                  <th :width="RESPROPS.table.description">Description or File</th>
-                  <th class="text-center" :width="RESPROPS.table.ok">OK</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.createdAt | formatPlainDate }}</td>
-                  <td>{{ row.event }} - {{ row.eventId }}</td>
-                  <td v-if="row.fileUrl"><a :href="row.fileUrl">row.fileUrl</a></td>
-                  <td v-else>{{ row.reason || row.description }}</td>
-                  <td class="text-center">{{ row.successful ? 'YES' : 'NO' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th width="15%">Date</th>
+              <th width="20%">Event</th>
+              <th>Description or File</th>
+              <th width="7%" class="text-center">OK</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in list" :key="row.id">
+              <td>{{ row.createdAt | formatPlainDate }}</td>
+              <td>{{ row.event }} - {{ row.eventId }}</td>
+              <td v-if="row.fileUrl"><a :href="row.fileUrl">row.fileUrl</a></td>
+              <td v-else>{{ row.reason || row.description }}</td>
+              <td class="text-center">{{ row.successful ? 'YES' : 'NO' }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <block-message 
@@ -70,30 +65,5 @@ export default {
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { date: '150px', event: '250px', description: '350px', ok: '70px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { date: '17%', event: '33%', description: '', ok: '7%' },
-          };
-        }
-      }
-    },
-  },
 }
 </script>
-
-<style scoped>
-  .v-data-table th {
-    height: 30px;
-  }
-</style>

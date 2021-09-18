@@ -10,64 +10,39 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-10 pl-0 d-flex">
+    <div class="col-6 pl-0 d-flex">
       <v-text-field 
-        ref="term"
-        outlined dense
-        hide-details
-        maxlength="100"
+        :loading="loading"
         v-model="searchForm.term"
-        :label="searchForm.searchBy"
-        :placeholder="'Search by ' + searchForm.searchBy"
+        dense solo
+        maxlength="100"
+        hide-details
+        placeholder="Search..."
       >
         <template v-slot:append>
           <v-menu
             offset-y
             bottom left
-            v-model="searchMenuOpen"
+            v-model="filterPanelShow"
             :close-on-content-click="false"
-            max-width="400">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon small
-                v-bind="attrs"
-                v-on="on"
-                tabindex="-1"
-              >
-                <v-badge
-                  dot overlap
-                  color="red"
-                  :value="!deepEqual(searchForm, baseSearchForm)"
-                >
-                  <v-icon>mdi-filter-menu-outline</v-icon>
-                </v-badge>
-              </v-btn>
+            transition="scale-x-transition"
+          >
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on">mdi-filter-menu-outline</v-icon>
             </template>
-
-            <v-card>
-              <v-card-text class="pb-2">
-                <div class="subtitle-1 pb-1 d-flex justify-space-between">
-                  <span>Search Options</span>
+          
+            <v-card style="max-width:350px">
+              <v-card-text class="pb-1">
+                <div class="pb-2 d-flex justify-space-between">
+                  <span class="body-1 my-auto">Filters</span>
                   <v-btn
                     icon
-                    @click="searchMenuOpen = false"
                     tabindex="-1"
+                    @click="filterPanelShow = false"
                   >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </div>
-                
-                <v-divider class="pb-2"></v-divider>
-
-                <v-select
-                  dense
-                  outlined
-                  hide-details
-                  label="Search By"
-                  v-model="searchForm.searchBy"
-                  :items="searchByItems"
-                  class="mb-4"
-                ></v-select>
 
                 <div class="d-flex justify-space-around mb-4">
                   <v-select
@@ -215,7 +190,7 @@
     />
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">Load More</v-btn>
+      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">More</v-btn>
     </div>
 
     <edit ref="platformDialog" @saved="update" />
@@ -227,15 +202,13 @@
 <script>
 import SU_PlatformService from '@/service/super/platform';
 
-const searchByItems = ['NAME', 'DOMAIN', 'COUNTRY', 'CLASS'];
-const orderByItems = [...searchByItems];
+const orderByItems = ['NAME', 'DOMAIN', 'COUNTRY', 'CLASS'];
 const orderDirItems = ['ASC', 'DESC'];
 const rowLimitItems = [25, 50, 100];
 const booleanItems = ['ALL', 'TRUE', 'FALSE'];
 
 const baseSearchForm = {
   term: '',
-  searchBy: searchByItems[0],
   parkStatus: booleanItems[0],
   blockStatus: booleanItems[0],
   orderBy: orderByItems[0],
@@ -248,16 +221,16 @@ export default {
   data() {
     return {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
-      searchMenuOpen: false,
+      filterPanelOpen: false,
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      searchByItems,
       orderByItems,
       orderDirItems,
       rowLimitItems,
       booleanItems,
       baseSearchForm,
+      loading: false,
     };
   },
   computed: {
@@ -281,11 +254,11 @@ export default {
   },
   methods: {
     applyOptions() {
-      this.searchMenuOpen = false;
+      this.filterPanelOpen = false;
       this.search();
-      this.$refs.term.focus();
     },
     search() {
+      this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -312,18 +285,17 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      });
+      }).finally(() => this.loading = false);
     },
     resetForm() {
-      this.searchMenuOpen = false;
+      this.filterPanelOpen = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
-      this.$refs.term.focus();
     },
     loadmore() {
       this.isLoadMoreClicked = true;

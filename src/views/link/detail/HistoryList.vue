@@ -1,34 +1,28 @@
 <template>
   <div class="mt-5">
 
-    <v-card-title>History</v-card-title>
+    <div class="title mb-2">History</div>
 
-    <v-divider></v-divider>
-
-    <v-card elevation="0">
-      <v-simple-table dense v-if="list && list.length">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th width="170px" class="text-center">Status</th>
-              <th width="200px">Date</th>
-              <th class="hidden-xs-only">Problem</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in list" :key="row.id">
-              <td>
-                <v-icon :color="findStatusColor(row.statusGroup)">{{ findStatusIcon(row.statusGroup) }}</v-icon>
-                <span class="pl-4">{{ row.statusGroup }}</span>
-              </td>
-              <td>{{ row.createdAt | formatPlainDate }}</td>
-              <td class="hidden-xs-only">{{ row.parseProblem }}</td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
-
-      <v-divider v-if="list && list.length"></v-divider>
+    <v-card tile :loading="loading">
+      <table class="info-table" v-if="list && list.length">
+        <thead>
+          <tr>
+            <th width="15%">Date</th>
+            <th width="20%">Status</th>
+            <th class="hidden-xs-only">Problem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in list" :key="row.id">
+            <td>{{ row.createdAt | formatPlainDate }}</td>
+            <td>
+              <v-icon>{{ findStatusIcon(row.grup) }}</v-icon>
+              <span class="pl-2">{{ row.grup }}</span>
+            </td>
+            <td class="hidden-xs-only">{{ row.parseProblem }}</td>
+          </tr>
+        </tbody>
+      </table>
 
       <block-message 
         v-else dense
@@ -42,7 +36,7 @@
 
 <script>
 export default {
-  props: ['list'],
+  props: ['list', 'loading'],
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },

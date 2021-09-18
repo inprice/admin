@@ -11,21 +11,20 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between">
-      <div class="col-8 pl-0">
-        <v-text-field 
-          v-model="searchForm.term"
-          @keyup="isSearchable($event)"
-          dense solo light
-          maxlength="100"
-          hide-details
-          placeholder="Search by Name"
-        >
-          <template slot="append">
-            <v-icon @click="clear">mdi-window-close</v-icon>
-          </template>
-        </v-text-field>
-      </div>
+    <div class="col-6 pl-0">
+      <v-text-field 
+        :loading="loading"
+        dense solo light
+        hide-details
+        maxlength="100"
+        placeholder="Search..."
+        v-model="searchForm.term"
+        @keyup="isSearchable($event)"
+      >
+        <template slot="append">
+          <v-icon @click="clear">mdi-window-close</v-icon>
+        </template>
+      </v-text-field>
     </div>
 
     <v-card v-if="searchResult && searchResult.length">
@@ -92,7 +91,7 @@
       <v-divider></v-divider>
 
       <div class="pl-3 py-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
       </div>
 
     </v-card>
@@ -124,6 +123,7 @@ export default {
         rowCount: 0,
         loadMore: false
       },
+      loading: false,
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
@@ -138,6 +138,7 @@ export default {
       this.search();
     },
     search() {
+      this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -158,12 +159,12 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < SystemConsts.LIMITS.ROW_LIMIT_FOR_LISTS);
           }
-      });
+      }).finally(() => this.loading = false);
     },
     banUser(id, name) {
       this.$refs.banDialog.open({ id, name });
@@ -205,7 +206,7 @@ export default {
     },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
-      if (char == 8 || char == 46 || (char > 64 && char < 91) || (char > 96 && char < 123)) {
+      if (char == 8 || char == 46 || (char > 47 && char < 91) || (char > 96 && char < 123)) {
         return this.search();
       }
     },

@@ -7,8 +7,8 @@
       overlay-opacity="0.2"
       @keydown.esc="opened = false"
     >
-      <v-card>
-        <div class="pa-3 justify-space-between d-flex" :max-width="findDialogWidth">
+      <v-card v-if="topic">
+        <div class="pa-3 justify-space-between d-flex">
           <div>
             <div class="title">
               {{ form.id ? 'Edit' : 'New' }} 
@@ -66,7 +66,7 @@
             class="font-weight-medium"
           >
             When
-            <small class="caption text-capitalize">{{ form.subject.toLowerCase() }} is <b>{{ form.subjectWhen.replaceAll('_', ' ') }}</b></small>
+            <small class="caption text-capitalize">{{ form.subject }} is <b>{{ form.subjectWhen }}</b></small>
           </v-stepper-step>
           <v-stepper-content step="2">
             <v-radio-group
@@ -77,7 +77,7 @@
               <v-radio
                 v-for="(whn, ix) in subjectWhens" :key="ix"
                 class="text-capitalize"
-                :label="whn.toLowerCase().replaceAll('_', ' ')"
+                :label="whn.toLowerCase()"
                 :value="whn"
               ></v-radio>
             </v-radio-group>
@@ -155,7 +155,7 @@
               </div>
             </div>
 
-            <block-message v-else dense class="mb-3 mr-4" :message="'No condition applicable!'" />
+            <block-message v-else dense class="my-3 mr-4" :message="'No condition applicable!'" />
 
             <v-btn
               small
@@ -191,7 +191,7 @@
               text
               @click="save"
               color="success"
-              :disabled="$store.get('session/isNotEditor') || !isFormValid()"
+              :disabled="$store.get('session/isNotEditor') || isFormValid() == false"
             >
               {{ form.id ? 'Update' : 'Create' }}
             </v-btn>
@@ -205,7 +205,7 @@
 <script>
 const subjects = {
   LINK:  ['STATUS', 'PRICE'],
-  GROUP: ['STATUS', 'MINIMUM', 'AVERAGE', 'MAXIMUM', 'TOTAL']
+  PRODUCT: ['STATUS', 'MINIMUM', 'AVERAGE', 'MAXIMUM', 'TOTAL']
 };
 
 const whens = {
@@ -215,7 +215,7 @@ const whens = {
 
 const statuses = {
   LINK:  ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'],
-  GROUP: ['NA', 'LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST']
+  PRODUCT: ['NA', 'LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST']
 };
 
 export default {
@@ -259,19 +259,19 @@ export default {
       if (data) {
         this.form = data;
         this.name = data.name;
-        this.topic = data.topic;
-        this.statuses = statuses[data.topic];
+        this.topic = data.topic.toUpperCase();
+        this.statuses = statuses[this.topic];
         this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
         if (data.id) this.stepNo = 3;
       } else {
-        delete this.form.id;
+        this.form.id = null;
         this.form.subject = 'STATUS';
         this.form.subjectWhen = 'CHANGED';
         this.form.certainStatus = 'ACTIVE';
         this.form.amountLowerLimit = 0;
         this.form.amountUpperLimit = 0;
-        delete this.hint.amountLowerLimit;
-        delete this.hint.amountUpperLimit;
+        this.hint.amountLowerLimit = null;
+        this.hint.amountUpperLimit = null;
       }
       this.$nextTick(() => this.formatPrices());
     },
@@ -348,7 +348,7 @@ export default {
     padding: 10px 20px;
   }
   .v-stepper--vertical .v-stepper__content {
-    margin: 0;
+    margin: auto !important;
     padding: 0 0 0 40px;
   }
   .v-stepper__wrapper > .v-input--selection-controls {

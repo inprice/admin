@@ -41,22 +41,79 @@
 
       <v-divider></v-divider>
 
-      <v-simple-table class="property-table pa-3" dense>
-        <template v-slot:default>
-          <tbody>
-            <property :valueClass="RESPROPS.properties.title" name="Title" :value="info.title" />
-            <property :valueClass="RESPROPS.properties.contact" name="Contact" :value="info.contactName" />
-            <property :valueClass="RESPROPS.properties.country" name="Tax Id" :value="info.taxId" />
-            <property :valueClass="RESPROPS.properties.country" name="Tax Office" :value="info.taxOffice" />
-            <property :valueClass="RESPROPS.properties.title" name="Address1" :value="info.address1" />
-            <property :valueClass="RESPROPS.properties.title" name="2" :value="info.address2" />
-            <property :valueClass="RESPROPS.properties.postcode" name="Postcode" :value="info.postcode" />
-            <property :valueClass="RESPROPS.properties.city" name="City" :value="info.city" />
-            <property :valueClass="RESPROPS.properties.state" name="State" :value="info.state" />
-            <property :valueClass="RESPROPS.properties.country" name="Country" :value="info.country" />
-          </tbody>
-        </template>
-      </v-simple-table>
+      <div class="d-flex">
+        <v-list dense class="col pa-1">
+          <v-list-item>
+            <v-list-item-content>
+              <div class="caption blue--text">Title</div>
+              <div>{{ info.title }}</div>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item>
+            <v-list-item-content>
+              <div class="caption blue--text">Contact</div>
+              <div>{{ info.contactName }}</div>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item>
+            <v-list-item-content>
+              <div class="caption blue--text">Tax Id</div>
+              <div>{{ info.taxId }}</div>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item>
+            <v-list-item-content>
+              <div class="caption blue--text">Tax Office</div>
+              <div>{{ info.taxOffice }}</div>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+
+        <v-list dense class="col pa-1">
+          <v-list-item>
+            <v-list-item-content>
+              <div class="caption blue--text">Address 1</div>
+              <div>{{ info.address1 }}</div>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item>
+            <v-list-item-content>
+              <div class="caption blue--text">Address 2</div>
+              <div>{{ info.address2 }}</div>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item>
+            <v-list-item-content>
+              <div class="caption blue--text">City</div>
+              <div>{{ info.city }}</div>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item>
+            <v-list-item-content>
+              <div class="caption blue--text">Country</div>
+              <div>{{ info.country }}</div>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </div>
 
       <invoice-info-dialog ref="invoiceInfoDialog" :countries="countries.list" @saved="invoiceInfoSaved" />
 
@@ -80,32 +137,12 @@ export default {
   computed: {
     plans: get('system/plans'),
     CURSTAT: get('session/getCurrentStatus'),
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': {
-          return {
-            properties: { title: 'col-10', contact: 'col-7', postcode: 'col-6', city: 'col-9', state: 'col-9', country: 'col-9' },
-          };
-        }
-        case 'sm': {
-          return {
-            properties: { title: 'col-10', contact: 'col-7', postcode: 'col-3', city: 'col-5', state: 'col-5', country: 'col-5' },
-          };
-        }
-        default: {
-          return {
-            properties: { title: 'col-9', contact: 'col-6', postcode: 'col-2', city: 'col-3', state: 'col-3', country: 'col-3' },
-          };
-        }
-      }
-    },
   },
   data() {
     return {
       info: {},
       transactions: [],
       invoices: [],
-      selectedTab: 0,
       countries
     };
   },
@@ -135,7 +172,6 @@ export default {
     Transactions: () => import('./Transactions'),
     Confirm: () => import('@/component/Confirm.vue'),
     InvoiceInfoDialog: () => import('./InvoiceInfoEdit.vue'),
-    Property: () => import('@/component/app/Property.vue')
   }
 };
 </script>

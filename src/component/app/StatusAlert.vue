@@ -2,22 +2,22 @@
   <div>
 
     <block-message v-if="CURSTAT.isFree && CURSTAT.daysToRenewal <= 7" dense>
-        <span v-if="CURSTAT.daysToRenewal == 0 || CURSTAT.daysToRenewal == 1">
-          Your {{ freeIndicator() }} is ending <strong>{{ CURSTAT.daysToRenewal == 0 ? 'TODAY' : 'TOMORROW' }}</strong>.
-        </span>
-        <span v-else>
-          You've started {{ freeIndicator() }} period <ago class="d-inline font-weight-bold" :date="CURSTAT.subsRenewalAt" />.
-          There are only <strong>{{ CURSTAT.daysToRenewal }} days</strong> left to end.
-        </span>
-        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">        
-          <v-btn 
-            small
-            color="primary"
-            class="ml-2"
-            @click="$router.push( { name: 'plans' })">
-              See Plans
-          </v-btn>
-        </div>
+      <span v-if="CURSTAT.daysToRenewal == 0 || CURSTAT.daysToRenewal == 1">
+        Your {{ freeIndicator() }} is ending <strong>{{ CURSTAT.daysToRenewal == 0 ? 'TODAY' : 'TOMORROW' }}</strong>.
+      </span>
+      <span v-else>
+        You've started {{ freeIndicator() }} period <ago class="d-inline font-weight-bold" :date="CURSTAT.subsRenewalAt" />.
+        There are only <strong>{{ CURSTAT.daysToRenewal }} days</strong> left to end.
+      </span>
+      <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">        
+        <v-btn 
+          small
+          color="primary"
+          class="ml-2"
+          @click="$router.push( { name: 'plans' })">
+            See Plans
+        </v-btn>
+      </div>
     </block-message>
 
     <block-message v-if="CURSTAT.isSubscriber && CURSTAT.hasTime && CURSTAT.daysToRenewal < 2" dense>

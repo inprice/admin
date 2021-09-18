@@ -1,76 +1,44 @@
 <template>
-
   <div>
-    <div>
-      <div class="title">Links</div>
-      <div class="body-2">The list of your links bound to your groups.</div>
-    </div>
-
-    <v-divider class="mt-2"></v-divider>
+    <div class="title">Links</div>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div v-if="CURSTAT.planId">
-
-      <div class="col-10 pl-0 d-flex">
+    <div class="d-flex justify-space-between" v-if="CURSTAT.planId">
+      <div class="col-6 pl-0 d-flex">
         <v-text-field 
-          ref="term"
-          outlined dense
-          hide-details
-          maxlength="100"
+          :loading="loading"
           v-model="searchForm.term"
-          :label="searchForm.searchBy"
-          :placeholder="'Search by ' + searchForm.searchBy"
+          dense solo
+          maxlength="100"
+          hide-details
+          placeholder="Search..."
         >
           <template v-slot:append>
             <v-menu
               offset-y
               bottom left
-              v-model="searchMenuOpen"
+              v-model="filterPanelShow"
               :close-on-content-click="false"
-              max-width="400">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  icon small
-                  v-bind="attrs"
-                  v-on="on"
-                  tabindex="-1"
-                >
-                  <v-badge
-                    dot overlap
-                    color="red"
-                    :value="!deepEqual(searchForm, baseSearchForm)"
-                  >
-                    <v-icon>mdi-filter-menu-outline</v-icon>
-                  </v-badge>
-                </v-btn>
-              </template>
-
-              <v-card>
-                <v-card-text class="pb-2">
-                  <div class="subtitle-1 pb-1 d-flex justify-space-between">
-                    <span>Search Options</span>
+              transition="scale-x-transition"
+            >
+							<template v-slot:activator="{ on }">
+                <v-icon v-on="on">mdi-filter-menu-outline</v-icon>
+							</template>
+            
+              <v-card style="max-width:350px">
+                <v-card-text class="pb-1">
+                  <div class="body-1 pb-2 d-flex justify-space-between">
+                    <span class="my-auto">Filters</span>
                     <v-btn
                       icon
-                      @click="searchMenuOpen = false"
                       tabindex="-1"
+                      @click="filterPanelShow = false"
                     >
                       <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </div>
-                  
-                  <v-divider class="pb-2"></v-divider>
-
-                  <v-select
-                    dense
-                    outlined
-                    hide-details
-                    label="Search By"
-                    v-model="searchForm.searchBy"
-                    :items="searchByItems"
-                    class="mb-4"
-                  ></v-select>
 
                   <v-select
                     dense
@@ -139,46 +107,86 @@
                       :items="rowLimitItems"
                     ></v-select>
                   </div>
+
+                  <v-divider class="mt-3"></v-divider>
+
+                  <v-card-actions class="justify-end">
+                    <v-btn
+                      text
+                      @click="resetForm"
+                      tabindex="-1"
+                    >
+                      Reset
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="applyOptions"
+                    >
+                      Apply
+                    </v-btn>
+                  </v-card-actions>
                 </v-card-text>
-
-                <v-divider></v-divider>
-
-                <v-card-actions class="justify-end">
-                  <v-btn
-                    text
-                    @click="resetForm"
-                    tabindex="-1"
-                  >
-                    Clear
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="applyOptions"
-                  >
-                    OK
-                  </v-btn>
-                </v-card-actions>
               </v-card>
-
             </v-menu>
           </template>
         </v-text-field>
       </div>
 
-    </div>
-    
-    <div class="col pa-0" v-if="CURSTAT.planId">
-      <list
-        ref="list"
-        :loading="listLoading"
-        :rows="searchResult"
-        @refreshList="search"
-      />
+      <div class="my-auto">
+        <template>
+          <v-menu
+            offset-y
+            bottom left
+            transition="scale-x-transition"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-on="on"
+                v-bind="attrs"
+                color="white"
+                :disabled="selected < 1 || $store.get('session/isNotEditor')"
+              >
+                Menu ({{ selected }})
+              </v-btn>
+            </template>
 
-      <div class="mt-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length">Load More</v-btn>
+            <v-list dense>
+              <v-list-item @click="deleteMultiple">
+                <v-list-item-title>DELETE</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="moveMultiple">
+                <v-list-item-title>MOVE</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
       </div>
+    </div>
+
+    <div class="col pa-0" v-if="CURSTAT.planId">
+      <div v-if="searchResult && searchResult.length">
+        <links-table
+          :fromLinksPage="true"
+          :links="searchResult"
+          @checked="refreshSelected"
+          @deleteOne="deleteOne"
+          @moveOne="moveOne"
+          @openAlarmDialog="openAlarmDialog"
+        >
+        </links-table>
+
+        <div class="mt-3 text-right">
+          <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length">More</v-btn>
+        </div>
+      </div>
+
+      <v-card v-else>
+        <block-message 
+          :loading="loading"
+          :message="loading ? 'Loading, please wait...' : 'No link found! Please change your criteria.'" 
+        />
+      </v-card>
     </div>
 
     <v-card v-else>
@@ -198,18 +206,21 @@
       </block-message>
     </v-card>
 
-  </div>
+    <confirm ref="confirm" />
 
+    <product-select-dialog ref="productSelectDialog"></product-select-dialog>
+
+  </div>
 </template>
 
 <script>
 import LinkService from '@/service/link';
+import AlarmService from '@/service/alarm';
 import { get } from 'vuex-pathify'
 
-const searchByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM'];
-const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL'];
+const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'NA'];
 const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
-const orderByItems = [...searchByItems, 'LEVEL', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
+const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'LEVEL', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
 const rowLimitItems = [25, 50, 100];
@@ -218,7 +229,6 @@ const baseSearchForm = {
   term: '',
   levels: [],
   statuses: [],
-  searchBy: searchByItems[0],
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
   rowLimit: rowLimitItems[0],
@@ -233,12 +243,10 @@ export default {
   data() {
     return {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
-      searchMenuOpen: false,
+      filterPanelShow: false,
       searchResult: [],
-      isListLoading: true,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      searchByItems,
       levelItems,
       statusItems,
       orderByItems,
@@ -246,32 +254,30 @@ export default {
       rowLimitItems,
       alarmItems,
       baseSearchForm,
-      listLoading: true,
+      loading: false,
+      selected: 0,
     };
   },
   methods: {
     applyOptions() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.search();
-      this.$refs.term.focus();
     },
-    search() {
-      this.listLoading = true;
+    search(hideLoading) {
+      if (!hideLoading) this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
       } else {
         this.searchForm.rowCount = 0;
-        if (this.$refs.list) this.$refs.list.clearSelected();
+        this.selected = 0;
       }
 
       const loadMore = this.isLoadMoreClicked;
-      this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
       LinkService.search(this.searchForm)
         .then((res) => {
-          this.isListLoading = false;
           this.isLoadMoreDisabled = true;
           if (res?.length) {
             if (loadMore == true) {
@@ -280,22 +286,117 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      }).finally(() => this.listLoading = false);
+      }).finally(() => {
+        if (!hideLoading) this.loading = false;
+      });
     },
     resetForm() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
-      this.$refs.term.focus();
     },
     loadmore() {
       this.isLoadMoreClicked = true;
       this.search();
+    },
+    refreshSelected() {
+      let count = 0;
+      if (this.searchResult) {
+        this.searchResult.forEach(row => {
+          if (row.selected) count += 1;
+        });
+      }
+      this.selected = count;
+    },
+    async deleteOne(row) {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', (row.name || row.url)).then(async (confirm) => {
+        if (confirm == true) {
+          const result = await LinkService.remove([ row.id ]);
+          if (result && result.status) this.search(true);
+        }
+      });
+    },
+    deleteMultiple() {
+      if (this.selected) {
+        const selection = [];
+        if (this.searchResult) {
+          this.searchResult.forEach(row => {
+            if (row.selected) {
+              selection.push(row.id);
+            }
+          });
+        }
+        const title = `${selection.length} links`;
+        this.$refs.confirm.open('Delete', ' will be deleted. Are you sure?', title).then(async (confirm) => {
+          if (confirm == true) {
+            const result = await LinkService.remove(selection);
+            if (result && result.status) this.search(true);
+          }
+        });
+      }
+    },
+    async moveOne(row) {
+      this.$refs.productSelectDialog.open('For the selected link, please select a product to move').then(async (data) => {
+        if (data && (data.id || data.name)) {
+          const result = await LinkService.moveTo({
+            toProductId: data.id,
+            toProductName: data.name,
+            linkIdSet: [ row.id ],
+          });
+          if (result && result.status) this.search(true);
+        }
+      });
+    },
+    moveMultiple() {
+      if (this.selected) {
+        const selection = [];
+        if (this.searchResult) {
+          this.searchResult.forEach(row => {
+            if (row.selected) {
+              selection.push(row.id);
+            }
+          });
+        }
+        const title = `${selection.length} links`;
+        this.$refs.productSelectDialog.open(`For selected ${title}, please select a product to move`).then(async (data) => {
+          if (data && (data.id || data.name)) {
+            const result = await LinkService.moveTo({
+              toProductId: data.id,
+              toProductName: data.name,
+              linkIdSet: selection,
+            });
+            if (result && result.status) this.search(true);
+          }
+        });
+      }
+    },
+    openAlarmDialog(link) {
+      let cloned = {};
+      if (link.alarm) {
+        cloned = JSON.parse(JSON.stringify(link.alarm));
+      } else {
+        cloned = {
+          subject: 'STATUS',
+          subjectWhen: 'CHANGED',
+          amountLowerLimit: 0,
+          amountUpperLimit: 0,
+        };
+      }
+      cloned.topic = 'LINK';
+      cloned.linkId = link.id;
+      cloned.name = link.name || link.url;
+      this.$refs.alarmDialog.open(cloned);
+    },
+    saveAlarm(form) {
+      AlarmService.save(form);
+    },
+    setAlarmOff(form) {
+      AlarmService.remove(form.id);
     },
   },
   mounted() {
@@ -307,7 +408,9 @@ export default {
     }
   },
   components: {
-    List: () => import('./List.vue'),
+    LinksTable: () => import('../link/LinksTable.vue'),
+    ProductSelectDialog: () => import('@/views/product/Select.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 }

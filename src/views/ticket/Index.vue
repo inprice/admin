@@ -12,16 +12,15 @@
     <!-- Filter and Rows -->
     <!-- --------------- -->
     <div class="d-flex justify-space-between">
-
-      <div class="col-10 pl-0 d-flex">
+      <div class="col-6 pl-0">
         <v-text-field 
-          ref="term"
-          outlined dense
+          :loading="loading"
+          dense solo light
           hide-details
           maxlength="100"
+          placeholder="Search..."
           v-model="searchForm.term"
-          label="Issue"
-          placeholder="Search by issue"
+          @keyup="isSearchable($event)"
         >
           <template v-slot:append>
             <v-menu
@@ -181,12 +180,12 @@
       </div>
 
       <v-btn 
-        small
+        color="white"
         class="my-auto"
         @click="openTicket"
         :disabled="$store.get('session/isNotEditor')"
       >
-        Open a Ticket
+        New
       </v-btn>
     </div>
 
@@ -313,7 +312,7 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
     </div>
 
     <confirm ref="confirm"></confirm>
@@ -329,7 +328,7 @@ import TicketService from '@/service/ticket';
 const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
 const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
 const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
-const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER'];
+const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'ACCOUNT', 'COUPON', 'OTHER'];
 const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];
@@ -365,6 +364,7 @@ export default {
       seenItems,
       rowLimitItems,
       baseSearchForm,
+      loading: false,
     };
   },
   methods: {
@@ -400,9 +400,9 @@ export default {
     applyOptions() {
       this.searchMenuOpen = false;
       this.search();
-      this.$refs.term.focus();
     },
     search() {
+      this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -411,12 +411,10 @@ export default {
       }
 
       const loadMore = this.isLoadMoreClicked;
-      this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
       TicketService.search(this.searchForm, true)
         .then((res) => {
-          this.isListLoading = false;
           this.isLoadMoreDisabled = true;
           if (res?.length) {
             if (loadMore == true) {
@@ -425,12 +423,12 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      });
+      }).finally(() => this.loading = false);
     },
     openDetails(id) {
       this.$router.push({ name: 'ticket-detail', params: { ticketId: id } });
@@ -439,7 +437,6 @@ export default {
       this.searchMenuOpen = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
-      this.$refs.term.focus();
     },
     copyTheContent(text) {
       this.copyToClipboard(text);

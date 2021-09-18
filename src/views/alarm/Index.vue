@@ -6,7 +6,7 @@
       <div class="subtitle">
         You can only manage existing alarms here. 
         To add new alarms, you need to use use either 
-        <router-link to="groups">Groups</router-link> or 
+        <router-link to="products">Products</router-link> or 
         <router-link to="links">Links</router-link> section.
       </div>
     </div>
@@ -14,55 +14,40 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-8 pl-0">
-
+    <div class="col-6 pl-0 d-flex">
       <v-text-field 
-        ref="term"
-        outlined dense
-        hide-details
-        maxlength="100"
+        :loading="loading"
         v-model="searchForm.term"
-        placeholder="Search by Name"
+        dense solo
+        maxlength="100"
+        hide-details
+        placeholder="Search..."
       >
         <template v-slot:append>
           <v-menu
             offset-y
             bottom left
-            v-model="searchMenuOpen"
+            v-model="filterPanelShow"
             :close-on-content-click="false"
-            max-width="400">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon small
-                v-bind="attrs"
-                v-on="on"
-                tabindex="-1"
-              >
-                <v-badge
-                  dot overlap
-                  color="red"
-                  :value="!deepEqual(searchForm, baseSearchForm)"
-                >
-                  <v-icon>mdi-filter-menu-outline</v-icon>
-                </v-badge>
-              </v-btn>
+            transition="scale-x-transition"
+          >
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on">mdi-filter-menu-outline</v-icon>
             </template>
-
-            <v-card>
-              <v-card-text class="pb-2">
-                <div class="subtitle-1 pb-1 d-flex justify-space-between">
-                  <span>Search Options</span>
+          
+            <v-card style="max-width:350px">
+              <v-card-text class="pb-1">
+                <div class="pb-2 d-flex justify-space-between">
+                  <span class="body-1 my-auto">Filters</span>
                   <v-btn
                     icon
-                    @click="searchMenuOpen = false"
                     tabindex="-1"
+                    @click="filterPanelShow = false"
                   >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </div>
                 
-                <v-divider class="py-2"></v-divider>
-
                 <v-select
                   dense
                   outlined
@@ -139,14 +124,14 @@
                   @click="resetForm"
                   tabindex="-1"
                 >
-                  Clear
+                  RESET
                 </v-btn>
                 <v-btn
                   text
                   color="primary"
                   @click="applyOptions"
                 >
-                  OK
+                  APPLY
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -183,11 +168,13 @@
         </div>
 
         <div class="row-wrapper">
-          <v-row class="pa-1 mx-0" @click="openAlarmDialog(row)">
+          <v-row class="pa-1 mx-1" @click="openAlarmDialog(row)">
             <v-avatar
               class="pa-3 my-auto"
-              color="light-blue"
+              color="teal"
               size="22"
+              label
+              outline
               :title="row.topic"
             >
               <span class="white--text font-weight-medium">{{ row.topic.charAt(0) }}</span>
@@ -236,7 +223,7 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
     </div>
 
     <alarm-dialog
@@ -254,7 +241,7 @@
 <script>
 import AlarmService from '@/service/alarm';
 
-const topicItems = ['LINK', 'GROUP'];
+const topicItems = ['LINK', 'PRODUCT'];
 const subjectItems = ['STATUS', 'PRICE', 	'MINIMUM', 	'AVERAGE', 	'MAXIMUM', 	'TOTAL' ];
 const whenItems = ['CHANGED', 'EQUAL', 'NOT_EQUAL', 'INCREASED', 'DECREASED', 'OUT_OF_LIMITS'];
 const orderByItems = ['NAME', 'TOPIC', 'SUBJECT', 'WHEN', 'NOTIFIED_AT'];
@@ -276,7 +263,7 @@ export default {
   data() {
     return {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
-      searchMenuOpen: false,
+      filterPanelShow: false,
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
@@ -287,6 +274,7 @@ export default {
       orderDirItems,
       rowLimitItems,
       baseSearchForm,
+      loading: false,
     };
   },
   methods: {
@@ -312,11 +300,11 @@ export default {
       this.search();
     },
     applyOptions() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.search();
-      this.$refs.term.focus();
     },
     search() {
+      this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -325,12 +313,10 @@ export default {
       }
 
       const loadMore = this.isLoadMoreClicked;
-      this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
       AlarmService.search(this.searchForm, true)
         .then((res) => {
-          this.isListLoading = false;
           this.isLoadMoreDisabled = true;
           if (res?.length) {
             if (loadMore == true) {
@@ -339,18 +325,17 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      });
+      }).finally(() => this.loading = false);
     },
     resetForm() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
-      this.$refs.term.focus();
     },
     whenClause: (row) => {
       let condition = '';

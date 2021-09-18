@@ -11,64 +11,39 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-10">
+    <div class="col-6 pl-0 d-flex">
       <v-text-field 
-        ref="term"
-        outlined dense
-        hide-details
-        maxlength="100"
+        :loading="loading"
         v-model="searchForm.term"
-        :label="searchForm.searchBy"
-        :placeholder="'Search by ' + searchForm.searchBy"
+        dense solo
+        maxlength="100"
+        hide-details
+        placeholder="Search..."
       >
         <template v-slot:append>
           <v-menu
             offset-y
             bottom left
-            v-model="searchMenuOpen"
+            v-model="filterPanelShow"
             :close-on-content-click="false"
-            max-width="400">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon small
-                v-bind="attrs"
-                v-on="on"
-                tabindex="-1"
-              >
-                <v-badge
-                  dot overlap
-                  color="red"
-                  :value="!deepEqual(searchForm, baseSearchForm)"
-                >
-                  <v-icon>mdi-filter-menu-outline</v-icon>
-                </v-badge>
-              </v-btn>
+            transition="scale-x-transition"
+          >
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on">mdi-filter-menu-outline</v-icon>
             </template>
-
-            <v-card>
-              <v-card-text class="pb-2">
-                <div class="subtitle-1 pb-1 d-flex justify-space-between">
-                  <span>Search Options</span>
+          
+            <v-card style="max-width:350px">
+              <v-card-text class="pb-1">
+                <div class="pb-2 d-flex justify-space-between">
+                  <span class="body-1 my-auto">Filters</span>
                   <v-btn
                     icon
-                    @click="searchMenuOpen = false"
                     tabindex="-1"
+                    @click="filterPanelShow = false"
                   >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </div>
-                
-                <v-divider class="pb-2"></v-divider>
-
-                <v-select
-                  dense
-                  outlined
-                  hide-details
-                  label="Search By"
-                  v-model="searchForm.searchBy"
-                  :items="searchByItems"
-                  class="mb-4"
-                ></v-select>
 
                 <v-select
                   dense
@@ -325,7 +300,7 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
     </div>
 
     <edit ref="editDialog"></edit>
@@ -337,11 +312,10 @@
 <script>
 import SU_TicketService from '@/service/super/ticket';
 
-const searchByItems = ['BODY', 'ACCOUNT'];
 const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
 const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
 const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
-const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'GROUP', 'ACCOUNT', 'COUPON', 'OTHER'];
+const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'ACCOUNT', 'COUPON', 'OTHER'];
 const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];
@@ -349,7 +323,6 @@ const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  searchBy: searchByItems[0],
   statuses: null,
   priorities: null,
   types: null,
@@ -365,7 +338,7 @@ export default {
   data() {
     return {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
-      searchMenuOpen: false,
+      filterPanelOpen: false,
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
@@ -375,7 +348,6 @@ export default {
       statusItemsWOOpened: statusItems,
       priorityItems,
       typeItems,
-      searchByItems,
       subjectItems,
       orderByItems,
       orderDirItems,
@@ -406,11 +378,11 @@ export default {
       this.search();
     },
     applyOptions() {
-      this.searchMenuOpen = false;
+      this.filterPanelOpen = false;
       this.search();
-      this.$refs.term.focus();
     },
     search() {
+      this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -419,12 +391,10 @@ export default {
       }
 
       const loadMore = this.isLoadMoreClicked;
-      this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
       SU_TicketService.search(this.searchForm, true)
         .then((res) => {
-          this.isListLoading = false;
           this.isLoadMoreDisabled = true;
           if (res?.length) {
             if (loadMore == true) {
@@ -433,21 +403,20 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      });
+      }).finally(() => this.loading = false);
     },
     openDetails(id) {
       this.$router.push({ name: 'sys-ticket-details', params: { ticketId: id } });
     },
     resetForm() {
-      this.searchMenuOpen = false;
+      this.filterPanelOpen = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
-      this.$refs.term.focus();
     },
     copyTheContent(text) {
       this.copyToClipboard(text);

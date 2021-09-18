@@ -6,7 +6,7 @@
           <div class="d-flex">
             <v-icon class="mr-4 hidden-xs-only">mdi-account-multiple</v-icon>
             <div class="d-inline">
-              <div>Users</div>
+              <div>Users bound to this account</div>
               <div class="caption">Your users are listed in this section</div>
               <div class="caption">
                 <strong>Please note:</strong> users will not be immediately deleted. For a permanent delete, three hours time should be passed.
@@ -41,85 +41,80 @@
 
         <v-divider></v-divider>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}" class="pb-2">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.table.email">Email</th>
-                  <th :width="RESPROPS.table.role">Role</th>
-                  <th :width="RESPROPS.table.status">Status</th>
-                  <th :width="RESPROPS.table.retry">Retry</th>
-                  <th :width="RESPROPS.table.date">Date</th>
-                  <th :width="RESPROPS.table.action">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="mem in members" :key="mem.id">
-                  <td>{{ mem.email }}</td>
-                  <td>{{ mem.role }}</td>
-                  <td>{{ mem.status }}</td>
-                  <td>{{ mem.retry }}/3</td>
-                  <td>
-                    <ago :date="mem.updatedAt || mem.createdAt" />
-                  </td>
-                  <td v-if="$store.get('session/isAdmin') && mem.status != 'LEFT' && mem.status != 'DELETED'">
-                    <v-menu>
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          icon
-                          small
-                          v-on="on"
-                          class="my-1"
-                        >
-                          <v-icon dark>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                      </template>
+        <table class="pb-2 info-table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th width="15%">Role</th>
+              <th width="15%">Status</th>
+              <th width="5%">Retry</th>
+              <th width="15%">Date</th>
+              <th width="3%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="mem in members" :key="mem.id">
+              <td>{{ mem.email }}</td>
+              <td>{{ mem.role }}</td>
+              <td>{{ mem.status }}</td>
+              <td>{{ mem.retry }}/3</td>
+              <td>
+                <ago :date="mem.updatedAt || mem.createdAt" />
+              </td>
+              <td v-if="$store.get('session/isAdmin') && mem.status != 'LEFT' && mem.status != 'DELETED'">
+                <v-menu>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      small
+                      v-on="on"
+                      class="my-1"
+                    >
+                      <v-icon dark>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
 
-                      <v-list dense>
-                        <v-list-item @click="changeRole(mem.id, mem.role, 'EDITOR')">
-                          <v-list-item-title>
-                            EDITOR
-                            <v-icon right v-if="mem.role == 'EDITOR'">mdi-check</v-icon>
-                          </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="changeRole(mem.id, mem.role, 'VIEWER')">
-                          <v-list-item-title>
-                            VIEWER
-                            <v-icon right v-if="mem.role == 'VIEWER'">mdi-check</v-icon>
-                          </v-list-item-title>
-                        </v-list-item>
+                  <v-list dense>
+                    <v-list-item @click="changeRole(mem.id, mem.role, 'EDITOR')">
+                      <v-list-item-title>
+                        EDITOR
+                        <v-icon right v-if="mem.role == 'EDITOR'">mdi-check</v-icon>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="changeRole(mem.id, mem.role, 'VIEWER')">
+                      <v-list-item-title>
+                        VIEWER
+                        <v-icon right v-if="mem.role == 'VIEWER'">mdi-check</v-icon>
+                      </v-list-item-title>
+                    </v-list-item>
 
-                        <v-divider></v-divider>
+                    <v-divider></v-divider>
 
-                        <v-list-item @click="pause(mem.id)" v-if="mem.status == 'PENDING' || mem.status == 'JOINED'">
-                          <v-list-item-title>PAUSE</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="resume(mem.id)" v-if="mem.status == 'PAUSED'">
-                          <v-list-item-title>RESUME</v-list-item-title>
-                        </v-list-item>
+                    <v-list-item @click="pause(mem.id)" v-if="mem.status == 'PENDING' || mem.status == 'JOINED'">
+                      <v-list-item-title>PAUSE</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="resume(mem.id)" v-if="mem.status == 'PAUSED'">
+                      <v-list-item-title>RESUME</v-list-item-title>
+                    </v-list-item>
 
-                        <v-divider></v-divider>
+                    <v-divider></v-divider>
 
-                        <v-list-item @click="remove(mem.id, mem.email)" v-if="mem.status != 'LEFT' && mem.retry < 3">
-                          <v-list-item-title>DELETE</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="resend(mem.id)" v-if="mem.status == 'PENDING' && mem.retry < 3">
-                          <v-list-item-title>INVITE AGAIN</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
+                    <v-list-item @click="remove(mem.id, mem.email)" v-if="mem.status != 'LEFT' && mem.retry < 3">
+                      <v-list-item-title>DELETE</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="resend(mem.id)" v-if="mem.status == 'PENDING' && mem.retry < 3">
+                      <v-list-item-title>INVITE AGAIN</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
 
-                  </td>
-                  <td v-else>
-                    {{ mem.status }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </td>
+              <td v-else>
+                {{ mem.status }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
       </div>
 
@@ -141,25 +136,6 @@
 import MemberService from '@/service/member';
 
 export default {
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { email: '250px', role: '120px', status: '120px', retry: '70px', date: '150px', action: '70px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { email: '', role: '12%', status: '12%', retry: '8%', date: '20%', action: '8%' },
-          };
-        }
-      }
-    },
-  },
   data() {
     return {
       loading: {
@@ -233,9 +209,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .v-icon.v-icon::after {
-    height: 0;
-  }
-</style>

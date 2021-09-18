@@ -10,208 +10,180 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="d-flex justify-space-between">
+    <div class="col-6 pl-0 d-flex">
+      <v-text-field 
+        :loading="loading"
+        v-model="searchForm.term"
+        dense solo
+        maxlength="100"
+        hide-details
+        placeholder="Search..."
+      >
+        <template v-slot:append>
+          <v-menu
+            offset-y
+            bottom left
+            v-model="filterPanelShow"
+            :close-on-content-click="false"
+            transition="scale-x-transition"
+          >
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on">mdi-filter-menu-outline</v-icon>
+            </template>
+          
+            <v-card style="max-width:350px">
+              <v-card-text class="pb-1">
+                <div class="pb-2 d-flex justify-space-between">
+                  <span class="body-1 my-auto">Filters</span>
+                  <v-btn
+                    icon
+                    tabindex="-1"
+                    @click="filterPanelShow = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </div>
 
-      <div class="col-10 pl-0 d-flex">
-        <v-text-field 
-          ref="term"
-          outlined dense
-          hide-details
-          maxlength="100"
-          v-model="searchForm.term"
-          :label="searchForm.searchBy"
-          :placeholder="'Search by ' + searchForm.searchBy"
-        >
-          <template v-slot:append>
-            <v-menu
-              offset-y
-              bottom left
-              v-model="searchMenuOpen"
-              :close-on-content-click="false"
-              max-width="400">
-              <template v-slot:activator="{ on, attrs }">
+                <v-select
+                  dense
+                  small-chips
+                  multiple
+                  outlined
+                  hide-details
+                  label="Type"
+                  v-model="searchForm.types"
+                  :items="typeItems"
+                  class="mb-4"
+                ></v-select>
+
+                <v-select
+                  dense
+                  small-chips
+                  multiple
+                  outlined
+                  hide-details
+                  label="Levels"
+                  v-model="searchForm.levels"
+                  :items="levelItems"
+                  class="mb-4"
+                ></v-select>
+
+                <div class="d-flex mb-4">
+                  <v-menu
+                    v-model="startingAtMenuOpen"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        readonly
+                        dense
+                        outlined
+                        clearable
+                        hide-details
+                        v-model="searchForm.startingAt"
+                        label="Starting At"
+                        v-on="on"
+                        v-bind="attrs"
+                        class="pr-1"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      no-title
+                      scrollable
+                      v-model="searchForm.startingAt"
+                      @input="startingAtMenuOpen = false"
+                    ></v-date-picker>
+                  </v-menu>
+
+                  <v-menu
+                    v-model="endingAtMenuOpen"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        readonly
+                        dense
+                        outlined
+                        clearable
+                        hide-details
+                        v-model="searchForm.endingAt"
+                        label="Ending At"
+                        v-on="on"
+                        v-bind="attrs"
+                        class="pl-1"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      no-title
+                      scrollable
+                      v-model="searchForm.endingAt"
+                      @input="endingAtMenuOpen = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </div>
+
+                <div class="d-flex justify-space-around mb-4">
+                  <v-select
+                    dense
+                    outlined
+                    hide-details
+                    class="pr-1"
+                    label="Order By"
+                    v-model="searchForm.orderBy"
+                    :items="orderByItems"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    outlined
+                    hide-details
+                    class="pl-1"
+                    label="Order Dir"
+                    v-model="searchForm.orderDir"
+                    :items="orderDirItems"
+                  ></v-select>
+                </div>
+
+                <v-select
+                  dense
+                  outlined
+                  hide-details
+                  label="Row Limit"
+                  v-model="searchForm.rowLimit"
+                  :items="rowLimitItems"
+                  class="mb-2"
+                ></v-select>
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions class="justify-end">
                 <v-btn
-                  icon small
-                  v-bind="attrs"
-                  v-on="on"
+                  text
+                  @click="resetForm"
                   tabindex="-1"
                 >
-                  <v-badge
-                    dot overlap
-                    color="red"
-                    :value="!deepEqual(searchForm, baseSearchForm)"
-                  >
-                    <v-icon>mdi-filter-menu-outline</v-icon>
-                  </v-badge>
+                  RESET
                 </v-btn>
-              </template>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="applyOptions"
+                >
+                  APPLY
+                </v-btn>
+              </v-card-actions>
+            </v-card>
 
-              <v-card>
-                <v-card-text class="pb-2">
-                  <div class="subtitle-1 pb-1 d-flex justify-space-between">
-                    <span>Search Options</span>
-                    <v-btn
-                      icon
-                      @click="searchMenuOpen = false"
-                      tabindex="-1"
-                    >
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                  </div>
-                  
-                  <v-divider class="py-2"></v-divider>
-
-                  <v-select
-                    dense
-                    outlined
-                    hide-details
-                    label="Search By"
-                    v-model="searchForm.searchBy"
-                    :items="searchByItems"
-                    class="mb-4"
-                  ></v-select>
-
-                  <v-select
-                    dense
-                    small-chips
-                    multiple
-                    outlined
-                    hide-details
-                    label="Type"
-                    v-model="searchForm.types"
-                    :items="typeItems"
-                    class="mb-4"
-                  ></v-select>
-
-                  <v-select
-                    dense
-                    small-chips
-                    multiple
-                    outlined
-                    hide-details
-                    label="Levels"
-                    v-model="searchForm.levels"
-                    :items="levelItems"
-                    class="mb-4"
-                  ></v-select>
-
-                  <div class="d-flex mb-4">
-                    <v-menu
-                      v-model="startingAtMenuOpen"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          readonly
-                          dense
-                          outlined
-                          clearable
-                          hide-details
-                          v-model="searchForm.startingAt"
-                          label="Starting At"
-                          v-on="on"
-                          v-bind="attrs"
-                          class="pr-1"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        no-title
-                        scrollable
-                        v-model="searchForm.startingAt"
-                        @input="startingAtMenuOpen = false"
-                      ></v-date-picker>
-                    </v-menu>
-
-                    <v-menu
-                      v-model="endingAtMenuOpen"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          readonly
-                          dense
-                          outlined
-                          clearable
-                          hide-details
-                          v-model="searchForm.endingAt"
-                          label="Ending At"
-                          v-on="on"
-                          v-bind="attrs"
-                          class="pl-1"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        no-title
-                        scrollable
-                        v-model="searchForm.endingAt"
-                        @input="endingAtMenuOpen = false"
-                      ></v-date-picker>
-                    </v-menu>
-                  </div>
-
-                  <div class="d-flex justify-space-around mb-4">
-                    <v-select
-                      dense
-                      outlined
-                      hide-details
-                      class="pr-1"
-                      label="Order By"
-                      v-model="searchForm.orderBy"
-                      :items="orderByItems"
-                    ></v-select>
-
-                    <v-select
-                      dense
-                      outlined
-                      hide-details
-                      class="pl-1"
-                      label="Order Dir"
-                      v-model="searchForm.orderDir"
-                      :items="orderDirItems"
-                    ></v-select>
-                  </div>
-
-                  <v-select
-                    dense
-                    outlined
-                    hide-details
-                    label="Row Limit"
-                    v-model="searchForm.rowLimit"
-                    :items="rowLimitItems"
-                    class="mb-2"
-                  ></v-select>
-                </v-card-text>
-
-                <v-divider></v-divider>
-
-                <v-card-actions class="justify-end">
-                  <v-btn
-                    text
-                    @click="resetForm"
-                    tabindex="-1"
-                  >
-                    Clear
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="applyOptions"
-                  >
-                    OK
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-
-            </v-menu>
-          </template>
-        </v-text-field>
-      </div>
+          </v-menu>
+        </template>
+      </v-text-field>
     </div>
 
     <div v-if="searchResult && searchResult.length" style="border: 1px solid #ddd">
@@ -289,7 +261,7 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">Load More</v-btn>
+      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
     </div>
 
   </div>
@@ -299,7 +271,6 @@
 <script>
 import AnnounceService from '@/service/announce';
 
-const searchByItems = ['TITLE', 'BODY'];
 const typeItems = ['USER', 'ACCOUNT', 'SYSTEM'];
 const levelItems = ['INFO', 'WARNING'];
 const orderByItems = ['TITLE', 'TYPE', 'LEVEL', 'STARTING_AT', 'ENDING_AT', 'CREATED_AT'];
@@ -308,7 +279,6 @@ const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  searchBy: searchByItems[0],
   types: null,
   levels: null,
   startingAt: null,
@@ -323,7 +293,7 @@ export default {
   data() {
     return {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
-      searchMenuOpen: false,
+      filterPanelShow: false,
       startingAtMenuOpen: false,
       endingAtMenuOpen: false,
       searchResult: [],
@@ -331,13 +301,13 @@ export default {
       isLoadMoreClicked: false,
       showingId: 0,
       showDetails: false,
-      searchByItems,
       typeItems,
       levelItems,
       orderByItems,
       orderDirItems,
       rowLimitItems,
       baseSearchForm,
+      loading: false
     };
   },
   methods: {
@@ -354,11 +324,11 @@ export default {
       this.search();
     },
     applyOptions() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.search();
-      this.$refs.term.focus();
     },
     search() {
+      this.loading = true;
       if (this.isLoadMoreClicked == true && this.searchResult.length) {
         this.searchForm.rowCount = this.searchResult.length;
         this.searchForm.loadMore = this.isLoadMoreClicked;
@@ -367,12 +337,10 @@ export default {
       }
 
       const loadMore = this.isLoadMoreClicked;
-      this.isListLoading = true;
       this.isLoadMoreClicked = false;
 
       AnnounceService.search(this.searchForm, true)
         .then((res) => {
-          this.isListLoading = false;
           this.isLoadMoreDisabled = true;
           if (res?.length) {
             if (loadMore == true) {
@@ -381,18 +349,17 @@ export default {
               this.searchResult = res;
             }
           } else {
-            this.searchResult = [];
+            if (!loadMore) this.searchResult = [];
           }
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      });
+      }).finally(() => this.loading = false);
     },
     resetForm() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
-      this.$refs.term.focus();
     },
     findTypeColor(type) {
       switch (type) {
