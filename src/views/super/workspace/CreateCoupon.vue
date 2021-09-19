@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import SuperAccountService from '@/service/super/account';
+import SuperWorkspaceService from '@/service/super/workspace';
 import SystemService from '@/service/system';
 
 export default {
@@ -102,7 +102,7 @@ export default {
       valid: false,
       rules: {},
       form: {
-        accountId: null,
+        workspaceId: null,
         name: null,
         planId: null,
         description: null,
@@ -115,7 +115,7 @@ export default {
   methods: {
     open(form) {
       const self = this;
-      self.form.accountId = form.id;
+      self.form.workspaceId = form.id;
       self.form.name = form.name;
       self.opened = true;
       self.$nextTick(() => {
@@ -134,7 +134,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.form.planId = this.selectedPlan.id;
-        SuperAccountService.createCoupon(this.form)
+        SuperWorkspaceService.createCoupon(this.form)
           .then((res) => {
             if (res && res.data) {
               this.$store.commit('snackbar/setMessage', { text: `${res.data.code} is successfully created for ${this.form.name}` });

@@ -4,12 +4,12 @@
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
           <div class="d-flex">
-            <v-icon class="mr-4 hidden-xs-only">mdi-account-supervisor</v-icon>
+            <v-icon class="mr-4 hidden-xs-only">mdi-workspace-supervisor</v-icon>
             <div class="d-inline">
               <div>Memberships</div>
-              <div class="caption">All the accounts you have been joined</div>
+              <div class="caption">All the workspaces you have been joined</div>
               <div class="caption">
-                <strong>Please note</strong>, if you leave from any account, you will be able to see the refreshed menu after login again.
+                <strong>Please note</strong>, if you leave from any workspace, you will be able to see the refreshed menu after login again.
               </div>
             </div>
           </div>
@@ -34,7 +34,7 @@
         <table class="info-table">
           <thead>
             <tr>
-              <th>Account</th>
+              <th>Workspace</th>
               <th width="15%">Role</th>
               <th width="15%">Date</th>
               <th width="7%" class="text-center">Action</th>
@@ -50,7 +50,7 @@
                   small
                   v-if="row.role != 'ADMIN'"
                   :loading="loading.leave" 
-                  @click="leave(row.id, row.account)"
+                  @click="leave(row.id, row.workspace)"
                   :disabled="loading.leave || $store.get('session/isSuperUser')"
                 >
                   Leave
@@ -99,8 +99,8 @@ export default {
       }
       this.loading.refresh = false;
     },
-    async leave(id, account) {
-      this.$refs.confirm.open('Leave', 'You are about to leave from ' + account + '. Are you sure?').then(async (confirm) => {
+    async leave(id, workspace) {
+      this.$refs.confirm.open('Leave', 'You are about to leave from ' + workspace + '. Are you sure?').then(async (confirm) => {
         if (confirm == true) {
           this.loading.leave = true;
           const result = await UserService.leaveMember(id);

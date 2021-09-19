@@ -5,7 +5,10 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-6 pl-0 d-flex">
+    <div 
+      class="pl-0 d-flex"
+      :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+    >
       <v-text-field 
         :loading="loading"
         v-model="searchForm.term"
@@ -44,14 +47,14 @@
                   outlined
                   hide-details
                   clearable
-                  no-data-text="No account found!"
-                  v-model="searchForm.accountId"
-                  :items="accounts"
-                  :loading="isAccountsLoading"
-                  :search-input.sync="searchForm.accountTerm"
+                  no-data-text="No workspace found!"
+                  v-model="searchForm.workspaceId"
+                  :items="workspaces"
+                  :loading="isWorkspacesLoading"
+                  :search-input.sync="searchForm.workspaceTerm"
                   item-value="left"
                   item-text="right"
-                  label="Account"
+                  label="Workspace"
                   placeholder="Type to search"
                   class="mb-4"
                 ></v-autocomplete>
@@ -166,7 +169,7 @@
 
 <script>
 import SU_LinkService from '@/service/super/link';
-import SU_AccountService from '@/service/super/account';
+import SU_WorkspaceService from '@/service/super/workspace';
 
 const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL'];
 const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
@@ -177,8 +180,8 @@ const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  accountId: null,
-  accountTerm: null,
+  workspaceId: null,
+  workspaceTerm: null,
   levels: [],
   statuses: [],
   orderBy: orderByItems[0],
@@ -194,8 +197,8 @@ export default {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
       filterPanelShow: false,
       searchResult: [],
-      accounts: [],
-      isAccountsLoading: false,
+      workspaces: [],
+      isWorkspacesLoading: false,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
       levelItems,
@@ -260,14 +263,14 @@ export default {
     'searchForm.term'() {
       return this.search();
     },
-    'searchForm.accountTerm'(val) {
-      if (this.searchForm.accountTerm == undefined) return;
-      this.isAccountsLoading = true;
-      SU_AccountService.getIdNameList(val).then((res) => {
+    'searchForm.workspaceTerm'(val) {
+      if (this.searchForm.workspaceTerm == undefined) return;
+      this.isWorkspacesLoading = true;
+      SU_WorkspaceService.getIdNameList(val).then((res) => {
         if (res && res.data) {
-          this.accounts = res.data;
+          this.workspaces = res.data;
         }
-      }).finally(() => this.isAccountsLoading = false);
+      }).finally(() => this.isWorkspacesLoading = false);
     }
   },
   components: {

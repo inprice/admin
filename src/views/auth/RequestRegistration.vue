@@ -18,7 +18,7 @@
         >
           {{ errorMessage }}
         </v-alert>
-        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please fill this form to register your account</div>
+        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please fill this form to register your workspace</div>
 
         <v-card-text>
           <v-form 
@@ -29,9 +29,9 @@
           >
             <v-text-field
               outlined dense
-              label="Account Name"
-              v-model="form.accountName"
-              :rules="rules.accountName"
+              label="Workspace Name"
+              v-model="form.workspaceName"
+              :rules="rules.workspaceName"
               type="text"
               maxlength="70"
             />
@@ -88,7 +88,7 @@
       <v-divider></v-divider>
 
       <div class="text-center small-font mt-6">
-        By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
+        By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you workspace related emails.
       </div>
 
     </div>
@@ -109,7 +109,7 @@ export default {
       rules: {},
       form: {
         email: '',
-        accountName: '',
+        workspaceName: '',
         password: '',
         repeatPassword: ''
       },
@@ -151,9 +151,9 @@ export default {
     },
     activateRules() {
       this.rules = {
-        accountName: [
-          v => !!v || "Account name required",
-          v => (v.length >= 3 && v.length <= 70) || "Account name must be between 3-70 chars"
+        workspaceName: [
+          v => !!v || "Workspace name required",
+          v => (v.length >= 3 && v.length <= 70) || "Workspace name must be between 3-70 chars"
         ],
         email: [
           v => !!v || "E-mail required",

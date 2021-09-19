@@ -6,7 +6,10 @@
     <!-- Filter and Rows -->
     <!-- --------------- -->
     <div class="d-flex justify-space-between" v-if="CURSTAT.planId">
-      <div class="col-6 pl-0 d-flex">
+      <div 
+        class="pl-0 d-flex"
+        :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+      >
         <v-text-field 
           :loading="loading"
           v-model="searchForm.term"
@@ -191,7 +194,7 @@
 
     <v-card v-else>
       <block-message class="mt-2">
-        You are not allowed to manage your products until activate your account!
+        You are not allowed to manage your products until activate your workspace!
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">
           <v-btn 
             small

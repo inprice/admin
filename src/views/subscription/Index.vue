@@ -2,7 +2,7 @@
   <div>
     <div>
       <div class="title">Subscription</div>
-      <div class="body-2">Your account's subscription info.</div>
+      <div class="body-2">Your workspace's subscription info.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>

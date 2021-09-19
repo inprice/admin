@@ -11,7 +11,10 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-6 pl-0 d-flex">
+    <div 
+      class="pl-0 d-flex"
+      :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+    >
       <v-text-field 
         :loading="loading"
         v-model="searchForm.term"
@@ -176,7 +179,7 @@
             style="cursor: pointer"
             @click="openDetails(row.id)"
           >
-            <div class="caption font-weight-light">{{ row.account }}</div>
+            <div class="caption font-weight-light">{{ row.workspace }}</div>
             <v-icon color="green" class="mr-2" v-if="!row.seenBySuper">mdi-alert-rhombus</v-icon>
             {{ row.body }}
           </div>
@@ -315,7 +318,7 @@ import SU_TicketService from '@/service/super/ticket';
 const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
 const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
 const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
-const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'ACCOUNT', 'COUPON', 'OTHER'];
+const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'COUPON', 'OTHER'];
 const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];

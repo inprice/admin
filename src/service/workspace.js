@@ -1,12 +1,12 @@
 import Helper from './helper';
 import store from '../store';
 
-const baseURL = '/account';
+const baseURL = '/workspace';
 
 export default {
 
   async get() {
-    const res = await Helper.call('Account', { method: 'get', url: baseURL });
+    const res = await Helper.call('Workspace', { method: 'get', url: baseURL });
     if (res.status == true && res.data) return res.data;
     return null;
   },
@@ -17,7 +17,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Create Account', { method: 'post', url: baseURL, data: form });
+    const res = await Helper.call('Create Workspace', { method: 'post', url: baseURL, data: form });
     return res && res.status;
   },
 
@@ -27,17 +27,17 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Update Account', { method: 'put', url: baseURL, data: form });
+    const res = await Helper.call('Update Workspace', { method: 'put', url: baseURL, data: form });
     return res.status;
   },
 
-  async deleteAccount(password) {
+  async deleteWorkspace(password) {
     if (store.get('session/isNotAdmin')) {
-      store.commit('snackbar/setMessage', { text: 'Accounts can be deleted only by admin!' });
+      store.commit('snackbar/setMessage', { text: 'Workspaces can be deleted only by admin!' });
       return;
     }
 
-    const res = await Helper.call('Delete Account', { method: 'delete', url: baseURL, data: { value: password }});
+    const res = await Helper.call('Delete Workspace', { method: 'delete', url: baseURL, data: { value: password }});
     return res.status;
   }
 

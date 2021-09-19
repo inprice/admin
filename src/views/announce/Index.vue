@@ -10,7 +10,10 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-6 pl-0 d-flex">
+    <div 
+      class="pl-0 d-flex"
+      :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+    >
       <v-text-field 
         :loading="loading"
         v-model="searchForm.term"
@@ -271,7 +274,7 @@
 <script>
 import AnnounceService from '@/service/announce';
 
-const typeItems = ['USER', 'ACCOUNT', 'SYSTEM'];
+const typeItems = ['USER', 'WORKSPACE', 'SYSTEM'];
 const levelItems = ['INFO', 'WARNING'];
 const orderByItems = ['TITLE', 'TYPE', 'LEVEL', 'STARTING_AT', 'ENDING_AT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
@@ -364,7 +367,7 @@ export default {
     findTypeColor(type) {
       switch (type) {
         case 'USER': return 'blue';
-        case 'ACCOUNT': return 'green';
+        case 'WORKSPACE': return 'green';
         case 'SYSTEM': return 'purple';
       }
       return 'grey';

@@ -4,7 +4,7 @@
     <v-card-title class="justify-space-between py-2">
       <div>
         <div class="caption font-weight-medium">
-          <span class="purple--text">{{ ticket.account }}</span>
+          <span class="purple--text">{{ ticket.workspace }}</span>
           -
           <span class="teal--text">{{ ticket.username }}</span>
         </div>

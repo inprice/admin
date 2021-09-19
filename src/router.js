@@ -77,19 +77,19 @@ const router = new VueRouter({
           component: () => import('./views/super/link/Index.vue')
         },
         {
-          name: 'sys-accounts',
-          path: 'accounts',
-          component: () => import('./views/super/account/Index.vue')
+          name: 'sys-workspaces',
+          path: 'workspaces',
+          component: () => import('./views/super/workspace/Index.vue')
         },
         {
-          name: 'sys-account-details',
-          path: 'account-details/:aid',
-          component: () => import('./views/super/account/details/Index.vue')
+          name: 'sys-workspace-details',
+          path: 'workspace-details/:aid',
+          component: () => import('./views/super/workspace/details/Index.vue')
         },
         {
-          name: 'sys-account-logs',
-          path: 'account-logs/:aid',
-          component: () => import('./views/super/account/AccessLogIndex.vue')
+          name: 'sys-workspace-logs',
+          path: 'workspace-logs/:aid',
+          component: () => import('./views/super/workspace/AccessLogIndex.vue')
         },
         {
           name: 'sys-users',
@@ -202,9 +202,9 @@ const router = new VueRouter({
           component: () => import('./views/user/Index.vue')
         },
         {
-          name: 'account-settings',
-          path: 'account-settings',
-          component: () => import('./views/account/Index.vue'),
+          name: 'workspace-settings',
+          path: 'workspace-settings',
+          component: () => import('./views/workspace/Index.vue'),
           meta: {
             requiresAdminOrSuperUser: true
           },

@@ -4,7 +4,7 @@
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
           <div class="d-flex">
-            <v-icon class="mr-4 hidden-xs-only">mdi-account-plus-outline</v-icon>
+            <v-icon class="mr-4 hidden-xs-only">mdi-workspace-plus-outline</v-icon>
             <div class="d-inline">
               <div>Invitations</div>
               <div class="caption">Your recieved invitations</div>
@@ -34,7 +34,7 @@
         <table class="info-table">
           <thead>
             <tr>
-              <th>Account</th>
+              <th>Workspace</th>
               <th width="15%">Role</th>
               <th width="15%">Date</th>
               <th width="7%" class="text-center">Action</th>
@@ -117,8 +117,8 @@ export default {
       }
       this.loading.accept = false;
     },
-    async reject(id, account) {
-      this.$refs.confirm.open('Reject', 'You are about to reject the invitation of ' + account + '. Are you sure?').then(async (confirm) => {
+    async reject(id, workspace) {
+      this.$refs.confirm.open('Reject', 'You are about to reject the invitation of ' + workspace + '. Are you sure?').then(async (confirm) => {
         if (confirm == true) {
           this.loading.reject = true;
           const result = await UserService.rejectInvitation(id);

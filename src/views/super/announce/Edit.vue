@@ -120,7 +120,7 @@ export default {
         endingAt: null,
         title: null,
         body: null,
-        account: null,
+        workspace: null,
       },
       forWhom: 'public',
       startingAtMenuOpen: false,
@@ -137,13 +137,13 @@ export default {
       this.form.title = null;
       this.form.body = null;
       this.form.userId = null;
-      this.form.accountId = null;
+      this.form.workspaceId = null;
       if (data) {
         this.form.id = data.id;
         this.form.title = data.title;
         this.form.body = data.body;
         this.form.userId = data.userId;
-        this.form.accountId = data.accountId;
+        this.form.workspaceId = data.workspaceId;
         if (data.level) this.form.level = data.level;
         if (data.startingAt) this.form.startingAt = data.startingAt;
         if (data.endingAt) this.form.endingAt = data.endingAt;

@@ -62,7 +62,7 @@
           </v-card-actions>
 
           <div class="d-flex mt-4 justify-space-between">
-            Already have an account?
+            Already have an workspace?
             <router-link to="login" class="ml-5" tabindex="-1">Sign In</router-link>
           </div>
 
@@ -72,7 +72,7 @@
       <v-divider></v-divider>
 
       <div class="text-center font-weight-light mt-6">
-        By clicking "Accept", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
+        By clicking "Accept", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you workspace related emails.
       </div>
 
     </div>

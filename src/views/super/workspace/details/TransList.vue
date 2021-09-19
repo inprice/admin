@@ -7,7 +7,7 @@
             <v-icon class="mr-4 hidden-xs-only">mdi-book-open</v-icon>
             <div class="d-inline">
               <div>Transactions</div>
-              <div class="caption">Account's transaction list.</div>
+              <div class="caption">Workspace's transaction list.</div>
             </div>
           </div>
 
@@ -51,7 +51,7 @@
 
       <block-message 
         v-else dense
-        :message="'Account has no transaction yet.'"
+        :message="'Workspace has no transaction yet.'"
       />
 
     </v-card>

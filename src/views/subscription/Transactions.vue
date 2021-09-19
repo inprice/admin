@@ -5,7 +5,7 @@
       <v-icon class="mr-4 hidden-xs-only">mdi-clipboard-list-outline</v-icon>
       <div>
         <div>Transactions</div>
-        <div class="caption">The list of operations in this account.</div>
+        <div class="caption">The list of operations in this workspace.</div>
       </div>
     </v-card-title>
 

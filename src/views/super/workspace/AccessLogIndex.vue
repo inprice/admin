@@ -5,7 +5,7 @@
     <div class="d-flex justify-space-between px-4 py-2 pt-4">
       <div>
         <div class="title">{{ $route.query.name }}</div>
-        <div class="body-2">Account's access logs.</div>
+        <div class="body-2">Workspace's access logs.</div>
       </div>
 
       <v-btn 
@@ -22,7 +22,10 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-6 pl-0 d-flex">
+    <div 
+      class="pl-0 d-flex"
+      :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+    >
       <v-text-field 
         :loading="loading"
         v-model="searchForm.term"
@@ -219,7 +222,7 @@
 </template>
 
 <script>
-import SU_AccountService from '@/service/super/account';
+import SU_WorkspaceService from '@/service/super/workspace';
 
 const methodItems = ['GET', 'POST', 'PUT', 'DELETE'];
 const orderByItems = ['DATE', 'PATH', 'STATUS', 'IP', 'ELAPSED', 'METHOD', 'SLOW'];
@@ -240,7 +243,7 @@ const baseSearchForm = {
 
 export default {
   data() {
-    baseSearchForm.accountId = this.$route.params.aid;
+    baseSearchForm.workspaceId = this.$route.params.aid;
     return {
       filterPanelShow: false,
       startDateMenuOpen: false,
@@ -265,8 +268,8 @@ export default {
       this.search();
     },
     search() {
-      if (!this.searchForm.accountId) {
-        console.error("Account id is not specified!");
+      if (!this.searchForm.workspaceId) {
+        console.error("Workspace id is not specified!");
         return;
       }
 
@@ -282,7 +285,7 @@ export default {
       const loadMore = this.isLoadMoreClicked;
       this.isLoadMoreClicked = false;
 
-      SU_AccountService.searchForLogs(this.searchForm)
+      SU_WorkspaceService.searchForLogs(this.searchForm)
         .then((res) => {
           this.isLoadMoreDisabled = true;
           if (res?.length) {
@@ -319,7 +322,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.search()
-      SU_AccountService.fetchUserList(this.searchForm.accountId).then((res) => {
+      SU_WorkspaceService.fetchUserList(this.searchForm.workspaceId).then((res) => {
         if (res && res.data) {
           this.userItems = res.data;
         }

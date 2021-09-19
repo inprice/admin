@@ -18,7 +18,7 @@
         >
           {{ errorMessage }}
         </v-alert>
-        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please sign in to your account</div>
+        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please sign in to your workspace</div>
 
         <v-card-text>
           <v-form 

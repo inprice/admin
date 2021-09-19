@@ -2,8 +2,8 @@
 
   <div>
     <div>
-      <div class="title">Accounts</div>
-      <div class="body-2">All the registered accounts.</div>
+      <div class="title">Workspaces</div>
+      <div class="body-2">All the registered workspaces.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -31,8 +31,8 @@
       <v-btn
         color="white"
         class="my-auto"
-        @click="unbindAccount"
-        :disabled="!CURSTAT.accountId || $store.get('session/isNotSuperUser')"
+        @click="unbindWorkspace"
+        :disabled="!CURSTAT.workspaceId || $store.get('session/isNotSuperUser')"
       >
         Unbind Current
       </v-btn>
@@ -50,7 +50,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in searchResult" :key="row.id" :style="(CURSTAT.accountId && CURSTAT.accountId == row.id ? 'background-color: lightcyan' : '')">
+          <tr v-for="row in searchResult" :key="row.id" :style="(CURSTAT.workspaceId && CURSTAT.workspaceId == row.id ? 'background-color: lightcyan' : '')">
             <td style="padding: 3px 10px">
               {{ row.name }}
               <div class="caption font-weight-light">{{ row.email }}</div>
@@ -67,12 +67,12 @@
                 </template>
 
                 <v-list dense>
-                  <v-list-item @click="unbindAccount(row.id)" v-if="CURSTAT.accountId && CURSTAT.accountId == row.id">
+                  <v-list-item @click="unbindWorkspace(row.id)" v-if="CURSTAT.workspaceId && CURSTAT.workspaceId == row.id">
                     <v-list-item-title>
                       UNBIND THIS
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click="bindAccount(row.id)" v-else>
+                  <v-list-item @click="bindWorkspace(row.id)" v-else>
                     <v-list-item-title>
                       BIND THIS
                     </v-list-item-title>
@@ -80,10 +80,10 @@
 
                   <v-divider></v-divider>
 
-                  <v-list-item link :to="{ name: 'sys-account-details', params: { aid: row.id } }">
+                  <v-list-item link :to="{ name: 'sys-workspace-details', params: { aid: row.id } }">
                     <v-list-item-title>DETAILS</v-list-item-title>
                   </v-list-item>
-                  <v-list-item link :to="{ name: 'sys-account-logs', params: { aid: row.id }, query: { name: row.name } }">
+                  <v-list-item link :to="{ name: 'sys-workspace-logs', params: { aid: row.id }, query: { name: row.name } }">
                     <v-list-item-title>ACCESS LOGS</v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="openCreateCouponDialog(row.id, row.name)">
@@ -111,7 +111,7 @@
     </v-card>
 
     <v-card v-else >
-      <block-message :message="'No account found! You may want to change your criteria.'" />
+      <block-message :message="'No workspace found! You may want to change your criteria.'" />
     </v-card>
 
     <create-coupon ref="createCouponDialog" />
@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import SU_AccountService from '@/service/super/account';
+import SU_WorkspaceService from '@/service/super/workspace';
 import SU_AnnounceService from '@/service/super/announce';
 import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
@@ -162,7 +162,7 @@ export default {
       const loadMore = this.isLoadMoreClicked;
       this.isLoadMoreClicked = false;
 
-      SU_AccountService.search(this.searchForm)
+      SU_WorkspaceService.search(this.searchForm)
         .then((res) => {
           this.isLoadMoreDisabled = true;
           if (res?.length) {
@@ -179,21 +179,21 @@ export default {
           }
       }).finally(() => this.loading = false);
     },
-    async bindAccount(id) {
-      const res = await SU_AccountService.bind(id);
+    async bindWorkspace(id) {
+      const res = await SU_WorkspaceService.bind(id);
       if (res && res.data) {
         this.$store.commit('session/SET_CURRENT', res.data, 0);
       }
     },
-    unbindAccount() {
-      this.$store.dispatch('session/unbindAccount');
+    unbindWorkspace() {
+      this.$store.dispatch('session/unbindWorkspace');
     },
     openCreateCouponDialog(id, name) {
       this.$refs.createCouponDialog.open({ id, name });
     },
     makeAnAnnouncement(id, name) {
       const form = {
-        accountId: id,
+        workspaceId: id,
         forWhom: name
       };
       this.$refs.announceDialog.open(form);

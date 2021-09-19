@@ -5,7 +5,7 @@
     <v-card>
       <div class="d-flex justify-space-between px-4 py-2 pt-4">
         <div class="d-flex">
-          <v-icon class="mr-4 hidden-xs-only">mdi-account</v-icon>
+          <v-icon class="mr-4 hidden-xs-only">mdi-workspace</v-icon>
           <div class="d-inline title">{{ user.email }}</div>
         </div>
 

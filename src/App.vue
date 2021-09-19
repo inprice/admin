@@ -1,6 +1,5 @@
 <template>
   <v-app>
-
     <v-snackbar 
       v-model="snackbar.show" 
       :timeout="snackbar.timeout" 

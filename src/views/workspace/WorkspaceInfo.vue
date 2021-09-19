@@ -9,7 +9,7 @@
     >
       <v-card>
         <div class="d-flex justify-space-between pa-3">
-          <div class="title">{{ isInsert ? 'New account' : 'Account info' }}</div>
+          <div class="title">{{ isInsert ? 'New workspace' : 'Workspace info' }}</div>
           <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
         </div>
 
@@ -74,7 +74,7 @@
 
 <script>
 import ApiService from '@/service/api';
-import AccountService from '@/service/account';
+import WorkspaceService from '@/service/workspace';
 
 import currencyNames from '@/data/currency-names';
 import currencyFormats from '@/data/currency-formats';
@@ -114,16 +114,16 @@ export default {
         this.loading = true;
 
         if (this.isInsert) {
-          const res = await AccountService.create(this.form);
+          const res = await WorkspaceService.create(this.form);
           if (res == true) {
-            this.$store.commit('snackbar/setMessage', { text: 'Successfull, you will be able to work with new account after sign in again.' });
+            this.$store.commit('snackbar/setMessage', { text: 'Successfull, you will be able to work with new workspace after sign in again.' });
             this.close();
             return;
           }
         } else {
-          const res = await AccountService.update(this.form);
+          const res = await WorkspaceService.update(this.form);
           if (res == true) {
-            this.$store.set('session/ACCOUNT_INFO', this.form);
+            this.$store.set('session/WORKSPACE_INFO', this.form);
             this.close();
             return;
           }
@@ -160,7 +160,7 @@ export default {
       } else {
         this.form.name = '';
         if (!this.form.currencyCode) {
-          ApiService.get('/account/geo')
+          ApiService.get('/workspace/geo')
             .then((res) => {
               if (!this.form.currencyCode) this.form.currencyCode = res.data.data.currencyCode;
               if (!this.form.currencyFormat) this.form.currencyFormat = currencyFormats[this.form.currencyCode];

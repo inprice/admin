@@ -1,7 +1,7 @@
 import Helper from '../helper';
 import store from '../../store';
 
-const baseURL = '/sys/account';
+const baseURL = '/sys/workspace';
 
 export default {
 
@@ -11,7 +11,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Search Account', { url: baseURL + 's/search', data: form });
+    const res = await Helper.call('Search Workspace', { url: baseURL + 's/search', data: form });
     if (res.status == true && res.data) return res.data;
     return null;
   },
@@ -27,49 +27,49 @@ export default {
     return null;
   },
 
-  fetchDetails(accountId) {
+  fetchDetails(workspaceId) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
       return;
     }
 
-    return Helper.call('Fetch Details', { method: 'get', url: baseURL + '/details/' + accountId });
+    return Helper.call('Fetch Details', { method: 'get', url: baseURL + '/details/' + workspaceId });
   },
 
-  fetchMemberList(accountId) {
+  fetchMemberList(workspaceId) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
       return;
     }
 
-    return Helper.call('Fetch Members', { method: 'get', url: baseURL + '/details/members/' + accountId });
+    return Helper.call('Fetch Members', { method: 'get', url: baseURL + '/details/members/' + workspaceId });
   },
 
-  fetchUserList(accountId) {
+  fetchUserList(workspaceId) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
       return;
     }
 
-    return Helper.call('Fetch Account Users', { method: 'get', url: baseURL + '/users/' + accountId });
+    return Helper.call('Fetch Workspace Users', { method: 'get', url: baseURL + '/users/' + workspaceId });
   },
 
-  fetchHistoryList(accountId) {
+  fetchHistoryList(workspaceId) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
       return;
     }
 
-    return Helper.call('Fetch History', { method: 'get', url: baseURL + '/details/history/' + accountId });
+    return Helper.call('Fetch History', { method: 'get', url: baseURL + '/details/history/' + workspaceId });
   },
 
-  fetchTransactionList(accountId) {
+  fetchTransactionList(workspaceId) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
       return;
     }
 
-    return Helper.call('Fetch Transactions', { method: 'get', url: baseURL + '/details/transactions/' + accountId });
+    return Helper.call('Fetch Transactions', { method: 'get', url: baseURL + '/details/transactions/' + workspaceId });
   },
 
   async bind(id) {
@@ -78,7 +78,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Bind Account', { method: 'put', url: baseURL + '/bind/' + id });
+    const res = await Helper.call('Bind Workspace', { method: 'put', url: baseURL + '/bind/' + id });
     return res;
   },
 
@@ -98,7 +98,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Account List', { url: baseURL + '/id-name-pairs?term=' + term });
+    const res = await Helper.call('Workspace List', { url: baseURL + '/id-name-pairs?term=' + term });
     if (res.status == true && res.data) return res;
     return null;
   },

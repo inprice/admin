@@ -80,7 +80,7 @@
           class="mb-0" 
           v-if="CURSTAT.isActive == false && CURSTAT.status != 'CREATED'"
         >
-          This account has been {{ CURSTAT.status.toLowerCase() }}
+          This workspace has been {{ CURSTAT.status.toLowerCase() }}
           <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
         </block-message>
       </v-card>

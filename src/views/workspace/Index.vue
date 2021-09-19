@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="d-flex my-3">
-      <div class="title">{{ CURSTAT.account }}</div>
+      <div class="title">{{ CURSTAT.workspace }}</div>
       <v-spacer></v-spacer>
       <v-btn 
         small
         :disabled="$store.get('session/isNotAdmin')"
-        @click="openAccountInfoDialog"
+        @click="openWorkspaceInfoDialog"
       >
         Edit
       </v-btn>
@@ -16,12 +16,12 @@
       <v-card-title class="justify-space-between">
         <div>
           <v-icon color="green" class="mr-4 hidden-xs-only">mdi-folder-plus-outline</v-icon>
-          Create a new account
+          Create a new workspace
         </div>
         <v-btn
           small
           class="my-auto"
-          @click="openCreateAccount"
+          @click="openCreateWorkspace"
         >
           Create
         </v-btn>
@@ -30,21 +30,21 @@
       <v-divider></v-divider>
 
       <v-card-text class="body-2 black--text">
-        Use this section when you need an extra account. <br/> And please keep in mind, you will be able to see newly created account after sign in again.
+        Use this section when you need an extra workspace. <br/> And please keep in mind, you will be able to see newly created workspace after sign in again.
       </v-card-text>
     </v-card>
 
     <users></users>
 
-    <delete-account></delete-account>
+    <delete-workspace></delete-workspace>
 
-    <account-info-dialog ref="accountInfoDialog"></account-info-dialog>
+    <workspace-info-dialog ref="workspaceInfoDialog"></workspace-info-dialog>
 
   </div>
 </template>
 
 <script>
-import AccountService from '@/service/account';
+import WorkspaceService from '@/service/workspace';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -52,20 +52,20 @@ export default {
     CURSTAT: get('session/getCurrentStatus'),
   },
   methods: {
-    async openAccountInfoDialog() {
-      const result = await AccountService.get();
+    async openWorkspaceInfoDialog() {
+      const result = await WorkspaceService.get();
       if (result) {
-        this.$refs.accountInfoDialog.edit(result, false);
+        this.$refs.workspaceInfoDialog.edit(result, false);
       }
     },
-    openCreateAccount() {
-      this.$refs.accountInfoDialog.edit(null, true);
+    openCreateWorkspace() {
+      this.$refs.workspaceInfoDialog.edit(null, true);
     },
   },
   components: {
     Users: () => import('./Users'),
-    DeleteAccount: () => import('./DeleteAccount'),
-    AccountInfoDialog: () => import('./AccountInfo.vue'),
+    DeleteWorkspace: () => import('./DeleteWorkspace'),
+    WorkspaceInfoDialog: () => import('./WorkspaceInfo.vue'),
   }
 };
 </script>

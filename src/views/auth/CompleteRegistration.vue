@@ -103,7 +103,7 @@ export default {
           this.errorMessage = '';
 
           this.$router.push({ name: 'plans', params: { sid: 0 } });
-          this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your account.' });
+          this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your workspace.' });
           return;
         } else {
           this.errorMessage = result.error;

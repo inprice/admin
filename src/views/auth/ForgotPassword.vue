@@ -19,7 +19,7 @@
           <div class="title text-center mb-2">Forgot password</div>
           <v-divider></v-divider>
           <p class="ma-4 small-font">
-            Please provide your email address that you used when you signed up for your inprice account. We will send
+            Please provide your email address that you used when you signed up for your inprice workspace. We will send
             you an email that will allow you to reset your password.
           </p>
         </div>

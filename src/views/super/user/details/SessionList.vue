@@ -34,7 +34,7 @@
             <table :style="{'table-layout': RESPROPS['table-layout']}">
               <thead>
                 <tr>
-                  <th :width="RESPROPS.table.account">Account</th>
+                  <th :width="RESPROPS.table.workspace">Workspace</th>
                   <th :width="RESPROPS.table.ip">IP</th>
                   <th class="text-center" :width="RESPROPS.table.os">OS</th>
                   <th class="text-center" :width="RESPROPS.table.browser">Browser</th>
@@ -44,7 +44,7 @@
               </thead>
               <tbody>
                 <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.accountName }}</td>
+                  <td>{{ row.workspaceName }}</td>
                   <td>{{ row.ip }}</td>
                   <td class="text-center">{{ row.os }}</td>
                   <td class="text-center">{{ row.browser }}</td>
@@ -97,13 +97,13 @@ export default {
         case 'sm': {
           return {
             'table-layout': 'fixed',
-            table: { account: '250px', ip: '120px', os: '120px', browser: '150', date: '200px', action: '100px' },
+            table: { workspace: '250px', ip: '120px', os: '120px', browser: '150', date: '200px', action: '100px' },
           };
         }
         default: {
           return {
             'table-layout': '',
-            table: { account: '', ip: '12%', os: '10%', browser: '12%', date: '20%', action: '12%' },
+            table: { workspace: '', ip: '12%', os: '10%', browser: '12%', date: '20%', action: '12%' },
           };
         }
       }

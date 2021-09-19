@@ -11,7 +11,7 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-center my-auto" v-if="report.account && CURSTAT.isActive">
+      <div class="text-center my-auto" v-if="report.workspace && CURSTAT.isActive">
         <v-btn small color="white" @click="refresh">
           Refresh
         </v-btn>
@@ -22,21 +22,21 @@
 
     <div class="row justify-space-around">
       <!-- ------------------------------- -->
-      <!-- Links' position distributions   -->
+      <!-- Products' position distributions   -->
       <!-- ------------------------------- -->
       <div class="col-sm-4 col-xs-12 ">
-        <v-card class="pa-2" v-if="report && report.links && report.links.levelSeries">
+        <v-card class="pa-2" v-if="report && report.products && report.products.levelSeries">
           <v-card-title class="pb-2">
             <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
             <div class="col pa-0">
-              <div>Link levels</div>
-              <div class="caption">The levels of your links.</div>
+              <div>Product levels</div>
+              <div class="caption">The levels of your products.</div>
             </div>
           </v-card-title>
           <v-divider class="mb-2"></v-divider>
           <positions-bar-chart
             :width="300" :height="300"
-            :series="report.links.levelSeries" 
+            :series="report.products.levelSeries" 
           />
         </v-card>
       </div>
@@ -60,21 +60,21 @@
         </v-card>
       </div>
       <!-- ------------------------------- -->
-      <!-- Products' position distributions   -->
+      <!-- Links' position distributions   -->
       <!-- ------------------------------- -->
       <div class="col-sm-4 col-xs-12 ">
-        <v-card class="pa-2" v-if="report && report.products && report.products.levelSeries">
+        <v-card class="pa-2" v-if="report && report.links && report.links.levelSeries">
           <v-card-title class="pb-2">
             <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
             <div class="col pa-0">
-              <div>Product levels</div>
-              <div class="caption">The levels of your products.</div>
+              <div>Link levels</div>
+              <div class="caption">The levels of your links.</div>
             </div>
           </v-card-title>
           <v-divider class="mb-2"></v-divider>
           <positions-bar-chart
             :width="300" :height="300"
-            :series="report.products.levelSeries" 
+            :series="report.links.levelSeries" 
           />
         </v-card>
       </div>
@@ -179,7 +179,7 @@
     <!-- ------------------ -->
     <v-card class="mt-4" :loading="loading">
       <v-card-title class="pa-2 d-flex">
-        <v-icon class="mr-4 hidden-xs-only">mdi-account-search-outline</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-workspace-search-outline</v-icon>
         <div>
           <div>Links</div>
           <div class="caption">Most recently updated 10 links.</div>
@@ -253,8 +253,8 @@ export default {
       this.loading = true;
       DashboardService.refresh().then(result => {
         this.report = result.data;
-        if (this.report && this.report.account && this.report.account.subsRenewalAt) {
-          this.report.account.daysToRenewal = moment(this.report.account.subsRenewalAt).diff(moment(), 'days')+1;
+        if (this.report && this.report.workspace && this.report.workspace.subsRenewalAt) {
+          this.report.workspace.daysToRenewal = moment(this.report.workspace.subsRenewalAt).diff(moment(), 'days')+1;
         }
 
         if (this.report && this.report.products && this.report.products.positionSeries) {

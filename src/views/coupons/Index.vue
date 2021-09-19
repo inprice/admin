@@ -2,7 +2,7 @@
   <div>
     <div>
       <div class="title">Coupons</div>
-      <div class="body-2">Manage your coupons for your account.</div>
+      <div class="body-2">Manage your coupons for your workspace.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -103,7 +103,7 @@
 
       <block-message 
         v-else dense
-        :message="'No assigned or used coupon in this account.'"
+        :message="'No assigned or used coupon in this workspace.'"
       />
 
     </v-card>
