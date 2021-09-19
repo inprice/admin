@@ -147,6 +147,16 @@ const router = new VueRouter({
           component: () => import('./views/product/Index.vue')
         },
         {
+          name: 'categories',
+          path: 'categories',
+          component: () => import('./views/category/Index.vue')
+        },
+        {
+          name: 'brands',
+          path: 'brands',
+          component: () => import('./views/brand/Index.vue')
+        },
+        {
           name: 'product',
           path: 'product/:id',
           component: () => import('./views/product/Detail.vue')
