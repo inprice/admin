@@ -86,8 +86,8 @@
                   <v-list-item link :to="{ name: 'sys-workspace-logs', params: { aid: row.id }, query: { name: row.name } }">
                     <v-list-item-title>ACCESS LOGS</v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click="openCreateCouponDialog(row.id, row.name)">
-                    <v-list-item-title>CREATE COUPON</v-list-item-title>
+                  <v-list-item @click="openCreateCreditDialog(row.id, row.name)">
+                    <v-list-item-title>CREATE CREDIT</v-list-item-title>
                   </v-list-item>
 
                   <v-divider></v-divider>
@@ -114,7 +114,7 @@
       <block-message :message="'No workspace found! You may want to change your criteria.'" />
     </v-card>
 
-    <create-coupon ref="createCouponDialog" />
+    <create-credit ref="createCreditDialog" />
 
     <announce-dialog ref="announceDialog" @saved="saveAnnounce" />
 
@@ -188,8 +188,8 @@ export default {
     unbindWorkspace() {
       this.$store.dispatch('session/unbindWorkspace');
     },
-    openCreateCouponDialog(id, name) {
-      this.$refs.createCouponDialog.open({ id, name });
+    openCreateCreditDialog(id, name) {
+      this.$refs.createCreditDialog.open({ id, name });
     },
     makeAnAnnouncement(id, name) {
       const form = {
@@ -221,7 +221,7 @@ export default {
   },
   components: {
     AnnounceDialog: () => import('../announce/Edit.vue'),
-    CreateCoupon: () => import('./CreateCoupon.vue'),
+    CreateCredit: () => import('./CreateCredit.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   computed: {

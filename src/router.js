@@ -192,9 +192,9 @@ const router = new VueRouter({
           component: () => import('./views/announce/Index.vue')
         },
         {
-          name: 'coupons',
-          path: 'coupons',
-          component: () => import('./views/coupons/Index.vue')
+          name: 'credits',
+          path: 'credits',
+          component: () => import('./views/credits/Index.vue')
         },
         {
           name: 'links',

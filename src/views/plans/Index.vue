@@ -316,8 +316,8 @@ export default {
           return this.CURSTAT.status;
         } else if (this.CURSTAT.status == 'FREE') {
           return 'FREE USE';
-        } else if (this.CURSTAT.status == 'COUPONED') {
-          return 'COUPON USE';
+        } else if (this.CURSTAT.status == 'CREDITED') {
+          return 'CREDIT USE';
         }
       }
       return '$' + plan.price.toFixed(2);

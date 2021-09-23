@@ -7,7 +7,7 @@ export default {
 
   async search(form) {
     const res = await Helper.call('Search Alarm', { url: baseURL + 's/search', data: form });
-    if (res.status == true && res.data.rows) return res.data.rows;
+    if (res.status) return res.data;
     return null;
   },
 

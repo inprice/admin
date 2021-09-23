@@ -10,7 +10,7 @@
       <v-card>
         <v-card-title class="pr-3 justify-space-between">
           <div>
-            <div>Create Coupon</div>
+            <div>Create Credit</div>
             <div class="caption">For {{ form.name }}</div>
           </div>
           <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
@@ -134,7 +134,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.form.planId = this.selectedPlan.id;
-        SuperWorkspaceService.createCoupon(this.form)
+        SuperWorkspaceService.createCredit(this.form)
           .then((res) => {
             if (res && res.data) {
               this.$store.commit('snackbar/setMessage', { text: `${res.data.code} is successfully created for ${this.form.name}` });

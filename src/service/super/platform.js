@@ -12,7 +12,7 @@ export default {
     }
 
     const res = await Helper.call('Platform Search', { url: baseURL + 's/search', data: form });
-    if (res.status == true && res.data.rows) return res.data.rows;
+    if (res.status) return res.data;
     return null;
   },
 

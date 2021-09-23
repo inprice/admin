@@ -6,8 +6,8 @@ const baseURL = '/def/brand';
 export default {
 
   async list() {
-    const res = await Helper.call('Brand List', { method: 'get', url: baseURL + '/list' });
-    if (res.status == true && res.data.rows) return res.data.rows;
+    const res = await Helper.call('Brand List', { method: 'get', url: baseURL + '/list' }, true);
+    if (res.status == true) return res;
     return null;
   },
 

@@ -82,13 +82,13 @@ export default {
     return res;
   },
 
-  async createCoupon(form) {
+  async createCredit(form) {
     if (store.get('session/isNotSuperUser')) {
       store.commit('snackbar/setMessage', { text: 'You must be super user!' });
       return;
     }
 
-    const res = await Helper.call('Create Coupon', { url: baseURL + '/coupon', data: form });
+    const res = await Helper.call('Create Credit', { url: baseURL + '/credit', data: form });
     return res;
   },
 

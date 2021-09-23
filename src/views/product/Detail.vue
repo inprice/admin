@@ -1,36 +1,40 @@
 <template>
   <div class="mt-2">
+
     <div class="d-flex justify-space-between my-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
 
-      <v-menu offset-y bottom left>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            small
-            class="mx-1"
-            v-bind="attrs"
-            v-on="on"
-          >
-            Menu
-          </v-btn>
-        </template>
+      <div>
+        <v-btn 
+          small
+          text outlined
+          class="mr-1"
+          color="warning"
+          @click="deleteProduct"
+          :disabled="$store.get('session/isNotEditor')"
+        >
+          DELETE
+        </v-btn>
 
-        <v-list dense>
-          <v-list-item link @click="openEditProductDialog" :disabled="$store.get('session/isNotEditor')">
-            <v-list-item-title>EDIT</v-list-item-title>
-          </v-list-item>
+        <v-btn 
+          small
+          text outlined
+          class="mx-1"
+          @click="openAlarmDialogForProduct"
+          :disabled="$store.get('session/isNotEditor')"
+        >
+          ALARM
+        </v-btn>
 
-          <v-list-item link @click="openAlarmDialogForProduct" :disabled="$store.get('session/isNotEditor')">
-            <v-list-item-title>SET ALARM</v-list-item-title>
-          </v-list-item>
-
-          <v-divider></v-divider>
-          
-          <v-list-item link @click="deleteProduct" :disabled="$store.get('session/isNotEditor')">
-            <v-list-item-title>DELETE</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+        <v-btn 
+          small
+          class="ml-1"
+          @click="openEditProductDialog"
+          :disabled="$store.get('session/isNotEditor')"
+        >
+          EDIT
+        </v-btn>
+      </div>
     </div>
 
     <block-message 
@@ -43,8 +47,8 @@
 
       <div class="d-flex justify-space-between py-3 title">
         <div>
+          <div class="body-2 teal--text">{{ data.product.code }}</div>
           <div>{{ data.product.name }}</div>
-          <div class="caption">{{ data.product.description }}</div>
         </div>
         <div class="my-auto">{{ data.product.price | toPrice }}</div>
       </div>
@@ -85,13 +89,34 @@
                 </div>
               </v-list-item-content>
             </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption blue--text">Alarm</div>
+                <alarm-note
+                  :alarm="data.product.alarm"
+                  @clicked="openAlarmDialogForProduct"
+                ></alarm-note>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
 
           <v-list dense class="col pa-1">
             <v-list-item>
               <v-list-item-content>
-                <div class="caption blue--text">Level</div>
-                <div>{{ data.product.level }}</div>
+                <div class="caption blue--text">Brand</div>
+                <div>{{ data.product.brandName || 'NA' }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption blue--text">Category</div>
+                <div>{{ data.product.categoryName || 'NA' }}</div>
               </v-list-item-content>
             </v-list-item>
 
@@ -108,11 +133,8 @@
 
             <v-list-item>
               <v-list-item-content>
-                <div class="caption blue--text">Alarm</div>
-                <alarm-note
-                  :alarm="data.product.alarm"
-                  @clicked="openAlarmDialogForProduct"
-                ></alarm-note>
+                <div class="caption blue--text">Level</div>
+                <div>{{ data.product.level }}</div>
               </v-list-item-content>
             </v-list-item>
 
@@ -128,21 +150,22 @@
         <v-btn 
           small
           text outlined
-          class="mr-1"
-          @click="moveMultiple"
+          class="mx-1"
+          color="warning"
+          @click="deleteMultiple"
           :disabled="selected < 1 || $store.get('session/isNotEditor')"
         >
-          Move
+          Delete ({{ selected }})
         </v-btn>
 
         <v-btn 
           small
           text outlined
-          class="mx-1"
-          @click="deleteMultiple"
+          class="mr-1"
+          @click="moveMultiple"
           :disabled="selected < 1 || $store.get('session/isNotEditor')"
         >
-          Delete ({{ selected }})
+          Move
         </v-btn>
 
         <v-btn 
@@ -229,6 +252,7 @@ export default {
       const result = await ProductService.save(form);
       if (result && result.status) {
         this.data.product = result.data.product;
+        this.$refs.productEditDialog.close();
         this.refreshPanels();
       }
     },

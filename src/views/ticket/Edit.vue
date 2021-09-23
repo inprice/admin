@@ -100,7 +100,7 @@ const typeItems = [
 ];
 
 const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
-const subjectItems = [ 'SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'COUPON', 'OTHER' ];
+const subjectItems = [ 'SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'CREDIT', 'OTHER' ];
 
 export default {
   computed: {

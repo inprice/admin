@@ -40,30 +40,21 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in searchResult" :key="row.id">
+          <tr 
+            v-for="row in searchResult" :key="row.id"
+            @click="update(row)"
+            style="cursor: pointer"
+          >
             <td>{{ row.name }}</td>
             <td class="my-auto">
-              <v-menu offset-y bottom left>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    small icon
-                    v-on="on"
-                    v-bind="attrs"
-                  >
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
-                </template>
-
-                <v-list dense>
-                  <v-list-item link @click="update(row)" :disabled="$store.get('session/isNotEditor')">
-                    <v-list-item-title>EDIT</v-list-item-title>
-                  </v-list-item>
-
-                  <v-list-item link @click="remove(row)" :disabled="$store.get('session/isNotEditor')">
-                    <v-list-item-title>DELETE</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
+              <v-btn
+                small icon
+                title="DELETE"
+                @click.stop="remove(row)"
+                :disabled="$store.get('session/isNotEditor')"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
             </td>
           </tr>
         </tbody>
@@ -107,7 +98,7 @@ export default {
       if (result && result.status) this.search();
     },
     remove(row) {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', row.name).then(async (confirm) => {
+      this.$refs.confirm.open('Delete', 'will be deleted and also removed from the linked products. Are you sure?', row.name).then(async (confirm) => {
         if (confirm == true) {
           const result = await CategoryService.remove(row.id);
           if (result && result.status) this.search();
@@ -127,7 +118,7 @@ export default {
     },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
-      if (char == 8 || (char > 45 && char < 91) || (char > 96 && char < 123)) {
+      if (char == 8 || char > 31) {
         return this.search();
       }
     },

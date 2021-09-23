@@ -6,8 +6,8 @@
     <!-- ------ -->
     <v-card-title class="py-1 justify-space-between">
       <div @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
+        <div class="caption teal--text">{{ product.code }}</div>
         <div style="font-weight: normal">{{ product.name }}</div>
-        <div class="caption">{{ product.description }}</div>
       </div>
 
       <div>

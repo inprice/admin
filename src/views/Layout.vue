@@ -110,21 +110,21 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'categories'}">
-          <v-list-item-action>
-            <v-icon>mdi-shape-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Categories</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
         <v-list-item link :to="{name: 'brands'}">
           <v-list-item-action>
             <v-icon>mdi-tag-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Brands</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link :to="{name: 'categories'}">
+          <v-list-item-action>
+            <v-icon>mdi-shape-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Categories</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

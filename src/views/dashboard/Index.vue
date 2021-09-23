@@ -95,7 +95,7 @@
 
       <table 
         class="pb-2 info-table"
-        v-if="report && report.groups && report.groups.extremePrices.LOWEST && report.groups.extremePrices.LOWEST.length">
+        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.LOWEST.length">
       >
         <thead>
           <tr>
@@ -110,7 +110,7 @@
             style="cursor: pointer"
             link @click="$router.push({ name: 'product', params: { id: row.id } })"
             v-for="(row) in report.products.extremePrices.LOWEST" :key="row.id">
-            <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
+            <td>{{ row.name }} {{ row.code ? '( ' + row.code + ' )' : '' }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
             <td class="text-center">{{ row.actives + '/' + row.total }}</td>
             <td class="text-center">
@@ -142,7 +142,7 @@
 
       <table 
         class="pb-2 info-table"
-        v-if="report && report.groups && report.groups.extremePrices.LOWEST && report.groups.extremePrices.HIGHEST.length">
+        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.HIGHEST.length">
       >
         <thead>
           <tr>
@@ -157,7 +157,7 @@
             style="cursor: pointer"
             link @click="$router.push({ name: 'product', params: { id: row.id } })"
             v-for="(row) in report.products.extremePrices.HIGHEST" :key="row.id">
-            <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
+            <td>{{ row.name }} {{ row.code ? '( ' + row.code + ' )' : '' }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
             <td class="text-center">{{ row.actives + '/' + row.total }}</td>
             <td class="text-center">
@@ -179,7 +179,7 @@
     <!-- ------------------ -->
     <v-card class="mt-4" :loading="loading">
       <v-card-title class="pa-2 d-flex">
-        <v-icon class="mr-4 hidden-xs-only">mdi-workspace-search-outline</v-icon>
+        <v-icon class="mr-4 hidden-xs-only">mdi-account-search-outline</v-icon>
         <div>
           <div>Links</div>
           <div class="caption">Most recently updated 10 links.</div>

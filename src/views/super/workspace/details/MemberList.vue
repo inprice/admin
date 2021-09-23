@@ -4,7 +4,7 @@
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
           <div class="d-flex">
-            <v-icon class="mr-4 hidden-xs-only">mdi-workspace-supervisor</v-icon>
+            <v-icon class="mr-4 hidden-xs-only">mdi-account-supervisor</v-icon>
             <div class="d-inline">
               <div>Members</div>
               <div class="caption">All the users joined to this workspace</div>

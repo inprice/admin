@@ -1,8 +1,8 @@
 <template>
   <div>
     <div>
-      <div class="title">Coupons</div>
-      <div class="body-2">Manage your coupons for your workspace.</div>
+      <div class="title">Credits</div>
+      <div class="body-2">Manage your credits for your workspace.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -14,9 +14,9 @@
             <v-icon class="mr-4 hidden-xs-only">mdi-ticket-confirmation-outline</v-icon>
             <div class="d-inline">
               <div>The list</div>
-              <div class="caption">A combined list of coupons that assigned, applied and created by you</div>
+              <div class="caption">A combined list of credits that assigned, applied and created by you</div>
               <div class="caption">
-                <strong>Please note:</strong> Available coupons can only be used when you have no active subscription or Free Use!
+                <strong>Please note:</strong> Available credits can only be used when you have no active subscription or Free Use!
               </div>
             </div>
           </div>
@@ -28,16 +28,16 @@
               color="success"
               v-if="CURSTAT.isActive == false"
               :disabled="$store.get('session/isNotAdmin')"
-              @click="openApplyCouponDialog"
+              @click="openApplyCreditDialog"
             >
-              Apply coupon
+              Apply credit
             </v-btn>
 
             <v-btn 
               small dark
               class="ml-2"
               color="red"
-              v-if="CURSTAT.status == 'COUPONED'"
+              v-if="CURSTAT.status == 'CREDITED'"
               :disabled="$store.get('session/isNotAdmin')"
               @click="cancel"
             >
@@ -48,7 +48,7 @@
               small
               color="white"
               class="my-auto ml-2"
-              @click="getCoupons"
+              @click="getCredits"
               :disabled="$store.get('session/isSuperUser')"
             >
               Refresh
@@ -57,7 +57,7 @@
         </div>
       </v-card-title>
 
-      <div v-if="coupons.length">
+      <div v-if="credits.length">
         <v-divider></v-divider>
 
         <table class="pb-2 info-table">
@@ -71,7 +71,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="cpn in coupons" :key="cpn.id">
+            <tr v-for="cpn in credits" :key="cpn.id">
               <td class="font-weight-bold">{{ maskCode(cpn) }}</td>
               <td class="font-weight-bold">{{ cpn.days }}</td>
               <td>
@@ -103,12 +103,12 @@
 
       <block-message 
         v-else dense
-        :message="'No assigned or used coupon in this workspace.'"
+        :message="'No assigned or used credit in this workspace.'"
       />
 
     </v-card>
 
-    <apply-coupon ref="applyCouponDialog" @applied="getCoupons" />
+    <apply-credit ref="applyCreditDialog" @applied="getCredits" />
     <confirm ref="confirm"></confirm>
 
     <overlay :show="overlay" />
@@ -119,7 +119,7 @@
 
 <script>
 import SubsService from '@/service/subscription';
-import CouponService from '@/service/coupon';
+import CreditService from '@/service/credit';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -132,69 +132,69 @@ export default {
       loading: {
         apply: false,
       },
-      coupons: []
+      credits: []
     };
   },
   methods: {
-    getCoupons() {
+    getCredits() {
       this.loading.refresh = true;
-      CouponService.getCoupons()
+      CreditService.getCredits()
         .then((res) => {
           if (res && res.data) {
-            this.coupons = res.data;
+            this.credits = res.data;
           } else {
-            this.coupons = [];
+            this.credits = [];
           }
           this.loading.refresh = false;
         });
     },
     async apply(code) {
       if (code) {
-        this.$refs.confirm.open('Coupon', 'is going to be applied right now. Are you sure?', 'This coupon').then(async (confirm) => {
+        this.$refs.confirm.open('Credit', 'is going to be applied right now. Are you sure?', 'This credit').then(async (confirm) => {
           if (confirm == true) {
-            this.applyCoupon(code);
+            this.applyCredit(code);
           }
         });
       }
     },
-    async applyCoupon(code) {
+    async applyCredit(code) {
       this.loading.apply = true;
-      const result = await CouponService.applyCoupon(code);
+      const result = await CreditService.applyCredit(code);
       if (result && result.status == true) {
         this.$store.commit('session/SET_CURRENT', result.data.session);
-        this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been successfully applied.' });
-        this.getCoupons();
+        this.$store.commit('snackbar/setMessage', { text: 'Your credit has been successfully applied.' });
+        this.getCredits();
       }
       this.loading.apply = false;
     },
     cancel() {
-      this.$refs.confirm.open('Cancel Coupon', 'will be cancelled. Are you sure?', 'Your actual coupon use').then(async (confirm) => {
+      this.$refs.confirm.open('Cancel Credit', 'will be cancelled. Are you sure?', 'Your actual credit use').then(async (confirm) => {
         if (confirm == true) {
           this.overlay = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
             this.$store.commit('session/SET_CURRENT', res.data.session);
-            this.$store.commit('snackbar/setMessage', { text: 'Your coupon has been cancelled.' });
+            this.$store.commit('snackbar/setMessage', { text: 'Your credit has been cancelled.' });
           }
           this.overlay = false;
         }
       });
     },
-    openApplyCouponDialog() {
-      this.$refs.applyCouponDialog.open();
+    openApplyCreditDialog() {
+      this.$refs.applyCreditDialog.open();
     },
-    maskCode(coupon) {
-      if (!coupon.issuedAt && this.$store.get('session/isNotAdmin')) {
-        return coupon.code.substring(0, 2) + '***' + coupon.code.substring(5);
+    maskCode(credit) {
+      if (!credit.issuedAt && this.$store.get('session/isNotAdmin')) {
+        return credit.code.substring(0, 2) + '***' + credit.code.substring(5);
       }
-      return coupon.code;
+      return credit.code;
     }
   },
   mounted() {
-    this.getCoupons();
+    this.getCredits();
   },
   components: {
-    ApplyCoupon: () => import('./Apply.vue'),
+    ApplyCredit: () => import('./Apply.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
     Overlay: () => import('@/component/app/Overlay.vue'),

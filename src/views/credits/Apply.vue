@@ -11,8 +11,8 @@
 
         <div class="d-flex justify-space-between pa-4 pb-1">
           <div>
-            <div class="title">Apply coupon</div>
-            <div class="caption pb-2">Please enter your coupon code below</div>
+            <div class="title">Apply credit</div>
+            <div class="caption pb-2">Please enter your credit code below</div>
           </div>
           <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
         </div>
@@ -22,7 +22,7 @@
         <v-card-text class="py-2">
           <v-form ref="form" v-model="valid" @submit.prevent>
             <v-text-field
-              label="Coupon Code"
+              label="Credit Code"
               v-model="form.code"
               :rules="rules.code"
               maxlength="8"
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import CouponService from '@/service/coupon';
+import CreditService from '@/service/credit';
 
 export default {
   computed: {
@@ -89,7 +89,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        const result = await CouponService.applyCoupon(this.form.code);
+        const result = await CreditService.applyCredit(this.form.code);
         if (result && result.status == true) {
           this.$emit('applied', result.data);
           this.close();

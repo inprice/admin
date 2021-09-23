@@ -168,7 +168,7 @@ const mutations = {
 
 const ACTIVE_WORKSPACE_STATUSES = [
   'FREE',
-  'COUPONED',
+  'CREDITED',
   'SUBSCRIBED'
 ];
 

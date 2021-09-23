@@ -7,13 +7,13 @@
     >
       <template v-slot:activator="{ on }">
         <v-btn icon v-on="on">
-          <v-icon>mdi-workspace</v-icon>
+          <v-icon>mdi-account</v-icon>
         </v-btn>
       </template>
 
       <v-card class="text-center" width="350px">
         <div class="py-2">
-          <v-icon large>mdi-workspace-check</v-icon>
+          <v-icon large>mdi-account-check</v-icon>
           <div class="body-2">{{ CURSTAT.email }}</div>
           <v-btn
             small
@@ -81,7 +81,7 @@
                 target="_blank"
                 @click="menu=!menu"
               >
-                <v-icon class="mr-3">mdi-workspace-arrow-right-outline</v-icon>
+                <v-icon class="mr-3">mdi-account-arrow-right-outline</v-icon>
 
                 <v-list-item-content>
                   <v-list-item-title>{{ workspace }}</v-list-item-title>
