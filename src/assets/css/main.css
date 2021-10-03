@@ -14,9 +14,6 @@
 .small-font {
   font-size: 0.85rem;
 }
-.v-tabs .v-slide-group {
-  display: none;
-}
 
 .list-table, .info-table {
   width: 100%;
@@ -42,6 +39,7 @@
   height: 40px;
   padding: 5px 10px;
   font-size: 90%;
+  text-align: left;
   background-color: #e5e5e5;
   border-bottom: 1px solid #aaa;
 }
@@ -63,4 +61,13 @@
 }
 .info-table td {
   height: 35px;
+}
+
+.v-slide-group {
+  border-bottom: 1px solid #dedede;
+}
+
+.rounded-dialog {
+  border-radius: 5px;
+  max-width: 500px;
 }

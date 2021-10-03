@@ -1,24 +1,13 @@
 <template>
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
-    <div :style="'width: ' + findWidth">
+    <div style="width: 400px">
 
       <div class="text-center">
         <img :src="verticalBrand" :width="200" />
       </div>
 
       <v-card class="pb-0 elevation-0">
-
-        <v-alert
-          dense
-          dismissible
-          outlined
-          type="error"
-          class="ma-4"
-          v-model="showError"
-        >
-          {{ errorMessage }}
-        </v-alert>
-        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please sign in to your workspace</div>
+        <div class="text-center pt-4">Please sign in to your workspace</div>
 
         <v-card-text>
           <v-form 
@@ -84,21 +73,8 @@ export default {
         email: "",
         password: ""
       },
-      showError: false,
-      errorMessage: '',
       verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
-  },
-  computed: {
-    findWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '90%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    }
   },
   methods: {
     async submit() {
@@ -109,9 +85,6 @@ export default {
         const result = await this.$store.dispatch('session/login', this.form);
 
         if (result.status && result.data) {
-          this.showError = false;
-          this.errorMessage = '';
-
           const resData = result.data;
           let ses = resData.sessions[resData.sessionNo];
           if (ses) {
@@ -132,9 +105,6 @@ export default {
               }
             }
           }
-        } else {
-          this.errorMessage = result.error;
-          this.showError = true;
         }
         this.loading = false;
       }

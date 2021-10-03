@@ -7,9 +7,8 @@
       <div>
         <v-btn 
           small
-          text outlined
           class="mr-1"
-          color="warning"
+          color="error"
           @click="deleteProduct"
           :disabled="$store.get('session/isNotEditor')"
         >
@@ -18,12 +17,11 @@
 
         <v-btn 
           small
-          text outlined
           class="mx-1"
           @click="openAlarmDialogForProduct"
           :disabled="$store.get('session/isNotEditor')"
         >
-          ALARM
+          SET ALARM
         </v-btn>
 
         <v-btn 
@@ -36,6 +34,8 @@
         </v-btn>
       </div>
     </div>
+
+    <v-divider></v-divider>
 
     <block-message 
       v-if="loading" dense
@@ -149,7 +149,6 @@
       <div>
         <v-btn 
           small
-          text outlined
           class="mx-1"
           color="warning"
           @click="deleteMultiple"
@@ -160,7 +159,6 @@
 
         <v-btn 
           small
-          text outlined
           class="mr-1"
           @click="moveMultiple"
           :disabled="selected < 1 || $store.get('session/isNotEditor')"
@@ -174,7 +172,7 @@
           @click="openAddLinkDialog"
           :disabled="$store.get('session/isNotEditor')"
         >
-          Add New
+          Add Links
         </v-btn>
       </div>
     </div>

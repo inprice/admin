@@ -57,6 +57,26 @@
                     class="mb-4"
                   ></v-select>
 
+                  <v-select
+                    dense
+                    outlined
+                    label="Brand"
+                    v-model="searchForm.brand"
+                    :items="brands"
+                    item-text="name"
+                    return-object
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    outlined
+                    label="Category"
+                    v-model="searchForm.category"
+                    :items="categories"
+                    item-text="name"
+                    return-object
+                  ></v-select>
+
                   <div class="d-flex justify-space-around mb-4">
                     <v-select
                       dense
@@ -127,12 +147,12 @@
       </div>
 
       <v-btn 
-        color="white"
+        small
         class="my-auto"
         @click="addNew"
         :disabled="$store.get('session/isNotEditor')"
       >
-        Add
+        Add New
       </v-btn>
     </div>
 
@@ -142,6 +162,7 @@
           <tr>
             <th width="3%"></th>
             <th>Name</th>
+            <th width="7%" class="hidden-sm-and-down">Brand</th>
             <th width="7%" class="hidden-sm-and-down">Category</th>
             <th width="10%" class="text-right">Price</th>
             <th width="10%" class="text-right">Total</th>
@@ -165,6 +186,7 @@
               <div class="caption teal--text">{{ row.code }}</div>
               <div>{{ row.name }}</div>
             </td>
+            <td class="hidden-sm-and-down">{{ row.brandName }}</td>
             <td class="hidden-sm-and-down">{{ row.categoryName }}</td>
             <td class="text-right">{{ (row.price || 0) | toPrice }}</td>
             <td class="text-right">{{ (row.total || 0) | toPrice }}</td>
@@ -174,7 +196,14 @@
     </v-card>
 
     <div class="pa-3 pr-0 text-right" v-if="searchResult && searchResult.length">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length">More</v-btn>
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
+      >
+        More
+      </v-btn>
     </div>
 
     <v-card v-else-if="!loading" >
@@ -191,11 +220,13 @@
 
 <script>
 import ProductService from '@/service/product';
+import BrandService from '@/service/brand';
+import CategoryService from '@/service/category';
 import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
 const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'NA'];
-const orderByItems = ['NAME', 'CODE', 'CATEGORY'];
+const orderByItems = ['NAME', 'CODE', 'BRAND', 'CATEGORY'];
 const orderDirItems = ['ASC', 'DESC'];
 const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
 const rowLimitItems = [25, 50, 100];
@@ -203,6 +234,8 @@ const rowLimitItems = [25, 50, 100];
 const baseSearchForm = {
   term: '',
   levels: [],
+  brand: null,
+  category: null,
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
   rowLimit: rowLimitItems[0],
@@ -224,6 +257,8 @@ export default {
       rowLimitItems,
       alarmItems,
       baseSearchForm,
+      brands: [],
+      categories: [],
       loading: false,
     };
   },
@@ -272,7 +307,10 @@ export default {
     },
     async saveNew(form) {
       const result = await ProductService.save(form);
-      if (result && result.status) this.search();
+      if (result && result.status) {
+        this.$refs.editDialog.close();
+        this.search();
+      }
     },
     resetForm() {
       this.filterPanelShow = false;
@@ -311,6 +349,16 @@ export default {
   },
   mounted() {
     this.search();
+    BrandService.getList().then((res) => {
+      if (res && res.data) {
+        this.brands = res.data;
+      }
+    });
+    CategoryService.getList().then((res) => {
+      if (res && res.data) {
+        this.categories = res.data;
+      }
+    });
   },
   components: {
     Edit: () => import('./Edit.vue'),

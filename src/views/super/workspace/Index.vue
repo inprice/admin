@@ -86,8 +86,8 @@
                   <v-list-item link :to="{ name: 'sys-workspace-logs', params: { aid: row.id }, query: { name: row.name } }">
                     <v-list-item-title>ACCESS LOGS</v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click="openCreateCreditDialog(row.id, row.name)">
-                    <v-list-item-title>CREATE CREDIT</v-list-item-title>
+                  <v-list-item @click="openCreateVoucherDialog(row.id, row.name)">
+                    <v-list-item-title>CREATE VOUCHER</v-list-item-title>
                   </v-list-item>
 
                   <v-divider></v-divider>
@@ -105,7 +105,14 @@
       <v-divider></v-divider>
 
       <div class="pl-3 py-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
+        <v-btn 
+          small
+          @click="loadmore" 
+          :disabled="isLoadMoreDisabled" 
+          v-if="searchResult.length > 0"
+        >
+          More
+        </v-btn>
       </div>
       
     </v-card>
@@ -114,7 +121,7 @@
       <block-message :message="'No workspace found! You may want to change your criteria.'" />
     </v-card>
 
-    <create-credit ref="createCreditDialog" />
+    <create-voucher ref="createVoucherDialog" />
 
     <announce-dialog ref="announceDialog" @saved="saveAnnounce" />
 
@@ -188,8 +195,8 @@ export default {
     unbindWorkspace() {
       this.$store.dispatch('session/unbindWorkspace');
     },
-    openCreateCreditDialog(id, name) {
-      this.$refs.createCreditDialog.open({ id, name });
+    openCreateVoucherDialog(id, name) {
+      this.$refs.createVoucherDialog.open({ id, name });
     },
     makeAnAnnouncement(id, name) {
       const form = {
@@ -221,7 +228,7 @@ export default {
   },
   components: {
     AnnounceDialog: () => import('../announce/Edit.vue'),
-    CreateCredit: () => import('./CreateCredit.vue'),
+    CreateVoucher: () => import('./CreateVoucher.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },
   computed: {

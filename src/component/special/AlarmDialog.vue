@@ -1,205 +1,191 @@
 <template>
-  <v-row justify="center">
-
-    <v-dialog 
-      v-model="opened" 
-      :max-width="findDialogWidth"
-      overlay-opacity="0.2"
-      @keydown.esc="opened = false"
-    >
-      <v-card v-if="topic">
-        <div class="pa-3 justify-space-between d-flex">
+  <v-dialog 
+    v-model="show" 
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card v-if="topic">
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <div>
           <div>
-            <div class="title">
-              {{ form.id ? 'Edit' : 'New' }} 
-              <span class="text-capitalize">{{ topic.toLowerCase() }}</span>
-              Alarm
-            </div>
-            <div class="caption">For {{ name }}</div>
+            {{ form.id ? 'Edit' : 'New' }} 
+            <span class="text-capitalize">{{ topic.toLowerCase() }}</span>
+            Alarm
           </div>
-          <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
+          <div class="caption">For {{ name }}</div>
         </div>
+        <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
+
+      <v-divider class="my-2"></v-divider>
+
+      <v-stepper
+        vertical
+        v-model="stepNo"
+      >
+        <v-stepper-step
+          editable
+          step="1"
+          color="success"
+        >
+          <div>Subject</div>
+          <div><small class="caption">For which subject: <b>{{ form.subject }}</b></small></div>
+        </v-stepper-step>
+        <v-stepper-content step="1">
+          <v-radio-group
+            dense
+            @change="onSubjectChanged"
+            v-model="form.subject"
+          >
+            <v-radio
+              v-for="(sub, ix) in subjects[topic]" :key="ix"
+              class="text-capitalize"
+              :label="sub.toLowerCase()"
+              :value="sub"
+            ></v-radio>
+          </v-radio-group>
+
+          <v-btn
+            small
+            class="mb-3"
+            @click="stepNo = 2"
+          >
+            Next
+          </v-btn>
+        </v-stepper-content>
 
         <v-divider></v-divider>
 
-        <v-stepper
-          vertical
-          v-model="stepNo"
+        <v-stepper-step
+          editable
+          step="2"
+          color="success"
+          class="font-weight-medium"
         >
-          <v-stepper-step
-            editable
-            step="1"
-            color="success"
+          When
+          <small class="caption text-capitalize">{{ form.subject }} is <b>{{ form.subjectWhen }}</b></small>
+        </v-stepper-step>
+        <v-stepper-content step="2">
+          <v-radio-group
+            dense
+            @change="onWhenChanged"
+            v-model="form.subjectWhen"
           >
-            <div>Subject</div>
-            <div><small class="caption">For which subject: <b>{{ form.subject }}</b></small></div>
-          </v-stepper-step>
-          <v-stepper-content step="1">
-            <v-radio-group
+            <v-radio
+              v-for="(whn, ix) in subjectWhens" :key="ix"
+              class="text-capitalize"
+              :label="whn.toLowerCase()"
+              :value="whn"
+            ></v-radio>
+          </v-radio-group>
+
+          <v-btn
+            small
+            class="mb-3 mr-1"
+            @click="stepNo = 3"
+          >
+            Next
+          </v-btn>
+          <v-btn
+            small
+            class="mb-3 ml-1"
+            @click="stepNo = 1"
+          >
+            Prev
+          </v-btn>
+        </v-stepper-content>
+
+        <v-divider></v-divider>
+
+        <v-stepper-step
+          editable
+          step="3"
+          color="success"
+          class="font-weight-medium"
+        >
+          Conditions
+          <small>{{ isConditionsBlockShowed() ? 'Please specify your conditions' : 'No condition needed!' }}</small>
+        </v-stepper-step>
+
+        <v-stepper-content step="3">
+          <div v-if="isConditionsBlockShowed()" class="mr-5">
+            <v-select
               dense
-              @change="onSubjectChanged"
-              v-model="form.subject"
+              outlined
+              hide-details
+              label="Status"
+              v-model="form.certainStatus"
+              :items="statuses"
+              class="my-3"
+              v-if="form.subject == 'STATUS' && form.subjectWhen != 'CHANGED'"
+            ></v-select>
+
+            <div
+              class="d-flex justify-space-between mt-3"
+              v-if="form.subject != 'STATUS' && form.subjectWhen == 'OUT_OF_LIMITS'"
             >
-              <v-radio
-                v-for="(sub, ix) in subjects[topic]" :key="ix"
-                class="text-capitalize"
-                :label="sub.toLowerCase()"
-                :value="sub"
-              ></v-radio>
-            </v-radio-group>
-
-            <v-btn
-              small
-              class="mb-3"
-              @click="stepNo = 2"
-            >
-              Next
-            </v-btn>
-          </v-stepper-content>
-
-          <v-divider></v-divider>
-
-          <v-stepper-step
-            editable
-            step="2"
-            color="success"
-            class="font-weight-medium"
-          >
-            When
-            <small class="caption text-capitalize">{{ form.subject }} is <b>{{ form.subjectWhen }}</b></small>
-          </v-stepper-step>
-          <v-stepper-content step="2">
-            <v-radio-group
-              dense
-              @change="onWhenChanged"
-              v-model="form.subjectWhen"
-            >
-              <v-radio
-                v-for="(whn, ix) in subjectWhens" :key="ix"
-                class="text-capitalize"
-                :label="whn.toLowerCase()"
-                :value="whn"
-              ></v-radio>
-            </v-radio-group>
-
-            <v-btn
-              small
-              class="mb-3 mr-1"
-              @click="stepNo = 3"
-            >
-              Next
-            </v-btn>
-            <v-btn
-              small
-              class="mb-3 ml-1"
-              @click="stepNo = 1"
-            >
-              Prev
-            </v-btn>
-          </v-stepper-content>
-
-          <v-divider></v-divider>
-
-          <v-stepper-step
-            editable
-            step="3"
-            color="success"
-            class="font-weight-medium"
-          >
-            Conditions
-            <small>{{ isConditionsBlockShowed() ? 'Please specify your conditions' : 'No condition needed!' }}</small>
-          </v-stepper-step>
-          <v-stepper-content step="3">
-
-            <div v-if="isConditionsBlockShowed()" class="mr-5">
-
-              <v-select
+              <v-text-field
                 dense
                 outlined
-                hide-details
-                label="Status"
-                v-model="form.certainStatus"
-                :items="statuses"
-                class="my-3"
-                v-if="form.subject == 'STATUS' && form.subjectWhen != 'CHANGED'"
-              ></v-select>
-
-              <div
-                class="d-flex justify-space-between mt-3"
-                v-if="form.subject != 'STATUS' && form.subjectWhen == 'OUT_OF_LIMITS'"
-              >
-                <v-text-field
-                  dense
-                  outlined
-                  label="Lower Limit"
-                  v-model="form.amountLowerLimit"
-                  :messages="hint.amountLowerLimit"
-                  :error="hint.amountLowerLimit != null"
-                  @blur="formatPrices"
-                  maxlength="10"
-                  type="number"
-                  class="px-2"
-                ></v-text-field>
-                <v-text-field
-                  dense
-                  outlined
-                  label="Upper Limit"
-                  v-model="form.amountUpperLimit"
-                  :messages="hint.amountUpperLimit"
-                  :error="hint.amountUpperLimit != null"
-                  @blur="formatPrices"
-                  maxlength="10"
-                  type="number"
-                  class="px-2"
-                ></v-text-field>
-              </div>
+                label="Lower Limit"
+                v-model="form.amountLowerLimit"
+                :messages="hint.amountLowerLimit"
+                :error="hint.amountLowerLimit != null"
+                @blur="formatPrices"
+                maxlength="10"
+                type="number"
+                class="px-2"
+              ></v-text-field>
+              <v-text-field
+                dense
+                outlined
+                label="Upper Limit"
+                v-model="form.amountUpperLimit"
+                :messages="hint.amountUpperLimit"
+                :error="hint.amountUpperLimit != null"
+                @blur="formatPrices"
+                maxlength="10"
+                type="number"
+                class="px-2"
+              ></v-text-field>
             </div>
-
-            <block-message v-else dense class="my-3 mr-4" :message="'No condition applicable!'" />
-
-            <v-btn
-              small
-              class="mb-3"
-              @click="stepNo = 2"
-            >
-              Prev
-            </v-btn>
-          </v-stepper-content>
-        </v-stepper>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="py-4 justify-space-between">
-          <v-btn
-            text
-            tabindex="-1"
-            color="red"
-            @click="setOff"
-            :disabled="!form.id"
-          >
-            Remove
-          </v-btn>
-          <div>
-            <v-btn
-              text
-              tabindex="-1"
-              @click="close"
-            >
-              Close
-            </v-btn>
-            <v-btn
-              text
-              @click="save"
-              color="success"
-              :disabled="$store.get('session/isNotEditor') || isFormValid() == false"
-            >
-              {{ form.id ? 'Update' : 'Create' }}
-            </v-btn>
           </div>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+
+          <block-message v-else dense class="my-3 mr-4" :message="'No condition applicable!'" />
+
+          <v-btn
+            small
+            class="mb-3"
+            @click="stepNo = 2"
+          >
+            Prev
+          </v-btn>
+        </v-stepper-content>
+      </v-stepper>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          tabindex="-1"
+          color="red"
+          @click="setOff"
+          :disabled="!form.id"
+        >
+          Remove
+        </v-btn>
+        <v-btn
+          text
+          @click="save"
+          color="success"
+          :disabled="$store.get('session/isNotEditor') || isFormValid() == false"
+        >
+          {{ form.id ? 'Update' : 'Create' }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -219,20 +205,9 @@ const statuses = {
 };
 
 export default {
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    },
-  },
   data() {
     return {
-      opened: false,
+      show: false,
       form: {
         id: null,
         subject: 'STATUS',
@@ -255,7 +230,7 @@ export default {
   },
   methods: {
     open(data) {
-      this.opened = true;
+      this.show = true;
       if (data) {
         this.form = data;
         this.name = data.name;
@@ -297,7 +272,7 @@ export default {
       this.close();
     },
     close() {
-      this.opened = false;
+      this.show = false;
     },
     onSubjectChanged() {
       this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];

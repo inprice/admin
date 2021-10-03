@@ -3,7 +3,7 @@
   <div>
     <div>
       <div class="title">Tickets</div>
-      <div class="body-2">The tickets opened by your users.</div>
+      <div class="body-2">All your tickets.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -36,13 +36,7 @@
                   v-on="on"
                   tabindex="-1"
                 >
-                  <v-badge
-                    dot overlap
-                    color="red"
-                    :value="!deepEqual(searchForm, baseSearchForm)"
-                  >
-                    <v-icon>mdi-filter-menu-outline</v-icon>
-                  </v-badge>
+                  <v-icon>mdi-filter-menu-outline</v-icon>
                 </v-btn>
               </template>
 
@@ -180,7 +174,7 @@
       </div>
 
       <v-btn 
-        color="white"
+        small
         class="my-auto"
         @click="openTicket"
         :disabled="$store.get('session/isNotEditor')"
@@ -208,8 +202,7 @@
 
           <div>
             <v-btn
-              small text
-              outlined
+              small
               class="mr-1"
               @click="openDetails(row.id)"
             >
@@ -312,7 +305,14 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
+      >
+        More
+      </v-btn>
     </div>
 
     <confirm ref="confirm"></confirm>
@@ -328,7 +328,7 @@ import TicketService from '@/service/ticket';
 const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
 const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
 const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
-const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'CREDIT', 'OTHER'];
+const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'VOUCHER', 'OTHER'];
 const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];
@@ -377,7 +377,10 @@ export default {
     },
     async saved(form) {
       const result = await TicketService.save(form);
-      if (result && result.status) this.search();
+      if (result && result.status) {
+        this.$refs.editDialog.close();
+        this.search();
+      }
     },
     async remove(id) {
       this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', 'This ticket').then((confirm) => {

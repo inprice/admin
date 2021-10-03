@@ -303,7 +303,14 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
+      >
+        More
+      </v-btn>
     </div>
 
     <edit ref="editDialog"></edit>
@@ -318,7 +325,7 @@ import SU_TicketService from '@/service/super/ticket';
 const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
 const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
 const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
-const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'CREDIT', 'OTHER'];
+const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'VOUCHER', 'OTHER'];
 const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];

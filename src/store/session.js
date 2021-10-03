@@ -14,7 +14,7 @@ const state = {
 const actions = {
 
   async login({ dispatch }, form) {
-    const res = await Helper.call('Login', { url: '/login', data: form }, true);
+    const res = await Helper.call('Login', { url: '/login', data: form });
     if (res.status < 400 && res.data) {
       dispatch('create', res);
     }
@@ -168,7 +168,7 @@ const mutations = {
 
 const ACTIVE_WORKSPACE_STATUSES = [
   'FREE',
-  'CREDITED',
+  'VOUCHERED',
   'SUBSCRIBED'
 ];
 
@@ -214,6 +214,10 @@ const getters = {
   isViewer: (state) => {
     return (state.current && state.current.role === 'VIEWER');
   },
+
+  isDemoUser: (state) => {
+    return (state.current && state.current.email === 'demo@inprice.io');
+  }
 
 };
 

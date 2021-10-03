@@ -1,35 +1,33 @@
 <template>
   <div class="mt-5">
-    <v-card>
-      <v-card-title class="justify-space-between">
-        <div>
-          <v-icon color="red" class="mr-4 hidden-xs-only">mdi-alert-decagram-outline</v-icon>
-          Deleting this workspace!
-        </div>
-        <v-btn
-          small
-          color="error" 
-          class="my-auto"
-          @click="openPasswordConfirmDialog"
-          :loading="loading" 
-          :disabled="$store.get('session/isNotAdmin') || (loading && CURSTAT.isSubscriber == false)"
-        >
-          Delete Workspace
-        </v-btn>
-       </v-card-title>
+    <v-card tile>
+      <v-card-title class="py-2">
+        Delete workspace
+      </v-card-title>
+      
+      <v-divider></v-divider>
+
+      <v-card-text class="pt-3">
+        <div class="font-weight-bold">Please keep in mind;</div>
+        <ul>
+          <li>Are you absolutely sure? If so, in opening dialog, please provide your password to execute the operation.</li>
+          <li>Once you delete a workspace, there is no going back! All your data is permanently deleted. Please be certain!</li>
+          <li>You cannot delete your workspace while you have an active subscription. To proceed, you need to cancel it first.</li>
+        </ul>
+      </v-card-text>
 
       <v-divider></v-divider>
 
-      <v-card-text>
-        <div class="black--text">
-          <span class="body-1">Please keep in mind the followings</span>
-          <ul class="mt-2">
-            <li>Are you absolutely sure? If so, in opening dialog, please provide your password to delete this workspace.</li>
-            <li>Once you delete a workspace, there is no going back. All your data is permanently deleted. Please be certain.</li>
-            <li>You cannot delete your workspace while you have an active subscription. To proceed, you need to cancel your subscription first.</li>
-          </ul>
-        </div>
-      </v-card-text>
+      <v-card-actions class="pa-3">
+        <v-btn
+          small
+          :loading="loading" 
+          @click="openPasswordConfirmDialog"
+          :disabled="$store.get('session/isNotAdmin') || (loading && CURSTAT.isSubscriber == false)"
+        >
+          Delete
+        </v-btn>
+      </v-card-actions>
     </v-card>
 
     <password-confirm-dialog ref="passwordConfirmDialog" @confirmed="confirmed"/>

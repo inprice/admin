@@ -1,31 +1,24 @@
 <template>
   <v-dialog 
-    v-model="show" 
+    v-model="show"
     overlay-opacity="0.3"
     content-class="rounded-dialog"
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <div>
-          <div>Last confirmation</div>
-          <div class="caption">
-            To continue, please enter your password for the last time
-          </div>
-        </div>
+        <span>Apply voucher</span>
         <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
-      <v-card-text class="py-0 mt-5">
+      <v-card-text class="py-0 mt-3">
         <v-form ref="form" v-model="valid">
           <v-text-field
-            outlined dense
-            label="Password"
-            v-model="form.password"
-            :rules="rules.password"
-            type="text"
-            maxlength="16"
-            class="password-wo-help"
-            autocomplete="new-password"
+            dense
+            outlined
+            label="Code"
+            v-model="form.code"
+            :rules="rules.code"
+            maxlength="8"
             @keyup.native.enter="valid && submit()"
           />
         </v-form>
@@ -36,20 +29,21 @@
       <v-card-actions class="justify-end pa-3">
         <v-btn
           text
-          color="error"
           @click="submit"
-          :loading="loading" 
-          :disabled="loading"
+          color="primary"
+          :loading="loading"
+          :disabled="loading || $store.get('session/isNotEditor')"
         >
-          Delete
+          Apply
         </v-btn>
       </v-card-actions>
-
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import VoucherService from '@/service/voucher';
+
 export default {
   data() {
     return {
@@ -58,39 +52,40 @@ export default {
       valid: false,
       rules: {},
       form: {
-        password: '',
-      },
+        code: ''
+      }
     };
   },
   methods: {
     async submit() {
-      this.activateRules();
+      if (Object.keys(this.rules).length == 0) this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        this.$emit('confirmed', this.form.password);
+        const result = await VoucherService.applyVoucher(this.form.code);
+        if (result && result.status == true) {
+          this.$emit('applied', result.data);
+          this.close();
+        }
+        this.loading = false;
       }
     },
     activateRules() {
       this.rules = {
-        password: [
+        code: [
           v => !!v || "Required",
-          v => (v && v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => (v.length == 8) || "Must be 8 chars",
         ],
       }
     },
     open() {
       this.show = true;
-      this.form.password = null;
       this.$nextTick(() => this.$refs.form.resetValidation());
     },
-    stopLoading() {
-      this.loading = false;
-    },
     close() {
-      this.$refs.form.resetValidation();
       this.show = false;
       this.loading = false;
+      this.$refs.form.resetValidation();
     }
   }
 };

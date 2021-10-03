@@ -22,7 +22,7 @@
       </div>
 
       <v-btn 
-        color="white"
+        small
         class="my-auto"
         @click="addNew"
         :disabled="$store.get('session/isNotEditor')"
@@ -95,7 +95,10 @@ export default {
     },
     async saveNew(form) {
       const result = await CategoryService.save(form);
-      if (result && result.status) this.search();
+      if (result && result.status) {
+        this.$refs.editDialog.close();
+        this.search();
+      }
     },
     remove(row) {
       this.$refs.confirm.open('Delete', 'will be deleted and also removed from the linked products. Are you sure?', row.name).then(async (confirm) => {

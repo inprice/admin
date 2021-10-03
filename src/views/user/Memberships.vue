@@ -1,73 +1,58 @@
 <template>
-  <div class="mt-5">
-    <v-card>
-      <v-card-title class="d-block pb-2">
-        <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
-          <div class="d-flex">
-            <v-icon class="mr-4 hidden-xs-only">mdi-account-supervisor</v-icon>
-            <div class="d-inline">
-              <div>Memberships</div>
-              <div class="caption">All the workspaces you have been joined</div>
-              <div class="caption">
-                <strong>Please note</strong>, if you leave from any workspace, you will be able to see the refreshed menu after login again.
-              </div>
-            </div>
-          </div>
-
-          <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn
-              small
-              color="white"
-              class="my-auto"
-              @click="refreshMembers"
-              :disabled="$store.get('session/isSuperUser')"
-            >
-              Refresh
-            </v-btn>
-          </div>
-        </div>
+  <div class="mt-3">
+    <v-card tile>
+      <v-card-title class="py-2">
+        Memberships
       </v-card-title>
 
-      <div v-if="members.length">
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
-        <table class="info-table">
-          <thead>
-            <tr>
-              <th>Workspace</th>
-              <th width="15%">Role</th>
-              <th width="15%">Date</th>
-              <th width="7%" class="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in members" :key="row.id">
-              <td>{{ row.name }}</td>
-              <td>{{ row.role }}</td>
-              <td><ago :date="row.date"/></td>
-              <td class="text-center py-2">
-                <v-btn
-                  small
-                  v-if="row.role != 'ADMIN'"
-                  :loading="loading.leave" 
-                  @click="leave(row.id, row.workspace)"
-                  :disabled="loading.leave || $store.get('session/isSuperUser')"
-                >
-                  Leave
-                </v-btn>
-                <v-chip outlined label color="success" small v-else>YOURS</v-chip>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <block-message 
-        v-else dense
-        :message="'You have no member right now.'"
-      />
-
+      <v-card-text class="pt-3">
+        <div>In this section, you can manage your workspaces you have been joined.</div>
+        <div>
+          <strong>Please note</strong>, if you leave from any workspace, you will be able to see the refreshed menu after login again.
+        </div>
+      </v-card-text>
     </v-card>
+
+    <div class="title mt-5 mb-2">Your memberships</div>
+
+    <v-card v-if="members.length">
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Workspace</th>
+            <th width="15%">Role</th>
+            <th width="15%">Date</th>
+            <th width="7%" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in members" :key="row.id">
+            <td>{{ row.name }}</td>
+            <td>{{ row.role }}</td>
+            <td><ago :date="row.date"/></td>
+            <td class="text-center py-2">
+              <v-btn
+                small
+                v-if="row.role != 'ADMIN'"
+                :loading="loading.leave" 
+                @click="leave(row.id, row.workspace)"
+                :disabled="loading.leave || $store.get('session/isSuperUser')"
+              >
+                Leave
+              </v-btn>
+              <v-chip outlined label color="success" small v-else>YOURS</v-chip>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </v-card>
+
+    <block-message 
+      v-else dense
+      :message="'You have no membership.'"
+    />
 
     <confirm ref="confirm"></confirm>
 

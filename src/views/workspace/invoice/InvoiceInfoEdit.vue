@@ -6,7 +6,7 @@
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <span>Invoice info</span>
+        <span>Billing info</span>
         <v-btn icon @click="show = false"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 

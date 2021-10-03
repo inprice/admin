@@ -235,7 +235,7 @@ export default {
       });
     },
     async subscribe() {
-      this.$refs.info.open('Sorry!', 'Our payment gateway is not yet fully operational. We will make an announcement when it is finished. Thank you for your interest.');
+      this.$refs.info.open('Sorry!', 'Our payment gateway is not yet fully operational. We will make an announcement when it is completed. Thank you for your interest.');
     //async subscribe(planId) {
       /*
       this.loading.overlay = true;
@@ -316,8 +316,8 @@ export default {
           return this.CURSTAT.status;
         } else if (this.CURSTAT.status == 'FREE') {
           return 'FREE USE';
-        } else if (this.CURSTAT.status == 'CREDITED') {
-          return 'CREDIT USE';
+        } else if (this.CURSTAT.status == 'VOUCHERED') {
+          return 'VOUCHER USE';
         }
       }
       return '$' + plan.price.toFixed(2);

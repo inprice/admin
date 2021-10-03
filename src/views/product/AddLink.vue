@@ -1,58 +1,52 @@
 <template>
-  <v-row justify="center">
+  <v-dialog
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+    :max-width="1000"
+  >
+    <v-card>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <div>
+          Add New Links
+          <div class="caption">For {{ this.productName }}</div>
+        </div>
+        <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-    <v-dialog
-      v-model="opened"
-      :max-width="findDialogWidth"
-      overlay-opacity="0.2"
-      @keydown.esc="opened = false"
-    >
-
-      <v-card>
-        <v-card-title class="justify-space-between">
-          <div>
-            Add New Links
-            <div class="caption">For {{ this.productName }}</div>
-          </div>
-          <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </v-card-title>
-
-        <v-divider></v-divider>
-
-        <v-form ref="form" v-model="valid" @submit.prevent>
+      <v-card-text class="py-0 mt-3">
+        <v-form ref="form" v-model="valid">
           <v-textarea
             outlined
             v-model="form.linksText"
             :label="`${rowLimit - lines} links can be added.`"
-            class="px-4 pt-5"
             rows="5"
             :rules="rules.linksText"
             @keyup="checkRowLimit"
           ></v-textarea>
         </v-form>
+      </v-card-text>
 
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
-        <v-card-actions class="py-3 mr-2 justify-space-between">
-          <div class="body-2 ml-2">
-            <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
-            One url per row!
-          </div>
+      <v-card-actions class="pa-3 justify-space-between">
+        <div class="body-2 ml-2">
+          <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
+          One url per row!
+        </div>
 
-          <v-btn
-            text
-            color="primary"
-            @click="save"
-            :loading="loading" 
-            :disabled="loading || $store.get('session/isNotEditor')"
-          >
-            Save
-          </v-btn>
-
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+        <v-btn
+          text
+          color="primary"
+          @click="save"
+          :loading="loading" 
+          :disabled="loading || $store.get('session/isNotEditor')"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -61,19 +55,11 @@ import SystemService from '@/service/system';
 
 export default {
   props: ["productId", "productName"],
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '90%';
-        default: return '50%';
-      }
-    },
-  },
   data() {
     return {
       lines: 0,
       rowLimit: 0,
-      opened: false,
+      show: false,
       loading: false,
       valid: false,
       rules: {},
@@ -89,7 +75,7 @@ export default {
         if (res && res.status) {
           const result = res.data;
           if (result.remainingLink) {
-            this.opened = true;
+            this.show = true;
             this.rowLimit = (result.remainingLink <= 100 ? result.remainingLink : 100);
             if (this.rowLimit < 0) this.rowLimit = 0;
 
@@ -125,7 +111,7 @@ export default {
       }
     },
     close() {
-      this.opened = false;
+      this.show = false;
       this.rules = {};
       this.$refs.form.reset();
     },

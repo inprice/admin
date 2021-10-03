@@ -145,9 +145,9 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                small
                 v-on="on"
                 v-bind="attrs"
-                color="white"
                 :disabled="selected < 1 || $store.get('session/isNotEditor')"
               >
                 Menu ({{ selected }})
@@ -180,7 +180,14 @@
         </links-table>
 
         <div class="mt-3 text-right">
-          <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length">More</v-btn>
+          <v-btn 
+            small
+            @click="loadmore" 
+            :disabled="isLoadMoreDisabled" 
+            v-if="searchResult.length > 0"
+          >
+            More
+          </v-btn>
         </div>
       </div>
 

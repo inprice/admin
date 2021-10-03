@@ -5,7 +5,7 @@ const baseURL = '/def/brand';
 
 export default {
 
-  async list() {
+  async getList() {
     const res = await Helper.call('Brand List', { method: 'get', url: baseURL + '/list' }, true);
     if (res.status == true) return res;
     return null;

@@ -1,33 +1,36 @@
 <template>
   <v-dialog 
-    v-model="show" 
+    v-model="show"
     overlay-opacity="0.3"
     content-class="rounded-dialog"
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <div>
-          <div>Last confirmation</div>
-          <div class="caption">
-            To continue, please enter your password for the last time
-          </div>
-        </div>
+        <span>Invite a member</span>
         <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
-      <v-card-text class="py-0 mt-5">
+      <v-card-text class="py-0 mt-3">
         <v-form ref="form" v-model="valid">
           <v-text-field
-            outlined dense
-            label="Password"
-            v-model="form.password"
-            :rules="rules.password"
-            type="text"
-            maxlength="16"
-            class="password-wo-help"
-            autocomplete="new-password"
-            @keyup.native.enter="valid && submit()"
+            dense
+            outlined
+            label="E-mail"
+            v-model="form.email"
+            :rules="rules.email"
+            type="email"
+            maxlength="100"
           />
+
+          <v-select
+            dense
+            outlined
+            label="Role"
+            v-model="form.role"
+            :rules="rules.role"
+            :items="roles"
+            :menu-props="{ auto: true, overflowY: true }"
+          ></v-select>
         </v-form>
       </v-card-text>
 
@@ -36,21 +39,26 @@
       <v-card-actions class="justify-end pa-3">
         <v-btn
           text
-          color="error"
           @click="submit"
+          color="primary"
           :loading="loading" 
-          :disabled="loading"
+          :disabled="$store.get('session/isNotEditor') || loading"
         >
-          Delete
+          Invite
         </v-btn>
       </v-card-actions>
-
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import { get } from 'vuex-pathify'
+import Utility from '@/helpers/utility';
+
 export default {
+  computed: {
+    currentEmail: get('session/getCurrentStatus@email')
+  },
   data() {
     return {
       show: false,
@@ -58,8 +66,13 @@ export default {
       valid: false,
       rules: {},
       form: {
-        password: '',
+        email: '',
+        role: 'EDITOR'
       },
+      roles: [
+        'EDITOR',
+        'VIEWER'
+      ]
     };
   },
   methods: {
@@ -68,20 +81,24 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        this.$emit('confirmed', this.form.password);
+        this.$emit('send', this.form);
       }
     },
     activateRules() {
       this.rules = {
-        password: [
+        email: [
           v => !!v || "Required",
-          v => (v && v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => v.length >= 9 && v.length <= 100 || "Must be between 9-100 chars",
+          v => v.toLowerCase() != this.currentEmail.toLowerCase() || "You cannot add yourself as a member",
+          v => Utility.verifyEmail(v) || "Must be valid"
         ],
+        role: [
+          v => !!v || "Required"
+        ]
       }
     },
     open() {
       this.show = true;
-      this.form.password = null;
       this.$nextTick(() => this.$refs.form.resetValidation());
     },
     stopLoading() {

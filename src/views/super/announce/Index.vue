@@ -303,7 +303,14 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
+      >
+        More
+      </v-btn>
     </div>
 
     <confirm ref="confirm"></confirm>

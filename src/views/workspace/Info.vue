@@ -1,75 +1,64 @@
 <template>
-  <div class="d-flex justify-center">
+  <v-dialog 
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <span>{{ isInsert ? 'New workspace' : 'Workspace info' }}</span>
+        <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-    <v-dialog 
-      v-model="opened" 
-      :max-width="findDialogWidth"
-      overlay-opacity="0.2"
-      @keydown.esc="close"
-    >
-      <v-card>
-        <div class="d-flex justify-space-between pa-3">
-          <div class="title">{{ isInsert ? 'New workspace' : 'Workspace info' }}</div>
-          <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </div>
+      <v-card-text class="py-0 mt-3">
+        <v-form ref="form" v-model="valid">
+          <v-text-field
+            dense
+            outlined
+            label="Name"
+            v-model="form.name"
+            :rules="rules.name"
+            type="text"
+            maxlength="70"
+          />
 
-        <v-divider></v-divider>
+          <v-select
+            dense
+            outlined
+            label="Currency"
+            v-model="form.currencyCode"
+            :items="currencyNames"
+            :menu-props="{ auto: true, overflowY: true }"
+            @change="setCurrencyFormat"
+          />
 
-        <v-card-text class="pb-2">
-          
-          <v-form ref="form" v-model="valid" class="mt-5">
-            <v-text-field
-              label="Name"
-              v-model="form.name"
-              :rules="rules.name"
-              type="text"
-              maxlength="70"
-            />
+          <v-text-field
+            dense
+            outlined
+            label="Currency Format"
+            v-model="form.currencyFormat"
+            :rules="rules.currencyFormat"
+            type="text"
+            maxlength="16"
+          />
+        </v-form>
+      </v-card-text>
 
-            <v-select
-              label="Currency"
-              v-model="form.currencyCode"
-              :items="currencyNames"
-              :menu-props="{ auto: true, overflowY: true }"
-              @change="setCurrencyFormat"
-            />
+      <v-divider></v-divider>
 
-            <v-text-field
-              label="Currency Format"
-              v-model="form.currencyFormat"
-              :rules="rules.currencyFormat"
-              type="text"
-              maxlength="16"
-            />
-
-          </v-form>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="justify-end py-3">
-          <v-btn
-            text
-            tabindex="-1"
-            @click="close"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            text
-            @click="submit"
-            color="primary"
-            :loading="loading" 
-            :disabled="$store.get('session/isNotAdmin') || loading"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-
-      </v-card>
-    </v-dialog>
-
-  </div>
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          @click="submit"
+          color="success"
+          :loading="loading" 
+          :disabled="$store.get('session/isNotAdmin') || loading"
+        >
+          {{ isInsert ? 'Save' : 'Update' }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -80,21 +69,10 @@ import currencyNames from '@/data/currency-names';
 import currencyFormats from '@/data/currency-formats';
 
 export default {
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    }
-  },
   data() {
     return {
       isInsert: true,
-      opened: false,
+      show: false,
       loading: false,
       valid: false,
       currencyNames,
@@ -118,14 +96,12 @@ export default {
           if (res == true) {
             this.$store.commit('snackbar/setMessage', { text: 'Successfull, you will be able to work with new workspace after sign in again.' });
             this.close();
-            return;
           }
         } else {
           const res = await WorkspaceService.update(this.form);
           if (res == true) {
             this.$store.set('session/WORKSPACE_INFO', this.form);
             this.close();
-            return;
           }
         }
         this.loading = false;
@@ -151,13 +127,14 @@ export default {
         ],
       }
     },
-    edit(data, isInsert) {
-      this.isInsert = isInsert;
-      if (isInsert == false) {
+    edit(data) {
+      if (data) {
+        this.isInsert = false;
         this.form.name = data.name;
         this.form.currencyCode = data.currencyCode;
         this.form.currencyFormat = data.currencyFormat;
       } else {
+        this.isInsert = true;
         this.form.name = '';
         if (!this.form.currencyCode) {
           ApiService.get('/workspace/geo')
@@ -170,12 +147,12 @@ export default {
       this.open();
     },
     open() {
-      this.opened = true;
+      this.show = true;
       this.$nextTick(() => this.$refs.form.resetValidation());
     },
     close() {
       this.$refs.form.resetValidation();
-      this.opened = false;
+      this.show = false;
       this.loading = false;
     },
   }

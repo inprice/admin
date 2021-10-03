@@ -211,7 +211,13 @@
       <list :rows="searchResult" :selectedId="showingRowId" @selected="rowSelected" />
 
       <div class="mt-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">More</v-btn>
+        <v-btn 
+          small
+          @click="loadmore" 
+          :disabled="isLoadMoreDisabled" 
+        >
+          More
+        </v-btn>
       </div>
     </div>
 

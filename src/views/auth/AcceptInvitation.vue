@@ -1,24 +1,13 @@
 <template>
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
-    <div :style="'width: ' + findWidth">
+    <div style="width: 400px">
 
       <div class="text-center">
         <img :src="verticalBrand" :width="200" />
       </div>
 
       <v-card class="pb-0 elevation-0">
-
-        <v-alert
-          dense
-          dismissible
-          outlined
-          type="error"
-          class="ma-4"
-          v-model="showError"
-        >
-          {{ errorMessage }}
-        </v-alert>
-        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please specify your password to accept invitation</div>
+        <div class="text-center pt-4">Please specify your password to accept invitation</div>
 
         <v-card-text>
           <v-form 
@@ -96,21 +85,8 @@ export default {
         password: '',
         repeatPassword: ''
       },
-      showError: false,
-      errorMessage: '',
       verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
-  },
-  computed: {
-    findWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '90%';
-        case 'sm': return '60%';
-        case 'md': return '45%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    }
   },
   methods: {
     async submit() {
@@ -124,15 +100,9 @@ export default {
         this.loading = true;
         const result = await AuthService.acceptInvitation(this.form);
         if (result.status) {
-          this.showError = false;
-          this.errorMessage = '';
-
           this.$router.push({ name: 'dashboard', params: { sid: 0 } });
           this.$store.commit('snackbar/setMessage', { text: 'Your have successfully activated your membership' });
           return;
-        } else {
-          this.errorMessage = result.error;
-          this.showError = true;
         }
         this.loading = false;
       }

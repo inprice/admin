@@ -139,7 +139,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item disabled>
           <v-list-item-action>
             <v-icon>mdi-chart-box-outline</v-icon>
           </v-list-item-action>
@@ -147,42 +147,28 @@
             <v-list-item-title>Reports</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
-        <v-divider inset v-if="$store.get('session/isAdmin')"></v-divider>
-
-        <v-list-item 
-          link 
-          :to="{name: 'workspace-settings'}"
-          v-if="$store.get('session/isAdmin')" 
-        >
-          <v-list-item-action>
-            <v-icon>mdi-cog-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
 
+      <template v-slot:append>
+        <v-divider inset></v-divider>
+
+        <v-list class="pa-0">
+          <v-list-item class="text-center">
+            <v-list-item-content>
+              <img :src="brandNameW" height="40px" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar app clipped-left color="blue-grey" dark>
 
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
-      <div class="hidden-sm-and-down ml-4 mt-2">
-        <img :src="brandNameW" :width="150" />
-      </div>
+      <workspace-menu></workspace-menu>
 
       <v-spacer v-if="$store.get('session/isNotSuperUser') || CURSTAT.workspaceId"></v-spacer>
-
-      <v-btn 
-        icon 
-        v-show="$router.history.current.name != 'ticket'"
-        @click="$router.push({name: 'ticket'})"
-      >
-        <v-icon>mdi-chat-question-outline</v-icon>
-      </v-btn>
 
       <notification-menu 
         v-if="CURSTAT.role != 'SUPER'"
@@ -202,8 +188,6 @@
         </v-container>
       </v-responsive>
     </v-main>
-
-    <workspace-info-dialog ref="workspaceInfoDialog" />
 
     <v-btn
       v-scroll="onScroll"
@@ -228,7 +212,7 @@ export default {
   },
   data() {
     return {
-      brandNameW: require('@/assets/app/brand-horWR.svg'),
+      brandNameW: require('@/assets/app/brand-horCL.svg'),
       drawer: (this.$vuetify.breakpoint.mdAndUp),
       fab: false,
       search: {
@@ -240,30 +224,19 @@ export default {
     };
   },
   methods: {
-    openCreateWorkspace() {
-      this.$refs.workspaceInfoDialog.edit(null, true);
-    },
     onScroll(e) {
       if (typeof window === 'undefined') return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
       this.fab = top > 20;
     },
-    toTop () {
+    toTop() {
       this.$vuetify.goTo(0)
-    },
-    findPageObject(item) {
-      let pageTo = { params: { id: item.id } };
-      if (item.type == 'G')
-        pageTo.name = 'product';
-      else
-        pageTo.name = 'link';
-      return pageTo;
     },
   },
   components: {
     UserMenu: () => import('./UserMenu.vue'),
+    WorkspaceMenu: () => import('./WorkspaceMenu.vue'),
     NotificationMenu: () => import('./NotificationMenu.vue'),
-    WorkspaceInfoDialog: () => import('./workspace/WorkspaceInfo.vue')
   },
 };
 </script>

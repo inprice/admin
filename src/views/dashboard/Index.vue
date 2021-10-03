@@ -95,7 +95,7 @@
 
       <table 
         class="pb-2 info-table"
-        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.LOWEST.length">
+        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.LOWEST.length"
       >
         <thead>
           <tr>
@@ -142,7 +142,7 @@
 
       <table 
         class="pb-2 info-table"
-        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.HIGHEST.length">
+        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.HIGHEST.length"
       >
         <thead>
           <tr>

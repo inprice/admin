@@ -52,7 +52,7 @@ export default {
       if (this.CURSTAT.status == 'FREE') {
         return SystemConsts.LIMITS.DAYS_FOR_FREE_USE + ' days free trial';
       } else {
-        return 'credit';
+        return 'voucher';
       }
     },
     infoForPassiveWorkspace() {

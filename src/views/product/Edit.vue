@@ -1,147 +1,131 @@
 <template>
-  <v-row justify="center">
+  <v-dialog 
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <div>
+          <div>{{ form.id ? 'Edit' : 'New' }} Product</div>
+          <div v-if="form.id" class="caption">For {{ form.name }}</div>
+        </div>
+        <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-    <v-dialog 
-      v-model="opened" 
-      max-width="400px"
-      overlay-opacity="0.2"
-      @keydown.esc="opened = false"
-    >
-      <v-card>
-        <v-card-title class="pr-3 justify-space-between">
-          <div>
-            <div>{{ form.id ? 'Edit' : 'New' }} Product</div>
-            <div v-if="form.id" class="caption">For {{ form.name }}</div>
-          </div>
-          <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </v-card-title>
+      <v-card-text class="py-0 mt-3">
+        <v-form ref="form" v-model="valid">
+          <input type="hidden" :value="form.id" >
 
-        <v-divider></v-divider>
+          <v-text-field
+            dense
+            outlined
+            label="Code"
+            v-model="form.code"
+            :rules="rules.code"
+            type="text"
+            maxlength="50"
+          />
 
-        <v-divider class="mb-3"></v-divider>
+          <v-text-field
+            dense
+            outlined
+            label="Name"
+            v-model="form.name"
+            :rules="rules.name"
+            type="text"
+            maxlength="250"
+          />
 
-        <v-card-text class="pb-0">
+          <v-text-field
+            dense
+            outlined
+            label="Price"
+            v-model="form.price"
+            :rules="rules.price"
+            @blur="formatPrice"
+            class="mr-1"
+            type="number"
+            maxlength="10"
+          ></v-text-field>
 
-          <v-form ref="form" v-model="valid" @submit.prevent>
-            <input type="hidden" :value="form.id" >
-
-            <v-text-field
-              dense
-              outlined
-              label="Code"
-              v-model="form.code"
-              :rules="rules.code"
-              type="text"
-              maxlength="50"
-            />
-
-            <v-text-field
-              dense
-              outlined
-              label="Name"
-              v-model="form.name"
-              :rules="rules.name"
-              type="text"
-              maxlength="250"
-            />
-
-            <v-text-field
-              dense
-              outlined
-              label="Price"
-              v-model="form.price"
-              :rules="rules.price"
-              @blur="formatPrice"
-              class="mr-1"
-              type="number"
-              maxlength="10"
-            ></v-text-field>
-
-            <v-combobox
-              dense
-              outlined
-              clearable
-              label="Brand"
-              v-model="form.brand"
-              :rules="rules.brand"
-              :items="brandItems"
-              item-text="name"
-              :search-input.sync="newBrandName"
-            >
-              <template v-slot:no-data>
-                <v-list-item>
-                  <span class="subheading mr-2">Create -></span>
-                  <v-chip
-                    label
-                    small
-                  >
-                    {{ newBrandName }}
-                  </v-chip>
-                </v-list-item>
-              </template>
-              <template v-slot:selection="{ item }">
-                <span v-if="item === Object(item)">{{ item.name }}</span>
-              </template>
-              <template v-slot:item="{ item }">
-                {{ item.name }}
-              </template>
-            </v-combobox>
-
-            <v-combobox
-              dense
-              outlined
-              clearable
-              label="Category"
-              v-model="form.category"
-              :rules="rules.category"
-              :items="categoryItems"
-              item-text="name"
-              :search-input.sync="newCategoryName"
-            >
-              <template v-slot:no-data>
-                <v-list-item>
-                  <span class="subheading mr-2">Create -></span>
-                  <v-chip
-                    label
-                    small
-                  >
-                    {{ newCategoryName }}
-                  </v-chip>
-                </v-list-item>
-              </template>
-              <template v-slot:selection="{ item }">
-                <span v-if="item === Object(item)">{{ item.name }}</span>
-              </template>
-              <template v-slot:item="{ item }">
-                {{ item.name }}
-              </template>
-            </v-combobox>
-
-          </v-form>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="py-4 justify-end">
-          <v-btn
-            text
-            tabindex="-1"
-            @click="close"
+          <v-combobox
+            dense
+            outlined
+            clearable
+            label="Brand"
+            v-model="form.brand"
+            :rules="rules.brand"
+            :items="brandItems"
+            item-text="name"
+            :search-input.sync="newBrandName"
           >
-            Close
-          </v-btn>
-          <v-btn
-            text
-            @click="save"
-            color="success"
-            :disabled="$store.get('session/isNotEditor')"
+            <template v-slot:no-data>
+              <v-list-item>
+                <span class="subheading mr-2">Create -></span>
+                <v-chip
+                  label
+                  small
+                >
+                  {{ newBrandName }}
+                </v-chip>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ item }">
+              <span v-if="item === Object(item)">{{ item.name }}</span>
+            </template>
+            <template v-slot:item="{ item }">
+              {{ item.name }}
+            </template>
+          </v-combobox>
+
+          <v-combobox
+            dense
+            outlined
+            clearable
+            label="Category"
+            v-model="form.category"
+            :rules="rules.category"
+            :items="categoryItems"
+            item-text="name"
+            :search-input.sync="newCategoryName"
           >
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+            <template v-slot:no-data>
+              <v-list-item>
+                <span class="subheading mr-2">Create -></span>
+                <v-chip
+                  label
+                  small
+                >
+                  {{ newCategoryName }}
+                </v-chip>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ item }">
+              <span v-if="item === Object(item)">{{ item.name }}</span>
+            </template>
+            <template v-slot:item="{ item }">
+              {{ item.name }}
+            </template>
+          </v-combobox>
+
+        </v-form>
+      </v-card-text>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          @click="save"
+          color="success"
+          :disabled="$store.get('session/isNotEditor')"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -151,7 +135,7 @@ import BrandService from '@/service/brand';
 export default {
   data() {
     return {
-      opened: false,
+      show: false,
       valid: false,
       rules: {},
       form: {
@@ -169,7 +153,7 @@ export default {
   },
   methods: {
     open(data) {
-      this.opened = true;
+      this.show = true;
 
       if (data) {
         this.form.id = data.id;
@@ -224,7 +208,7 @@ export default {
       }
     },
     close() {
-      this.opened = false;
+      this.show = false;
       this.rules = {};
     },
     activateRules() {
@@ -240,8 +224,7 @@ export default {
           v => (!v || (v.length <= 128)) || "Can be up to 128 chars"
         ],
         price: [
-          v => !!v || "Required",
-          v => (parseFloat(v) > -1) || "Base Price must be greater or equal than 0"
+          v => (!v || parseFloat(v) > -1) || "Price must be greater or equal than 0"
         ],
         brand: [
           v => (!v || (v.name && v.name.length >= 2 && v.name.length <= 50)) || "If given, must be between 2-50 chars"

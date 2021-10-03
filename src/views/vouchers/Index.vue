@@ -1,8 +1,8 @@
 <template>
   <div>
     <div>
-      <div class="title">Credits</div>
-      <div class="body-2">Manage your credits for your workspace.</div>
+      <div class="title">Vouchers</div>
+      <div class="body-2">Manage your vouchers for your workspace.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>
@@ -14,9 +14,9 @@
             <v-icon class="mr-4 hidden-xs-only">mdi-ticket-confirmation-outline</v-icon>
             <div class="d-inline">
               <div>The list</div>
-              <div class="caption">A combined list of credits that assigned, applied and created by you</div>
+              <div class="caption">A combined list of vouchers that assigned, applied and created by you</div>
               <div class="caption">
-                <strong>Please note:</strong> Available credits can only be used when you have no active subscription or Free Use!
+                <strong>Please note:</strong> Available vouchers can only be used when you have no active subscription or Free Use!
               </div>
             </div>
           </div>
@@ -28,16 +28,16 @@
               color="success"
               v-if="CURSTAT.isActive == false"
               :disabled="$store.get('session/isNotAdmin')"
-              @click="openApplyCreditDialog"
+              @click="openApplyVoucherDialog"
             >
-              Apply credit
+              Apply voucher
             </v-btn>
 
             <v-btn 
               small dark
               class="ml-2"
               color="red"
-              v-if="CURSTAT.status == 'CREDITED'"
+              v-if="CURSTAT.status == 'VOUCHERED'"
               :disabled="$store.get('session/isNotAdmin')"
               @click="cancel"
             >
@@ -48,7 +48,7 @@
               small
               color="white"
               class="my-auto ml-2"
-              @click="getCredits"
+              @click="getVouchers"
               :disabled="$store.get('session/isSuperUser')"
             >
               Refresh
@@ -57,7 +57,7 @@
         </div>
       </v-card-title>
 
-      <div v-if="credits.length">
+      <div v-if="vouchers.length">
         <v-divider></v-divider>
 
         <table class="pb-2 info-table">
@@ -71,7 +71,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="cpn in credits" :key="cpn.id">
+            <tr v-for="cpn in vouchers" :key="cpn.id">
               <td class="font-weight-bold">{{ maskCode(cpn) }}</td>
               <td class="font-weight-bold">{{ cpn.days }}</td>
               <td>
@@ -103,12 +103,12 @@
 
       <block-message 
         v-else dense
-        :message="'No assigned or used credit in this workspace.'"
+        :message="'No assigned or used voucher in this workspace.'"
       />
 
     </v-card>
 
-    <apply-credit ref="applyCreditDialog" @applied="getCredits" />
+    <apply-voucher ref="applyVoucherDialog" @applied="getVouchers(true)" />
     <confirm ref="confirm"></confirm>
 
     <overlay :show="overlay" />
@@ -119,7 +119,7 @@
 
 <script>
 import SubsService from '@/service/subscription';
-import CreditService from '@/service/credit';
+import VoucherService from '@/service/voucher';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -132,69 +132,72 @@ export default {
       loading: {
         apply: false,
       },
-      credits: []
+      vouchers: []
     };
   },
   methods: {
-    getCredits() {
+    getVouchers(fromDialog) {
+      if (fromDialog) {
+        this.$refs.applyVoucherDialog.close();
+      }
       this.loading.refresh = true;
-      CreditService.getCredits()
+      VoucherService.getVouchers()
         .then((res) => {
           if (res && res.data) {
-            this.credits = res.data;
+            this.vouchers = res.data;
           } else {
-            this.credits = [];
+            this.vouchers = [];
           }
           this.loading.refresh = false;
         });
     },
     async apply(code) {
       if (code) {
-        this.$refs.confirm.open('Credit', 'is going to be applied right now. Are you sure?', 'This credit').then(async (confirm) => {
+        this.$refs.confirm.open('Voucher', 'is going to be applied right now. Are you sure?', 'This voucher').then(async (confirm) => {
           if (confirm == true) {
-            this.applyCredit(code);
+            this.applyVoucher(code);
           }
         });
       }
     },
-    async applyCredit(code) {
+    async applyVoucher(code) {
       this.loading.apply = true;
-      const result = await CreditService.applyCredit(code);
+      const result = await VoucherService.applyVoucher(code);
       if (result && result.status == true) {
         this.$store.commit('session/SET_CURRENT', result.data.session);
-        this.$store.commit('snackbar/setMessage', { text: 'Your credit has been successfully applied.' });
-        this.getCredits();
+        this.$store.commit('snackbar/setMessage', { text: 'Your voucher has been successfully applied.' });
+        this.getVouchers();
       }
       this.loading.apply = false;
     },
     cancel() {
-      this.$refs.confirm.open('Cancel Credit', 'will be cancelled. Are you sure?', 'Your actual credit use').then(async (confirm) => {
+      this.$refs.confirm.open('Cancel Voucher', 'will be cancelled. Are you sure?', 'Your actual voucher use').then(async (confirm) => {
         if (confirm == true) {
           this.overlay = true;
           const res = await SubsService.cancel();
           if (res && res.status == true) {
             this.$store.commit('session/SET_CURRENT', res.data.session);
-            this.$store.commit('snackbar/setMessage', { text: 'Your credit has been cancelled.' });
+            this.$store.commit('snackbar/setMessage', { text: 'Your voucher has been cancelled.' });
           }
           this.overlay = false;
         }
       });
     },
-    openApplyCreditDialog() {
-      this.$refs.applyCreditDialog.open();
+    openApplyVoucherDialog() {
+      this.$refs.applyVoucherDialog.open();
     },
-    maskCode(credit) {
-      if (!credit.issuedAt && this.$store.get('session/isNotAdmin')) {
-        return credit.code.substring(0, 2) + '***' + credit.code.substring(5);
+    maskCode(voucher) {
+      if (!voucher.issuedAt && this.$store.get('session/isNotAdmin')) {
+        return voucher.code.substring(0, 2) + '***' + voucher.code.substring(5);
       }
-      return credit.code;
+      return voucher.code;
     }
   },
   mounted() {
-    this.getCredits();
+    this.getVouchers();
   },
   components: {
-    ApplyCredit: () => import('./Apply.vue'),
+    ApplyVoucher: () => import('./Apply.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
     Overlay: () => import('@/component/app/Overlay.vue'),
