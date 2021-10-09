@@ -1,82 +1,55 @@
 <template>
   <div class="mt-3">
-    <v-card>
-      <v-card-title class="d-block pb-2">
-        <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
-          <div class="d-flex">
-            <v-icon class="mr-4 hidden-xs-only">mdi-account-circle-outline</v-icon>
-            <div class="d-inline">
-              <div>Profile</div>
-              <div class="caption">Your profile info</div>
-            </div>
-          </div>
-
-          <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn
-              small
-              color="warning"
-              class="mx-2"
-              @click="openChangePasswordDialog"
-              :disabled="$store.get('session/isSuperUser')"
-            >
-              Change Password
-            </v-btn>
-
-            <v-btn
-              small
-              class="mx-2"
-              @click="openUpdateUserDialog"
-              :disabled="$store.get('session/isSuperUser')"
-            >
-              Edit User
-            </v-btn>
-          </div>
-        </div>
+    <v-card tile class="mt-5">
+      <v-card-title class="py-2">
+        Profile
       </v-card-title>
 
       <v-divider></v-divider>
 
-      <div class="d-flex">
-        <v-list dense class="col pa-1">
-          <v-list-item>
-            <v-list-item-content>
-              <div class="caption blue--text">Username</div>
-              <div>{{ CURSTAT.user }}</div>
-            </v-list-item-content>
-          </v-list-item>
+      <v-card-text class="pt-3">
+        Update your timezone and full name.
+      </v-card-text>
 
-          <v-divider></v-divider>
+      <v-divider></v-divider>
 
-          <v-list-item>
-            <v-list-item-content>
-              <div class="caption blue--text">Password</div>
-              <div>****</div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-
-        <v-list dense class="col pa-1">
-          <v-list-item>
-            <v-list-item-content>
-              <div class="caption blue--text">Role</div>
-              <div>{{ CURSTAT.role }}</div>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list-item>
-            <v-list-item-content>
-              <div class="caption blue--text">Timezone</div>
-              <div>{{ CURSTAT.timezone }}</div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </div>
+      <v-card-actions class="pa-3">
+        <v-btn 
+          small
+          @click="openUpdateUserDialog"
+          :disabled="$store.get('session/isSuperUser')"
+        >
+          Update
+        </v-btn>
+      </v-card-actions>
     </v-card>
 
-    <UpdateUserDialog ref="updateUserDialog"/>
-    <ChangePasswordDialog ref="changePasswordDialog"/>
+    <v-card tile>
+      <v-card-title class="py-2">
+        Password
+      </v-card-title>
+
+      <v-divider></v-divider>
+
+      <v-card-text class="pt-3">
+        Change your password here.
+      </v-card-text>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="pa-3">
+        <v-btn 
+          small
+          @click="openChangePasswordDialog"
+          :disabled="$store.get('session/isSuperUser')"
+        >
+          Change
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <update-user-dialog ref="updateUserDialog"></update-user-dialog>
+    <change-password-dialog ref="changePasswordDialog"></change-password-dialog>
   </div>
 </template>
 
@@ -89,10 +62,10 @@ export default {
   },
   methods: {
     openChangePasswordDialog() {
-      this.$refs.changePasswordDialog.open(this.CURSTAT.email);
+      this.$refs.changePasswordDialog.open(this.CURSTAT.fullName);
     },
     openUpdateUserDialog() {
-      this.$refs.updateUserDialog.open({ name: this.CURSTAT.user, email: this.CURSTAT.email, timezone: this.CURSTAT.timezone });
+      this.$refs.updateUserDialog.open({ fullName: this.CURSTAT.fullName, timezone: this.CURSTAT.timezone });
     },
   },
   components: {

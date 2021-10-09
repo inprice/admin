@@ -57,7 +57,7 @@
               <tr>
                 <td colspan="2" class="text-center font-weight-medium" style="background-color: #FBD395">REQUEST</td>
               </tr>
-              <property :valueClass="RESPROPS.table.account" name="Account" :value="row.accountName" />
+              <property :valueClass="RESPROPS.table.workspace" name="Workspace" :value="row.workspaceName" />
               <property :valueClass="RESPROPS.table.user" name="User" :value="row.userEmail" />
               <property :valueClass="RESPROPS.table.ip" name="IP" :value="row.ip" />
               <property :valueClass="RESPROPS.table.agent" name="U.Agent" :value="row.agent" :title="row.agent" />
@@ -109,13 +109,13 @@ export default {
         case 'sm': {
           return {
             'table-layout': 'fixed',
-            table: { account: 'col-10', user: 'col-8', ip: 'col-5', agent: 'col-12' },
+            table: { workspace: 'col-10', user: 'col-8', ip: 'col-5', agent: 'col-12' },
           };
         }
         default: {
           return {
             'table-layout': '',
-            table: { account: 'col-7', user: 'col-5', ip: 'col-3', agent: 'col-12' },
+            table: { workspace: 'col-7', user: 'col-5', ip: 'col-3', agent: 'col-12' },
           };
         }
       }

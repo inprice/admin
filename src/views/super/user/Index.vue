@@ -201,7 +201,7 @@ export default {
     async saveAnnounce(form) {
       const result = await SU_AnnounceService.save(form);
       if (result && result.status) {
-        this.$store.commit('snackbar/setMessage', { text: 'Account\'s announce is successfully published.' });
+        this.$store.commit('snackbar/setMessage', { text: 'Workspace\'s announce is successfully published.' });
       }
     },
     isSearchable(e) {

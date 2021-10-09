@@ -1,14 +1,14 @@
 <template>
 
-  <div v-if="account" class="mt-3">
+  <div v-if="workspace" class="mt-3">
 
     <v-card>
       <div class="d-flex justify-space-between px-4 py-2 pt-4">
         <div class="d-flex">
-          <v-icon class="mr-4 hidden-xs-only">mdi-card-account-details-star-outline</v-icon>
+          <v-icon class="mr-4 hidden-xs-only">mdi-card-workspace-details-star-outline</v-icon>
           <div class="d-inline">
-            <div class="caption">{{ account.email }}</div>
-            <div class="title">{{ account.name }}</div>
+            <div class="caption">{{ workspace.email }}</div>
+            <div class="title">{{ workspace.name }}</div>
           </div>
         </div>
 
@@ -24,7 +24,7 @@
 
       <v-btn-toggle tile :value="selectedTab">
         <v-btn @click="selectedTab=0" small>
-          Account
+          Workspace
         </v-btn>
 
         <v-btn @click="selectedTab=1" small>
@@ -39,25 +39,25 @@
           <v-simple-table class="property-table pt-3 pb-2" dense>
             <template v-slot:default>
               <tbody>
-                <property :valueClass="RESPROPS.properties.name" name="Name" :value="account.name" />
-                <property :valueClass="RESPROPS.properties.status" name="Status" :value="account.status" />
-                <property :valueClass="RESPROPS.properties.planName" name="Plan" :value="account.plan ? account.plan.name : ''" />
+                <property :valueClass="RESPROPS.properties.name" name="Name" :value="workspace.name" />
+                <property :valueClass="RESPROPS.properties.status" name="Status" :value="workspace.status" />
+                <property :valueClass="RESPROPS.properties.planName" name="Plan" :value="workspace.plan ? workspace.plan.name : ''" />
 
                 <property :valueClass="RESPROPS.properties.users" name="Numbers">
                   <div class="d-flex">
                     <div class="mr-1">
-                      <span>User</span> : <span class="font-weight-medium red--text subtitle">{{ account.userCount }}</span>
+                      <span>User</span> : <span class="font-weight-medium red--text subtitle">{{ workspace.userCount }}</span>
                     </div>
                     <div class="mx-1">
-                      <span>Link</span> : <span class="font-weight-medium green--text subtitle">{{ account.linkCount }}</span>
+                      <span>Link</span> : <span class="font-weight-medium green--text subtitle">{{ workspace.linkCount }}</span>
                     </div>
                     <div class="ml-1">
-                      <span>Alarm</span> : <span class="font-weight-medium blue--text subtitle">{{ account.alarmCount }}</span>
+                      <span>Alarm</span> : <span class="font-weight-medium blue--text subtitle">{{ workspace.alarmCount }}</span>
                     </div>
                   </div>
                 </property>
 
-                <property :valueClass="RESPROPS.properties.createdAt" name="Created At" :value="account.createdAt" />
+                <property :valueClass="RESPROPS.properties.createdAt" name="Created At" :value="workspace.createdAt" />
               </tbody>
             </template>
           </v-simple-table>
@@ -67,14 +67,14 @@
           <v-simple-table class="property-table pt-3 pb-2" dense>
             <template v-slot:default>
               <tbody>
-                <property :valueClass="RESPROPS.properties.title" name="Title" :value="account.title" />
-                <property :valueClass="RESPROPS.properties.contact" name="Contact" :value="account.contactName" />
-                <property :valueClass="RESPROPS.properties.city" name="Tax Id" :value="account.taxId" />
-                <property :valueClass="RESPROPS.properties.city" name="Tax Office" :value="account.taxOffice" />
-                <property :valueClass="RESPROPS.properties.title" name="Address 1" :value="account.address1" />
-                <property :valueClass="RESPROPS.properties.title" name="2" :value="account.address2" />
-                <property :valueClass="RESPROPS.properties.city" name="City" :value="account.city" />
-                <property :valueClass="RESPROPS.properties.city" name="Country" :value="account.country" />
+                <property :valueClass="RESPROPS.properties.title" name="Title" :value="workspace.title" />
+                <property :valueClass="RESPROPS.properties.contact" name="Contact" :value="workspace.contactName" />
+                <property :valueClass="RESPROPS.properties.city" name="Tax Id" :value="workspace.taxId" />
+                <property :valueClass="RESPROPS.properties.city" name="Tax Office" :value="workspace.taxOffice" />
+                <property :valueClass="RESPROPS.properties.title" name="Address 1" :value="workspace.address1" />
+                <property :valueClass="RESPROPS.properties.title" name="2" :value="workspace.address2" />
+                <property :valueClass="RESPROPS.properties.city" name="City" :value="workspace.city" />
+                <property :valueClass="RESPROPS.properties.city" name="Country" :value="workspace.country" />
               </tbody>
             </template>
           </v-simple-table>
@@ -92,12 +92,12 @@
 </template>
 
 <script>
-import SU_AccountService from '@/service/super/account';
+import SU_WorkspaceService from '@/service/super/workspace';
 
 export default {
   data() {
     return {
-      account: null,
+      workspace: null,
       memberList: [],
       historyList: [],
       transList: [],
@@ -106,8 +106,8 @@ export default {
   },
   methods: {
     refreshMemberList() {
-      if (this.account != null) {
-        SU_AccountService.fetchMemberList(this.account.id).then((res) => {
+      if (this.workspace != null) {
+        SU_WorkspaceService.fetchMemberList(this.workspace.id).then((res) => {
           if (res && res.status) {
             this.memberList = res.data;
           }
@@ -115,8 +115,8 @@ export default {
       }
     },
     refreshHistoryList() {
-      if (this.account != null) {
-        SU_AccountService.fetchHistoryList(this.account.id).then((res) => {
+      if (this.workspace != null) {
+        SU_WorkspaceService.fetchHistoryList(this.workspace.id).then((res) => {
           if (res && res.status) {
             this.historyList = res.data;
           }
@@ -124,8 +124,8 @@ export default {
       }
     },
     refreshTransList() {
-      if (this.account != null) {
-        SU_AccountService.fetchTransactionList(this.account.id).then((res) => {
+      if (this.workspace != null) {
+        SU_WorkspaceService.fetchTransactionList(this.workspace.id).then((res) => {
           if (res && res.status) {
             this.transList = res.data;
           }
@@ -136,9 +136,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       const aid = this.$route.params.aid;
-      SU_AccountService.fetchDetails(aid).then((res) => {
+      SU_WorkspaceService.fetchDetails(aid).then((res) => {
         if (res && res.status) {
-          this.account = res.data.account;
+          this.workspace = res.data.workspace;
           this.memberList = res.data.memberList;
           this.historyList = res.data.historyList;
           this.transList = res.data.transList;

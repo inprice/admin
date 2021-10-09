@@ -1,23 +1,21 @@
 <template>
-  <v-row justify="center">
+  <v-dialog 
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <span>Invoice info</span>
+        <v-btn icon @click="show = false"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-    <v-dialog 
-      v-model="opened" 
-      :max-width="findDialogWidth"
-      overlay-opacity="0.2"
-      @keydown.esc="opened = false"
-    >
-      <v-card>
-        <div class="d-flex justify-space-between pa-4 pb-1">
-          <div class="title">Invoice info</div>
-          <v-btn icon @click="opened = false"><v-icon>mdi-close</v-icon></v-btn>
-        </div>
+      <v-card-text class="py-0 mt-3">
+        <v-form ref="form" v-model="valid" @submit.prevent>
 
-        <v-divider></v-divider>
-
-        <v-form ref="form" v-model="valid" class="mt-5" @submit.prevent>
-          <v-text-field class="mx-5"
-            outlined dense
+          <v-text-field
+            dense
+            outlined
             label="Title"
             v-model="form.title"
             :rules="rules.title"
@@ -25,8 +23,9 @@
             maxlength="255"
           />
 
-          <v-text-field class="mx-5"
-            outlined dense
+          <v-text-field
+            dense
+            outlined
             label="Contact"
             v-model="form.contactName"
             :rules="rules.contactName"
@@ -34,10 +33,11 @@
             maxlength="50"
           />
 
-          <v-row class="mx-2">
+          <v-row>
             <v-col class="py-0">
               <v-text-field
-                outlined dense
+                dense
+                outlined
                 label="Tax Id"
                 v-model="form.taxId"
                 :rules="rules.taxId"
@@ -47,7 +47,8 @@
             </v-col>
             <v-col class="py-0">
               <v-text-field
-                outlined dense
+                dense
+                outlined
                 label="Tax Office"
                 v-model="form.taxOffice"
                 :rules="rules.taxOffice"
@@ -57,29 +58,32 @@
             </v-col>
           </v-row>
 
-          <v-text-field class="mx-5"
+          <v-text-field
+            dense
+            outlined
             label="Address 1"
-            outlined dense
             v-model="form.address1"
             :rules="rules.address1"
             type="text"
             maxlength="255"
           />
 
-          <v-text-field class="mx-5"
+          <v-text-field
+            dense
+            outlined
             label="Address 2"
-            outlined dense
             v-model="form.address2"
             :rules="rules.address2"
             type="text"
             maxlength="255"
           />
 
-          <v-row class="mx-2">
+          <v-row>
             <v-col class="py-0">
               <v-text-field
+                dense
+                outlined
                 label="City"
-                outlined dense
                 v-model="form.city"
                 :rules="rules.city"
                 type="text"
@@ -88,8 +92,9 @@
             </v-col>
             <v-col class="py-0">
               <v-text-field
+                dense
+                outlined
                 label="Postcode"
-                outlined dense
                 v-model="form.postcode"
                 :rules="rules.postcode"
                 type="text"
@@ -98,49 +103,45 @@
             </v-col>
           </v-row>
 
-          <v-text-field  class="mx-5"
+          <v-text-field 
+            dense
+            outlined
             label="State"
-            outlined dense
             v-model="form.state"
             :rules="rules.state"
             type="text"
             maxlength="70"
           />
 
-          <v-select  class="mx-5"
+          <v-select 
+            dense
+            outlined
             label="Country"
-            outlined dense
             v-model="form.country"
             :rules="rules.country"
             :items="countries"
             :menu-props="{ auto: true, overflowY: true }"
           />
-
         </v-form>
+      </v-card-text>
 
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
-        <v-card-actions class="py-4 justify-end">
-          <v-btn 
-            tabindex="-1"
-            @click="close"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            color="primary"
-            @click="submit"
-            :loading="loading" 
-            :disabled="loading || $store.get('session/isNotAdmin')"
-          >
-            Save
-          </v-btn>
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          @click="submit"
+          color="primary"
+          :loading="loading" 
+          :disabled="loading || $store.get('session/isNotAdmin')"
+        >
+          Save
+        </v-btn>
 
-        </v-card-actions>
+      </v-card-actions>
 
-      </v-card>
-    </v-dialog>
-  </v-row>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -148,20 +149,9 @@ import SubsService from '@/service/subscription';
 
 export default {
   props: ['countries'],
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '45%';
-        case 'lg': return '37%';
-        default: return '20%';
-      }
-    },
-  },
   data() {
     return {
-      opened: false,
+      show: false,
       loading: false,
       valid: false,
       rules: {},
@@ -172,7 +162,7 @@ export default {
     open(info) {
       if (this.$refs && this.$refs.form) this.$refs.form.resetValidation();
       this.form = info;
-      this.opened = true;
+      this.show = true;
     },
     async submit() {
       if (Object.keys(this.rules).length == 0) this.activateRules();
@@ -190,7 +180,7 @@ export default {
     },
     close() {
       this.$refs.form.resetValidation();
-      this.opened = false;
+      this.show = false;
       this.loading = false;
     },
     activateRules() {

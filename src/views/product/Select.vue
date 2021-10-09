@@ -1,40 +1,37 @@
 <template>
   <v-dialog
-    v-model="dialog"
-    :max-width="500"
-    style="zIndex: 200"
-    overlay-opacity="0.2"
-    @keydown.esc="close"
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+    style="z-index: 100"
   >
     <v-card>
-      <v-card-title class="justify-space-between">
-        <div class="subtitle-1">Please select a product</div>
-        <v-btn icon @click.native="close"><v-icon>mdi-close</v-icon></v-btn>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <span>Please select target product</span>
+        <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
-      <v-divider></v-divider>
-
-      <div class="body-2 mx-3 mb-2 mt-5 font-weight-light">
-        <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
-        You can either select or create a new product by typing.
-      </div>
-
-      <v-combobox
-        dense
-        outlined
-        class="pa-4 mt-2 pb-1"
-        label="Product"
-        :items="productNames"
-        :messages="messages"
-        :error="messages != null"
-        v-model="selectedName"
-        @input.native="selectedName=$event.srcElement.value"
-        @keyup.native.enter="agree"
-      ></v-combobox>
+      <v-card-text class="py-0 mt-3">
+        <v-combobox
+          dense
+          outlined
+          label="Product"
+          :items="productNames"
+          :messages="messages"
+          :error="messages != null"
+          v-model="selectedName"
+          @input.native="selectedName=$event.srcElement.value"
+          @keyup.native.enter="agree"
+        ></v-combobox>
+      </v-card-text>
 
       <v-divider></v-divider>
 
-      <v-card-actions class="py-3 mr-2 justify-end">
+      <v-card-actions class="justify-space-between pa-3">
+        <div class="caption">
+          <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
+          You can either select or create a new product by typing.
+        </div>
         <v-btn
           text
           @click="agree"
@@ -51,21 +48,10 @@
 import ProductService from '@/service/product';
 
 export default {
-  name: 'ProductSelect',
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    },
-  },
+  name: 'product-select',
   data() {
     return {
-      dialog: false,
+      show: false,
       resolve: null,
       title: null,
       callback: null,
@@ -78,7 +64,7 @@ export default {
   },
   methods: {
     open(title, callerProductId) {
-      this.dialog = true;
+      this.show = true;
       this.title = title;
       this.callerProductId = callerProductId;
 
@@ -98,11 +84,15 @@ export default {
     },
     agree() {
       if (this.selectedName) {
-        const id = this.products[this.selectedName.toLowerCase()];
-        if (!id || id != this.callerProductId) {
-          this.close({ id, name: this.selectedName });
+        if (this.selectedName.length > 2 && this.selectedName.length < 251) {
+          const id = this.products[this.selectedName.toLowerCase()];
+          if (!id || id != this.callerProductId) {
+            this.close({ id, name: this.selectedName });
+          } else {
+            this.messages = 'Same product, please select different one!';
+          }
         } else {
-          this.messages = 'Same product, please select different one!';
+          this.messages = 'Name must be between 3-250 chars!';
         }
       } else {
         this.messages = 'Please select a product!';
@@ -110,7 +100,7 @@ export default {
     },
     close(selected) {
       this.callback(selected);
-      this.dialog = false;
+      this.show = false;
       this.selectedName = null;
       this.messages = null;
       this.products = {};

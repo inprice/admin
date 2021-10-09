@@ -1,82 +1,67 @@
 <template>
-  <div class="mt-5">
-    <v-card>
-      <v-card-title class="d-block pb-2">
-        <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
-          <div class="d-flex">
-            <v-icon class="mr-4 hidden-xs-only">mdi-account-plus-outline</v-icon>
-            <div class="d-inline">
-              <div>Invitations</div>
-              <div class="caption">Your recieved invitations</div>
-              <div class="caption">
-                <strong>Please note</strong>, if you accept an invitation, you will be able to see the refreshed menu after login again.
-              </div>
-            </div>
-          </div>
-
-          <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
-            <v-btn
-              small
-              color="white"
-              class="my-auto"
-              @click="getInvitations"
-              :disabled="$store.get('session/isSuperUser')"
-            >
-              Refresh
-            </v-btn>
-          </div>
-        </div>
+  <div class="mt-3">
+    <v-card tile>
+      <v-card-title class="py-2">
+        Invitations
       </v-card-title>
 
-      <div v-if="invitations.length">
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
-        <table class="info-table">
-          <thead>
-            <tr>
-              <th>Account</th>
-              <th width="15%">Role</th>
-              <th width="15%">Date</th>
-              <th width="7%" class="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in invitations" :key="row.id">
-              <td>{{ row.name }}</td>
-              <td>{{ row.role }}</td>
-              <td><ago :date="row.date"/></td>
-              <td class="text-right py-2">
-                <v-btn
-                  small
-                  class="mr-1"
-                  :loading="loading.reject" 
-                  @click="reject(row.id, row.name)"
-                  :disabled="loading.reject || $store.get('session/isSuperUser')"
-                >
-                  Reject
-                </v-btn>
-                <v-btn
-                  small
-                  class="ml-1"
-                  color="success"
-                  :loading="loading.accept" 
-                  @click="accept(row.id)"
-                  :disabled="loading.accept || $store.get('session/isSuperUser')"
-                >
-                  Accept
-                </v-btn>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <block-message 
-        v-else dense
-        :message="'You have no invitation right now.'"
-      />
-
+      <v-card-text class="pt-3">
+        <div>In this section, you can manage your recieved invitations.</div>
+        <div>
+          <strong>Please note</strong>, if you accept an invitation, you will be able to see the refreshed menu after login again.
+        </div>
+      </v-card-text>
     </v-card>
+
+    <div class="title mt-5 mb-2">Your invitations</div>
+
+    <v-card v-if="invitations.length">
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Workspace</th>
+            <th width="15%">Role</th>
+            <th width="15%">Date</th>
+            <th width="7%" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in invitations" :key="row.id">
+            <td>{{ row.name }}</td>
+            <td>{{ row.role }}</td>
+            <td><ago :date="row.date"/></td>
+            <td class="text-right py-2">
+              <v-btn
+                small
+                class="mr-1"
+                :loading="loading.reject" 
+                @click="reject(row.id, row.name)"
+                :disabled="loading.reject || $store.get('session/isSuperUser')"
+              >
+                Reject
+              </v-btn>
+              <v-btn
+                small
+                class="ml-1"
+                color="success"
+                :loading="loading.accept" 
+                @click="accept(row.id)"
+                :disabled="loading.accept || $store.get('session/isSuperUser')"
+              >
+                Accept
+              </v-btn>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </v-card>
+
+    <block-message 
+      v-else dense
+      :message="'You have no invitation.'"
+    />
 
     <confirm ref="confirm"></confirm>
 
@@ -117,8 +102,8 @@ export default {
       }
       this.loading.accept = false;
     },
-    async reject(id, account) {
-      this.$refs.confirm.open('Reject', 'You are about to reject the invitation of ' + account + '. Are you sure?').then(async (confirm) => {
+    async reject(id, workspace) {
+      this.$refs.confirm.open('Reject', 'You are about to reject the invitation of ' + workspace + '. Are you sure?').then(async (confirm) => {
         if (confirm == true) {
           this.loading.reject = true;
           const result = await UserService.rejectInvitation(id);

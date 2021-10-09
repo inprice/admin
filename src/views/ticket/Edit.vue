@@ -1,94 +1,75 @@
 <template>
-  <v-row justify="center">
+  <v-dialog 
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <span>{{ form.id ? 'Edit' : 'New' }} Ticket</span>
+        <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-    <v-dialog 
-      v-model="opened" 
-      :max-width="findDialogWidth"
-      overlay-opacity="0.2"
-      @keydown.esc="opened = false"
-    >
-      <v-card>
-        <v-card-title class="pr-3 justify-space-between">
-          <span>{{ form.id ? 'Edit' : 'New' }} Ticket</span>
-          <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </v-card-title>
+      <v-card-text class="py-0 mt-3">
+        <v-form ref="form" v-model="valid" @submit.prevent>
+          <input type="hidden" :value="form.id">
 
-        <v-divider></v-divider>
-
-        <v-divider class="mb-3"></v-divider>
-
-        <v-card-text class="pb-2">
-
-          <v-form ref="form" v-model="valid" @submit.prevent>
-            <input type="hidden" :value="form.id" >
-
-            <v-select
-              dense
-              outlined
-              label="You want to"
-              v-model="form.type"
-              :items="typeItems"
-              item-text="text"
-              item-value="value"
-            >
-              <template v-slot:selection="{ item }">
-                {{ item.text }}
-              </template>    
-            </v-select>
-
-            <v-select
-              dense
-              outlined
-              label="Priority"
-              v-model="form.priority"
-              :items="priorityItems"
-            ></v-select>
-
-            <v-select
-              dense
-              outlined
-              label="About"
-              v-model="form.subject"
-              :items="subjectItems"
-            ></v-select>
-
-            <v-textarea
-              counter
-              outlined
-              v-model="form.body"
-              label="Issue"
-              rows="8"
-              maxlength="512"
-              :rules="rules.body"
-            ></v-textarea>
-
-          </v-form>
-
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="py-4 justify-end">
-          <v-btn
-            text
-            tabindex="-1"
-            @click="close"
+          <v-select
+            dense
+            outlined
+            label="You want to"
+            v-model="form.type"
+            :items="typeItems"
+            item-text="text"
+            item-value="value"
           >
-            Close
-          </v-btn>
-          <v-btn
-            text
-            color="success"
-            @click="save"
-            :disabled="form.status != 'OPENED' || $store.get('session/isSuperUser')"
-          >
-            Save
-          </v-btn>
+            <template v-slot:selection="{ item }">
+              {{ item.text }}
+            </template>    
+          </v-select>
 
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+          <v-select
+            dense
+            outlined
+            label="Priority"
+            v-model="form.priority"
+            :items="priorityItems"
+          ></v-select>
+
+          <v-select
+            dense
+            outlined
+            label="About"
+            v-model="form.subject"
+            :items="subjectItems"
+          ></v-select>
+
+          <v-textarea
+            counter
+            outlined
+            v-model="form.body"
+            :rules="rules.body"
+            label="Issue"
+            rows="8"
+            maxlength="512"
+          ></v-textarea>
+        </v-form>
+      </v-card-text>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          color="success"
+          @click="save"
+          :disabled="form.status != 'OPENED' || $store.get('session/isSuperUser')"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -100,23 +81,12 @@ const typeItems = [
 ];
 
 const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
-const subjectItems = [ 'SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'ACCOUNT', 'COUPON', 'OTHER' ];
+const subjectItems = [ 'SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'VOUCHER', 'OTHER' ];
 
 export default {
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    },
-  },
   data() {
     return {
-      opened: false,
+      show: false,
       valid: false,
       rules: {},
       form: {
@@ -147,7 +117,7 @@ export default {
         this.form.priority = data.priority;
         this.form.body = data.body;
       }
-      this.opened = true;
+      this.show = true;
       this.$nextTick(() => this.$refs.form.resetValidation());
     },
     async save() {
@@ -159,11 +129,10 @@ export default {
           this.form.type = tType;
         }
         this.$emit('saved', this.form);
-        this.close();
       }
     },
     close() {
-      this.opened = false;
+      this.show = false;
       this.rules = {};
     },
     activateRules() {

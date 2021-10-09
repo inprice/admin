@@ -10,7 +10,10 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-6 pl-0 d-flex">
+    <div 
+      class="pl-0 d-flex"
+      :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+    >
       <v-text-field 
         :loading="loading"
         v-model="searchForm.term"
@@ -190,7 +193,13 @@
     />
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">More</v-btn>
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+      >
+        More
+      </v-btn>
     </div>
 
     <edit ref="platformDialog" @saved="update" />
@@ -306,7 +315,10 @@ export default {
     },
     async update(platform) {
       const result = await SU_PlatformService.update(platform);
-      if (result) this.search();
+      if (result) {
+        this.$refs.platformDialog.close();
+        this.search();
+      }
     },
     toggleParked(id) {
       SU_PlatformService.toggleParked(id).then((res) => {

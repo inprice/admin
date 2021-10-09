@@ -13,6 +13,7 @@
             />
           </th>
           <th>Name</th>
+          <th width="5%" class="hidden-sm-and-down text-center">Alarm</th>
           <th width="15%" class="text-right">Price</th>
           <th width="5%"></th>
         </tr>
@@ -35,13 +36,17 @@
             <v-icon
               class="mr-2"
               style="font-size:18px"
-              :color="findLevelColor(row.level)"
+              :color="findPositionColor(row.position)"
             >
               mdi-star
             </v-icon>
             <span>{{ row.name || row.url }}</span>
           </td>
-          <td class="text-right">{{ row.price | toPrice }}</td>
+          <td class="hidden-sm-and-down text-center">
+            <v-icon v-if="row.alarmId" color="green" style="font-size:20px">mdi-alarm</v-icon>
+            <span v-else>-</span>
+          </td>
+          <td class="text-right">{{ (row.price || 0) | toPrice }}</td>
           <td>
             <v-menu offset-y bottom left>
               <template v-slot:activator="{ on, attrs }">
@@ -147,7 +152,7 @@ export default {
         cloned = JSON.parse(JSON.stringify(row.alarm));
       } else {
         cloned = {
-          subject: 'STATUS',
+          subject: 'POSITION',
           subjectWhen: 'CHANGED',
           amountLowerLimit: 0,
           amountUpperLimit: 0,

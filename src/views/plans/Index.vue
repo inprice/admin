@@ -18,7 +18,7 @@
       <v-divider></v-divider>
 
       <div class="pa-4" style="background-color: lightyellow">
-        You have a <b>Free-Use</b> right! You are highly advised to start with a <b>14-day free</b> trial period.
+        You have a <b>Free-Use</b> right! You are highly advised to start with a <b>14-day free</b> trial period with Basic Plan.
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn
             small 
@@ -80,7 +80,7 @@
           class="mb-0" 
           v-if="CURSTAT.isActive == false && CURSTAT.status != 'CREATED'"
         >
-          This account has been {{ CURSTAT.status.toLowerCase() }}
+          This workspace has been {{ CURSTAT.status.toLowerCase() }}
           <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
         </block-message>
       </v-card>
@@ -221,11 +221,12 @@ export default {
   },
   methods: {
     async startFreeUse() {
-      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 14 days free plan').then(async (confirm) => {
+      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 14 days free Basic Plan').then(async (confirm) => {
         if (confirm == true) {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
           if (result.status == true) {
+            console.log('aaa', this.$route.params.sid);
             this.$store.commit('session/SET_CURRENT', result.data.session);
           } else {
             this.$store.dispatch('session/refresh');
@@ -235,7 +236,7 @@ export default {
       });
     },
     async subscribe() {
-      this.$refs.info.open('Sorry!', 'Our payment gateway is not yet fully operational. We will make an announcement when it is finished. Thank you for your interest.');
+      this.$refs.info.open('Sorry!', 'Our payment gateway is not yet fully operational. We will make an announcement when it is completed. Thank you for your interest.');
     //async subscribe(planId) {
       /*
       this.loading.overlay = true;
@@ -316,8 +317,8 @@ export default {
           return this.CURSTAT.status;
         } else if (this.CURSTAT.status == 'FREE') {
           return 'FREE USE';
-        } else if (this.CURSTAT.status == 'COUPONED') {
-          return 'COUPON USE';
+        } else if (this.CURSTAT.status == 'VOUCHERED') {
+          return 'VOUCHER USE';
         }
       }
       return '$' + plan.price.toFixed(2);

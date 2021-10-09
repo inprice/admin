@@ -7,13 +7,13 @@ export default {
 
   async list(productId) {
     const res = await Helper.call('Link List', { method: 'get', url: baseURL + 's/' + productId });
-    if (res.status == true && res.data) return res.data;
+    if (res.status) return res.data;
     return null;
   },
 
   async search(form) {
     const res = await Helper.call('Link Search', { url: baseURL + 's/search', data: form });
-    if (res.status == true && res.data.rows) return res.data.rows;
+    if (res.status) return res.data;
     return null;
   },
 

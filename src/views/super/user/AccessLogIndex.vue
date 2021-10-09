@@ -22,7 +22,10 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div class="col-6 pl-0 d-flex">
+    <div 
+      class="pl-0 d-flex"
+      :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+    >
       <v-text-field 
         :loading="loading"
         v-model="searchForm.term"
@@ -60,13 +63,13 @@
                   dense
                   outlined
                   hide-details
-                  label="Accounts"
-                  v-model="searchForm.account"
-                  :items="accountItems"
+                  label="Workspaces"
+                  v-model="searchForm.workspace"
+                  :items="workspaceItems"
                   item-text="value"
                   item-value="key"
                   clearable
-                  @click:clear="searchForm.account=null"
+                  @click:clear="searchForm.workspace=null"
                   class="mb-4"
                 >
                   <template v-slot:selection="{ item }">
@@ -208,7 +211,13 @@
       <list :rows="searchResult" :selectedId="showingRowId" @selected="rowSelected" />
 
       <div class="mt-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">More</v-btn>
+        <v-btn 
+          small
+          @click="loadmore" 
+          :disabled="isLoadMoreDisabled" 
+        >
+          More
+        </v-btn>
       </div>
     </div>
 
@@ -231,7 +240,7 @@ const baseSearchForm = {
   startDate: null,
   endDate: null,
   method: null,
-  account: null,
+  workspace: null,
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
   rowLimit: rowLimitItems[0],
@@ -253,7 +262,7 @@ export default {
       orderByItems,
       orderDirItems,
       rowLimitItems,
-      accountItems: [],
+      workspaceItems: [],
       baseSearchForm,
       showingRowId: null,
       loading: false,
@@ -327,9 +336,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.search()
-      SU_UserService.fetchAccountList(this.searchForm.userId).then((res) => {
+      SU_UserService.fetchWorkspaceList(this.searchForm.userId).then((res) => {
         if (res && res.data) {
-          this.accountItems = res.data;
+          this.workspaceItems = res.data;
         }
       });
     });

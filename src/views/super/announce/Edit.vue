@@ -1,104 +1,87 @@
 <template>
-  <v-row justify="center">
+  <v-dialog 
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <div>
+          <div>{{ form.id ? 'Edit' : 'New' }} Announce</div>
+          <div class="caption">For {{ forWhom }}</div>
+        </div>
+        <v-btn icon @click="show = false"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-    <v-dialog 
-      v-model="opened" 
-      max-width="40%"
-      overlay-opacity="0.2"
-      @keydown.esc="opened = false"
-    >
-      <v-card>
-        <v-card-title class="pr-3 justify-space-between">
-          <div>
-            <div>{{ form.id ? 'Edit' : 'New' }} Announce</div>
-            <div class="caption">For {{ forWhom }}</div>
-          </div>
-          <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </v-card-title>
+      <v-card-text class="py-0 mt-3">
+        <v-form ref="form" v-model="valid" @submit.prevent>
+          <input type="hidden" :value="form.id">
 
-        <v-divider></v-divider>
+          <v-select
+            dense
+            outlined
+            label="Position"
+            v-model="form.position"
+            :items="positionItems"
+          ></v-select>
 
-        <v-divider class="mb-3"></v-divider>
-
-        <v-card-text class="pb-2">
-
-          <v-form ref="form" v-model="valid" @submit.prevent>
-            <input type="hidden" :value="form.id" >
-
-            <v-select
+          <div class="d-flex">
+            <v-text-field
               dense
               outlined
-              label="Level"
-              v-model="form.level"
-              :items="levelItems"
-            ></v-select>
-
-            <div class="d-flex">
-              <v-text-field
-                dense
-                outlined
-                v-mask="'####-##-## ##:##'"
-                v-model="form.startingAt"
-                :rules="rules.startingAt"
-                label="Starting At"
-                class="pr-1"
-              ></v-text-field>
-
-              <v-text-field
-                dense
-                outlined
-                v-mask="'####-##-## ##:##'"
-                v-model="form.endingAt"
-                :rules="rules.endingAt"
-                label="Ending At"
-                class="pl-1"
-              ></v-text-field>
-            </div>
+              v-mask="'####-##-## ##:##'"
+              v-model="form.startingAt"
+              :rules="rules.startingAt"
+              label="Starting At"
+              class="pr-1"
+            ></v-text-field>
 
             <v-text-field
               dense
               outlined
-              label="Title"
-              v-model="form.title"
-              :rules="rules.title"
+              v-mask="'####-##-## ##:##'"
+              v-model="form.endingAt"
+              :rules="rules.endingAt"
+              label="Ending At"
+              class="pl-1"
             ></v-text-field>
+          </div>
 
-            <v-textarea
-              counter
-              outlined
-              v-model="form.body"
-              :rules="rules.body"
-              label="Body"
-              rows="8"
-              maxlength="1024"
-            ></v-textarea>
+          <v-text-field
+            dense
+            outlined
+            label="Title"
+            v-model="form.title"
+            :rules="rules.title"
+          ></v-text-field>
 
-          </v-form>
+          <v-textarea
+            counter
+            outlined
+            v-model="form.body"
+            :rules="rules.body"
+            label="Body"
+            rows="8"
+            maxlength="1024"
+          ></v-textarea>
 
-        </v-card-text>
+        </v-form>
+      </v-card-text>
 
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
-        <v-card-actions class="py-4 justify-end">
-          <v-btn
-            text
-            tabindex="-1"
-            @click="close"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            text
-            color="success"
-            @click="save"
-          >
-            Save
-          </v-btn>
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          color="success"
+          @click="save"
+        >
+          Save
+        </v-btn>
 
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -110,7 +93,7 @@ const levelItems = ['INFO', 'WARNING'];
 export default {
   data() {
     return {
-      opened: false,
+      show: false,
       valid: false,
       rules: {},
       form: {
@@ -120,7 +103,7 @@ export default {
         endingAt: null,
         title: null,
         body: null,
-        account: null,
+        workspace: null,
       },
       forWhom: 'public',
       startingAtMenuOpen: false,
@@ -137,19 +120,19 @@ export default {
       this.form.title = null;
       this.form.body = null;
       this.form.userId = null;
-      this.form.accountId = null;
+      this.form.workspaceId = null;
       if (data) {
         this.form.id = data.id;
         this.form.title = data.title;
         this.form.body = data.body;
         this.form.userId = data.userId;
-        this.form.accountId = data.accountId;
+        this.form.workspaceId = data.workspaceId;
         if (data.level) this.form.level = data.level;
         if (data.startingAt) this.form.startingAt = data.startingAt;
         if (data.endingAt) this.form.endingAt = data.endingAt;
         if (data.forWhom) this.forWhom = data.forWhom;
       }
-      this.opened = true;
+      this.show = true;
       this.$nextTick(() => this.$refs.form.resetValidation());
     },
     async save() {
@@ -161,7 +144,7 @@ export default {
       }
     },
     close() {
-      this.opened = false;
+      this.show = false;
       this.rules = {};
     },
     activateRules() {

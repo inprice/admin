@@ -1,117 +1,149 @@
 <template>
-  <v-row justify="center">
+  <v-dialog 
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <div>
+          <div>{{ form.id ? 'Edit' : 'New' }} Product</div>
+          <div v-if="form.id" class="caption">For {{ form.name }}</div>
+        </div>
+        <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-    <v-dialog 
-      v-model="opened" 
-      :max-width="findDialogWidth"
-      overlay-opacity="0.2"
-      @keydown.esc="opened = false"
-    >
-      <v-card>
-        <v-card-title class="pr-3 justify-space-between">
-          <span>{{ form.id ? 'Edit' : 'New' }} Product</span>
-          <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </v-card-title>
+      <v-card-text class="py-0 mt-3">
+        <v-form ref="form" v-model="valid" @submit.prevent>
+          <input type="hidden" :value="form.id">
 
-        <v-divider></v-divider>
+          <v-text-field
+            dense
+            outlined
+            label="Sku"
+            v-model="form.sku"
+            :rules="rules.sku"
+            type="text"
+            maxlength="50"
+          />
 
-        <v-divider class="mb-3"></v-divider>
+          <v-text-field
+            dense
+            outlined
+            label="Name"
+            v-model="form.name"
+            :rules="rules.name"
+            type="text"
+            maxlength="250"
+          />
 
-        <v-card-text>
+          <v-text-field
+            dense
+            outlined
+            label="Price"
+            v-model="form.price"
+            :rules="rules.price"
+            @blur="formatPrice"
+            class="mr-1"
+            type="number"
+            maxlength="10"
+          ></v-text-field>
 
-          <v-form ref="form" v-model="valid" @submit.prevent>
-            <input type="hidden" :value="form.id" >
-
-            <v-text-field
-              label="Name"
-              v-model="form.name"
-              :rules="rules.name"
-              type="text"
-              maxlength="50"
-            />
-
-            <v-text-field
-              label="Description"
-              v-model="form.description"
-              :rules="rules.description"
-              maxlength="128"
-            />
-
-            <v-text-field
-              label="Price"
-              v-model="form.price"
-              :rules="rules.price"
-              @blur="formatPrice"
-              maxlength="10"
-              type="number"
-              messages="For competitive pricing, please enter a price greater than zero!"
-            ></v-text-field>
-
-          </v-form>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="py-4 justify-end">
-          <v-btn
-            text
-            tabindex="-1"
-            @click="close"
+          <v-combobox
+            dense
+            outlined
+            clearable
+            label="Brand"
+            v-model="form.brand"
+            :rules="rules.brand"
+            :items="brandItems"
+            item-text="name"
+            :search-input.sync="newBrandName"
+            hide-no-data
           >
-            Close
-          </v-btn>
-          <v-btn
-            text
-            @click="save"
-            color="success"
-            :disabled="$store.get('session/isNotEditor')"
+            <template v-slot:selection="{ item }">
+              <span v-if="item === Object(item)">{{ item.name }}</span>
+            </template>
+            <template v-slot:item="{ item }">
+              {{ item.name }}
+            </template>
+          </v-combobox>
+
+          <v-combobox
+            dense
+            outlined
+            clearable
+            label="Category"
+            v-model="form.category"
+            :rules="rules.category"
+            :items="categoryItems"
+            item-text="name"
+            :search-input.sync="newCategoryName"
+            hide-no-data
           >
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+            <template v-slot:selection="{ item }">
+              <span v-if="item === Object(item)">{{ item.name }}</span>
+            </template>
+            <template v-slot:item="{ item }">
+              {{ item.name }}
+            </template>
+          </v-combobox>
+
+        </v-form>
+      </v-card-text>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          @click="save"
+          color="success"
+          :disabled="$store.get('session/isNotEditor')"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
+import CategoryService from '@/service/category';
+import BrandService from '@/service/brand';
+
 export default {
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    },
-  },
   data() {
     return {
-      opened: false,
+      show: false,
       valid: false,
       rules: {},
       form: {
+        sku: '',
         name: '',
-        description: '',
         price: 0,
+        category: null,
+        brand: null,
       },
+      newCategoryName: null,
+      newBrandName: null,
+      categoryItems: [],
+      brandItems: [],
     };
   },
   methods: {
     open(data) {
-      this.opened = true;
+      this.show = true;
 
       if (data) {
         this.form.id = data.id;
+        this.form.sku = data.sku;
         this.form.name = data.name;
-        this.form.description = data.description;
         this.form.price = data.price;
       } else {
         delete this.form.id;
+        this.form.sku = '';
         this.form.name = '';
-        this.form.description = '';
         this.form.price = 0;
       }
 
@@ -119,6 +151,32 @@ export default {
       this.$nextTick(() => {
         self.$refs.form.resetValidation();
         self.formatPrice();
+        BrandService.getList().then(res => {
+          if (res.data) {
+            this.brandItems = res.data;
+          } else {
+            this.brandItems = [];
+          }
+        }).finally(() => {
+          if (data && data.brandId && this.brandItems.length) {
+            this.form.brand = { id: data.brandId, name: data.brandName };
+          } else {
+            this.form.brand = null;
+          }
+        });
+        CategoryService.getList().then(res => {
+          if (res.data) {
+            this.categoryItems = res.data;
+          } else {
+            this.categoryItems = [];
+          }
+        }).finally(() => {
+          if (data && data.categoryId && this.categoryItems.length) {
+            this.form.category = { id: data.categoryId, name: data.categoryName };
+          } else {
+            this.form.category = null;
+          }
+        });
       });
     },
     async save() {
@@ -127,31 +185,72 @@ export default {
       if (this.valid) {
         this.form.price = parseFloat(this.form.price);
         this.$emit('saved', this.form);
-        this.close();
       }
     },
     close() {
-      this.opened = false;
+      this.show = false;
       this.rules = {};
     },
     activateRules() {
       this.rules = {
+        sku: [
+          v => (!v || (v.length >= 2 && v.length <= 50)) || "If given, must be between 2-50 chars"
+        ],
         name: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 50) || "Name must be between 3-50 chars"
+          v => (v && v.length >= 3 && v.length <= 250) || "Name must be between 3-250 chars"
         ],
         description: [
           v => (!v || (v.length <= 128)) || "Can be up to 128 chars"
         ],
         price: [
-          v => !!v || "Required",
-          v => (parseFloat(v) > -1) || "Base Price must be greater or equal than 0"
+          v => (!v || parseFloat(v) > -1) || "Price must be greater or equal than 0"
+        ],
+        brand: [
+          v => (!v || (v.name && v.name.length >= 2 && v.name.length <= 50)) || "If given, must be between 2-50 chars"
+        ],
+        category: [
+          v => (!v || (v.name && v.name.length >= 2 && v.name.length <= 50)) || "If given, must be between 2-50 chars"
         ],
       }
     },
     formatPrice() {
       this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);
     }
+  },
+  watch: {
+    'form.category' (val) {
+      if (!val || val.id) return;
+      if (val && !val.id && val.name) return;
+
+      if (this.categoryItems.length) {
+        const lastCategory = this.categoryItems[this.categoryItems.length-1];
+        if (lastCategory.id === undefined) {
+          lastCategory.name = val;
+          this.form.category = lastCategory;
+          return;
+        }
+      }
+      const neu = { id: undefined, name: val };
+      this.categoryItems.push(neu);
+      this.form.category = neu;
+    },
+    'form.brand' (val) {
+      if (!val || val.id) return;
+      if (val && !val.id && val.name) return;
+
+      if (this.brandItems.length) {
+        const lastBrand = this.brandItems[this.brandItems.length-1];
+        if (lastBrand.id === undefined) {
+          lastBrand.name = val;
+          this.form.brand = lastBrand;
+          return;
+        }
+      }
+      const neu = { id: undefined, name: val };
+      this.brandItems.push(neu);
+      this.form.brand = neu;
+    },
   },
 };
 </script>

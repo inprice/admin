@@ -7,7 +7,7 @@
             <v-icon class="mr-4 hidden-xs-only">mdi-account-supervisor</v-icon>
             <div class="d-inline">
               <div>Memberships</div>
-              <div class="caption">All the accounts the user has been joined</div>
+              <div class="caption">All the workspaces the user has been joined</div>
             </div>
           </div>
 
@@ -34,7 +34,7 @@
             <table :style="{'table-layout': RESPROPS['table-layout']}">
               <thead>
                 <tr>
-                  <th :width="RESPROPS.table.account">Account</th>
+                  <th :width="RESPROPS.table.workspace">Workspace</th>
                   <th class="text-center" :width="RESPROPS.table.role">Role</th>
                   <th class="text-center" :width="RESPROPS.table.status">Status</th>
                   <th class="text-center" :width="RESPROPS.table.retry">Retry</th>
@@ -43,7 +43,7 @@
               </thead>
               <tbody>
                 <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.accountName }}</td>
+                  <td>{{ row.workspaceName }}</td>
                   <td class="text-center">{{ row.role }}</td>
                   <td class="text-center">{{ row.status }}</td>
                   <td class="text-center">{{ row.retry }}</td>
@@ -78,13 +78,13 @@ export default {
         case 'sm': {
           return {
             'table-layout': 'fixed',
-            table: { account: '250px', role: '100px', status: '100px', retry: '70px', date: '200px' },
+            table: { workspace: '250px', role: '100px', status: '100px', retry: '70px', date: '200px' },
           };
         }
         default: {
           return {
             'table-layout': '',
-            table: { account: '', role: '12%', status: '12%', retry: '8%', date: '20%' },
+            table: { workspace: '', role: '12%', status: '12%', retry: '8%', date: '20%' },
           };
         }
       }

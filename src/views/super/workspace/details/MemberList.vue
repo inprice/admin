@@ -4,10 +4,10 @@
       <v-card-title class="d-block pb-2">
         <div :class="($vuetify.breakpoint.xsOnly ? 'mb-2' : 'd-flex justify-space-between')">
           <div class="d-flex">
-            <v-icon class="mr-4 hidden-xs-only">mdi-history</v-icon>
+            <v-icon class="mr-4 hidden-xs-only">mdi-account-supervisor</v-icon>
             <div class="d-inline">
-              <div>History</div>
-              <div class="caption">Account's history list.</div>
+              <div>Members</div>
+              <div class="caption">All the users joined to this workspace</div>
             </div>
           </div>
 
@@ -31,16 +31,20 @@
         <table class="info-table">
           <thead>
             <tr>
-              <th width="15%">Date</th>
-              <th width="20%">Status</th>
-              <th>Plan</th>
+              <th>User</th>
+              <th width="10%" class="text-center">Role</th>
+              <th width="10%" class="text-center">Status</th>
+              <th width="5%" class="text-center">Retry</th>
+              <th width="15%" class="text-center">Date</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in list" :key="row.id">
-              <td>{{ row.createdAt | formatPlainDate }}</td>
-              <td>{{ row.status }}</td>
-              <td>{{ row.planName }}</td>
+              <td>{{ row.email }}</td>
+              <td class="text-center">{{ row.role }}</td>
+              <td class="text-center">{{ row.status }}</td>
+              <td class="text-center">{{ row.retry }}</td>
+              <td class="text-center">{{ row.createdAt | formatPlainDate }}</td>
             </tr>
           </tbody>
         </table>
@@ -48,7 +52,7 @@
 
       <block-message 
         v-else dense
-        :message="'No history found.'"
+        :message="'Workspace has no member.'"
       />
 
     </v-card>

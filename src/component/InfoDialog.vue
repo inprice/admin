@@ -1,25 +1,28 @@
 <template>
   <v-dialog
     v-model="show"
-    :max-width="findDialogWidth"
-    :style="{ zIndex: options.zIndex }"
-    @keydown.esc="show = false"
-    overlay-opacity="0.2"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+    style="z-index: 100"
   >
     <v-card>
-      <div class="d-flex justify-space-between pa-4 pb-1">
-        <span class="title">{{ title }}</span>
-        <v-btn icon @click="show = false"><v-icon>mdi-close</v-icon></v-btn>
-      </div>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <span>{{ title }}</span>
+        <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-      <v-divider></v-divider>
+      <v-card-text class="py-0 mt-3" v-html="html" v-if="html"></v-card-text>
+      <v-card-text class="py-0 mt-3" v-else>
+        {{ text }}
+      </v-card-text>
 
-      <v-card-text v-show="!!message" class="pa-4">{{ message }}</v-card-text>
-
-      <v-divider></v-divider>
-
-      <v-card-actions class="justify-end">
-        <v-btn @click.native="show = false" text>OK</v-btn>
+      <v-card-actions class="justify-end pa-3">
+        <v-btn 
+          text
+          @click.native="close" 
+        >
+          OK
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -27,34 +30,23 @@
 
 <script>
 export default {
-  name: 'confirm',
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    },
-  },
+  name: 'info-dialog',
   data: () => ({
     show: false,
-    message: null,
+    text: null,
+    html: null,
     title: null,
-    options: {
-      width: 350,
-      zIndex: 200
-    }
   }),
   methods: {
-    open(title, message, important, options) {
+    open(title, text, html) {
       this.title = title;
-      this.message = message;
-      this.options = Object.assign(this.options, options);
+      this.text = text;
+      this.html = html;
       this.show = true;
     },
+    close() {
+      this.show = false;
+    }
   },
 }
 </script>

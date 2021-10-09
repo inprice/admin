@@ -49,7 +49,7 @@ export default {
 
   async search(form) {
     const res = await Helper.call('Product Search', { url: baseURL + 's/search', data: form });
-    if (res.status == true && res.data) return res.data;
+    if (res.status) return res.data;
     return null;
   },
 

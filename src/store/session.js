@@ -14,7 +14,7 @@ const state = {
 const actions = {
 
   async login({ dispatch }, form) {
-    const res = await Helper.call('Login', { url: '/login', data: form }, true);
+    const res = await Helper.call('Login', { url: '/login', data: form });
     if (res.status < 400 && res.data) {
       dispatch('create', res);
     }
@@ -48,8 +48,8 @@ const actions = {
       });
   },
 
-  unbindAccount({ commit }) {
-    ApiService.post('/sys/account/unbind')
+  unbindWorkspace({ commit }) {
+    ApiService.post('/sys/workspace/unbind')
       .then((res) => {
         if (res && res.data) {
           commit('SET_CURRENT', res.data.data);
@@ -69,16 +69,16 @@ function buildCurrent(state) {
       isFree : false,
       hasTime : false,
       daysToRenewal : 0,
-      account: selected.account,
-      accountId: selected.accountId,
-      status: selected.accountStatus,
+      workspace: selected.workspace,
+      workspaceId: selected.workspaceId,
+      status: selected.workspaceStatus,
       planId: selected.planId,
       planName: selected.planName,
       subsRenewalAt: selected.subsRenewalAt,
       linkCount: selected.linkCount,
       lastStatusUpdate: selected.lastStatusUpdate,
       email: selected.email,
-      user: selected.user,
+      fullName: selected.fullName,
       role: selected.role,
       timezone: selected.timezone,
       currencyFormat: selected.currencyFormat,
@@ -87,8 +87,8 @@ function buildCurrent(state) {
     if (selected.subsRenewalAt) {
       const renewal = moment(selected.subsRenewalAt, 'YYYY-MM-DD').tz(selected.timezone);
       const dayDiff = renewal.diff(moment().startOf('day'), 'days');
-      const base = (selected.accountStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
-      const value = (dayDiff >= base && ACTIVE_ACCOUNT_STATUSES.includes(selected.accountStatus));
+      const base = (selected.workspaceStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
+      const value = (dayDiff >= base && ACTIVE_WORKSPACE_STATUSES.includes(selected.workspaceStatus));
       stat.isActive = value;
       stat.isSubscriber = (value && base < 0);
       stat.isFree = (value && stat.isSubscriber == false);
@@ -105,12 +105,8 @@ function buildCurrent(state) {
 
 const mutations = {
 
-  SET_CURRENT(state, ses, sid) {
-    if (sid != undefined && sid >= 0 && sid < state.list.length) {
-      state.no = sid;
-    } else {
-      state.no = 0;
-    }
+  SET_CURRENT(state, ses) {
+    state.no = router.currentRoute.params.sid;
     if (state.no == undefined || state.no < 0 || state.no >= state.list.length) state.no = 0;
     state.list[state.no] = ses;
     if (state.current.role != 'SUPER') loginChannel.postMessage(state.list);
@@ -148,11 +144,11 @@ const mutations = {
     state.list = [];
   },
 
-  SET_ACCOUNT_INFO(state, form) {
+  SET_WORKSPACE_INFO(state, form) {
     if (form && state.current && state.list[state.no]) {
-      state.current.account = form.name;
+      state.current.workspace = form.name;
       state.current.currencyFormat = form.currencyFormat;
-      state.list[state.no].account = form.name;
+      state.list[state.no].workspace = form.name;
       state.list[state.no].currencyFormat = form.currencyFormat;
     }
   },
@@ -166,9 +162,9 @@ const mutations = {
 
 }
 
-const ACTIVE_ACCOUNT_STATUSES = [
+const ACTIVE_WORKSPACE_STATUSES = [
   'FREE',
-  'COUPONED',
+  'VOUCHERED',
   'SUBSCRIBED'
 ];
 
@@ -214,6 +210,10 @@ const getters = {
   isViewer: (state) => {
     return (state.current && state.current.role === 'VIEWER');
   },
+
+  isDemoUser: (state) => {
+    return (state.current && state.current.email === 'demo@inprice.io');
+  }
 
 };
 

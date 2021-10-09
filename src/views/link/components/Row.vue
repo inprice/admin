@@ -49,11 +49,11 @@
             small
             label
             outlined
-            :color="findLevelColor(row.level)"
+            :color="findPositionColor(row.position)"
             class="mr-1 px-1"
-            v-if="row.level != 'NA'" 
+            v-if="row.position != 'UNKNOWN'" 
           >
-            {{ row.level }}
+            {{ row.position }}
           </v-chip>
           <v-chip
             small
@@ -77,7 +77,7 @@
           v-if="!row.price"
           class="caption text-right d-inline">
             <span>{{ row.grup != 'WAITING' ? 'Checked' : 'Added' }}</span>
-            <ago :class="{ 'd-inline' : fromSearchPage || row.level == 'NA' }" :date="(row.checkedAt || row.createdAt)" />
+            <ago :class="{ 'd-inline' : fromSearchPage || row.position == 'UNKNOWN' }" :date="(row.checkedAt || row.createdAt)" />
         </div>
       </div>
 

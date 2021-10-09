@@ -1,41 +1,21 @@
 <template>
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
-    <div :style="'width: ' + findWidth">
+    <div style="width: 400px">
 
       <div class="text-center">
         <img :src="verticalBrand" :width="200" />
       </div>
 
       <v-card class="pb-0 elevation-0">
-
-        <v-alert
-          dense
-          dismissible
-          outlined
-          type="error"
-          class="ma-4"
-          v-model="showError"
-        >
-          {{ errorMessage }}
-        </v-alert>
-        <div v-if="!showError" class="text-center ma-4 font-weight-light">Please fill this form to register your account</div>
+        <div class="text-center pt-4">Please fill this form to register your workspace</div>
 
         <v-card-text>
           <v-form 
             ref="form"
             v-model="valid"
-            onSubmit="return false"
+            @submit.prevent
             @keyup.native.enter="valid && submit($event)"
           >
-            <v-text-field
-              outlined dense
-              label="Account Name"
-              v-model="form.accountName"
-              :rules="rules.accountName"
-              type="text"
-              maxlength="70"
-            />
-
             <v-text-field
               outlined dense
               label="E-mail"
@@ -43,6 +23,23 @@
               type="email"
               :rules="rules.email"
               maxlength="100"
+            />
+
+            <v-text-field
+              outlined dense
+              label="Full Name"
+              v-model="form.fullName"
+              :rules="rules.fullName"
+              maxlength="70"
+            />
+
+            <v-text-field
+              outlined dense
+              label="Company Name"
+              v-model="form.workspaceName"
+              :rules="rules.workspaceName"
+              type="text"
+              maxlength="70"
             />
 
             <v-text-field
@@ -88,7 +85,7 @@
       <v-divider></v-divider>
 
       <div class="text-center small-font mt-6">
-        By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you account related emails.
+        By clicking "Sign Up", you agree to <a tabindex="-1">our terms of service and privacy policy</a> We’ll occasionally send you workspace related emails.
       </div>
 
     </div>
@@ -108,26 +105,14 @@ export default {
       showPass2: false,
       rules: {},
       form: {
+        fullName: '',
         email: '',
-        accountName: '',
+        workspaceName: '',
         password: '',
         repeatPassword: ''
       },
-      showError: false,
-      errorMessage: '',
       verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
-  },
-  computed: {
-    findWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '90%';
-        case 'sm': return '60%';
-        case 'md': return '45%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    }
   },
   methods: {
     async submit() {
@@ -137,32 +122,29 @@ export default {
         this.loading = true;
         const result = await AuthService.requestRegistration(this.form);
         if (result.status) {
-          this.showError = false;
-          this.errorMessage = '';
-
           this.$router.push('/complete-registration');
-          return;
-        } else {
-          this.errorMessage = result.error;
-          this.showError = true;
         }
         this.loading = false;
       }
     },
     activateRules() {
       this.rules = {
-        accountName: [
-          v => !!v || "Account name required",
-          v => (v.length >= 3 && v.length <= 70) || "Account name must be between 3-70 chars"
+        fullName: [
+          v => !!v || "Your full name required",
+          v => (v.length >= 3 && v.length <= 70) || "Your full name must be between 3-70 chars"
         ],
         email: [
           v => !!v || "E-mail required",
           v => (v.length >= 9 && v.length <= 100) || "Email must be between 9-100 chars",
           v => Utility.verifyEmail(v) || "E-mail must be valid"
         ],
+        workspaceName: [
+          v => !!v || "Company name required",
+          v => (v.length >= 3 && v.length <= 70) || "Company name must be between 3-70 chars"
+        ],
         password: [
           v => !!v || "Password required",
-          v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => (v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
         ],
         repeatPassword: [
           v => !!v || "Repeat Password required",

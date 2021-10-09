@@ -1,59 +1,61 @@
 <template>
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
-    <div :style="'width: ' + findWidth">
+    <div style="width: 400px">
 
       <div class="text-center mb-8">
         <img :src="verticalBrand" :width="200" />
       </div>
 
-      <v-card class="pa-3 mb-10 body-2" :color="successful ? 'green lighten-5' : 'yellow lighten-5'">
+      <v-card elevation="0">
+        <v-card class="py-3 ma-4 body-2" :color="successful ? 'green lighten-5' : 'yellow lighten-5'">
+          <div v-if="successful">
+            <div class="title text-center mb-2">Please check your email</div>
+            <v-divider></v-divider>
+            <p class="ma-4">
+              An email with password reset instructions has been sent to the email address below.
+            </p>
+          </div>
+          <div v-else>
+            <div class="title text-center mb-2">Forgot password</div>
 
-        <div v-if="successful">
-          <div class="title text-center mb-2">Please check your email</div>
-          <v-divider></v-divider>
-          <p class="ma-4">
-            An email with password reset instructions has been sent to the email address below.
-          </p>
-        </div>
-        <div v-else>
-          <div class="title text-center mb-2">Forgot password</div>
-          <v-divider></v-divider>
-          <p class="ma-4 small-font">
-            Please provide your email address that you used when you signed up for your inprice account. We will send
-            you an email that will allow you to reset your password.
-          </p>
-        </div>
+            <p class="ma-4 small-font">
+              Please provide your email address that you used when you signed up for your inprice workspace. We will send
+              you an email that will allow you to reset your password.
+            </p>
+          </div>
+        </v-card>
 
+        <v-card-text>
+          <v-form 
+            ref="form"
+            v-model="valid"
+            @submit.prevent
+            @keyup.native.enter="valid && submit($event)"
+          >
+            <v-text-field
+              outlined dense
+              v-model="form.email"
+              :rules="rules.email"
+              label="E-mail"
+              type="email"
+              maxlength="100"
+            />
+          </v-form>
+
+          <v-btn 
+            block
+            color="success"
+            class="mt-2"
+            @click="submit" 
+            :loading="loading" 
+            :disabled="loading">Submit</v-btn>
+
+          <div class="d-flex mt-5 justify-space-between">
+            <span>Remember your password?</span>
+            <router-link to="login" tabindex="-1">Sign in</router-link>
+          </div>
+        </v-card-text>
       </v-card>
-
-      <v-form 
-        ref="form"
-        v-model="valid"
-        onSubmit="return false"
-        @keyup.native.enter="valid && submit($event)"
-      >
-        <v-text-field
-          outlined dense
-          v-model="form.email"
-          :rules="rules.email"
-          label="E-mail"
-          type="email"
-          maxlength="100"
-        />
-      </v-form>
-
-      <v-btn 
-        block
-        color="success"
-        class="mt-2"
-        @click="submit" 
-        :loading="loading" 
-        :disabled="loading">Submit</v-btn>
-
-      <div class="mt-4 d-flex justify-space-between">
-        <span class="small-font">Remember your password?</span>
-        <router-link to="login" tabindex="-1" class="small-font">Sign in</router-link>
-      </div>
 
     </div>
   </div>
@@ -76,26 +78,13 @@ export default {
       verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
   },
-  computed: {
-    findWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '90%';
-        case 'sm': return '60%';
-        case 'md': return '45%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    }
-  },
   methods: {
     async submit() {
       this.activateRules();
       await this.$refs.form.validate();
       if (this.valid) {
         this.loading = true;
-        this.successful = false;
-        await AuthService.forgotPassword(this.form.email);
-        this.successful = true;
+        this.successful = await AuthService.forgotPassword(this.form.email);
         this.loading = false;
       }
     },

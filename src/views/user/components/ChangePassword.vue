@@ -1,86 +1,73 @@
 <template>
-  <v-row justify="center">
+  <v-dialog 
+    v-model="show"
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card>
+      <v-card-title class="pb-0 d-flex justify-space-between">
+        <div>Change password</div>
+        <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
 
-    <v-dialog 
-      v-model="opened" 
-      :max-width="findDialogWidth"
-      overlay-opacity="0.2"
-      @keydown.esc="close"
-    >
-      <v-card>
-        <div class="d-flex justify-space-between pa-4 pb-1">
-          <div>
-            <div class="title">Change password</div>
-            <div class="body-2">for {{ title }}</div>
-          </div>
-          <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
-        </div>
+      <v-card-text class="py-0 mt-3">
+        <v-form ref="form" v-model="valid" @submit.prevent>
+          <v-text-field
+            dense
+            outlined
+            label="Old Password"
+            v-model="form.oldPassword"
+            :rules="rules.oldPassword"
+            type="text"
+            maxlength="16"
+            class="password-wo-help"
+            autocomplete="new-password"
+            @keyup.native.enter="valid && submit()"
+          />
 
-        <v-divider></v-divider>
+          <v-text-field
+            dense
+            outlined
+            label="New Password"
+            v-model="form.password"
+            :rules="rules.password"
+            :append-icon="showPass.new ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showPass.new ? 'text' : 'password'"
+            @click:append="showPass.new = !showPass.new"
+            maxlength="16"
+            @keyup.native.enter="valid && submit()"
+          />
 
-        <v-card-text class="pt-2 pb-0">
+          <v-text-field
+            dense
+            outlined
+            label="Repeat Password"
+            v-model="form.repeatPassword"
+            :rules="rules.repeatPassword"
+            :append-icon="showPass.repeat ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showPass.repeat ? 'text' : 'password'"
+            @click:append="showPass.repeat = !showPass.repeat"
+            maxlength="16"
+            @keyup.native.enter="valid && submit()"
+          />
+        </v-form>
+      </v-card-text>
 
-          <v-form ref="form" v-model="valid" @submit.prevent>
-            <v-text-field
-              label="Old Password"
-              v-model="form.oldPassword"
-              :rules="rules.oldPassword"
-              type="text"
-              maxlength="16"
-              class="password-wo-help"
-              autocomplete="new-password"
-              @keyup.native.enter="valid && submit()"
-            />
+      <v-divider></v-divider>
 
-            <v-text-field
-              label="New Password"
-              v-model="form.password"
-              :rules="rules.password"
-              :append-icon="showPass.new ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPass.new ? 'text' : 'password'"
-              @click:append="showPass.new = !showPass.new"
-              maxlength="16"
-              @keyup.native.enter="valid && submit()"
-            />
-
-            <v-text-field
-              label="Repeat Password"
-              v-model="form.repeatPassword"
-              :rules="rules.repeatPassword"
-              :append-icon="showPass.repeat ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPass.repeat ? 'text' : 'password'"
-              @click:append="showPass.repeat = !showPass.repeat"
-              maxlength="16"
-              @keyup.native.enter="valid && submit()"
-            />
-          </v-form>
-
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="justify-end py-3">
-          <v-btn
-            text
-            tabindex="-1"
-            @click="close"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            text
-            @click="submit"
-            color="primary"
-            :loading="loading" 
-            :disabled="loading || $store.get('session/isNotAdmin')"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-
-      </v-card>
-    </v-dialog>
-  </v-row>
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          @click="submit"
+          color="primary"
+          :loading="loading" 
+          :disabled="loading || $store.get('session/isNotAdmin')"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -88,21 +75,10 @@ import UserService from '@/service/user';
 import Utility from '@/helpers/utility';
 
 export default {
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    },
-  },
   data() {
     return {
       title: 'User name',
-      opened: false,
+      show: false,
       loading: false,
       valid: false,
       showPass: {
@@ -124,16 +100,13 @@ export default {
       if (this.valid) {
         this.loading = true;
         const result = await UserService.changePassword(this.form);
-        if (result == true) {
-          this.close();
-          return;
-        }
+        if (result == true) this.close();
         this.loading = false;
       }
     },
     open(title) {
       this.title = title;
-      this.opened = true;
+      this.show = true;
       let self = this;
       this.$nextTick(() => {
         self.$refs.form.resetValidation();
@@ -141,7 +114,7 @@ export default {
       });
     },
     close() {
-      this.opened = false;
+      this.show = false;
       this.loading = false;
       this.$refs.form.resetValidation();
     },
@@ -149,16 +122,16 @@ export default {
       this.rules = {
         oldPassword: [
           v => !!v || "Old password required",
-          v => (v && v.length >= 4 && v.length <= 16) || "Old password must be between 4-16 chars",
+          v => (v && v.length >= 6 && v.length <= 16) || "Old password must be between 6-16 chars",
         ],
         password: [
           v => !!v || "New password required",
-          v => (v && v.length >= 4 && v.length <= 16) || "New password must be between 4-16 chars",
+          v => (v && v.length >= 6 && v.length <= 16) || "New password must be between 6-16 chars",
           v => (v && v != this.form.oldPassword) || "Old and New passwords must be different",
         ],
         repeatPassword: [
           v => !!v || "Repeat Password required",
-          v => (v && v.length >= 4 && v.length <= 16) || "Repeat password must be between 4-16 chars",
+          v => (v && v.length >= 6 && v.length <= 16) || "Repeat password must be between 6-16 chars",
           v => (v && v == this.form.password) || "Passwords must be the same"
         ],
       }

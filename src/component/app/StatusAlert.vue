@@ -25,7 +25,7 @@
     </block-message>
 
     <block-message v-if="!CURSTAT.isActive">
-      You have no active subscription right now. {{ infoForPassiveAccount() }}
+      You have no active subscription right now. {{ infoForPassiveWorkspace() }}
       <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">
         <v-btn 
           small
@@ -52,10 +52,10 @@ export default {
       if (this.CURSTAT.status == 'FREE') {
         return SystemConsts.LIMITS.DAYS_FOR_FREE_USE + ' days free trial';
       } else {
-        return 'coupon';
+        return 'voucher';
       }
     },
-    infoForPassiveAccount() {
+    infoForPassiveWorkspace() {
       if (this.CURSTAT.linkCount > 0) {
         return "You need to start a new subscription to continue monitoring.";
       } else {

@@ -1,12 +1,15 @@
 <template>
   <div>
-    <div class="title">Links</div>
+    <div class="title">All Links</div>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
     <div class="d-flex justify-space-between" v-if="CURSTAT.planId">
-      <div class="col-6 pl-0 d-flex">
+      <div 
+        class="pl-0 d-flex"
+        :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+      >
         <v-text-field 
           :loading="loading"
           v-model="searchForm.term"
@@ -46,9 +49,9 @@
                     multiple
                     outlined
                     hide-details
-                    label="Levels"
-                    v-model="searchForm.levels"
-                    :items="levelItems"
+                    label="Positions"
+                    v-model="searchForm.positions"
+                    :items="positionItems"
                     class="mb-4"
                   ></v-select>
 
@@ -142,9 +145,9 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                small
                 v-on="on"
                 v-bind="attrs"
-                color="white"
                 :disabled="selected < 1 || $store.get('session/isNotEditor')"
               >
                 Menu ({{ selected }})
@@ -177,7 +180,14 @@
         </links-table>
 
         <div class="mt-3 text-right">
-          <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length">More</v-btn>
+          <v-btn 
+            small
+            @click="loadmore" 
+            :disabled="isLoadMoreDisabled" 
+            v-if="searchResult.length > 0"
+          >
+            More
+          </v-btn>
         </div>
       </div>
 
@@ -191,7 +201,7 @@
 
     <v-card v-else>
       <block-message class="mt-2">
-        You are not allowed to manage your products until activate your account!
+        You are not allowed to manage your products until activate your workspace!
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">
           <v-btn 
             small
@@ -218,16 +228,16 @@ import LinkService from '@/service/link';
 import AlarmService from '@/service/alarm';
 import { get } from 'vuex-pathify'
 
-const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'NA'];
+const positionItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'UNKNOWN'];
 const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
-const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'LEVEL', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
+const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'POSITION', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  levels: [],
+  positions: [],
   statuses: [],
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
@@ -247,7 +257,7 @@ export default {
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      levelItems,
+      positionItems,
       statusItems,
       orderByItems,
       orderDirItems,
@@ -381,7 +391,7 @@ export default {
         cloned = JSON.parse(JSON.stringify(link.alarm));
       } else {
         cloned = {
-          subject: 'STATUS',
+          subject: 'POSITION',
           subjectWhen: 'CHANGED',
           amountLowerLimit: 0,
           amountUpperLimit: 0,

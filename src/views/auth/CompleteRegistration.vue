@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-center my-auto" :class="'py-'+($vuetify.breakpoint.smAndDown ? '8' : '0')">
-    <div :style="'width: ' + findWidth">
+    <div style="width: 400px">
 
       <div class="text-center mb-8">
         <img :src="verticalBrand" :width="200" />
@@ -21,20 +21,10 @@
       <v-form 
         ref="form"
         v-model="valid"
-        onSubmit="return false"
+        @submit.prevent
         @keyup.native.enter="valid && submit($event)"
       >
-
-        <v-alert
-          dense
-          dismissible
-          outlined
-          type="error"
-          v-model="showError"
-        >
-          {{ errorMessage }}
-        </v-alert>
-        <div v-if="!showError" class="text-center">Activation Code</div>
+        <div class="text-center">Activation Code</div>
 
         <v-text-field
           outlined
@@ -75,21 +65,8 @@ export default {
       form: {
         code: ''
       },
-      showError: false,
-      errorMessage: '',
       verticalBrand: require('@/assets/app/brand-horCL.svg')
     };
-  },
-  computed: {
-    findWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '90%';
-        case 'sm': return '60%';
-        case 'md': return '45%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    }
   },
   methods: {
     async submit() {
@@ -99,15 +76,8 @@ export default {
         this.overlay = true;
         const result = await AuthService.completeRegistration(this.form.code.replaceAll('-', ''));
         if (result.status) {
-          this.showError = false;
-          this.errorMessage = '';
-
           this.$router.push({ name: 'plans', params: { sid: 0 } });
-          this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your account.' });
-          return;
-        } else {
-          this.errorMessage = result.error;
-          this.showError = true;
+          this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your workspace.' });
         }
         this.overlay = false;
       }

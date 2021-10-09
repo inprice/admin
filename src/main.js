@@ -29,24 +29,16 @@ Vue.use(VuePageTransition);
 Vue.component('ago', () => import('./component/simple/Ago.vue'));
 Vue.component(ChartJsPluginDataLabels);
 
-function deepEqual(x, y) {
-  return (x && y && typeof x === 'object' && typeof y === 'object') ?
-    (Object.keys(x).length === Object.keys(y).length) &&
-      Object.keys(x).reduce(function(isEqual, key) {
-        return isEqual && deepEqual(x[key], y[key]);
-      }, true) : (x == y);
-}
-
 Vue.mixin({
   methods: {
-    findLevelColor(level) {
-      switch (level) {
+    findPositionColor(position) {
+      switch (position) {
         case 'EQUAL': return 'blue';
         case 'LOWEST': return 'green';
-        case 'LOWER': return 'cyan';
+        case 'LOWER': return 'darkcyan';
         case 'AVERAGE': return 'primary';
-        case 'HIGHER': return 'red';
-        case 'HIGHEST': return 'pink';
+        case 'HIGHER': return 'pink';
+        case 'HIGHEST': return 'red';
       }
     },
     findDiffColor(diffAmount) {
@@ -77,7 +69,6 @@ Vue.mixin({
       if (status == 'TRYING') return 'mdi-stop';
       return 'mdi-close-circle-outline';
     },
-    deepEqual,
     async copyToClipboard(sourceText) {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(sourceText);

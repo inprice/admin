@@ -11,7 +11,7 @@
 
       <v-spacer></v-spacer>
 
-      <div class="text-center my-auto" v-if="report.account && CURSTAT.isActive">
+      <div class="text-center my-auto" v-if="report.workspace && CURSTAT.isActive">
         <v-btn small color="white" @click="refresh">
           Refresh
         </v-btn>
@@ -22,21 +22,21 @@
 
     <div class="row justify-space-around">
       <!-- ------------------------------- -->
-      <!-- Links' position distributions   -->
+      <!-- Products' position distributions   -->
       <!-- ------------------------------- -->
       <div class="col-sm-4 col-xs-12 ">
-        <v-card class="pa-2" v-if="report && report.links && report.links.levelSeries">
+        <v-card class="pa-2" v-if="report && report.products && report.products.positionSeries">
           <v-card-title class="pb-2">
             <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
             <div class="col pa-0">
-              <div>Link levels</div>
-              <div class="caption">The levels of your links.</div>
+              <div>Product positions</div>
+              <div class="caption">The positions of your products.</div>
             </div>
           </v-card-title>
           <v-divider class="mb-2"></v-divider>
           <positions-bar-chart
             :width="300" :height="300"
-            :series="report.links.levelSeries" 
+            :series="report.products.positionSeries" 
           />
         </v-card>
       </div>
@@ -53,28 +53,28 @@
             </div>
           </v-card-title>
           <v-divider class="mb-2"></v-divider>
-          <level-pie-chart
+          <statuses-pie-chart
             :width="300" :height="300"
             :series="report.links.grupSeries"
           />
         </v-card>
       </div>
       <!-- ------------------------------- -->
-      <!-- Products' position distributions   -->
+      <!-- Links' position distributions   -->
       <!-- ------------------------------- -->
       <div class="col-sm-4 col-xs-12 ">
-        <v-card class="pa-2" v-if="report && report.products && report.products.levelSeries">
+        <v-card class="pa-2" v-if="report && report.links && report.links.positionSeries">
           <v-card-title class="pb-2">
             <v-icon class="mr-4 hidden-xs-only">mdi-layers</v-icon>
             <div class="col pa-0">
-              <div>Product levels</div>
-              <div class="caption">The levels of your products.</div>
+              <div>Link positions</div>
+              <div class="caption">The positions of your links.</div>
             </div>
           </v-card-title>
           <v-divider class="mb-2"></v-divider>
           <positions-bar-chart
             :width="300" :height="300"
-            :series="report.products.levelSeries" 
+            :series="report.links.positionSeries" 
           />
         </v-card>
       </div>
@@ -95,7 +95,7 @@
 
       <table 
         class="pb-2 info-table"
-        v-if="report && report.groups && report.groups.extremePrices.LOWEST && report.groups.extremePrices.LOWEST.length">
+        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.LOWEST.length"
       >
         <thead>
           <tr>
@@ -110,7 +110,7 @@
             style="cursor: pointer"
             link @click="$router.push({ name: 'product', params: { id: row.id } })"
             v-for="(row) in report.products.extremePrices.LOWEST" :key="row.id">
-            <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
+            <td>{{ row.name }} {{ row.sku ? '( ' + row.sku + ' )' : '' }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
             <td class="text-center">{{ row.actives + '/' + row.total }}</td>
             <td class="text-center">
@@ -142,7 +142,7 @@
 
       <table 
         class="pb-2 info-table"
-        v-if="report && report.groups && report.groups.extremePrices.LOWEST && report.groups.extremePrices.HIGHEST.length">
+        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.HIGHEST.length"
       >
         <thead>
           <tr>
@@ -157,7 +157,7 @@
             style="cursor: pointer"
             link @click="$router.push({ name: 'product', params: { id: row.id } })"
             v-for="(row) in report.products.extremePrices.HIGHEST" :key="row.id">
-            <td>{{ row.name }} {{ row.description ? '( ' + row.description + ' )' : '' }}</td>
+            <td>{{ row.name }} {{ row.sku ? '( ' + row.sku + ' )' : '' }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
             <td class="text-center">{{ row.actives + '/' + row.total }}</td>
             <td class="text-center">
@@ -194,26 +194,31 @@
           v-for="row in report.links.mru25" :key="row.id" 
           @click="$router.push({ name: 'link', params: { id: row.id } })"
         >
-          <td width="3%">
-            <v-icon style="font-size: 18px" :color="findLevelColor(row.level)">mdi-star</v-icon>
-          </td>
-
           <td>
-            <div class="caption teal--text">{{ row.seller || row.productName }}</div>
+            <div class="caption teal--text font-weight-medium">{{ row.seller }}</div>
             <div class="body-2" :class="{'caption font-italic' : !row.name}">{{ row.name || row.url }}</div>
           </td>
 
-          <td width="12%" class="text-right">
-            <div 
-              class="caption"
-              v-if="!row.price || (row.status != 'ACTIVE' && row.level == 'NA')" 
-            >
-              NOT YET
+          <td width="12%" class="align-center">
+            <div class="text-right d-flex justify-end my-auto">
+              <div class="mr-1">
+                <div 
+                  v-if="row.price"
+                  class="caption font-weight-medium" 
+                  :style="'color: ' + findPositionColor(row.position)"
+                >
+                  {{ row.position }}
+                </div>
+                <div>{{ row.price | toPrice }}</div>
+              </div>
+              <v-icon 
+                class="hidden-xs-only"
+                :color="row.alarmId ? '' : 'transparent'" 
+                style="font-size:20px"
+              >
+                mdi-alarm
+              </v-icon>
             </div>
-            <div v-else class="caption" :class="{ 'green--text font-weight-bold': row.level == 'LOWEST', 'red--text font-weight-bold': row.level == 'HIGHEST' }">
-              {{ row.level }}
-            </div>
-            <div class="body-2">{{ row.price | toPrice }}</div>
           </td>
         </tr>
       </table>
@@ -253,8 +258,8 @@ export default {
       this.loading = true;
       DashboardService.refresh().then(result => {
         this.report = result.data;
-        if (this.report && this.report.account && this.report.account.subsRenewalAt) {
-          this.report.account.daysToRenewal = moment(this.report.account.subsRenewalAt).diff(moment(), 'days')+1;
+        if (this.report && this.report.workspace && this.report.workspace.subsRenewalAt) {
+          this.report.workspace.daysToRenewal = moment(this.report.workspace.subsRenewalAt).diff(moment(), 'days')+1;
         }
 
         if (this.report && this.report.products && this.report.products.positionSeries) {
@@ -281,7 +286,7 @@ export default {
     this.refresh();
   },
   components: {
-    LevelPieChart: () => import('./LevelPieChart.js'),
+    StatusesPieChart: () => import('./StatusesPieChart.js'),
     PositionsBarChart: () => import('./PositionsBarChart.js'),
     StatusAlert: () => import('@/component/app/StatusAlert.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),

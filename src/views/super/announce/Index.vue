@@ -11,7 +11,10 @@
     <!-- Filter and Rows -->
     <!-- --------------- -->
     <div class="d-flex justify-space-between">
-      <div class="col-6 pl-0 d-flex">
+      <div 
+        class="pl-0 d-flex"
+        :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+      >
         <v-text-field 
           :loading="loading"
           v-model="searchForm.term"
@@ -300,7 +303,14 @@
     </v-card>
 
     <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
+      >
+        More
+      </v-btn>
     </div>
 
     <confirm ref="confirm"></confirm>
@@ -314,7 +324,7 @@
 import SU_AnnounceService from '@/service/super/announce';
 import moment from 'moment';
 
-const typeItems = ['USER', 'ACCOUNT', 'SYSTEM'];
+const typeItems = ['USER', 'WORKSPACE', 'SYSTEM'];
 const levelItems = ['INFO', 'WARNING'];
 const orderByItems = ['TITLE', 'TYPE', 'LEVEL', 'STARTING_AT', 'ENDING_AT', 'CREATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
@@ -430,7 +440,7 @@ export default {
     findTypeColor(type) {
       switch (type) {
         case 'USER': return 'blue';
-        case 'ACCOUNT': return 'green';
+        case 'WORKSPACE': return 'green';
         case 'SYSTEM': return 'purple';
       }
       return 'grey';

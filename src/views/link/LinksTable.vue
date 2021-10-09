@@ -12,7 +12,7 @@
               :indeterminate="indeterminate"
             />
           </th>
-          <th class="pl-6 text-left">Name</th>
+          <th class="text-left">Name</th>
           <th width="10%" class="text-right">Price</th>
           <th width="1%"></th>
         </tr>
@@ -32,22 +32,29 @@
             />
           </td>
           <td class="my-auto">
-            <div class="d-flex">
-              <v-icon
-                class="mr-2"
-                style="font-size:18px"
-                :color="findLevelColor(row.level)"
-              >
-                mdi-star
-              </v-icon>
-              <div class="my-auto">
-                <div v-if="row.seller" class="caption teal--text font-weight-light">{{ row.seller }}</div>
-                <div>{{ row.name || row.url }}</div>
-              </div>
-            </div>
+            <div v-if="row.seller" class="caption teal--text font-weight-medium">{{ row.seller }}</div>
+            <div>{{ row.name || row.url }}</div>
           </td>
-          <td class="text-right my-auto">
-            <div>{{ row.price | toPrice }}</div>
+          <td class="align-center pr-0">
+            <div class="text-right d-flex justify-end my-auto">
+              <div class="mr-1">
+                <div 
+                  v-if="row.price"
+                  class="caption font-weight-medium" 
+                  :style="'color: ' + findPositionColor(row.position)"
+                >
+                  {{ row.position }}
+                </div>
+                <div>{{ row.price | toPrice }}</div>
+              </div>
+              <v-icon 
+                class="hidden-xs-only"
+                :color="row.alarmId ? '' : 'transparent'" 
+                style="font-size:20px"
+              >
+                mdi-alarm
+              </v-icon>
+            </div>
           </td>
           <td class="my-auto">
             <v-menu offset-y bottom left>

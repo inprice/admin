@@ -77,19 +77,19 @@ const router = new VueRouter({
           component: () => import('./views/super/link/Index.vue')
         },
         {
-          name: 'sys-accounts',
-          path: 'accounts',
-          component: () => import('./views/super/account/Index.vue')
+          name: 'sys-workspaces',
+          path: 'workspaces',
+          component: () => import('./views/super/workspace/Index.vue')
         },
         {
-          name: 'sys-account-details',
-          path: 'account-details/:aid',
-          component: () => import('./views/super/account/details/Index.vue')
+          name: 'sys-workspace-details',
+          path: 'workspace-details/:aid',
+          component: () => import('./views/super/workspace/details/Index.vue')
         },
         {
-          name: 'sys-account-logs',
-          path: 'account-logs/:aid',
-          component: () => import('./views/super/account/AccessLogIndex.vue')
+          name: 'sys-workspace-logs',
+          path: 'workspace-logs/:aid',
+          component: () => import('./views/super/workspace/AccessLogIndex.vue')
         },
         {
           name: 'sys-users',
@@ -147,6 +147,16 @@ const router = new VueRouter({
           component: () => import('./views/product/Index.vue')
         },
         {
+          name: 'categories',
+          path: 'categories',
+          component: () => import('./views/category/Index.vue')
+        },
+        {
+          name: 'brands',
+          path: 'brands',
+          component: () => import('./views/brand/Index.vue')
+        },
+        {
           name: 'product',
           path: 'product/:id',
           component: () => import('./views/product/Detail.vue')
@@ -160,11 +170,6 @@ const router = new VueRouter({
           name: 'subscription',
           path: 'subscription',
           component: () => import('./views/subscription/Index.vue')
-        },
-        {
-          name: 'alarm',
-          path: 'alarm',
-          component: () => import('./views/alarm/Index.vue')
         },
         {
           name: 'ticket',
@@ -182,9 +187,9 @@ const router = new VueRouter({
           component: () => import('./views/announce/Index.vue')
         },
         {
-          name: 'coupons',
-          path: 'coupons',
-          component: () => import('./views/coupons/Index.vue')
+          name: 'vouchers',
+          path: 'vouchers',
+          component: () => import('./views/vouchers/Index.vue')
         },
         {
           name: 'links',
@@ -202,9 +207,9 @@ const router = new VueRouter({
           component: () => import('./views/user/Index.vue')
         },
         {
-          name: 'account-settings',
-          path: 'account-settings',
-          component: () => import('./views/account/Index.vue'),
+          name: 'workspace-settings',
+          path: 'workspace-settings',
+          component: () => import('./views/workspace/Index.vue'),
           meta: {
             requiresAdminOrSuperUser: true
           },

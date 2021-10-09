@@ -43,9 +43,9 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item link :to="{name: 'sys-accounts'}">
+          <v-list-item link :to="{name: 'sys-workspaces'}">
             <v-list-item-content>
-              <v-list-item-title>Accounts</v-list-item-title>
+              <v-list-item-title>Workspaces</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
@@ -88,6 +88,8 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-divider inset></v-divider>
+
         <v-list-item link :to="{name: 'products'}">
           <v-list-item-action>
             <v-icon>mdi-package-variant-closed</v-icon>
@@ -102,103 +104,47 @@
             <v-icon>mdi-link-variant</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Links</v-list-item-title>
+            <v-list-item-title>Link Management</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'plans'}">
+        <v-list-item link :to="{name: 'brands'}">
           <v-list-item-action>
-            <v-icon>mdi-form-select</v-icon>
+            <v-icon>mdi-tag-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Plans</v-list-item-title>
+            <v-list-item-title>Brands</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'subscription'}">
+
+        <v-list-item link :to="{name: 'categories'}">
           <v-list-item-action>
-            <v-icon>mdi-credit-card-check-outline</v-icon>
+            <v-icon>mdi-shape-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Subscription</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'coupons'}">
-          <v-list-item-action>
-            <v-icon>mdi-ticket-confirmation-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Coupons</v-list-item-title>
+            <v-list-item-title>Categories</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'alarm'}">
+        <v-list-item disabled>
           <v-list-item-action>
-            <v-icon>mdi-alarm-multiple</v-icon>
+            <v-icon>mdi-chart-box-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Alarms</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'ticket'}">
-          <v-list-item-action>
-            <v-icon>mdi-chat-question-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Tickets</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'announce'}">
-          <v-list-item-action>
-            <v-icon>mdi-bullhorn-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Announcements</v-list-item-title>
+            <v-list-item-title>Reports</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'user-settings'}">
-          <v-list-item-action>
-            <v-icon>mdi-account-circle-outline</v-icon>
-          </v-list-item-action>
+        <v-list-item :to="{name: 'workspace-settings'}" :disabled="$store.get('session/isNotAdmin')">
+          <v-icon class="mr-3">mdi-cog-outline</v-icon>
           <v-list-item-content>
-            <v-list-item-title>User Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'account-settings'}">
-          <v-list-item-action>
-            <v-icon>mdi-cog-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Account Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-      </v-list>
-
-      <v-list dense nav class="text-uppercase font-weight-light" v-if="$store.get('session/hasASession')">
-        <v-divider inset></v-divider>
-
-        <v-list-item :href="`/login?m=addNew`" target="_blank" v-if="$store.get('session/isNotSuperUser')">
-          <v-list-item-action>
-            <v-icon>mdi-plus</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Login to another</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item @click="$store.dispatch('session/logout', false)">
-          <v-list-item-action>
-            <v-icon>mdi-exit-to-app</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Logout</v-list-item-title>
+            <v-list-item-title>SETTINGS</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -206,86 +152,27 @@
       <template v-slot:append>
         <v-divider inset></v-divider>
 
-        <v-list v-if="CURSTAT" class="pa-0">
-          <v-list-item class="text-center black--text text-truncate">
+        <v-list class="pa-0">
+          <v-list-item class="text-center">
             <v-list-item-content>
-              <div class="subtitle font-weight-bold" style="white-space: normal">{{ CURSTAT.account }}</div>
-              <span class="caption">{{ CURSTAT.email }}</span>
-              <v-chip label outlined class="caption d-flex justify-center">
-                <span class="font-weight-medium">{{ CURSTAT.role }}</span>
-                <span class="mx-2">|</span>
-                <span class="font-weight-medium green--text text-uppercase darken-2">{{ CURSTAT.isActive ? CURSTAT.planName : CURSTAT.status }}</span>
-              </v-chip>
+              <img :src="brandNameW" height="40px" />
             </v-list-item-content>
           </v-list-item>
         </v-list>
       </template>
-
     </v-navigation-drawer>
 
     <v-app-bar app clipped-left color="blue-grey" dark>
-
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
-      <div class="hidden-sm-and-down ml-4 mt-2">
-        <img :src="brandNameW" :width="150" />
-      </div>
+      <workspace-menu v-if="!$store.get('session/isSuperUser') || !$store.get('session/isDemoUser')"></workspace-menu>
 
-      <v-spacer v-if="$store.get('session/isNotSuperUser') || CURSTAT.accountId"></v-spacer>
+      <v-spacer v-if="$store.get('session/isNotSuperUser') || CURSTAT.workspaceId"></v-spacer>
 
-      <!--v-autocomplete
-        v-if="$store.get('session/isNotSuperUser') || CURSTAT.accountId"
-        solo
-        chips
-        dense
-        light
-        hide-details
-        hide-selected
-        v-model="search.model"
-        :items="search.items"
-        :loading="search.isLoading"
-        :search-input.sync="search.term"
-        item-value="id"
-        item-text="name"
-        label="Search..."
-        maxlength="128"
-        prepend-inner-icon="mdi-database-search-outline"
-        class="search-box"
-        menu-props="closeOnContentClick"
+      <notification-menu 
+        v-if="CURSTAT.role != 'SUPER'"
       >
-        <template v-slot:no-data>
-          <v-list-item>
-            <v-list-item-title>
-              Search for your
-              <strong>links and products</strong>
-            </v-list-item-title>
-          </v-list-item>
-        </template>
-
-        <template v-slot:selection="{ item }">
-          <span v-text="item.name"></span>
-        </template>
-
-        <template v-slot:item="{ item }">
-          <v-list-item link :to="findPageObject(item)">
-            <v-list-item-avatar
-              size="24"
-              :color="item.type == 'L' ? 'orange' : 'cyan' "
-              class="font-weight-medium white--text"
-            >
-              {{ item.type }}
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
-              <v-list-item-subtitle class="caption font-weight-light">{{ item.description }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-autocomplete>
-
-      <v-spacer></v-spacer-->
-
-      <notification-menu v-if="CURSTAT.role != 'SUPER'"></notification-menu>
+      </notification-menu>
       <user-menu></user-menu>
 
     </v-app-bar>
@@ -299,8 +186,6 @@
         </v-container>
       </v-responsive>
     </v-main>
-
-    <account-info-dialog ref="accountInfoDialog" />
 
     <v-btn
       v-scroll="onScroll"
@@ -317,7 +202,6 @@
 </template>
 
 <script>
-//import SystemService from '@/service/system';
 import { get } from 'vuex-pathify'
 
 export default {
@@ -326,7 +210,7 @@ export default {
   },
   data() {
     return {
-      brandNameW: require('@/assets/app/brand-horWR.svg'),
+      brandNameW: require('@/assets/app/brand-horCL.svg'),
       drawer: (this.$vuetify.breakpoint.mdAndUp),
       fab: false,
       search: {
@@ -338,48 +222,19 @@ export default {
     };
   },
   methods: {
-    openCreateAccount() {
-      this.$refs.accountInfoDialog.edit(null, true);
-    },
     onScroll(e) {
       if (typeof window === 'undefined') return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
       this.fab = top > 20;
     },
-    toTop () {
+    toTop() {
       this.$vuetify.goTo(0)
     },
-    findPageObject(item) {
-      let pageTo = { params: { id: item.id } };
-      if (item.type == 'G')
-        pageTo.name = 'product';
-      else
-        pageTo.name = 'link';
-      return pageTo;
-    },
   },
-  /*
-  watch: {
-    'search.term'() {
-      if (!this.search.term) {
-        this.search.items = [];
-        return;
-      }
-      this.search.isLoading = true;
-      SystemService.search(this.search.term).then((res) => {
-        if (res && res.data) {
-          this.search.items = res.data;
-        } else {
-          this.search.items = [];
-        }
-      }).finally(() => this.search.isLoading = false);
-    },
-  },
-  */
   components: {
     UserMenu: () => import('./UserMenu.vue'),
+    WorkspaceMenu: () => import('./WorkspaceMenu.vue'),
     NotificationMenu: () => import('./NotificationMenu.vue'),
-    AccountInfoDialog: () => import('./account/AccountInfo.vue')
   },
 };
 </script>

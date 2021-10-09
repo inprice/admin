@@ -7,7 +7,10 @@
     <!-- Filter and Rows -->
     <!-- --------------- -->
     <div class="d-flex justify-space-between">
-      <div class="col-6 pl-0">
+      <div 
+        class="pl-0 d-flex"
+        :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
+      >
         <v-text-field 
           :loading="loading"
           v-model="searchForm.term"
@@ -16,18 +19,140 @@
           maxlength="100"
           hide-details
           placeholder="Search..."
-          prepend-inner-icon="mdi-magnify"
         >
+          <template v-slot:append>
+            <v-menu
+              offset-y
+              bottom left
+              v-model="filterPanelShow"
+              :close-on-content-click="false"
+              transition="scale-x-transition"
+            >
+							<template v-slot:activator="{ on }">
+                <v-icon v-on="on">mdi-filter-menu-outline</v-icon>
+							</template>
+            
+              <v-card style="max-width:350px">
+                <v-card-text class="pb-1">
+                  <div class="body-1 pb-2 d-flex justify-space-between">
+                    <span class="my-auto">Filters</span>
+                    <v-btn
+                      icon
+                      tabindex="-1"
+                      @click="filterPanelShow = false"
+                    >
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </div>
+
+                  <v-select
+                    dense
+                    small-chips
+                    multiple
+                    outlined
+                    hide-details
+                    label="Positions"
+                    v-model="searchForm.positions"
+                    :items="positionItems"
+                    class="mb-4"
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    outlined
+                    label="Brand"
+                    v-model="searchForm.brand"
+                    :items="brands"
+                    item-text="name"
+                    return-object
+                  ></v-select>
+
+                  <v-select
+                    dense
+                    outlined
+                    label="Category"
+                    v-model="searchForm.category"
+                    :items="categories"
+                    item-text="name"
+                    return-object
+                  ></v-select>
+
+                  <div class="d-flex justify-space-around mb-4">
+                    <v-select
+                      dense
+                      outlined
+                      hide-details
+                      class="pr-1"
+                      label="Order By"
+                      v-model="searchForm.orderBy"
+                      :items="orderByItems"
+                    ></v-select>
+
+                    <v-select
+                      dense
+                      outlined
+                      hide-details
+                      class="pl-1"
+                      label="Order Dir"
+                      v-model="searchForm.orderDir"
+                      :items="orderDirItems"
+                    ></v-select>
+                  </div>
+
+                  <div class="d-flex justify-space-around mb-2">
+                    <v-select
+                      dense
+                      outlined
+                      hide-details
+                      class="pr-1"
+                      label="Alarm ?"
+                      v-model="searchForm.alarmStatus"
+                      :items="alarmItems"
+                    ></v-select>
+
+                    <v-select
+                      dense
+                      outlined
+                      hide-details
+                      class="pl-1"
+                      label="Row Limit"
+                      v-model="searchForm.rowLimit"
+                      :items="rowLimitItems"
+                    ></v-select>
+                  </div>
+
+                  <v-divider class="mt-3"></v-divider>
+
+                  <v-card-actions class="justify-end">
+                    <v-btn
+                      text
+                      @click="resetForm"
+                      tabindex="-1"
+                    >
+                      Reset
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="applyOptions"
+                    >
+                      Apply
+                    </v-btn>
+                  </v-card-actions>
+                </v-card-text>
+              </v-card>
+            </v-menu>
+          </template>
         </v-text-field>
       </div>
 
       <v-btn 
-        color="white"
+        small
         class="my-auto"
         @click="addNew"
         :disabled="$store.get('session/isNotEditor')"
       >
-        Add
+        Add New
       </v-btn>
     </div>
 
@@ -35,11 +160,10 @@
       <table class="list-table">
         <thead>
           <tr>
-            <th width="3%"></th>
-            <th class="text-left">Name</th>
+            <th>Name</th>
+            <th width="7%" class="hidden-sm-and-down">Brand</th>
+            <th width="7%" class="hidden-sm-and-down">Category</th>
             <th width="10%" class="text-right">Price</th>
-            <th width="7%" class="text-right hidden-sm-and-down">Links</th>
-            <th width="10%" class="text-right">Total</th>
           </tr>
         </thead>
         <tbody>
@@ -48,25 +172,40 @@
             style="cursor: pointer"
             @click="$router.push({ name: 'product', params: { id: row.id } })"
           >
-            <td class="text-right pr-0">
-              <v-icon 
-                style="font-size:18px"
-                :color="findLevelColor(row.level)"
-              >
-                mdi-star
-              </v-icon>
+            <td>
+              <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>
+              <div>{{ row.name }}</div>
             </td>
-            <td>{{ row.name }}</td>
-            <td class="text-right">{{ (row.price || 0) | toPrice }}</td>
-            <td class="text-right hidden-sm-and-down">{{ row.linkCount }}</td>
-            <td class="text-right">{{ (row.total || 0) | toPrice }}</td>
+            <td class="hidden-sm-and-down">{{ row.brandName }}</td>
+            <td class="hidden-sm-and-down">{{ row.categoryName }}</td>
+            <td class="align-center">
+              <div class="d-flex justify-end my-auto">
+                <div class="mr-1">
+                  {{ (row.price || 0) | toPrice }}
+                </div>
+                <v-icon 
+                  class="hidden-xs-only"
+                  :color="row.alarmId ? '' : 'transparent'" 
+                  style="font-size:20px"
+                >
+                  mdi-alarm
+                </v-icon>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
     </v-card>
 
     <div class="pa-3 pr-0 text-right" v-if="searchResult && searchResult.length">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length">More</v-btn>
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
+      >
+        More
+      </v-btn>
     </div>
 
     <v-card v-else-if="!loading" >
@@ -83,21 +222,46 @@
 
 <script>
 import ProductService from '@/service/product';
+import BrandService from '@/service/brand';
+import CategoryService from '@/service/category';
 import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
+
+const positionItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'UNKNOWN'];
+const orderByItems = ['NAME', 'SKU', 'BRAND', 'CATEGORY'];
+const orderDirItems = ['ASC', 'DESC'];
+const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
+const rowLimitItems = [25, 50, 100];
+
+const baseSearchForm = {
+  term: '',
+  positions: [],
+  brand: null,
+  category: null,
+  orderBy: orderByItems[0],
+  orderDir: orderDirItems[0],
+  rowLimit: rowLimitItems[0],
+  alarmStatus: alarmItems[0],
+  rowCount: 0,
+}
 
 export default {
   data() {
     return {
-      searchForm: {
-        term: '',
-        rowCount: 0,
-        loadMore: false
-      },
-      loading: false,
+      searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
+      filterPanelShow: false,
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
+      positionItems,
+      orderByItems,
+      orderDirItems,
+      rowLimitItems,
+      alarmItems,
+      baseSearchForm,
+      brands: [],
+      categories: [],
+      loading: false,
     };
   },
   computed: {
@@ -110,8 +274,8 @@ export default {
     edit(id) {
       this.$router.push({ name: 'product', params: { id } });
     },
-    loadmore() {
-      this.isLoadMoreClicked = true;
+    applyOptions() {
+      this.filterPanelShow = false;
       this.search();
     },
     search() {
@@ -145,7 +309,19 @@ export default {
     },
     async saveNew(form) {
       const result = await ProductService.save(form);
-      if (result && result.status) this.search();
+      if (result && result.status) {
+        this.$refs.editDialog.close();
+        this.search();
+      }
+    },
+    resetForm() {
+      this.filterPanelShow = false;
+      this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
+      this.search();
+    },
+    loadmore() {
+      this.isLoadMoreClicked = true;
+      this.search();
     },
     refresh(index, result) {
       if (this.searchResult && result.product && this.searchResult.length > index) {
@@ -175,6 +351,16 @@ export default {
   },
   mounted() {
     this.search();
+    BrandService.getList().then((res) => {
+      if (res && res.data) {
+        this.brands = res.data;
+      }
+    });
+    CategoryService.getList().then((res) => {
+      if (res && res.data) {
+        this.categories = res.data;
+      }
+    });
   },
   components: {
     Edit: () => import('./Edit.vue'),

@@ -36,7 +36,10 @@
                 <tr>
                   <th :width="RESPROPS.table.service">Service</th>
                   <th class="text-center" :width="RESPROPS.table.date">Date</th>
-                  <th class="text-center" :width="RESPROPS.table.whitelisted">Unlimited</th>
+                  <th class="text-center" :width="RESPROPS.table.whitelisted">Boolean</th>
+                  <th class="text-center" :width="RESPROPS.table.whitelisted">String</th>
+                  <th class="text-center" :width="RESPROPS.table.whitelisted">Integer</th>
+                  <th class="text-center" :width="RESPROPS.table.whitelisted">Date</th>
                   <th class="text-center" :width="RESPROPS.table.action">Action</th>
                 </tr>
               </thead>
@@ -44,7 +47,10 @@
                 <tr v-for="row in list" :key="row.id">
                   <td>{{ row.type }}</td>
                   <td class="text-center">{{ row.createdAt | formatPlainDate }}</td>
-                  <td class="text-center">{{ row.whitelisted ? 'YES' : 'NO' }}</td>
+                  <td class="text-center">{{ row.booleanVal ? 'YES' : 'NO' }}</td>
+                  <td class="text-center">{{ row.stringVal }}</td>
+                  <td class="text-center">{{ row.integerVal }}</td>
+                  <td class="text-center">{{ row.dateVal }}</td>
 
                   <td style="padding: 0px !important; text-align: center !important;">
                     <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
@@ -63,8 +69,8 @@
 
                         <v-divider></v-divider>
 
-                        <v-list-item link @click="toggleUnlimitedServiceUse(row)">
-                          <v-list-item-title>{{ row.whitelisted ? 'REMOVE' : 'ALLOW' }} UNLIMITED USE</v-list-item-title>
+                        <v-list-item link v-if="row.mark == 'FREE_USE'" @click="toggleUnlimitedServiceUse(row)">
+                          <v-list-item-title>{{ row.booleanVal ? 'REMOVE' : 'ALLOW' }} UNLIMITED USE</v-list-item-title>
                         </v-list-item>
                       </v-list>
                     </v-menu>

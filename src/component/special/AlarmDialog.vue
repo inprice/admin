@@ -1,243 +1,223 @@
 <template>
-  <v-row justify="center">
-
-    <v-dialog 
-      v-model="opened" 
-      :max-width="findDialogWidth"
-      overlay-opacity="0.2"
-      @keydown.esc="opened = false"
-    >
-      <v-card v-if="topic">
-        <div class="pa-3 justify-space-between d-flex">
+  <v-dialog 
+    v-model="show" 
+    overlay-opacity="0.3"
+    content-class="rounded-dialog"
+  >
+    <v-card v-if="topic">
+      <v-card-title class="pb-0 d-flex justify-space-between no-gutters">
+        <div class="text-truncate col mr-2">
           <div>
-            <div class="title">
-              {{ form.id ? 'Edit' : 'New' }} 
-              <span class="text-capitalize">{{ topic.toLowerCase() }}</span>
-              Alarm
-            </div>
-            <div class="caption">For {{ name }}</div>
+            {{ form.id ? 'Edit' : 'New' }} 
+            <span class="text-capitalize">{{ topic.toLowerCase() }}</span>
+            Alarm
           </div>
-          <v-btn icon class="my-auto" @click="close"><v-icon>mdi-close</v-icon></v-btn>
+          <div v-if="problem" class="caption red--text">{{ problem }}</div>
+          <div v-else class="caption">For {{ name }}</div>
         </div>
+        <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
+      </v-card-title>
+
+      <v-divider class="my-2"></v-divider>
+
+      <v-stepper
+        vertical
+        v-model="stepNo"
+      >
+        <v-stepper-step
+          editable
+          step="1"
+          color="success"
+        >
+          <div>Subject</div>
+          <div><small class="caption">For which subject: <b class="text-capitalize">{{ form.subject.toLowerCase() }}</b></small></div>
+        </v-stepper-step>
+        <v-stepper-content step="1">
+          <v-radio-group
+            dense
+            @change="onSubjectChanged"
+            v-model="form.subject"
+          >
+            <v-radio
+              v-for="(sub, ix) in subjects[topic]" :key="ix"
+              class="text-capitalize"
+              :label="sub.toLowerCase()"
+              :value="sub"
+            ></v-radio>
+          </v-radio-group>
+
+          <v-btn
+            small
+            class="mb-3"
+            @click="stepNo = 2"
+          >
+            Next
+            <v-icon>mdi-menu-right</v-icon>
+          </v-btn>
+        </v-stepper-content>
 
         <v-divider></v-divider>
 
-        <v-stepper
-          vertical
-          v-model="stepNo"
+        <v-stepper-step
+          editable
+          step="2"
+          color="success"
+          class="font-weight-medium"
         >
-          <v-stepper-step
-            editable
-            step="1"
-            color="success"
+          When
+          <small class="caption text-capitalize">{{ form.subject }} is <b>{{ form.subjectWhen.toLowerCase().replaceAll('_', ' ') }}</b></small>
+        </v-stepper-step>
+        <v-stepper-content step="2">
+          <v-radio-group
+            dense
+            @change="onWhenChanged"
+            v-model="form.subjectWhen"
           >
-            <div>Subject</div>
-            <div><small class="caption">For which subject: <b>{{ form.subject }}</b></small></div>
-          </v-stepper-step>
-          <v-stepper-content step="1">
-            <v-radio-group
+            <v-radio
+              v-for="(whn, ix) in subjectWhens" :key="ix"
+              class="text-capitalize"
+              :label="whn.toLowerCase().replaceAll('_', ' ')"
+              :value="whn"
+            ></v-radio>
+          </v-radio-group>
+
+          <v-btn
+            small
+            class="mb-3 mr-1"
+            @click="stepNo = 1"
+          >
+            <v-icon>mdi-menu-left</v-icon>
+            Prev
+          </v-btn>
+          <v-btn
+            small
+            class="mb-3 ml-1"
+            @click="stepNo = 3"
+          >
+            Next
+            <v-icon>mdi-menu-right</v-icon>
+          </v-btn>
+        </v-stepper-content>
+
+        <v-divider></v-divider>
+
+        <v-stepper-step
+          editable
+          step="3"
+          color="success"
+          class="font-weight-medium"
+        >
+          Conditions
+          <small>{{ isConditionsBlockShowed() ? 'Please specify your conditions' : 'No condition needed!' }}</small>
+        </v-stepper-step>
+
+        <v-stepper-content step="3">
+          <div v-if="isConditionsBlockShowed()" class="mr-5">
+            <v-select
               dense
-              @change="onSubjectChanged"
-              v-model="form.subject"
+              outlined
+              hide-details
+              label="Position"
+              v-model="form.certainPosition"
+              :items="positions"
+              class="my-3"
+              v-if="form.subject == 'POSITION' && form.subjectWhen != 'CHANGED'"
+            ></v-select>
+
+            <div
+              class="d-flex justify-space-between mt-3"
+              v-if="form.subject != 'POSITION' && form.subjectWhen == 'OUT_OF_LIMITS'"
             >
-              <v-radio
-                v-for="(sub, ix) in subjects[topic]" :key="ix"
-                class="text-capitalize"
-                :label="sub.toLowerCase()"
-                :value="sub"
-              ></v-radio>
-            </v-radio-group>
-
-            <v-btn
-              small
-              class="mb-3"
-              @click="stepNo = 2"
-            >
-              Next
-            </v-btn>
-          </v-stepper-content>
-
-          <v-divider></v-divider>
-
-          <v-stepper-step
-            editable
-            step="2"
-            color="success"
-            class="font-weight-medium"
-          >
-            When
-            <small class="caption text-capitalize">{{ form.subject }} is <b>{{ form.subjectWhen }}</b></small>
-          </v-stepper-step>
-          <v-stepper-content step="2">
-            <v-radio-group
-              dense
-              @change="onWhenChanged"
-              v-model="form.subjectWhen"
-            >
-              <v-radio
-                v-for="(whn, ix) in subjectWhens" :key="ix"
-                class="text-capitalize"
-                :label="whn.toLowerCase()"
-                :value="whn"
-              ></v-radio>
-            </v-radio-group>
-
-            <v-btn
-              small
-              class="mb-3 mr-1"
-              @click="stepNo = 3"
-            >
-              Next
-            </v-btn>
-            <v-btn
-              small
-              class="mb-3 ml-1"
-              @click="stepNo = 1"
-            >
-              Prev
-            </v-btn>
-          </v-stepper-content>
-
-          <v-divider></v-divider>
-
-          <v-stepper-step
-            editable
-            step="3"
-            color="success"
-            class="font-weight-medium"
-          >
-            Conditions
-            <small>{{ isConditionsBlockShowed() ? 'Please specify your conditions' : 'No condition needed!' }}</small>
-          </v-stepper-step>
-          <v-stepper-content step="3">
-
-            <div v-if="isConditionsBlockShowed()" class="mr-5">
-
-              <v-select
+              <v-text-field
                 dense
                 outlined
-                hide-details
-                label="Status"
-                v-model="form.certainStatus"
-                :items="statuses"
-                class="my-3"
-                v-if="form.subject == 'STATUS' && form.subjectWhen != 'CHANGED'"
-              ></v-select>
-
-              <div
-                class="d-flex justify-space-between mt-3"
-                v-if="form.subject != 'STATUS' && form.subjectWhen == 'OUT_OF_LIMITS'"
-              >
-                <v-text-field
-                  dense
-                  outlined
-                  label="Lower Limit"
-                  v-model="form.amountLowerLimit"
-                  :messages="hint.amountLowerLimit"
-                  :error="hint.amountLowerLimit != null"
-                  @blur="formatPrices"
-                  maxlength="10"
-                  type="number"
-                  class="px-2"
-                ></v-text-field>
-                <v-text-field
-                  dense
-                  outlined
-                  label="Upper Limit"
-                  v-model="form.amountUpperLimit"
-                  :messages="hint.amountUpperLimit"
-                  :error="hint.amountUpperLimit != null"
-                  @blur="formatPrices"
-                  maxlength="10"
-                  type="number"
-                  class="px-2"
-                ></v-text-field>
-              </div>
+                label="Lower Limit"
+                v-model="form.amountLowerLimit"
+                :messages="hint.amountLowerLimit"
+                :error="hint.amountLowerLimit != null"
+                @blur="formatPrices"
+                maxlength="10"
+                type="number"
+                class="px-2"
+              ></v-text-field>
+              <v-text-field
+                dense
+                outlined
+                label="Upper Limit"
+                v-model="form.amountUpperLimit"
+                :messages="hint.amountUpperLimit"
+                :error="hint.amountUpperLimit != null"
+                @blur="formatPrices"
+                maxlength="10"
+                type="number"
+                class="px-2"
+              ></v-text-field>
             </div>
-
-            <block-message v-else dense class="my-3 mr-4" :message="'No condition applicable!'" />
-
-            <v-btn
-              small
-              class="mb-3"
-              @click="stepNo = 2"
-            >
-              Prev
-            </v-btn>
-          </v-stepper-content>
-        </v-stepper>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="py-4 justify-space-between">
-          <v-btn
-            text
-            tabindex="-1"
-            color="red"
-            @click="setOff"
-            :disabled="!form.id"
-          >
-            Remove
-          </v-btn>
-          <div>
-            <v-btn
-              text
-              tabindex="-1"
-              @click="close"
-            >
-              Close
-            </v-btn>
-            <v-btn
-              text
-              @click="save"
-              color="success"
-              :disabled="$store.get('session/isNotEditor') || isFormValid() == false"
-            >
-              {{ form.id ? 'Update' : 'Create' }}
-            </v-btn>
           </div>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+
+          <block-message v-else dense class="my-3 mr-4" :message="'No condition needed!'" />
+
+          <v-btn
+            small
+            class="mb-3"
+            @click="stepNo = 2"
+          >
+            <v-icon>mdi-menu-left</v-icon>
+            Prev
+          </v-btn>
+        </v-stepper-content>
+      </v-stepper>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="justify-end pa-3">
+        <v-btn
+          text
+          tabindex="-1"
+          color="red"
+          @click="setOff"
+          :disabled="!form.id"
+        >
+          Remove
+        </v-btn>
+        <v-btn
+          text
+          @click="save"
+          color="success"
+          :disabled="$store.get('session/isNotEditor') || isFormValid() == false"
+        >
+          {{ form.id ? 'Update' : 'Create' }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 const subjects = {
-  LINK:  ['STATUS', 'PRICE'],
-  PRODUCT: ['STATUS', 'MINIMUM', 'AVERAGE', 'MAXIMUM', 'TOTAL']
+  LINK:  ['POSITION', 'PRICE'],
+  PRODUCT: ['POSITION', 'MINIMUM', 'AVERAGE', 'MAXIMUM']
 };
 
 const whens = {
-  status: ['CHANGED', 'EQUAL', 'NOT_EQUAL'],
+  position: ['CHANGED', 'EQUAL', 'NOT_EQUAL'],
   price:  ['INCREASED', 'DECREASED', 'OUT_OF_LIMITS']
 };
 
-const statuses = {
+const positions = {
   LINK:  ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'],
-  PRODUCT: ['NA', 'LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST']
+  PRODUCT: ['LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST', 'UNKNOWN']
 };
 
 export default {
-  computed: {
-    findDialogWidth() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return '80%';
-        case 'sm': return '50%';
-        case 'md': return '35%';
-        case 'lg': return '27%';
-        default: return '18%';
-      }
-    },
-  },
   data() {
     return {
-      opened: false,
+      show: false,
       form: {
         id: null,
-        subject: 'STATUS',
+        subject: 'POSITION',
         subjectWhen: 'CHANGED',
-        certainStatus: 'ACTIVE',
+        certainPosition: 'ACTIVE',
         amountLowerLimit: 0,
         amountUpperLimit: 0,
       },
@@ -248,26 +228,27 @@ export default {
       name: null,
       topic: 'LINK',
       subjects,
-      statuses: null,
-      subjectWhens: whens.status,
+      positions: null,
+      subjectWhens: null,
       stepNo: 1,
+      problem: null
     };
   },
   methods: {
     open(data) {
-      this.opened = true;
+      this.show = true;
       if (data) {
         this.form = data;
         this.name = data.name;
         this.topic = data.topic.toUpperCase();
-        this.statuses = statuses[this.topic];
-        this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
+        this.positions = positions[this.topic];
+        this.subjectWhens = whens[this.form.subject == 'POSITION' ? this.form.subject.toLowerCase() :  'price'];
         if (data.id) this.stepNo = 3;
       } else {
         this.form.id = null;
-        this.form.subject = 'STATUS';
+        this.form.subject = 'POSITION';
         this.form.subjectWhen = 'CHANGED';
-        this.form.certainStatus = 'ACTIVE';
+        this.form.certainPosition = 'ACTIVE';
         this.form.amountLowerLimit = 0;
         this.form.amountUpperLimit = 0;
         this.hint.amountLowerLimit = null;
@@ -282,7 +263,7 @@ export default {
       } else {
         this.hint.amountLowerLimit = null;
         this.hint.amountUpperLimit = null;
-        if (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
+        if (this.form.subject != 'POSITION' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
           if (parseFloat(this.form.amountLowerLimit) < 1) {
             if (parseFloat(this.form.amountUpperLimit) < 1) this.hint.amountLowerLimit = 'Required';
           }
@@ -297,15 +278,15 @@ export default {
       this.close();
     },
     close() {
-      this.opened = false;
+      this.show = false;
     },
     onSubjectChanged() {
-      this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
+      this.subjectWhens = whens[this.form.subject == 'POSITION' ? this.form.subject.toLowerCase() :  'price'];
       this.form.subjectWhen = this.subjectWhens[0];
     },
     onWhenChanged() {
       if (this.form.subjectWhen == 'EQUAL' || this.form.subjectWhen == 'NOT_EQUAL') {
-        this.form.certainStatus = this.statuses[0];
+        this.form.certainPosition = this.positions[0];
       }
     },
     formatPrices() {
@@ -313,21 +294,35 @@ export default {
       this.form.amountUpperLimit = parseFloat(('0' + this.form.amountUpperLimit).replace(/[^\d.]/g, '')).toFixed(2);
     },
     isConditionsBlockShowed() {
-      return (this.form.subject == 'STATUS' && this.form.subjectWhen != 'CHANGED') || (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS');
+      return (this.form.subject == 'POSITION' && this.form.subjectWhen != 'CHANGED') || (this.form.subject != 'POSITION' && this.form.subjectWhen == 'OUT_OF_LIMITS');
     },
     isFormValid() {
-      if (this.form.subject == 'STATUS' && this.form.subjectWhen != 'CHANGED' && !this.form.certainStatus) {
+      if (this.form.subject == 'POSITION' && this.form.subjectWhen != 'CHANGED' && !this.form.certainPosition) {
+        this.problem = 'Position must be specified!';
         return false;
       } else {
-        if (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
+        if (this.form.subject != 'POSITION' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
           if (parseFloat(this.form.amountLowerLimit) < 1) {
-            if (parseFloat(this.form.amountUpperLimit) < 1) return false;
+            if (parseFloat(this.form.amountUpperLimit) < 1) {
+              this.problem = 'You need to specify a positive value for either lower or upper limit!';
+              return false;
+            }
           }
           if (parseFloat(this.form.amountUpperLimit) < 1) {
-            if (parseFloat(this.form.amountLowerLimit) < 1) return false;
+            if (parseFloat(this.form.amountLowerLimit) < 1) {
+              this.problem = 'You need to specify a positive value for either lower or upper limit!';
+              return false;
+            }
+          }
+          if (parseFloat(this.form.amountLowerLimit) > 0 && parseFloat(this.form.amountUpperLimit) > 0) {
+            if (parseFloat(this.form.amountLowerLimit) >= parseFloat(this.form.amountUpperLimit)) {
+              this.problem = 'Lower limit cannot be greater or equal to Upper limit!';
+              return false;
+            }
           }
         }
       }
+      this.problem = null;
       return true;
     }
   },
