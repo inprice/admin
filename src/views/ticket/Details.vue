@@ -39,7 +39,7 @@
               :style="'background-color: ' + (comment.addedByUser ? '#eeeccc' : '#cceece')"
             >
               <div class="caption my-auto">
-                <ago class="caption d-inline" :date="comment.createdAt" /> by <span class="teal--text" >{{ comment.username  }}</span>
+                <ago class="caption d-inline" :date="comment.createdAt" /> by <span class="teal--text" >{{ comment.fullName  }}</span>
               </div>
 
               <div>
@@ -245,7 +245,7 @@ export default {
       if (user.role == 'SUPER') {
         if (comment.addedByUser) return false;
       }
-      if (user.role == 'ADMIN' || this.CURSTAT.user == comment.username) {
+      if (user.role == 'ADMIN' || this.CURSTAT.fullName == comment.fullName) {
         return true;
       } else {
         return false;

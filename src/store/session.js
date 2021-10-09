@@ -78,7 +78,7 @@ function buildCurrent(state) {
       linkCount: selected.linkCount,
       lastStatusUpdate: selected.lastStatusUpdate,
       email: selected.email,
-      user: selected.user,
+      fullName: selected.fullName,
       role: selected.role,
       timezone: selected.timezone,
       currencyFormat: selected.currencyFormat,
@@ -105,12 +105,8 @@ function buildCurrent(state) {
 
 const mutations = {
 
-  SET_CURRENT(state, ses, sid) {
-    if (sid != undefined && sid >= 0 && sid < state.list.length) {
-      state.no = sid;
-    } else {
-      state.no = 0;
-    }
+  SET_CURRENT(state, ses) {
+    state.no = router.currentRoute.params.sid;
     if (state.no == undefined || state.no < 0 || state.no >= state.list.length) state.no = 0;
     state.list[state.no] = ses;
     if (state.current.role != 'SUPER') loginChannel.postMessage(state.list);

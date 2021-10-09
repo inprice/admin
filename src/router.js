@@ -172,11 +172,6 @@ const router = new VueRouter({
           component: () => import('./views/subscription/Index.vue')
         },
         {
-          name: 'alarm',
-          path: 'alarm',
-          component: () => import('./views/alarm/Index.vue')
-        },
-        {
           name: 'ticket',
           path: 'ticket',
           component: () => import('./views/ticket/Index.vue')

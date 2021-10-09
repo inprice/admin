@@ -3,7 +3,7 @@
   <div>
     <div>
       <div class="title">Tickets for Super User</div>
-      <div class="body-2">The tickets opened by your users.</div>
+      <div class="body-2">The tickets opened by your members.</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>

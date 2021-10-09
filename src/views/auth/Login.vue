@@ -13,7 +13,7 @@
           <v-form 
             ref="form"
             v-model="valid"
-            onSubmit="return false"
+            @submit.prevent
             @keyup.native.enter="valid && submit($event)"
           >
             <v-text-field
@@ -89,7 +89,7 @@ export default {
           let ses = resData.sessions[resData.sessionNo];
           if (ses) {
             ses = resData.sessions[0];
-            this.$store.commit('session/SET_CURRENT', ses, 0);
+            this.$store.commit('session/SET_CURRENT', ses);
 
             if (resData.isPriviledge) {
               this.$router.push({ name: 'sys-dashboard', params: { sid: 0 } });
@@ -118,7 +118,7 @@ export default {
         ],
         password: [
           v => !!v || "Password required",
-          v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => (v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
         ],
       }
     }

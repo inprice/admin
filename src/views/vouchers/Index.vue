@@ -16,7 +16,7 @@
               <div>The list</div>
               <div class="caption">A combined list of vouchers that assigned, applied and created by you</div>
               <div class="caption">
-                <strong>Please note:</strong> Available vouchers can only be used when you have no active subscription or Free Use!
+                <strong>Please note:</strong> Available vouchers can only be used when you have no active subscription or trial use!
               </div>
             </div>
           </div>

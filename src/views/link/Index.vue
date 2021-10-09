@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">Links</div>
+    <div class="title">All Links</div>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
@@ -49,9 +49,9 @@
                     multiple
                     outlined
                     hide-details
-                    label="Levels"
-                    v-model="searchForm.levels"
-                    :items="levelItems"
+                    label="Positions"
+                    v-model="searchForm.positions"
+                    :items="positionItems"
                     class="mb-4"
                   ></v-select>
 
@@ -228,16 +228,16 @@ import LinkService from '@/service/link';
 import AlarmService from '@/service/alarm';
 import { get } from 'vuex-pathify'
 
-const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'NA'];
+const positionItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'UNKNOWN'];
 const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
-const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'LEVEL', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
+const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'POSITION', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  levels: [],
+  positions: [],
   statuses: [],
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
@@ -257,7 +257,7 @@ export default {
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      levelItems,
+      positionItems,
       statusItems,
       orderByItems,
       orderDirItems,
@@ -391,7 +391,7 @@ export default {
         cloned = JSON.parse(JSON.stringify(link.alarm));
       } else {
         cloned = {
-          subject: 'STATUS',
+          subject: 'POSITION',
           subjectWhen: 'CHANGED',
           amountLowerLimit: 0,
           amountUpperLimit: 0,

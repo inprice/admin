@@ -11,7 +11,7 @@
       </v-card-title>
 
       <v-card-text class="py-0 mt-3">
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" @submit.prevent>
           <v-text-field
             dense
             outlined
@@ -46,7 +46,11 @@
 
       <v-divider></v-divider>
 
-      <v-card-actions class="justify-end pa-3">
+      <v-card-actions class="justify-space-between pa-3">
+        <div v-if="isInsert" class="caption ml-3">
+          <div class="red--text font-weight-medium">Please note that</div>
+          <div>You will be able to see new workspace after login again!</div>
+        </div>
         <v-btn
           text
           @click="submit"

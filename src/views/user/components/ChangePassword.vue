@@ -6,15 +6,12 @@
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <div>
-          <div>Change password</div>
-          <div class="caption">For {{ title }}</div>
-        </div>
+        <div>Change password</div>
         <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
       <v-card-text class="py-0 mt-3">
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" @submit.prevent>
           <v-text-field
             dense
             outlined
@@ -125,16 +122,16 @@ export default {
       this.rules = {
         oldPassword: [
           v => !!v || "Old password required",
-          v => (v && v.length >= 4 && v.length <= 16) || "Old password must be between 4-16 chars",
+          v => (v && v.length >= 6 && v.length <= 16) || "Old password must be between 6-16 chars",
         ],
         password: [
           v => !!v || "New password required",
-          v => (v && v.length >= 4 && v.length <= 16) || "New password must be between 4-16 chars",
+          v => (v && v.length >= 6 && v.length <= 16) || "New password must be between 6-16 chars",
           v => (v && v != this.form.oldPassword) || "Old and New passwords must be different",
         ],
         repeatPassword: [
           v => !!v || "Repeat Password required",
-          v => (v && v.length >= 4 && v.length <= 16) || "Repeat password must be between 4-16 chars",
+          v => (v && v.length >= 6 && v.length <= 16) || "Repeat password must be between 6-16 chars",
           v => (v && v == this.form.password) || "Passwords must be the same"
         ],
       }

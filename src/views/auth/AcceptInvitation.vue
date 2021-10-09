@@ -13,9 +13,17 @@
           <v-form 
             ref="form"
             v-model="valid"
-            onSubmit="return false"
+            @submit.prevent
             @keyup.native.enter="valid && submit($event)"
           >
+            <v-text-field
+              outlined dense
+              label="Full Name"
+              v-model="form.fullName"
+              :rules="rules.fullName"
+              maxlength="70"
+            />
+
             <v-text-field
               outlined dense
               label="Password"
@@ -81,6 +89,7 @@ export default {
       showPass2: false,
       rules: {},
       form: {
+        fullName: '',
         token: '',
         password: '',
         repeatPassword: ''
@@ -109,9 +118,13 @@ export default {
     },
     activateRules() {
       this.rules = {
+        fullName: [
+          v => !!v || "Your full name required",
+          v => (v.length >= 3 && v.length <= 70) || "Your full name must be between 3-70 chars"
+        ],
         password: [
           v => !!v || "Password required",
-          v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => (v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
         ],
         repeatPassword: [
           v => !!v || "Repeat Password required",

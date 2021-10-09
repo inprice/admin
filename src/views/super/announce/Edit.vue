@@ -14,15 +14,15 @@
       </v-card-title>
 
       <v-card-text class="py-0 mt-3">
-        <v-form ref="form" v-model="valid">
-          <input type="hidden" :value="form.id" >
+        <v-form ref="form" v-model="valid" @submit.prevent>
+          <input type="hidden" :value="form.id">
 
           <v-select
             dense
             outlined
-            label="Level"
-            v-model="form.level"
-            :items="levelItems"
+            label="Position"
+            v-model="form.position"
+            :items="positionItems"
           ></v-select>
 
           <div class="d-flex">

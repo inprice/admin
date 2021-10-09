@@ -51,9 +51,9 @@
                     multiple
                     outlined
                     hide-details
-                    label="Levels"
-                    v-model="searchForm.levels"
-                    :items="levelItems"
+                    label="Positions"
+                    v-model="searchForm.positions"
+                    :items="positionItems"
                     class="mb-4"
                   ></v-select>
 
@@ -160,12 +160,10 @@
       <table class="list-table">
         <thead>
           <tr>
-            <th width="3%"></th>
             <th>Name</th>
             <th width="7%" class="hidden-sm-and-down">Brand</th>
             <th width="7%" class="hidden-sm-and-down">Category</th>
             <th width="10%" class="text-right">Price</th>
-            <th width="10%" class="text-right">Total</th>
           </tr>
         </thead>
         <tbody>
@@ -174,22 +172,26 @@
             style="cursor: pointer"
             @click="$router.push({ name: 'product', params: { id: row.id } })"
           >
-            <td class="text-right pr-0">
-              <v-icon 
-                style="font-size:18px"
-                :color="findLevelColor(row.level)"
-              >
-                mdi-star
-              </v-icon>
-            </td>
             <td>
-              <div class="caption teal--text">{{ row.code }}</div>
+              <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>
               <div>{{ row.name }}</div>
             </td>
             <td class="hidden-sm-and-down">{{ row.brandName }}</td>
             <td class="hidden-sm-and-down">{{ row.categoryName }}</td>
-            <td class="text-right">{{ (row.price || 0) | toPrice }}</td>
-            <td class="text-right">{{ (row.total || 0) | toPrice }}</td>
+            <td class="align-center">
+              <div class="d-flex justify-end my-auto">
+                <div class="mr-1">
+                  {{ (row.price || 0) | toPrice }}
+                </div>
+                <v-icon 
+                  class="hidden-xs-only"
+                  :color="row.alarmId ? '' : 'transparent'" 
+                  style="font-size:20px"
+                >
+                  mdi-alarm
+                </v-icon>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -225,15 +227,15 @@ import CategoryService from '@/service/category';
 import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
-const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'NA'];
-const orderByItems = ['NAME', 'CODE', 'BRAND', 'CATEGORY'];
+const positionItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'UNKNOWN'];
+const orderByItems = ['NAME', 'SKU', 'BRAND', 'CATEGORY'];
 const orderDirItems = ['ASC', 'DESC'];
 const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
 const rowLimitItems = [25, 50, 100];
 
 const baseSearchForm = {
   term: '',
-  levels: [],
+  positions: [],
   brand: null,
   category: null,
   orderBy: orderByItems[0],
@@ -251,7 +253,7 @@ export default {
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      levelItems,
+      positionItems,
       orderByItems,
       orderDirItems,
       rowLimitItems,

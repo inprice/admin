@@ -17,7 +17,6 @@
         </template>
 
         <v-list dense>
-
           <v-list-item link target="_blank" :href="link.info.url">
             <v-list-item-title>OPEN LINK'S WEBPAGE</v-list-item-title>
           </v-list-item>
@@ -27,42 +26,36 @@
           <v-list-item link @click="remove" :disabled="$store.get('session/isNotEditor')">
             <v-list-item-title>DELETE THIS LINK</v-list-item-title>
           </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list-item link @click="openAlarmDialog">
-            <v-list-item-title>SET ALARM</v-list-item-title>
-          </v-list-item>
-
         </v-list>
       </v-menu>
     </div>
 
-    <v-divider class="mb-3"></v-divider>
+    <div class="title">Link Details</div>
+
+    <v-divider class="my-2"></v-divider>
 
     <div v-if="link">
 
-      <div v-if="link.info.name" class="d-flex justify-space-between pr-3 title">
-        <div >{{ link.info.name }}</div>
-        <div class="title" v-if="link.info.price"> {{ link.info.price | toPrice }}</div>
+      <div v-if="link.info.name" class="d-flex justify-space-between px-2 subtitle">
+        <div>
+          <div class="caption teal--text font-weight-medium">{{ link.info.sku }}</div>
+          <div>{{ link.info.name }}</div>
+        </div>
+        <div>
+          <div class="caption teal--text font-weight-medium">{{ link.info.position }}</div>
+          <div>{{ (link.info.price || 0) | toPrice }}</div>
+        </div>
       </div>
 
       <div v-else class="body-2">
         {{ link.info.url }}
       </div>
 
-      <v-card v-if="link.info.name" tile class="my-2">
+      <v-divider class="my-2"></v-divider>
+
+      <v-card v-if="link.info.name" tile class="mt-4">
         <div class="d-flex">
           <v-list dense class="col pa-1">
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">SKU</div>
-                <div class="body-2">{{ link.info.sku }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
             <v-list-item>
               <v-list-item-content>
                 <div class="caption blue--text">Seller</div>
@@ -94,17 +87,8 @@
           <v-list dense class="col pa-1">
             <v-list-item>
               <v-list-item-content>
-                <div class="caption blue--text">Level</div>
-                <div class="body-2">{{ link.info.level }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
                 <div class="caption blue--text">Status</div>
-                <div class="body-2">{{ link.info.status }}</div>
+                <div class="body-2">{{ link.info.grup }}</div>
               </v-list-item-content>
             </v-list-item>
 
@@ -112,7 +96,7 @@
 
             <v-list-item>
               <v-list-item-content>
-                <div class="caption blue--text">Checked</div>
+                <div class="caption blue--text">Last Checked</div>
                 <div class="body-2">{{ link.info.checkedAt | formatPlainDate }}</div>
               </v-list-item-content>
             </v-list-item>
@@ -121,7 +105,7 @@
 
             <v-list-item>
               <v-list-item-content>
-                <div class="caption blue--text">Updated</div>
+                <div class="caption blue--text">Last Updated</div>
                 <div class="body-2">{{ link.info.updatedAt | formatPlainDate }}</div>
               </v-list-item-content>
             </v-list-item>
@@ -141,9 +125,19 @@
         </v-list>
       </v-card>
 
-      <history-list :list="link.historyList"></history-list>
+
+      <div class="title mt-5 mb-2">Alarm</div>
+      <v-card class="pa-4 pl-3">
+        <alarm-note
+          :key="alarmRefresher"
+          :alarm="link.info.alarm"
+          @clicked="openAlarmDialog"
+        ></alarm-note>
+      </v-card>
+
       <price-list :list="link.priceList"></price-list>
       <spec-list :list="link.specList"></spec-list>
+      <history-list :list="link.historyList"></history-list>
 
       <alarm-dialog
         ref="alarmDialog"
@@ -171,7 +165,8 @@ export default {
   data() {
     return {
       link: null,
-      loading: true
+      loading: true,
+      alarmRefresher: 0
     };
   },
   methods: {
@@ -189,7 +184,7 @@ export default {
         cloned = JSON.parse(JSON.stringify(this.link.info.alarm));
       } else {
         cloned = {
-          subject: 'STATUS',
+          subject: 'POSITION',
           subjectWhen: 'CHANGED',
           amountLowerLimit: 0,
           amountUpperLimit: 0,
@@ -204,7 +199,7 @@ export default {
       const result = await AlarmService.save(form);
       if (result && result.status) {
         this.link.info.alarm = result.data;
-        this.link.info.alarmId = result.data.id;
+        this.alarmRefresher++;
       }
     },
     setAlarmOff(form) {
@@ -213,8 +208,8 @@ export default {
           const self = this;
           AlarmService.remove(form.id).then((res) => {
             if (res && res.status) {
-              self.link.info.alarmId = null;
               self.link.info.alarm = null;
+              this.alarmRefresher++;
             }
           });
         }
@@ -248,6 +243,7 @@ export default {
     PriceList: () => import('./PriceList.vue'),
     HistoryList: () => import('./HistoryList.vue'),
     SpecList: () => import('./SpecList.vue'),
+    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
     AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')

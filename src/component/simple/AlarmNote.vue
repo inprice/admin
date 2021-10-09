@@ -1,16 +1,29 @@
 <template>
-  <div class="body-2 d-flex" :style="editable ? 'cursor: pointer' : ''" @click="$emit('clicked')">
+  <div class="body-2 d-flex">
     <div v-if="alarm">
       <span v-if="!hasIcon">Alarm </span>
-      will be triggered when
+      Will be triggered when
       <span class="text-capitalize green--text"><b>{{ alarm.subject.toLowerCase()}}</b></span> 
       <span v-html="findLastPart()"></span>
+      <v-btn
+        small outlined
+        class="ml-3"
+        v-if="editable"
+        @click="$emit('clicked')"
+      >
+        Edit
+      </v-btn>
     </div>
     <div v-else>
-      <span class="mr-1">No alarm.</span>
-      <span v-if="editable">
-        Click here to set for this.
-      </span>
+      <span>No alarm set yet.</span>
+      <v-btn
+        small outlined
+        class="ml-3"
+        v-if="editable"
+        @click="$emit('clicked')"
+      >
+        Set
+      </v-btn>
     </div>
   </div>
 </template>
@@ -24,18 +37,26 @@ export default {
   },
   methods: {
     findLastPart() {
+      let value = null;
+
       if (this.alarm.subjectWhen == 'EQUAL' || this.alarm.subjectWhen == 'NOT_EQUAL') {
-        return ` is <span class="red--text"><b>${this.alarm.subjectWhen}</b></span> to <span class="blue--text"><b>${this.alarm.certainStatus}</b></span>`;
+        value = ` is <span class="red--text"><b>${this.alarm.subjectWhen}</b></span> to <span class="blue--text"><b>${this.alarm.certainPosition}</b></span>`;
       } if (this.alarm.subjectWhen == 'OUT_OF_LIMITS') {
         if (this.alarm.amountLowerLimit > 0 && this.alarm.amountUpperLimit > 0) {
-          return ` is less than <span class="red--text"><b>${this.alarm.amountLowerLimit}</b></span> or greater than <span class="blue--text"><b>${this.alarm.amountUpperLimit}</b></span>`;
+          value = ` is less than <span class="red--text"><b>${this.alarm.amountLowerLimit}</b></span> or greater than <span class="blue--text"><b>${this.alarm.amountUpperLimit}</b></span>`;
         } if (this.alarm.amountLowerLimit > 0) {
-          return ` is less than <span class="red--text"><b>${this.alarm.amountLowerLimit}</b></span>`;
+          value = ` is less than <span class="red--text"><b>${this.alarm.amountLowerLimit}</b></span>`;
         } if (this.alarm.amountUpperLimit > 0) {
-          return ` is greater than <span class="red--text"><b>${this.alarm.amountUpperLimit}</b></span>`;
+          value = ` is greater than <span class="red--text"><b>${this.alarm.amountUpperLimit}</b></span>`;
         }
       }
-      return ` is <span class="red--text"><b>${this.alarm.subjectWhen.replaceAll('_', ' ')}</b></span>`;
+      if (value == null) value = ` is <span class="red--text"><b>${this.alarm.subjectWhen.replaceAll('_', ' ')}</b></span>`;
+
+      if (this.alarm.notifiedAt) {
+        value += '<br>Last notified at ' + this.alarm.notifiedAt;
+      }
+
+      return value;
     }
   }
 }

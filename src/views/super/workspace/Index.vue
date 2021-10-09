@@ -189,7 +189,7 @@ export default {
     async bindWorkspace(id) {
       const res = await SU_WorkspaceService.bind(id);
       if (res && res.data) {
-        this.$store.commit('session/SET_CURRENT', res.data, 0);
+        this.$store.commit('session/SET_CURRENT', res.data);
       }
     },
     unbindWorkspace() {

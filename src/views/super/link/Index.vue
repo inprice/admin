@@ -65,9 +65,9 @@
                   multiple
                   outlined
                   hide-details
-                  label="Levels"
-                  v-model="searchForm.levels"
-                  :items="levelItems"
+                  label="Positions"
+                  v-model="searchForm.positions"
+                  :items="positionItems"
                   class="mb-4"
                 ></v-select>
 
@@ -171,9 +171,9 @@
 import SU_LinkService from '@/service/super/link';
 import SU_WorkspaceService from '@/service/super/workspace';
 
-const levelItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL'];
+const positionItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'UNKNOWN'];
 const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
-const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'LEVEL', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
+const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'POSITION', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
 const orderDirItems = ['ASC', 'DESC'];
 const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
 const rowLimitItems = [25, 50, 100];
@@ -182,7 +182,7 @@ const baseSearchForm = {
   term: '',
   workspaceId: null,
   workspaceTerm: null,
-  levels: [],
+  positions: [],
   statuses: [],
   orderBy: orderByItems[0],
   orderDir: orderDirItems[0],
@@ -201,7 +201,7 @@ export default {
       isWorkspacesLoading: false,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      levelItems,
+      positionItems,
       statusItems,
       orderByItems,
       orderDirItems,

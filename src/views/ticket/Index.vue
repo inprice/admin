@@ -2,8 +2,7 @@
 
   <div>
     <div>
-      <div class="title">Tickets</div>
-      <div class="body-2">All your tickets.</div>
+      <div class="title">You need help, please open a ticket</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>

@@ -26,6 +26,7 @@
         <v-list two-line>
           <v-list-item-group v-if="hasAnnounce()">
             <v-list-item
+              @click="showDetails(row)"
               :ripple="false"
               class="pb-1 pt-0 pr-0"
               v-for="row in announces" :key="row.id"
@@ -69,7 +70,7 @@
           </v-list-item-group>
 
           <div class="px-4 pt-3" v-else>
-            <v-icon>mdi-emoticon-sad-outline</v-icon>
+            <v-icon>mdi-cancel</v-icon>
             No new notification found!
           </div>
         </v-list>
@@ -91,12 +92,15 @@
             small
             class="text-none"
             @click="gotoPage"
+            :disabled="$router.history.current.name == 'announce'"
           >
             See all notifications
           </v-btn>
         </div>
       </v-card>
     </v-menu>
+
+    <info-dialog ref="info"></info-dialog>
   </div>
 </template>
 
@@ -122,8 +126,14 @@ export default {
     gotoPage() {
       this.menu = false;
       this.$router.push({ name: 'announce' });
+    },
+    showDetails(announce) {
+      this.$refs.info.open(announce.title, null, announce.body);
     }
-  }
+  },
+  components: {
+    InfoDialog: () => import('@/component/InfoDialog.vue'),
+  },
 }
 </script>
 

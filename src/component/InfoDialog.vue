@@ -11,8 +11,9 @@
         <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
-      <v-card-text class="py-0 mt-3">
-        {{ message }}
+      <v-card-text class="py-0 mt-3" v-html="html" v-if="html"></v-card-text>
+      <v-card-text class="py-0 mt-3" v-else>
+        {{ text }}
       </v-card-text>
 
       <v-card-actions class="justify-end pa-3">
@@ -32,13 +33,15 @@ export default {
   name: 'info-dialog',
   data: () => ({
     show: false,
-    message: null,
+    text: null,
+    html: null,
     title: null,
   }),
   methods: {
-    open(title, message) {
+    open(title, text, html) {
       this.title = title;
-      this.message = message;
+      this.text = text;
+      this.html = html;
       this.show = true;
     },
     close() {

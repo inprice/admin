@@ -4,7 +4,7 @@
     <v-card-title class="justify-space-between py-2">
       <div>
         <div class="caption teal--text font-weight-medium">
-          {{ ticket.username }}
+          {{ ticket.fullName }}
         </div>
         <div class="body-1">
           <span class="text-capitalize">{{ ticket.type.toLowerCase() }}</span> about {{ ticket.subject.toLowerCase() }}

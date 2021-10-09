@@ -13,18 +13,9 @@
           <v-form 
             ref="form"
             v-model="valid"
-            onSubmit="return false"
+            @submit.prevent
             @keyup.native.enter="valid && submit($event)"
           >
-            <v-text-field
-              outlined dense
-              label="Workspace"
-              v-model="form.workspaceName"
-              :rules="rules.workspaceName"
-              type="text"
-              maxlength="70"
-            />
-
             <v-text-field
               outlined dense
               label="E-mail"
@@ -32,6 +23,23 @@
               type="email"
               :rules="rules.email"
               maxlength="100"
+            />
+
+            <v-text-field
+              outlined dense
+              label="Full Name"
+              v-model="form.fullName"
+              :rules="rules.fullName"
+              maxlength="70"
+            />
+
+            <v-text-field
+              outlined dense
+              label="Company Name"
+              v-model="form.workspaceName"
+              :rules="rules.workspaceName"
+              type="text"
+              maxlength="70"
             />
 
             <v-text-field
@@ -97,6 +105,7 @@ export default {
       showPass2: false,
       rules: {},
       form: {
+        fullName: '',
         email: '',
         workspaceName: '',
         password: '',
@@ -120,18 +129,22 @@ export default {
     },
     activateRules() {
       this.rules = {
-        workspaceName: [
-          v => !!v || "Workspace name required",
-          v => (v.length >= 3 && v.length <= 70) || "Workspace name must be between 3-70 chars"
+        fullName: [
+          v => !!v || "Your full name required",
+          v => (v.length >= 3 && v.length <= 70) || "Your full name must be between 3-70 chars"
         ],
         email: [
           v => !!v || "E-mail required",
           v => (v.length >= 9 && v.length <= 100) || "Email must be between 9-100 chars",
           v => Utility.verifyEmail(v) || "E-mail must be valid"
         ],
+        workspaceName: [
+          v => !!v || "Company name required",
+          v => (v.length >= 3 && v.length <= 70) || "Company name must be between 3-70 chars"
+        ],
         password: [
           v => !!v || "Password required",
-          v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => (v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
         ],
         repeatPassword: [
           v => !!v || "Repeat Password required",

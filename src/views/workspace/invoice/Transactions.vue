@@ -33,9 +33,9 @@
       />
     </v-card>
 
-    <div class="title mt-5">Transactions</div>
+    <div v-if="$store.get('session/isSuperUser')" class="title mt-5">Transactions</div>
 
-    <v-card class="mt-2">
+    <v-card v-if="$store.get('session/isSuperUser')" class="mt-2">
       <table 
         class="info-table pb-2" 
         v-if="(all && all.length) || (invoices && invoices.length)"

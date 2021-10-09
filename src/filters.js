@@ -50,7 +50,7 @@ export default (Vue) => {
     } catch (error) {
       console.error('Failed to format date', value, error);
      }
-    return 'NA';
+    return '-';
   });
 
   Vue.filter('formatDate', (value) => {
@@ -67,7 +67,7 @@ export default (Vue) => {
     } catch (error) {
       console.error('Failed to format date', value, error);
      }
-    return 'NA';
+    return '-';
   });
 
   Vue.filter('formatRate', (value) => {
@@ -94,7 +94,7 @@ export default (Vue) => {
     } catch (error) {
       console.error('Failed to format date', value, error);
     }
-    return 'NA';
+    return '-';
   });
 
 };

@@ -5,14 +5,15 @@
     content-class="rounded-dialog"
   >
     <v-card v-if="topic">
-      <v-card-title class="pb-0 d-flex justify-space-between">
-        <div>
+      <v-card-title class="pb-0 d-flex justify-space-between no-gutters">
+        <div class="text-truncate col mr-2">
           <div>
             {{ form.id ? 'Edit' : 'New' }} 
             <span class="text-capitalize">{{ topic.toLowerCase() }}</span>
             Alarm
           </div>
-          <div class="caption">For {{ name }}</div>
+          <div v-if="problem" class="caption red--text">{{ problem }}</div>
+          <div v-else class="caption">For {{ name }}</div>
         </div>
         <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
@@ -29,7 +30,7 @@
           color="success"
         >
           <div>Subject</div>
-          <div><small class="caption">For which subject: <b>{{ form.subject }}</b></small></div>
+          <div><small class="caption">For which subject: <b class="text-capitalize">{{ form.subject.toLowerCase() }}</b></small></div>
         </v-stepper-step>
         <v-stepper-content step="1">
           <v-radio-group
@@ -51,6 +52,7 @@
             @click="stepNo = 2"
           >
             Next
+            <v-icon>mdi-menu-right</v-icon>
           </v-btn>
         </v-stepper-content>
 
@@ -63,7 +65,7 @@
           class="font-weight-medium"
         >
           When
-          <small class="caption text-capitalize">{{ form.subject }} is <b>{{ form.subjectWhen }}</b></small>
+          <small class="caption text-capitalize">{{ form.subject }} is <b>{{ form.subjectWhen.toLowerCase().replaceAll('_', ' ') }}</b></small>
         </v-stepper-step>
         <v-stepper-content step="2">
           <v-radio-group
@@ -74,7 +76,7 @@
             <v-radio
               v-for="(whn, ix) in subjectWhens" :key="ix"
               class="text-capitalize"
-              :label="whn.toLowerCase()"
+              :label="whn.toLowerCase().replaceAll('_', ' ')"
               :value="whn"
             ></v-radio>
           </v-radio-group>
@@ -82,16 +84,18 @@
           <v-btn
             small
             class="mb-3 mr-1"
-            @click="stepNo = 3"
+            @click="stepNo = 1"
           >
-            Next
+            <v-icon>mdi-menu-left</v-icon>
+            Prev
           </v-btn>
           <v-btn
             small
             class="mb-3 ml-1"
-            @click="stepNo = 1"
+            @click="stepNo = 3"
           >
-            Prev
+            Next
+            <v-icon>mdi-menu-right</v-icon>
           </v-btn>
         </v-stepper-content>
 
@@ -113,16 +117,16 @@
               dense
               outlined
               hide-details
-              label="Status"
-              v-model="form.certainStatus"
-              :items="statuses"
+              label="Position"
+              v-model="form.certainPosition"
+              :items="positions"
               class="my-3"
-              v-if="form.subject == 'STATUS' && form.subjectWhen != 'CHANGED'"
+              v-if="form.subject == 'POSITION' && form.subjectWhen != 'CHANGED'"
             ></v-select>
 
             <div
               class="d-flex justify-space-between mt-3"
-              v-if="form.subject != 'STATUS' && form.subjectWhen == 'OUT_OF_LIMITS'"
+              v-if="form.subject != 'POSITION' && form.subjectWhen == 'OUT_OF_LIMITS'"
             >
               <v-text-field
                 dense
@@ -151,13 +155,14 @@
             </div>
           </div>
 
-          <block-message v-else dense class="my-3 mr-4" :message="'No condition applicable!'" />
+          <block-message v-else dense class="my-3 mr-4" :message="'No condition needed!'" />
 
           <v-btn
             small
             class="mb-3"
             @click="stepNo = 2"
           >
+            <v-icon>mdi-menu-left</v-icon>
             Prev
           </v-btn>
         </v-stepper-content>
@@ -190,18 +195,18 @@
 
 <script>
 const subjects = {
-  LINK:  ['STATUS', 'PRICE'],
-  PRODUCT: ['STATUS', 'MINIMUM', 'AVERAGE', 'MAXIMUM', 'TOTAL']
+  LINK:  ['POSITION', 'PRICE'],
+  PRODUCT: ['POSITION', 'MINIMUM', 'AVERAGE', 'MAXIMUM']
 };
 
 const whens = {
-  status: ['CHANGED', 'EQUAL', 'NOT_EQUAL'],
+  position: ['CHANGED', 'EQUAL', 'NOT_EQUAL'],
   price:  ['INCREASED', 'DECREASED', 'OUT_OF_LIMITS']
 };
 
-const statuses = {
+const positions = {
   LINK:  ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'],
-  PRODUCT: ['NA', 'LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST']
+  PRODUCT: ['LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST', 'UNKNOWN']
 };
 
 export default {
@@ -210,9 +215,9 @@ export default {
       show: false,
       form: {
         id: null,
-        subject: 'STATUS',
+        subject: 'POSITION',
         subjectWhen: 'CHANGED',
-        certainStatus: 'ACTIVE',
+        certainPosition: 'ACTIVE',
         amountLowerLimit: 0,
         amountUpperLimit: 0,
       },
@@ -223,9 +228,10 @@ export default {
       name: null,
       topic: 'LINK',
       subjects,
-      statuses: null,
-      subjectWhens: whens.status,
+      positions: null,
+      subjectWhens: null,
       stepNo: 1,
+      problem: null
     };
   },
   methods: {
@@ -235,14 +241,14 @@ export default {
         this.form = data;
         this.name = data.name;
         this.topic = data.topic.toUpperCase();
-        this.statuses = statuses[this.topic];
-        this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
+        this.positions = positions[this.topic];
+        this.subjectWhens = whens[this.form.subject == 'POSITION' ? this.form.subject.toLowerCase() :  'price'];
         if (data.id) this.stepNo = 3;
       } else {
         this.form.id = null;
-        this.form.subject = 'STATUS';
+        this.form.subject = 'POSITION';
         this.form.subjectWhen = 'CHANGED';
-        this.form.certainStatus = 'ACTIVE';
+        this.form.certainPosition = 'ACTIVE';
         this.form.amountLowerLimit = 0;
         this.form.amountUpperLimit = 0;
         this.hint.amountLowerLimit = null;
@@ -257,7 +263,7 @@ export default {
       } else {
         this.hint.amountLowerLimit = null;
         this.hint.amountUpperLimit = null;
-        if (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
+        if (this.form.subject != 'POSITION' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
           if (parseFloat(this.form.amountLowerLimit) < 1) {
             if (parseFloat(this.form.amountUpperLimit) < 1) this.hint.amountLowerLimit = 'Required';
           }
@@ -275,12 +281,12 @@ export default {
       this.show = false;
     },
     onSubjectChanged() {
-      this.subjectWhens = whens[this.form.subject == 'STATUS' ? 'status' : 'price'];
+      this.subjectWhens = whens[this.form.subject == 'POSITION' ? this.form.subject.toLowerCase() :  'price'];
       this.form.subjectWhen = this.subjectWhens[0];
     },
     onWhenChanged() {
       if (this.form.subjectWhen == 'EQUAL' || this.form.subjectWhen == 'NOT_EQUAL') {
-        this.form.certainStatus = this.statuses[0];
+        this.form.certainPosition = this.positions[0];
       }
     },
     formatPrices() {
@@ -288,21 +294,35 @@ export default {
       this.form.amountUpperLimit = parseFloat(('0' + this.form.amountUpperLimit).replace(/[^\d.]/g, '')).toFixed(2);
     },
     isConditionsBlockShowed() {
-      return (this.form.subject == 'STATUS' && this.form.subjectWhen != 'CHANGED') || (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS');
+      return (this.form.subject == 'POSITION' && this.form.subjectWhen != 'CHANGED') || (this.form.subject != 'POSITION' && this.form.subjectWhen == 'OUT_OF_LIMITS');
     },
     isFormValid() {
-      if (this.form.subject == 'STATUS' && this.form.subjectWhen != 'CHANGED' && !this.form.certainStatus) {
+      if (this.form.subject == 'POSITION' && this.form.subjectWhen != 'CHANGED' && !this.form.certainPosition) {
+        this.problem = 'Position must be specified!';
         return false;
       } else {
-        if (this.form.subject != 'STATUS' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
+        if (this.form.subject != 'POSITION' && this.form.subjectWhen == 'OUT_OF_LIMITS') {
           if (parseFloat(this.form.amountLowerLimit) < 1) {
-            if (parseFloat(this.form.amountUpperLimit) < 1) return false;
+            if (parseFloat(this.form.amountUpperLimit) < 1) {
+              this.problem = 'You need to specify a positive value for either lower or upper limit!';
+              return false;
+            }
           }
           if (parseFloat(this.form.amountUpperLimit) < 1) {
-            if (parseFloat(this.form.amountLowerLimit) < 1) return false;
+            if (parseFloat(this.form.amountLowerLimit) < 1) {
+              this.problem = 'You need to specify a positive value for either lower or upper limit!';
+              return false;
+            }
+          }
+          if (parseFloat(this.form.amountLowerLimit) > 0 && parseFloat(this.form.amountUpperLimit) > 0) {
+            if (parseFloat(this.form.amountLowerLimit) >= parseFloat(this.form.amountUpperLimit)) {
+              this.problem = 'Lower limit cannot be greater or equal to Upper limit!';
+              return false;
+            }
           }
         }
       }
+      this.problem = null;
       return true;
     }
   },

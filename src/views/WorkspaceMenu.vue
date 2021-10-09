@@ -13,41 +13,26 @@
     </template>
 
     <v-list dense>
-      <v-list-item :to="{name: 'workspace-settings'}" :disabled="$store.get('session/isNotAdmin')">
-        <v-icon class="mr-3">mdi-cog-outline</v-icon>
-        <v-list-item-content>
-          <v-list-item-subtitle>SETTINGS</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
       <div v-if="sesList && sesList.length > 1">
-        <v-divider></v-divider>
-        <v-subheader>YOUR WORKSPACES</v-subheader>
-
-        <template v-for="({ email, workspace, role }, i) in sesList">
+        <template v-for="({ workspace }, i) in sesList">
           <v-list-item
-            v-if="email != CURSTAT.email || workspace != CURSTAT.workspace"
             :key="i"
-            :href="findPath(i)"
-            target="_blank"
-            @click="menu=!menu"
+            :href="CURSTAT.workspace != workspace ? findPath(i) : null"
           >
-            <v-icon class="mr-3">mdi-account-arrow-right-outline</v-icon>
+            <v-icon 
+              class="mr-2"
+              :color="workspace == CURSTAT.workspace ? 'green' : 'transparent'"
+            >
+              mdi-check
+            </v-icon>
             <v-list-item-content>
               <v-list-item-title>{{ workspace }}</v-list-item-title>
-              <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
             </v-list-item-content>
-
-            <div class="text-right">
-              <v-chip small outlined color="success">
-                {{ role }}
-              </v-chip>
-            </div>
           </v-list-item>
         </template>
+        <v-divider></v-divider>
       </div>
 
-      <v-divider></v-divider>
 
       <v-list-item @click.stop="openCreateWorkspace" :disabled="$store.get('session/isDemoUser')">
         <v-icon class="mr-3">mdi-folder-plus-outline</v-icon>

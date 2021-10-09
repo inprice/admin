@@ -6,7 +6,7 @@
     <!-- ------ -->
     <v-card-title class="py-1 justify-space-between">
       <div @click="openDetails" :style="fromSearchPage ? 'cursor: pointer;' : ''">
-        <div class="caption teal--text">{{ product.code }}</div>
+        <div class="caption teal--text">{{ product.sku }}</div>
         <div style="font-weight: normal">{{ product.name }}</div>
       </div>
 
@@ -133,30 +133,6 @@
       </v-card>
 
       <v-card
-        v-if="!product.price && product.total"
-        tile
-        outlined
-        class="col elevation-1 mr-1 mt-1 py-1"
-        :style="{ 'min-width': findMinWidthForCells }"
-        style="text-align: center"
-      >
-        <div class="caption text-uppercase font-weight-light">
-          Total
-        </div>
-        <div class="text-h6">
-          <span v-if="$vuetify.breakpoint.smAndDown">
-            {{ product.total | toPrice }}
-          </span>
-          <span v-else>
-            {{ product.total | toCurrency }}
-          </span>
-        </div>
-        <div>
-          <span class="font-weight-medium">{{ product.linkCount }}</span> <span class="caption">total links</span>
-        </div>
-      </v-card>
-
-      <v-card
         v-if="product.price"
         tile
         outlined
@@ -176,8 +152,8 @@
           </span>
         </div>
 
-        <span :class="findLevelColor(product.level) +'--text caption font-weight-medium'">
-          {{ product.level }}
+        <span :class="findPositionColor(product.position) +'--text caption font-weight-medium'">
+          {{ product.position }}
         </span>
       </v-card>
 
@@ -291,7 +267,7 @@ export default {
         cloned = JSON.parse(JSON.stringify(this.product.alarm));
       } else {
         cloned = {
-          subject: 'STATUS',
+          subject: 'POSITION',
           subjectWhen: 'CHANGED',
           amountLowerLimit: 0,
           amountUpperLimit: 0,

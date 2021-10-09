@@ -15,7 +15,7 @@ const POSITIONS = [
   { value: 4, text: 'HIGHER' },
   { value: 5, text: 'HIGHEST' },
   { value: 6, text: 'EQUAL' },
-  { value: 7, text: 'NA' },
+  { value: 7, text: 'UNKNOWN' },
 ];
 
 const POSITION_NAMES = POSITIONS.map(pos =>  pos.text);

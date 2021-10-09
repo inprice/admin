@@ -21,7 +21,7 @@
       <v-form 
         ref="form"
         v-model="valid"
-        onSubmit="return false"
+        @submit.prevent
         @keyup.native.enter="valid && submit($event)"
       >
         <div class="text-center">Activation Code</div>

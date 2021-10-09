@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="subtitle-1 text-lowercase text-center py-1">- {{ CURSTAT.email }} -</div>
     <v-divider class="mt-2"></v-divider>
     <v-tabs 
       show-arrows

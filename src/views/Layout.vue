@@ -104,7 +104,7 @@
             <v-icon>mdi-link-variant</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>All Links</v-list-item-title>
+            <v-list-item-title>Link Management</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -130,21 +130,21 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'alarm'}">
-          <v-list-item-action>
-            <v-icon>mdi-alarm-multiple</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Price Alarms</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
         <v-list-item disabled>
           <v-list-item-action>
             <v-icon>mdi-chart-box-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Reports</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider inset></v-divider>
+
+        <v-list-item :to="{name: 'workspace-settings'}" :disabled="$store.get('session/isNotAdmin')">
+          <v-icon class="mr-3">mdi-cog-outline</v-icon>
+          <v-list-item-content>
+            <v-list-item-title>SETTINGS</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -163,16 +163,14 @@
     </v-navigation-drawer>
 
     <v-app-bar app clipped-left color="blue-grey" dark>
-
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
-      <workspace-menu></workspace-menu>
+      <workspace-menu v-if="!$store.get('session/isSuperUser') || !$store.get('session/isDemoUser')"></workspace-menu>
 
       <v-spacer v-if="$store.get('session/isNotSuperUser') || CURSTAT.workspaceId"></v-spacer>
 
       <notification-menu 
         v-if="CURSTAT.role != 'SUPER'"
-        v-show="$router.history.current.name != 'announce'"
       >
       </notification-menu>
       <user-menu></user-menu>

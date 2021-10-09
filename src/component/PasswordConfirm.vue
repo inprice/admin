@@ -16,7 +16,7 @@
       </v-card-title>
 
       <v-card-text class="py-0 mt-5">
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" @submit.prevent>
           <v-text-field
             outlined dense
             label="Password"
@@ -75,7 +75,7 @@ export default {
       this.rules = {
         password: [
           v => !!v || "Required",
-          v => (v && v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => (v && v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
         ],
       }
     },

@@ -2,7 +2,7 @@
 
   <div>
     <div>
-      <div class="title">Announcements</div>
+      <div class="title">Notifications</div>
     </div>
 
     <v-divider class="mt-2"></v-divider>

@@ -13,7 +13,7 @@
           <v-form 
             ref="form"
             v-model="valid"
-            onSubmit="return false"
+            @submit.prevent
             @keyup.native.enter="valid && submit($event)"
           >
             <v-text-field
@@ -102,7 +102,7 @@ export default {
       this.rules = {
         password: [
           v => !!v || "Password required",
-          v => (v.length >= 4 && v.length <= 16) || "Password must be between 4-16 chars",
+          v => (v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
         ],
         repeatPassword: [
           v => !!v || "Repeat Password required",

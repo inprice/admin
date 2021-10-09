@@ -6,21 +6,18 @@
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <div>
-          <div>Update info</div>
-          <div class="caption">For {{ title }}</div>
-        </div>
+        <div>Profile</div>
         <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
       <v-card-text class="py-0 mt-3">
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" @submit.prevent>
           <v-text-field
             dense
             outlined
             label="Your Name"
-            v-model="form.name"
-            :rules="rules.name"
+            v-model="form.fullName"
+            :rules="rules.fullName"
             type="text"
             maxlength="70"
           />
@@ -71,7 +68,7 @@ export default {
       timezones,
       rules: {},
       form: {
-        name: '',
+        fullName: '',
         timezone: ''
       }
     };
@@ -91,7 +88,6 @@ export default {
       }
     },
     open(data) {
-      this.title = data.email;
       this.show = true;
       let self = this;
       this.$nextTick(() => {
@@ -106,7 +102,7 @@ export default {
     },
     activateRules() {
       this.rules = {
-        name: [
+        fullName: [
           v => !!v || "Required",
           v => (v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
         ],

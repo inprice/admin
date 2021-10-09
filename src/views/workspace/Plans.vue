@@ -19,93 +19,6 @@
       </div>
     </block-message>
 
-    <block-message
-      class="mb-0" 
-      v-if="CURSTAT.isActive == false && CURSTAT.status != 'CREATED'"
-    >
-      This workspace has been {{ CURSTAT.status.toLowerCase() }}
-      <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
-    </block-message>
-
-    <div class="title mt-5">All Plans</div>
-
-    <v-expansion-panels focusable class="mt-2">
-      <v-expansion-panel 
-        v-for="plan in plansSets" :key="plan.id"
-        :class="`${isThisSelected(plan.id) ? 'rainbow' : ''}`"
-      >
-        <v-expansion-panel-header>
-
-          <v-row no-gutters>
-            <v-col sm="6" md="4" class="body-1 primary--text font-weight-bold">
-              <v-icon class="ml-0 mr-1" color="success">{{ isThisSelected(plan.id) ? 'mdi-check-circle' : 'mdi-circle-small' }}</v-icon>
-              <span>{{ plan.name }}</span>
-            </v-col>
-            <v-col class="body-2 my-auto">
-              {{ firstTitleRow(plan) }} {{ secondTitleRow(plan) }}
-            </v-col>
-          </v-row>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content class="caption">
-          <div>
-            <div class="py-3 subtitle-2">{{ plan.description }}</div>
-
-            <div class="d-flex justify-space-between">
-
-              <div class="ml-3">
-                <div 
-                  class="py-1"
-                  v-for="(feature, ix) in plan.features" :key="ix"
-                >
-                  <span>
-                    <v-icon v-if="feature.allowed" color="success">mdi-check-circle-outline</v-icon>
-                    <v-icon v-else color="pink">mdi-minus-circle-outline</v-icon>
-                  </span>
-                  <span :class="{ 'font-weight-light': !feature.allowed }">
-                    {{ feature.description }}
-                  </span>
-                </div>
-
-              </div>
-
-              <div class="mr-3">
-                <v-btn
-                  small
-                  class="mt-4"
-                  @click="subscribe(plan.id)"
-                  v-if="CURSTAT.isSubscriber == false"
-                  :disabled="$store.get('session/isNotAdmin')" 
-                >
-                  Subscribe
-                </v-btn>
-
-                <div class="mt-4" v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
-                  <v-btn
-                    color="error"
-                    @click="cancel()"
-                    v-if="plan.id == CURSTAT.planId"
-                    :disabled="$store.get('session/isNotAdmin')" 
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn 
-                    v-else
-                    dark
-                    @click="changeTo(plan.id)"
-                    :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
-                    :disabled="$store.get('session/isNotAdmin')"
-                  >
-                    {{ plan.id > CURSTAT.planId ? 'UPGRADE' : 'DOWNGRADE' }}
-                  </v-btn>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-
     <v-card v-if="CURSTAT.status == 'CREATED'" class="mt-3">
       <v-card-title class="pb-2">
         <v-icon class="mr-2 hidden-xs-only">mdi-arrow-right-thin-circle-outline</v-icon>
@@ -129,6 +42,63 @@
           </v-btn>
         </div>
       </div>
+    </v-card>
+
+    <block-message
+      class="mb-0" 
+      v-if="CURSTAT.isActive == false && CURSTAT.status != 'CREATED'"
+    >
+      This workspace has been {{ CURSTAT.status.toLowerCase() }}
+      <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
+    </block-message>
+
+    <div class="title mt-5 mb-2">All Plans</div>
+
+    <v-card tile
+      v-for="plan in plansSets" :key="plan.id"
+      :class="`py-2 px-5 ${isThisSelected(plan.id) ? 'rainbow' : ''}`"
+    >
+      <v-row no-gutters>
+        <v-col sm="6" md="4" class="my-auto body-1 primary--text font-weight-bold">
+          <v-icon class="ml-0 mr-1 hidden-sm-and-down" color="success">{{ isThisSelected(plan.id) ? 'mdi-check-circle' : 'mdi-circle-small' }}</v-icon>
+          <span>{{ plan.name }}</span>
+        </v-col>
+
+        <v-col class="body-2 my-auto">
+          <b>{{ firstTitleRow(plan) }}</b> {{ secondTitleRow(plan) }}
+        </v-col>
+
+        <v-col class="my-auto text-right">
+          <v-btn
+            small
+            @click="subscribe(plan.id)"
+            v-if="CURSTAT.isSubscriber == false"
+            :disabled="$store.get('session/isNotAdmin')" 
+          >
+            Subscribe
+          </v-btn>
+
+          <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
+            <v-btn
+              color="error"
+              @click="cancel()"
+              v-if="plan.id == CURSTAT.planId"
+              :disabled="$store.get('session/isNotAdmin')" 
+            >
+              Cancel
+            </v-btn>
+            <v-btn 
+              v-else
+              dark
+              @click="changeTo(plan.id)"
+              :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
+              :disabled="$store.get('session/isNotAdmin')"
+            >
+              {{ plan.id > CURSTAT.planId ? 'UPGRADE' : 'DOWNGRADE' }}
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
     </v-card>
 
     <div class="title mt-8">Contact us</div>
@@ -163,7 +133,7 @@ export default {
   },
   methods: {
     async startFreeUse() {
-      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 14 days free plan').then(async (confirm) => {
+      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 14 days free Basic Plan').then(async (confirm) => {
         if (confirm == true) {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();

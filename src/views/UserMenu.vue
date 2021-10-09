@@ -18,7 +18,7 @@
           </v-avatar>
         </v-list-item-avatar>
         <div>
-          <v-list-item-title class="subtitle-2">{{ CURSTAT.email }}</v-list-item-title>
+          <v-list-item-title class="subtitle-2">{{ CURSTAT.fullName }}</v-list-item-title>
           <v-list-item-subtitle>Change your preferences</v-list-item-subtitle>
         </div>
       </v-list-item>
@@ -48,7 +48,9 @@ export default {
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
     initials() {
-      return this.CURSTAT.user.split(' ').map(str => str[0]).join('').toUpperCase();
+      const words = this.CURSTAT.fullName.split(' ');
+      if (words.length == 1) return words[0][0];
+      return words[0][0]+words[1][0];
     }
   },
 }

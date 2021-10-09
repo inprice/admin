@@ -11,8 +11,8 @@
       </v-card-title>
 
       <v-card-text class="py-0 mt-3">
-        <v-form ref="form" v-model="valid">
-          <input type="hidden" :value="form.id" >
+        <v-form ref="form" v-model="valid" @submit.prevent>
+          <input type="hidden" :value="form.id">
 
           <v-text-field
             dense

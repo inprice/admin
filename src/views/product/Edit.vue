@@ -14,15 +14,15 @@
       </v-card-title>
 
       <v-card-text class="py-0 mt-3">
-        <v-form ref="form" v-model="valid">
-          <input type="hidden" :value="form.id" >
+        <v-form ref="form" v-model="valid" @submit.prevent>
+          <input type="hidden" :value="form.id">
 
           <v-text-field
             dense
             outlined
-            label="Code"
-            v-model="form.code"
-            :rules="rules.code"
+            label="Sku"
+            v-model="form.sku"
+            :rules="rules.sku"
             type="text"
             maxlength="50"
           />
@@ -59,18 +59,8 @@
             :items="brandItems"
             item-text="name"
             :search-input.sync="newBrandName"
+            hide-no-data
           >
-            <template v-slot:no-data>
-              <v-list-item>
-                <span class="subheading mr-2">Create -></span>
-                <v-chip
-                  label
-                  small
-                >
-                  {{ newBrandName }}
-                </v-chip>
-              </v-list-item>
-            </template>
             <template v-slot:selection="{ item }">
               <span v-if="item === Object(item)">{{ item.name }}</span>
             </template>
@@ -89,18 +79,8 @@
             :items="categoryItems"
             item-text="name"
             :search-input.sync="newCategoryName"
+            hide-no-data
           >
-            <template v-slot:no-data>
-              <v-list-item>
-                <span class="subheading mr-2">Create -></span>
-                <v-chip
-                  label
-                  small
-                >
-                  {{ newCategoryName }}
-                </v-chip>
-              </v-list-item>
-            </template>
             <template v-slot:selection="{ item }">
               <span v-if="item === Object(item)">{{ item.name }}</span>
             </template>
@@ -139,7 +119,7 @@ export default {
       valid: false,
       rules: {},
       form: {
-        code: '',
+        sku: '',
         name: '',
         price: 0,
         category: null,
@@ -157,12 +137,12 @@ export default {
 
       if (data) {
         this.form.id = data.id;
-        this.form.code = data.code;
+        this.form.sku = data.sku;
         this.form.name = data.name;
         this.form.price = data.price;
       } else {
         delete this.form.id;
-        this.form.code = '';
+        this.form.sku = '';
         this.form.name = '';
         this.form.price = 0;
       }
@@ -171,7 +151,7 @@ export default {
       this.$nextTick(() => {
         self.$refs.form.resetValidation();
         self.formatPrice();
-        BrandService.list().then(res => {
+        BrandService.getList().then(res => {
           if (res.data) {
             this.brandItems = res.data;
           } else {
@@ -184,7 +164,7 @@ export default {
             this.form.brand = null;
           }
         });
-        CategoryService.list().then(res => {
+        CategoryService.getList().then(res => {
           if (res.data) {
             this.categoryItems = res.data;
           } else {
@@ -213,7 +193,7 @@ export default {
     },
     activateRules() {
       this.rules = {
-        code: [
+        sku: [
           v => (!v || (v.length >= 2 && v.length <= 50)) || "If given, must be between 2-50 chars"
         ],
         name: [

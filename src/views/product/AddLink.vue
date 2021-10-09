@@ -15,7 +15,7 @@
       </v-card-title>
 
       <v-card-text class="py-0 mt-3">
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" @submit.prevent>
           <v-textarea
             outlined
             v-model="form.linksText"

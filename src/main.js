@@ -31,14 +31,14 @@ Vue.component(ChartJsPluginDataLabels);
 
 Vue.mixin({
   methods: {
-    findLevelColor(level) {
-      switch (level) {
+    findPositionColor(position) {
+      switch (position) {
         case 'EQUAL': return 'blue';
         case 'LOWEST': return 'green';
-        case 'LOWER': return 'cyan';
+        case 'LOWER': return 'darkcyan';
         case 'AVERAGE': return 'primary';
-        case 'HIGHER': return 'red';
-        case 'HIGHEST': return 'pink';
+        case 'HIGHER': return 'pink';
+        case 'HIGHEST': return 'red';
       }
     },
     findDiffColor(diffAmount) {

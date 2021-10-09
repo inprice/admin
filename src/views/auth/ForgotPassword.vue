@@ -29,7 +29,7 @@
           <v-form 
             ref="form"
             v-model="valid"
-            onSubmit="return false"
+            @submit.prevent
             @keyup.native.enter="valid && submit($event)"
           >
             <v-text-field

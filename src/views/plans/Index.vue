@@ -18,7 +18,7 @@
       <v-divider></v-divider>
 
       <div class="pa-4" style="background-color: lightyellow">
-        You have a <b>Free-Use</b> right! You are highly advised to start with a <b>14-day free</b> trial period.
+        You have a <b>Free-Use</b> right! You are highly advised to start with a <b>14-day free</b> trial period with Basic Plan.
         <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
           <v-btn
             small 
@@ -221,11 +221,12 @@ export default {
   },
   methods: {
     async startFreeUse() {
-      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 14 days free plan').then(async (confirm) => {
+      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 14 days free Basic Plan').then(async (confirm) => {
         if (confirm == true) {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
           if (result.status == true) {
+            console.log('aaa', this.$route.params.sid);
             this.$store.commit('session/SET_CURRENT', result.data.session);
           } else {
             this.$store.dispatch('session/refresh');
