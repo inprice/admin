@@ -171,12 +171,19 @@
 import SU_LinkService from '@/service/super/link';
 import SU_WorkspaceService from '@/service/super/workspace';
 
-const positionItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'UNKNOWN'];
-const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
-const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'POSITION', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
-const orderDirItems = ['ASC', 'DESC'];
-const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
-const rowLimitItems = [25, 50, 100];
+import SystemData from '@/data/system';
+
+const ORDER_ITEMS = [
+  { text: 'Name', value: 'NAME' },
+  { text: 'Sku', value: 'SKU' },
+  { text: 'Seller', value: 'SELLER' },
+  { text: 'Platform', value: 'PLATFORM' },
+  { text: 'Position', value: 'POSITION' },
+  { text: 'Price', value: 'PRICE' },
+  { text: 'Brand', value: 'BRAND' },
+  { text: 'Checked At', value: 'CHECKED_AT' },
+  { text: 'Updated At', value: 'UPDATED_AT' }
+];
 
 const baseSearchForm = {
   term: '',
@@ -184,10 +191,10 @@ const baseSearchForm = {
   workspaceTerm: null,
   positions: [],
   statuses: [],
-  orderBy: orderByItems[0],
-  orderDir: orderDirItems[0],
-  rowLimit: rowLimitItems[0],
-  alarmStatus: alarmItems[0],
+  orderBy: ORDER_ITEMS[0].value,
+  orderDir: SystemData.ORDERING[0].value,
+  rowLimit: SystemData.ROW_LIMITS[0],
+  alarmStatus: SystemData.ALARM_STATES[0].value,
   rowCount: 0,
 }
 
@@ -201,12 +208,12 @@ export default {
       isWorkspacesLoading: false,
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      positionItems,
-      statusItems,
-      orderByItems,
-      orderDirItems,
-      rowLimitItems,
-      alarmItems,
+      positionItems: SystemData.POSITIONS,
+      statusItems: SystemData.LINK_STATUSES,
+      orderByItems: ORDER_ITEMS,
+      orderDirItems: SystemData.ORDERING,
+      rowLimitItems: SystemData.ROW_LIMITS,
+      alarmItems: SystemData.ALARM_STATES,
       baseSearchForm,
       loading: false,
     };

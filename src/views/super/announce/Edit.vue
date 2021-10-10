@@ -20,9 +20,11 @@
           <v-select
             dense
             outlined
-            label="Position"
-            v-model="form.position"
-            :items="positionItems"
+            label="Level"
+            v-model="form.level"
+            :items="levelItems"
+            item-text="text"
+            item-value="value"
           ></v-select>
 
           <div class="d-flex">
@@ -86,9 +88,9 @@
 
 <script>
 import moment from 'moment';
+import SystemData from '@/data/system';
 
 const dtf = 'YYYY-MM-DD HH:mm';
-const levelItems = ['INFO', 'WARNING'];
 
 export default {
   data() {
@@ -98,7 +100,7 @@ export default {
       rules: {},
       form: {
         id: null,
-        level: levelItems[0],
+        level: null,
         startingAt: null,
         endingAt: null,
         title: null,
@@ -108,13 +110,13 @@ export default {
       forWhom: 'public',
       startingAtMenuOpen: false,
       endingAtMenuOpen: false,
-      levelItems,
+      levelItems: SystemData.ALARM_LEVELS,
     };
   },
   methods: {
     open(data) {
       this.form.id = null;
-      this.form.level = levelItems[0];
+      this.form.level = SystemData.ALARM_LEVELS[0].value;
       this.form.startingAt = moment().format(dtf);
       this.form.endingAt = moment().add(1, 'M').format(dtf);
       this.form.title = null;

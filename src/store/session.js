@@ -70,7 +70,6 @@ function buildCurrent(state) {
       hasTime : false,
       daysToRenewal : 0,
       workspace: selected.workspace,
-      workspaceId: selected.workspaceId,
       status: selected.workspaceStatus,
       planId: selected.planId,
       planName: selected.planName,
@@ -155,7 +154,9 @@ const mutations = {
 
   SET_USER_INFO(state, form) {
     if (form && state.current && state.list[state.no]) {
-      state.current.timezone = form.timezone ;
+      state.current.fullName = form.fullName;
+      state.current.timezone = form.timezone;
+      state.list[state.no].fullName = form.fullName;
       state.list[state.no].timezone = form.timezone;
     }
   },

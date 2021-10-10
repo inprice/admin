@@ -50,9 +50,11 @@
                     outlined
                     hide-details
                     label="Positions"
+                    class="mb-4"
                     v-model="searchForm.positions"
                     :items="positionItems"
-                    class="mb-4"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <v-select
@@ -64,6 +66,8 @@
                     label="Statuses"
                     v-model="searchForm.statuses"
                     :items="statusItems"
+                    item-text="text"
+                    item-value="value"
                     class="mb-4"
                   ></v-select>
 
@@ -76,6 +80,8 @@
                       label="Order By"
                       v-model="searchForm.orderBy"
                       :items="orderByItems"
+                      item-text="text"
+                      item-value="value"
                     ></v-select>
 
                     <v-select
@@ -86,6 +92,8 @@
                       label="Order Dir"
                       v-model="searchForm.orderDir"
                       :items="orderDirItems"
+                      item-text="text"
+                      item-value="value"
                     ></v-select>
                   </div>
 
@@ -98,6 +106,8 @@
                       label="Alarm ?"
                       v-model="searchForm.alarmStatus"
                       :items="alarmItems"
+                      item-text="text"
+                      item-value="value"
                     ></v-select>
 
                     <v-select
@@ -228,21 +238,28 @@ import LinkService from '@/service/link';
 import AlarmService from '@/service/alarm';
 import { get } from 'vuex-pathify'
 
-const positionItems = ['LOWEST', 'HIGHEST', 'LOWER', 'AVERAGE', 'HIGHER', 'EQUAL', 'UNKNOWN'];
-const statusItems = ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'];
-const orderByItems = ['NAME', 'SELLER', 'BRAND', 'SKU', 'PLATFORM', 'POSITION', 'PRICE', 'CHECKED_AT', 'UPDATED_AT'];
-const orderDirItems = ['ASC', 'DESC'];
-const alarmItems = ['ALL', 'ALARMED', 'NOT_ALARMED'];
-const rowLimitItems = [25, 50, 100];
+import SystemData from '@/data/system';
+
+const ORDER_ITEMS = [
+  { text: 'Name', value: 'NAME' },
+  { text: 'Sku', value: 'SKU' },
+  { text: 'Seller', value: 'SELLER' },
+  { text: 'Platform', value: 'PLATFORM' },
+  { text: 'Position', value: 'POSITION' },
+  { text: 'Price', value: 'PRICE' },
+  { text: 'Brand', value: 'BRAND' },
+  { text: 'Checked At', value: 'CHECKED_AT' },
+  { text: 'Updated At', value: 'UPDATED_AT' }
+];
 
 const baseSearchForm = {
   term: '',
   positions: [],
   statuses: [],
-  orderBy: orderByItems[0],
-  orderDir: orderDirItems[0],
-  rowLimit: rowLimitItems[0],
-  alarmStatus: alarmItems[0],
+  orderBy: ORDER_ITEMS[0].value,
+  orderDir: SystemData.ORDERING[0].value,
+  rowLimit: SystemData.ROW_LIMITS[0],
+  alarmStatus: SystemData.ALARM_STATES[0].value,
   rowCount: 0,
 }
 
@@ -257,12 +274,12 @@ export default {
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      positionItems,
-      statusItems,
-      orderByItems,
-      orderDirItems,
-      rowLimitItems,
-      alarmItems,
+      positionItems: SystemData.POSITIONS,
+      statusItems: SystemData.LINK_STATUSES,
+      orderByItems: ORDER_ITEMS,
+      orderDirItems: SystemData.ORDERING,
+      rowLimitItems: SystemData.ROW_LIMITS,
+      alarmItems: SystemData.ALARM_STATES,
       baseSearchForm,
       loading: false,
       selected: 0,

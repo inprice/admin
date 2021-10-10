@@ -65,7 +65,7 @@
           class="font-weight-medium"
         >
           When
-          <small class="caption text-capitalize">{{ form.subject }} is <b>{{ form.subjectWhen.toLowerCase().replaceAll('_', ' ') }}</b></small>
+          <small class="caption text-capitalize">{{ form.subject }} is <b>{{ normalizeEnum(form.subjectWhen) }}</b></small>
         </v-stepper-step>
         <v-stepper-content step="2">
           <v-radio-group
@@ -76,7 +76,7 @@
             <v-radio
               v-for="(whn, ix) in subjectWhens" :key="ix"
               class="text-capitalize"
-              :label="whn.toLowerCase().replaceAll('_', ' ')"
+              :label="normalizeEnum(whn)"
               :value="whn"
             ></v-radio>
           </v-radio-group>

@@ -56,6 +56,8 @@
                     label="Parked ?"
                     v-model="searchForm.parkStatus"
                     :items="booleanItems"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <v-select
@@ -66,6 +68,8 @@
                     label="Blocked ?"
                     v-model="searchForm.blockStatus"
                     :items="booleanItems"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
                 </div>
 
@@ -78,6 +82,8 @@
                     label="Order By"
                     v-model="searchForm.orderBy"
                     :items="orderByItems"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <v-select
@@ -88,6 +94,8 @@
                     label="Order Dir"
                     v-model="searchForm.orderDir"
                     :items="orderDirItems"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
                 </div>
 
@@ -211,18 +219,22 @@
 <script>
 import SU_PlatformService from '@/service/super/platform';
 
-const orderByItems = ['NAME', 'DOMAIN', 'COUNTRY', 'CLASS'];
-const orderDirItems = ['ASC', 'DESC'];
-const rowLimitItems = [25, 50, 100];
-const booleanItems = ['ALL', 'TRUE', 'FALSE'];
+import SystemData from '@/data/system';
+
+const ORDER_ITEMS = [
+  { text: 'Name', value: 'NAME' },
+  { text: 'Domain', value: 'DOMAIN' },
+  { text: 'Country', value: 'COUNTRY' },
+  { text: 'Class', value: 'CLASS' }
+];
 
 const baseSearchForm = {
   term: '',
-  parkStatus: booleanItems[0],
-  blockStatus: booleanItems[0],
-  orderBy: orderByItems[0],
-  orderDir: orderDirItems[0],
-  rowLimit: rowLimitItems[0],
+  parkStatus: SystemData.BOOLEANS[0].value,
+  blockStatus: SystemData.BOOLEANS[0].value,
+  orderBy: ORDER_ITEMS[0].value,
+  orderDir: SystemData.ORDERING[0].value,
+  rowLimit: SystemData.ROW_LIMITS[0],
   rowCount: 0,
 }
 
@@ -234,10 +246,10 @@ export default {
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      orderByItems,
-      orderDirItems,
-      rowLimitItems,
-      booleanItems,
+      orderByItems: ORDER_ITEMS,
+      orderDirItems: SystemData.ORDERING,
+      rowLimitItems: SystemData.ROW_LIMITS,
+      booleanItems: SystemData.BOOLEANS,
       baseSearchForm,
       loading: false,
     };

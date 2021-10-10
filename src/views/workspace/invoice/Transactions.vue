@@ -33,7 +33,7 @@
       />
     </v-card>
 
-    <div v-if="$store.get('session/isSuperUser')" class="title mt-5">Transactions</div>
+    <!--div v-if="$store.get('session/isSuperUser')" class="title mt-5">Transactions</div>
 
     <v-card v-if="$store.get('session/isSuperUser')" class="mt-2">
       <table 
@@ -62,7 +62,7 @@
         v-else dense
         :message="'You have no transaction.'"
       />
-    </v-card>
+    </v-card-->
 
   </div>
 </template>

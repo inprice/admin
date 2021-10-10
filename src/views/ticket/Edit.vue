@@ -20,11 +20,11 @@
             label="You want to"
             v-model="form.type"
             :items="typeItems"
-            item-text="text"
+            item-text="secondary"
             item-value="value"
           >
             <template v-slot:selection="{ item }">
-              {{ item.text }}
+              {{ item.secondary }}
             </template>    
           </v-select>
 
@@ -34,6 +34,8 @@
             label="Priority"
             v-model="form.priority"
             :items="priorityItems"
+            item-text="text"
+            item-value="value"
           ></v-select>
 
           <v-select
@@ -42,6 +44,8 @@
             label="About"
             v-model="form.subject"
             :items="subjectItems"
+            item-text="text"
+            item-value="value"
           ></v-select>
 
           <v-textarea
@@ -73,15 +77,7 @@
 </template>
 
 <script>
-
-const typeItems = [ 
-  { value: 'PROBLEM', text: 'Report a problem' },
-  { value: 'SUPPORT', text: 'Ask support' },
-  { value: 'FEEDBACK', text: 'Give feedback' },
-];
-
-const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
-const subjectItems = [ 'SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'VOUCHER', 'OTHER' ];
+import SystemData from '@/data/system';
 
 export default {
   data() {
@@ -91,23 +87,23 @@ export default {
       rules: {},
       form: {
         id: null,
-        type: typeItems[0],
-        priority: priorityItems[0],
-        subject: subjectItems[0],
+        type: null,
+        subject: null,
+        priority: null,
         body: null,
       },
-      typeItems,
-      priorityItems,
-      subjectItems,
+      typeItems: SystemData.TICKET_TYPES,
+      priorityItems: SystemData.TICKET_PRIORITIES,
+      subjectItems: SystemData.TICKET_SUBJECTS,
     };
   },
   methods: {
     open(data) {
       this.form.status = 'OPENED';
       this.form.id = null;
-      this.form.type = typeItems[0];
-      this.form.subject = subjectItems[0];
-      this.form.priority = priorityItems[0];
+      this.form.type = SystemData.TICKET_TYPES[0].value;
+      this.form.subject = SystemData.TICKET_SUBJECTS[0].value;
+      this.form.priority = SystemData.TICKET_PRIORITIES[0].value;
       this.form.body = null;
       if (data) {
         this.form.status = data.status;

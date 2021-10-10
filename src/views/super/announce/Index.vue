@@ -55,9 +55,11 @@
                     outlined
                     hide-details
                     label="Type"
+                    class="mb-4"
                     v-model="searchForm.types"
                     :items="typeItems"
-                    class="mb-4"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <v-select
@@ -67,9 +69,11 @@
                     outlined
                     hide-details
                     label="Levels"
+                    class="mb-4"
                     v-model="searchForm.levels"
                     :items="levelItems"
-                    class="mb-4"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <div class="d-flex mb-4">
@@ -141,6 +145,8 @@
                       label="Order By"
                       v-model="searchForm.orderBy"
                       :items="orderByItems"
+                      item-text="text"
+                      item-value="value"
                     ></v-select>
 
                     <v-select
@@ -151,6 +157,8 @@
                       label="Order Dir"
                       v-model="searchForm.orderDir"
                       :items="orderDirItems"
+                      item-text="text"
+                      item-value="value"
                     ></v-select>
                   </div>
 
@@ -159,9 +167,9 @@
                     outlined
                     hide-details
                     label="Row Limit"
+                    class="mb-2"
                     v-model="searchForm.rowLimit"
                     :items="rowLimitItems"
-                    class="mb-2"
                   ></v-select>
                 </v-card-text>
 
@@ -324,11 +332,16 @@
 import SU_AnnounceService from '@/service/super/announce';
 import moment from 'moment';
 
-const typeItems = ['USER', 'WORKSPACE', 'SYSTEM'];
-const levelItems = ['INFO', 'WARNING'];
-const orderByItems = ['TITLE', 'TYPE', 'LEVEL', 'STARTING_AT', 'ENDING_AT', 'CREATED_AT'];
-const orderDirItems = ['ASC', 'DESC'];
-const rowLimitItems = [25, 50, 100];
+import SystemData from '@/data/system';
+
+const ORDER_ITEMS = [
+  { text: 'Title', value: 'TITLE' },
+  { text: 'Type', value: 'TYPE' },
+  { text: 'Level', value: 'LEVEL' },
+  { text: 'Starting at', value: 'STARTING_AT' },
+  { text: 'Ending at', value: 'ENDING_AT' },
+  { text: 'Created at', value: 'CREATED_AT' }
+];
 
 const baseSearchForm = {
   term: '',
@@ -336,9 +349,9 @@ const baseSearchForm = {
   levels: null,
   startingAt: null,
   endingAt: null,
-  orderBy: orderByItems[0],
-  orderDir: orderDirItems[0],
-  rowLimit: rowLimitItems[0],
+  orderBy: ORDER_ITEMS[0].value,
+  orderDir: SystemData.ORDERING[0].value,
+  rowLimit: SystemData.ROW_LIMITS[0],
   rowCount: 0,
 }
 
@@ -354,11 +367,11 @@ export default {
       isLoadMoreClicked: false,
       showingId: 0,
       showDetails: false,
-      typeItems,
-      levelItems,
-      orderByItems,
-      orderDirItems,
-      rowLimitItems,
+      typeItems: SystemData.ALARM_TYPES,
+      levelItems: SystemData.ALARM_LEVELS,
+      orderByItems: ORDER_ITEMS,
+      orderDirItems: SystemData.ORDERING,
+      rowLimitItems: SystemData.ROW_LIMITS,
       baseSearchForm,
       loading: false,
     };

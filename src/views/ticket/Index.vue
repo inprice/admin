@@ -61,9 +61,11 @@
                     outlined
                     hide-details
                     label="Status"
+                    class="mb-4"
                     v-model="searchForm.statuses"
                     :items="statusItems"
-                    class="mb-4"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <v-select
@@ -73,9 +75,11 @@
                     outlined
                     hide-details
                     label="Priority"
+                    class="mb-4"
                     v-model="searchForm.priorities"
                     :items="priorityItems"
-                    class="mb-4"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <v-select
@@ -85,9 +89,11 @@
                     outlined
                     hide-details
                     label="Type"
+                    class="mb-4"
                     v-model="searchForm.types"
                     :items="typeItems"
-                    class="mb-4"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <v-select
@@ -97,9 +103,11 @@
                     outlined
                     hide-details
                     label="Subject"
+                    class="mb-4"
                     v-model="searchForm.subjects"
                     :items="subjectItems"
-                    class="mb-4"
+                    item-text="text"
+                    item-value="value"
                   ></v-select>
 
                   <div class="d-flex justify-space-around mb-4">
@@ -107,10 +115,12 @@
                       dense
                       outlined
                       hide-details
-                      class="pr-1"
                       label="Seen ?"
-                      v-model="searchForm.seen"
+                      class="pr-1"
                       :items="seenItems"
+                      v-model="searchForm.seen"
+                      item-text="text"
+                      item-value="value"
                     ></v-select>
 
                     <v-select
@@ -133,6 +143,8 @@
                       label="Order By"
                       v-model="searchForm.orderBy"
                       :items="orderByItems"
+                      item-text="text"
+                      item-value="value"
                     ></v-select>
 
                     <v-select
@@ -143,6 +155,8 @@
                       label="Order Dir"
                       v-model="searchForm.orderDir"
                       :items="orderDirItems"
+                      item-text="text"
+                      item-value="value"
                     ></v-select>
                   </div>
                 </v-card-text>
@@ -324,14 +338,15 @@
 <script>
 import TicketService from '@/service/ticket';
 
-const statusItems = ['OPENED', 'IN_PROGRESS', 'WAITING_FOR_USER', 'WAITING_FOR_VERSION', 'CLOSED'];
-const priorityItems = ['LOW', 'NORMAL', 'HIGH', 'CRITICAL'];
-const typeItems = ['FEEDBACK', 'SUPPORT', 'PROBLEM'];
-const subjectItems = ['SUBSCRIPTION', 'PAYMENT', 'LINK', 'PRODUCT', 'WORKSPACE', 'VOUCHER', 'OTHER'];
-const orderByItems = ['STATUS', 'PRIORITY', 'TYPE', 'SUBJECT', 'CREATED_AT'];
-const orderDirItems = ['ASC', 'DESC'];
-const seenItems = ['ALL', 'SEEN', 'NOT_SEEN'];
-const rowLimitItems = [25, 50, 100];
+import SystemData from '@/data/system';
+
+const ORDER_ITEMS = [
+  { text: 'Status', value: 'STATUS' },
+  { text: 'Priority', value: 'PRIORITY' },
+  { text: 'Type', value: 'TYPE' },
+  { text: 'Subject', value: 'SUBJECT' },
+  { text: 'Created at', value: 'CREATED_AT' }
+];
 
 const baseSearchForm = {
   term: '',
@@ -339,10 +354,10 @@ const baseSearchForm = {
   priorities: null,
   types: null,
   subjects: null,
-  orderBy: orderByItems[0],
-  orderDir: orderDirItems[0],
-  seen: seenItems[0],
-  rowLimit: rowLimitItems[0],
+  seen: SystemData.SEEN_STATES[0].value,
+  orderBy: ORDER_ITEMS[0].value,
+  orderDir: SystemData.ORDERING[0].value,
+  rowLimit: SystemData.ROW_LIMITS[0],
   rowCount: 0,
 }
 
@@ -354,14 +369,14 @@ export default {
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
-      statusItems,
-      priorityItems,
-      typeItems,
-      subjectItems,
-      orderByItems,
-      orderDirItems,
-      seenItems,
-      rowLimitItems,
+      statusItems: SystemData.TICKET_STATUSES,
+      priorityItems: SystemData.TICKET_PRIORITIES,
+      typeItems: SystemData.TICKET_TYPES,
+      subjectItems: SystemData.TICKET_SUBJECTS,
+      seenItems: SystemData.BOOLEANS,
+      orderByItems: ORDER_ITEMS,
+      orderDirItems: SystemData.ORDERING,
+      rowLimitItems: SystemData.ROW_LIMITS,
       baseSearchForm,
       loading: false,
     };

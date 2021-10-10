@@ -57,12 +57,6 @@ Vue.mixin({
       if (status == 'TRYING') return 'cyan';
       return 'red';
     },
-    findStatusBackColor(status) {
-      if (status == 'ACTIVE') return '#daffa6';
-      if (status == 'WAITING') return '#b4ffff';
-      if (status == 'TRYING') return '#ffe069';
-      return '#fffebe';
-    },
     findStatusIcon(status) {
       if (status == 'ACTIVE') return 'mdi-play-circle-outline';
       if (status == 'WAITING') return 'mdi-pause-circle-outline';
@@ -84,6 +78,12 @@ Vue.mixin({
         textArea.remove();
       }
     },
+    normalizeEnum(name) {
+      if (name) {
+        return name.toLowerCase().replaceAll('_', ' ');
+      }
+      return name;
+    }
   },
 })
 

@@ -6,7 +6,8 @@
       <span class="text-capitalize green--text"><b>{{ alarm.subject.toLowerCase()}}</b></span> 
       <span v-html="findLastPart()"></span>
       <v-btn
-        small outlined
+        small dark
+        color="cyan"
         class="ml-3"
         v-if="editable"
         @click="$emit('clicked')"
@@ -17,7 +18,8 @@
     <div v-else>
       <span>No alarm set yet.</span>
       <v-btn
-        small outlined
+        small dark
+        color="cyan"
         class="ml-3"
         v-if="editable"
         @click="$emit('clicked')"
@@ -50,7 +52,7 @@ export default {
           value = ` is greater than <span class="red--text"><b>${this.alarm.amountUpperLimit}</b></span>`;
         }
       }
-      if (value == null) value = ` is <span class="red--text"><b>${this.alarm.subjectWhen.replaceAll('_', ' ')}</b></span>`;
+      if (value == null) value = ` is <span class="red--text"><b>${this.normalizeEnum(this.alarm.subjectWhen)}</b></span>`;
 
       if (this.alarm.notifiedAt) {
         value += '<br>Last notified at ' + this.alarm.notifiedAt;

@@ -46,11 +46,12 @@
 
       <v-divider></v-divider>
 
-      <v-card-actions class="justify-space-between pa-3">
+      <v-card-actions class="pa-3">
         <div v-if="isInsert" class="caption ml-3">
           <div class="red--text font-weight-medium">Please note that</div>
           <div>You will be able to see new workspace after login again!</div>
         </div>
+        <v-spacer></v-spacer>
         <v-btn
           text
           @click="submit"

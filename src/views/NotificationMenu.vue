@@ -70,7 +70,6 @@
           </v-list-item-group>
 
           <div class="px-4 pt-3" v-else>
-            <v-icon>mdi-cancel</v-icon>
             No new notification found!
           </div>
         </v-list>

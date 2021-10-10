@@ -5,20 +5,28 @@
       show-arrows
     >
       <v-tab>
+        Subscription
+      </v-tab>
+      <v-tab>
+        Plans
+      </v-tab>
+      <v-tab>
         Workspace
       </v-tab>
       <v-tab>
         Team
       </v-tab>
       <v-tab>
-        Plans
-      </v-tab>
-      <v-tab>
-        Billing
-      </v-tab>
-      <v-tab>
         Voucher
       </v-tab>
+
+      <v-tab-item >
+        <billing-info></billing-info>
+      </v-tab-item>
+
+      <v-tab-item >
+        <plans></plans>
+      </v-tab-item>
 
       <v-tab-item>
         <edit-workspace></edit-workspace>
@@ -27,14 +35,6 @@
 
       <v-tab-item >
         <users></users>
-      </v-tab-item>
-
-      <v-tab-item >
-        <plans></plans>
-      </v-tab-item>
-
-      <v-tab-item >
-        <billing-info></billing-info>
       </v-tab-item>
 
       <v-tab-item >

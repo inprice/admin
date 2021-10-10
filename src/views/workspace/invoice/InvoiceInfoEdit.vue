@@ -6,7 +6,7 @@
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <span>Billing info</span>
+        <span>Details</span>
         <v-btn icon @click="show = false"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
@@ -16,7 +16,7 @@
           <v-text-field
             dense
             outlined
-            label="Title"
+            label="Company Name"
             v-model="form.title"
             :rules="rules.title"
             type="text"
@@ -26,7 +26,7 @@
           <v-text-field
             dense
             outlined
-            label="Contact"
+            label="Contact Name"
             v-model="form.contactName"
             :rules="rules.contactName"
             type="text"
@@ -83,22 +83,22 @@
               <v-text-field
                 dense
                 outlined
-                label="City"
-                v-model="form.city"
-                :rules="rules.city"
+                label="Postcode"
+                v-model="form.postcode"
+                :rules="rules.postcode"
                 type="text"
-                maxlength="70"
+                maxlength="8"
               />
             </v-col>
             <v-col class="py-0">
               <v-text-field
                 dense
                 outlined
-                label="Postcode"
-                v-model="form.postcode"
-                :rules="rules.postcode"
+                label="City"
+                v-model="form.city"
+                :rules="rules.city"
                 type="text"
-                maxlength="8"
+                maxlength="70"
               />
             </v-col>
           </v-row>
@@ -137,7 +137,6 @@
         >
           Save
         </v-btn>
-
       </v-card-actions>
 
     </v-card>
@@ -189,17 +188,6 @@ export default {
           v => !!v || "Required",
           v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3 - 255 chars"
         ],
-        address1: [
-          v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3 - 255 chars"
-        ],
-        city: [
-          v => !!v || "Required",
-          v => (v && v.length >= 2 && v.length <= 50) || "Must be between 2 - 50 chars"
-        ],
-        country: [
-          v => !!v || "Required"
-        ],
         contactName: [
           v => (!v || (v.length <= 70)) || "Can be up to 50 chars"
         ],
@@ -209,14 +197,25 @@ export default {
         taxOffice: [
           v => (!v || (v.length <= 25)) || "Can be up to 25 chars"
         ],
+        address1: [
+          v => !!v || "Required",
+          v => (v && v.length <= 255) || "Must be less than 255 chars"
+        ],
         address2: [
           v => (!v || v.length <= 255) || "Can be up to 255 chars"
         ],
         postcode: [
           v => (!v || v.length <= 8) || "Can be up to 8 chars"
         ],
+        city: [
+          v => !!v || "Required",
+          v => (v && v.length >= 2 && v.length <= 50) || "Must be between 2 - 50 chars"
+        ],
         state: [
           v => (!v || v.length <= 50) || "Can be up to 50 chars"
+        ],
+        country: [
+          v => !!v || "Required"
         ],
       }
     },

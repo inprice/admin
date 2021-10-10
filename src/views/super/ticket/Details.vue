@@ -4,7 +4,7 @@
     <div v-if="ticket">
 
       <div class="title d-flex justify-space-between mt-3">
-        <span>Ticket Details - {{ ticket.status.replaceAll('_', ' ') }}</span>
+        <span class="text-capitalize">Ticket Details - {{ normalizeEnum(ticket.status) }}</span>
         <div class="d-flex justify-end">
           <v-btn 
             small

@@ -48,7 +48,7 @@ export default {
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
     initials() {
-      const words = this.CURSTAT.fullName.split(' ');
+      const words = this.CURSTAT.fullName.toUpperCase().split(' ');
       if (words.length == 1) return words[0][0];
       return words[0][0]+words[1][0];
     }

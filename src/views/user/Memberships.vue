@@ -22,7 +22,7 @@
         <thead>
           <tr>
             <th>Workspace</th>
-            <th width="15%">Role</th>
+            <th width="15%" class="text-center">Role</th>
             <th width="15%">Date</th>
             <th width="7%" class="text-center">Action</th>
           </tr>
@@ -30,7 +30,7 @@
         <tbody>
           <tr v-for="row in members" :key="row.id">
             <td>{{ row.name }}</td>
-            <td>{{ row.role }}</td>
+            <td class="text-center">{{ row.role }}</td>
             <td><ago :date="row.date"/></td>
             <td class="text-center py-2">
               <v-btn
@@ -42,7 +42,12 @@
               >
                 Leave
               </v-btn>
-              <v-chip outlined label color="success" small v-else>YOURS</v-chip>
+              <span 
+                class="caption font-weight-medium"
+                :style="'color: ' + (CURSTAT.workspace == row.name ? 'blue' : 'green')" 
+              >
+                {{ CURSTAT.workspace == row.name ? 'THIS' : 'YOURS' }}
+              </span>
             </td>
           </tr>
         </tbody>
@@ -61,6 +66,7 @@
 
 <script>
 import UserService from '@/service/user';
+import { get } from 'vuex-pathify'
 
 export default {
   data() {
@@ -72,6 +78,9 @@ export default {
       },
       members: []
     };
+  },
+  computed: {
+    CURSTAT: get('session/getCurrentStatus'),
   },
   methods: {
     async refreshMembers() {

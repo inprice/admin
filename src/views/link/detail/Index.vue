@@ -3,31 +3,14 @@
     <div class="d-flex justify-space-between my-3 mb-5">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
 
-      <v-menu offset-y bottom left v-if="link">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            small
-            class="mx-1"
-            v-bind="attrs"
-            v-on="on"
-            @click.stop=""
-          >
-            Menu
-          </v-btn>
-        </template>
-
-        <v-list dense>
-          <v-list-item link target="_blank" :href="link.info.url">
-            <v-list-item-title>OPEN LINK'S WEBPAGE</v-list-item-title>
-          </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list-item link @click="remove" :disabled="$store.get('session/isNotEditor')">
-            <v-list-item-title>DELETE THIS LINK</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <v-btn
+        small
+        color="error"
+        @click="remove"
+        :disabled="$store.get('session/isNotEditor')"
+      >
+        Delete
+      </v-btn>
     </div>
 
     <div class="title">Link Details</div>
@@ -41,7 +24,7 @@
           <div class="caption teal--text font-weight-medium">{{ link.info.sku }}</div>
           <div>{{ link.info.name }}</div>
         </div>
-        <div>
+        <div class="pl-3 text-right">
           <div class="caption teal--text font-weight-medium">{{ link.info.position }}</div>
           <div>{{ (link.info.price || 0) | toPrice }}</div>
         </div>
@@ -115,11 +98,21 @@
           </v-list>
         </div>
 
-        <v-list class="col pa-1 pt-0">
-          <v-list-item link :href="link.info.url" target="_blank">
+        <v-list class="col caption pa-1 pt-0">
+          <v-list-item>
             <v-list-item-content>
-              <div class="caption blue--text">URL</div>
-              <div class="caption">{{ link.info.url }}</div>
+              <div class="d-flex justify-space-between">
+              <a :href="link.info.url" target="_blank">{{ link.info.url }}</a>
+              <v-btn
+                small
+                icon
+                title="Copy Url"
+                class="my-auto"
+                @click.stop="copyTheLink(link.info.url)"
+              >
+                <v-icon>mdi-content-copy</v-icon>
+              </v-btn>
+              </div>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -225,7 +218,11 @@ export default {
           }
         }).finally(() => this.loading = false);
       }
-    }
+    },
+    copyTheLink(url) {
+      this.copyToClipboard(url);
+      this.$store.commit('snackbar/setMessage', { text: 'Url copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+    },
   },
   mounted() {
     this.$nextTick(() => {
