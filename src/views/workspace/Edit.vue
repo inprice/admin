@@ -7,7 +7,20 @@
     <v-divider></v-divider>
 
     <v-card-text class="pt-3">
-      Change your workspace's name and currency info.
+      <table class="desc-table">
+        <tr>
+          <th>Name</th>
+          <td>{{ WORKSPACE.name }}</td>
+        </tr>
+        <tr>
+          <th>Currency</th>
+          <td>{{ WORKSPACE.currency }}</td>
+        </tr>
+        <tr>
+          <th>Format</th>
+          <td>{{ WORKSPACE.currencyFormat }}</td>
+        </tr>
+      </table>
     </v-card-text>
 
     <v-divider></v-divider>
@@ -22,24 +35,28 @@
       </v-btn>
     </v-card-actions>
 
-    <workspace-info-dialog ref="workspaceInfoDialog"></workspace-info-dialog>
+    <info-dialog ref="infoDialog"></info-dialog>
   </v-card>
 </template>
 
 <script>
 import WorkspaceService from '@/service/workspace';
+import { get } from 'vuex-pathify'
 
 export default {
+  computed: {
+    WORKSPACE: get('session/getWorkspaceInfo'),
+  },
   methods: {
     async openWorkspaceInfoDialog() {
       const result = await WorkspaceService.get();
       if (result) {
-        this.$refs.workspaceInfoDialog.edit(result);
+        this.$refs.infoDialog.edit(result);
       }
     },
   },
   components: {
-    WorkspaceInfoDialog: () => import('./Info.vue'),
+    InfoDialog: () => import('./InfoDialog.vue'),
   }
 }
 </script>

@@ -71,6 +71,7 @@ export default {
   },
   methods: {
     open() {
+      this.form.linksText = '';
       SystemService.getStatistics().then((res) => {
         if (res && res.status) {
           const result = res.data;

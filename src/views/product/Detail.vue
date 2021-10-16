@@ -125,7 +125,7 @@
         <v-btn 
           small
           class="mx-1"
-          color="warning"
+          color="error"
           @click="deleteMultiple"
           :disabled="selected < 1 || $store.get('session/isNotEditor')"
         >

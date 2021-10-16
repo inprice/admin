@@ -30,7 +30,7 @@
           color="success"
         >
           <div>Subject</div>
-          <div><small class="caption">For which subject: <b class="text-capitalize">{{ form.subject.toLowerCase() }}</b></small></div>
+          <div><small class="caption">For which subject: <b>{{ findSubjectTextByValue }}</b></small></div>
         </v-stepper-step>
         <v-stepper-content step="1">
           <v-radio-group
@@ -41,8 +41,8 @@
             <v-radio
               v-for="(sub, ix) in subjects[topic]" :key="ix"
               class="text-capitalize"
-              :label="sub.toLowerCase()"
-              :value="sub"
+              :label="sub.text"
+              :value="sub.value"
             ></v-radio>
           </v-radio-group>
 
@@ -65,7 +65,7 @@
           class="font-weight-medium"
         >
           When
-          <small class="caption text-capitalize">{{ form.subject }} is <b>{{ normalizeEnum(form.subjectWhen) }}</b></small>
+          <small class="caption">{{ findSubjectTextByValue }} is <b>{{ findWhenTextByValue }}</b></small>
         </v-stepper-step>
         <v-stepper-content step="2">
           <v-radio-group
@@ -76,8 +76,8 @@
             <v-radio
               v-for="(whn, ix) in subjectWhens" :key="ix"
               class="text-capitalize"
-              :label="normalizeEnum(whn)"
-              :value="whn"
+              :label="whn.text"
+              :value="whn.value"
             ></v-radio>
           </v-radio-group>
 
@@ -118,9 +118,11 @@
               outlined
               hide-details
               label="Position"
+              class="my-3"
               v-model="form.certainPosition"
               :items="positions"
-              class="my-3"
+              item-text="text"
+              item-value="value"
               v-if="form.subject == 'POSITION' && form.subjectWhen != 'CHANGED'"
             ></v-select>
 
@@ -194,19 +196,37 @@
 </template>
 
 <script>
+import SystemData from '@/data/system';
+
 const subjects = {
-  LINK:  ['POSITION', 'PRICE'],
-  PRODUCT: ['POSITION', 'MINIMUM', 'AVERAGE', 'MAXIMUM']
+  LINK:  [
+    { text: 'Position', value: 'POSITION' },
+    { text: 'Price', value: 'PRICE' }
+  ],
+  PRODUCT: [
+    { text: 'Position', value: 'POSITION' },
+    { text: 'Minimum',  value: 'MINIMUM' },
+    { text: 'Average',  value: 'AVERAGE' },
+    { text: 'Maximum',  value: 'MAXIMUM' }
+  ]
 };
 
 const whens = {
-  position: ['CHANGED', 'EQUAL', 'NOT_EQUAL'],
-  price:  ['INCREASED', 'DECREASED', 'OUT_OF_LIMITS']
+  POSITION: [
+    { text: 'Changed', value: 'CHANGED' },
+    { text: 'Equal', value: 'EQUAL' },
+    { text: 'Not equal', value: 'NOT_EQUAL' }
+  ],
+  PRICE:  [
+    { text: 'Increased', value: 'INCREASED' },
+    { text: 'Decreased', value: 'DECREASED' },
+    { text: 'Out of limits', value: 'OUT_OF_LIMITS' }
+  ]
 };
 
 const positions = {
-  LINK:  ['ACTIVE', 'WAITING', 'TRYING', 'PROBLEM'],
-  PRODUCT: ['LOWEST', 'LOWER', 'EQUAL', 'AVERAGE', 'HIGHER', 'HIGHEST', 'UNKNOWN']
+  LINK:  SystemData.LINK_STATUSES,
+  PRODUCT: SystemData.POSITIONS
 };
 
 export default {
@@ -234,6 +254,28 @@ export default {
       problem: null
     };
   },
+  computed: {
+    findSubjectTextByValue() {
+      let value = null;
+      subjects[this.topic].forEach(sub => {
+        if (sub.value == this.form.subject) {
+          value = sub.text;
+          return;
+        }
+      });
+      return value;
+    },
+    findWhenTextByValue() {
+      let value = null;
+      whens[this.form.subject == 'POSITION' ? this.form.subject : 'PRICE'].forEach(whn => {
+        if (whn.value == this.form.subjectWhen) {
+          value = whn.text;
+          return;
+        }
+      });
+      return value;
+    }
+  },
   methods: {
     open(data) {
       this.show = true;
@@ -241,8 +283,6 @@ export default {
         this.form = data;
         this.name = data.name;
         this.topic = data.topic.toUpperCase();
-        this.positions = positions[this.topic];
-        this.subjectWhens = whens[this.form.subject == 'POSITION' ? this.form.subject.toLowerCase() :  'price'];
         if (data.id) this.stepNo = 3;
       } else {
         this.form.id = null;
@@ -254,6 +294,8 @@ export default {
         this.hint.amountLowerLimit = null;
         this.hint.amountUpperLimit = null;
       }
+      this.positions = positions[this.topic];
+      this.subjectWhens = whens[this.form.subject == 'POSITION' ? this.form.subject : 'PRICE'];
       this.$nextTick(() => this.formatPrices());
     },
     save() {
@@ -281,8 +323,8 @@ export default {
       this.show = false;
     },
     onSubjectChanged() {
-      this.subjectWhens = whens[this.form.subject == 'POSITION' ? this.form.subject.toLowerCase() :  'price'];
-      this.form.subjectWhen = this.subjectWhens[0];
+      this.subjectWhens = whens[this.form.subject == 'POSITION' ? this.form.subject : 'PRICE'];
+      this.form.subjectWhen = this.subjectWhens[0].value;
     },
     onWhenChanged() {
       if (this.form.subjectWhen == 'EQUAL' || this.form.subjectWhen == 'NOT_EQUAL') {

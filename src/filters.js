@@ -32,7 +32,6 @@ export default (Vue) => {
 
   Vue.filter('formatPlainDate', (value, screen) => {
     try {
-
       let format = longDateFormat_lg;
       if (screen && (screen == 'xs' || screen == 'sm')) {
         format = longDateFormat_sm;
@@ -41,7 +40,7 @@ export default (Vue) => {
       const tz = store.get(SESSION+'@timezone');
       if (value) {
         if (tz) {
-          return moment(value).tz(tz).format(format);
+          return moment.utc(value).tz(tz).format(format);
         } else {
           return moment(value).format(format);
         }
@@ -58,7 +57,7 @@ export default (Vue) => {
       const tz = store.get(SESSION+'@timezone');
       if (value) {
         if (tz) {
-          return moment(value).tz(tz).fromNow();
+          return moment.utc(value).tz(tz).fromNow();
         } else {
           return moment(value).fromNow();
         }
@@ -81,8 +80,8 @@ export default (Vue) => {
     try {
       const tz = store.get(SESSION+'@timezone');
       if (tz && value) {
-        const a = moment(value).tz(tz);
-        const dayDiff = a.diff(moment().tz(tz), 'days');
+        const a = moment.utc(value).tz(tz);
+        const dayDiff = a.diff(moment.utc().tz(tz), 'days');
         if (dayDiff == 0) {
           return 'Today';
         } else if (dayDiff == 1) {

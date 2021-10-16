@@ -63,6 +63,28 @@
   height: 35px;
 }
 
+.desc-table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e8e8e8;
+}
+
+.desc-table th, td {
+  font-size: 14px;
+  padding: 5px 10px;
+  border-right: 1px solid #e8e8e8;
+  vertical-align: top;
+}
+
+.desc-table th {
+  background-color: #fafafa;
+  color: rgba(0,0,0,.85);
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: right;
+  width: 110px;
+}
 .v-slide-group {
   border-bottom: 1px solid #dedede;
 }
@@ -70,4 +92,10 @@
 .rounded-dialog {
   border-radius: 5px;
   max-width: 500px;
+}
+
+@media (min-width: 768px) {
+  .desc-table {
+    width: 60%;
+  }
 }

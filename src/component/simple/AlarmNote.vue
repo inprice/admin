@@ -3,29 +3,29 @@
     <div v-if="alarm">
       <span v-if="!hasIcon">Alarm </span>
       Will be triggered when
-      <span class="text-capitalize green--text"><b>{{ alarm.subject.toLowerCase()}}</b></span> 
+      <span class="text-capitalize">{{ alarm.subject.toLowerCase()}}</span> 
       <span v-html="findLastPart()"></span>
-      <v-btn
-        small dark
-        color="cyan"
-        class="ml-3"
+      <v-chip
+        small dark label
+        color="success"
+        class="ml-1 font-weight-bold"
         v-if="editable"
         @click="$emit('clicked')"
       >
-        Edit
-      </v-btn>
+        EDIT
+      </v-chip>
     </div>
     <div v-else>
       <span>No alarm set yet.</span>
-      <v-btn
-        small dark
-        color="cyan"
-        class="ml-3"
+      <v-chip
+        small dark label
+        color="success"
+        class="ml-1 font-weight-bold"
         v-if="editable"
         @click="$emit('clicked')"
       >
-        Set
-      </v-btn>
+        SET
+      </v-chip>
     </div>
   </div>
 </template>
@@ -42,20 +42,20 @@ export default {
       let value = null;
 
       if (this.alarm.subjectWhen == 'EQUAL' || this.alarm.subjectWhen == 'NOT_EQUAL') {
-        value = ` is <span class="red--text"><b>${this.alarm.subjectWhen}</b></span> to <span class="blue--text"><b>${this.alarm.certainPosition}</b></span>`;
+        value = ` is <span class="">${this.alarm.subjectWhen}</span> to <span class="">${this.alarm.certainPosition}</span>.`;
       } if (this.alarm.subjectWhen == 'OUT_OF_LIMITS') {
         if (this.alarm.amountLowerLimit > 0 && this.alarm.amountUpperLimit > 0) {
-          value = ` is less than <span class="red--text"><b>${this.alarm.amountLowerLimit}</b></span> or greater than <span class="blue--text"><b>${this.alarm.amountUpperLimit}</b></span>`;
-        } if (this.alarm.amountLowerLimit > 0) {
-          value = ` is less than <span class="red--text"><b>${this.alarm.amountLowerLimit}</b></span>`;
-        } if (this.alarm.amountUpperLimit > 0) {
-          value = ` is greater than <span class="red--text"><b>${this.alarm.amountUpperLimit}</b></span>`;
+          value = ` is less than <span class="">${this.alarm.amountLowerLimit}</span> or greater than <span class="">${this.alarm.amountUpperLimit}</span>.`;
+        } else if (this.alarm.amountLowerLimit > 0) {
+          value = ` is less than <span class="">${this.alarm.amountLowerLimit}</span>.`;
+        } else if (this.alarm.amountUpperLimit > 0) {
+          value = ` is greater than <span class="">${this.alarm.amountUpperLimit}</span>.`;
         }
       }
-      if (value == null) value = ` is <span class="red--text"><b>${this.normalizeEnum(this.alarm.subjectWhen)}</b></span>`;
+      if (value == null) value = ` is <span class="text-capitalize">${this.alarm.subjectWhen.toLowerCase()}</span>.`;
 
       if (this.alarm.notifiedAt) {
-        value += '<br>Last notified at ' + this.alarm.notifiedAt;
+        value += '<br>Last notified at ' + this.alarm.notifiedAt + '.';
       }
 
       return value;
