@@ -147,19 +147,29 @@ const router = new VueRouter({
           component: () => import('./views/product/Index.vue')
         },
         {
+          name: 'product',
+          path: 'product/:id',
+          component: () => import('./views/product/Detail.vue')
+        },
+        {
           name: 'categories',
           path: 'categories',
           component: () => import('./views/category/Index.vue')
         },
         {
+          name: 'smart-prices',
+          path: 'smart-prices',
+          component: () => import('./views/smartprice/Index.vue')
+        },
+        {
+          name: 'smart-price',
+          path: 'smart-price/:id',
+          component: () => import('./views/smartprice/Detail.vue')
+        },
+        {
           name: 'brands',
           path: 'brands',
           component: () => import('./views/brand/Index.vue')
-        },
-        {
-          name: 'product',
-          path: 'product/:id',
-          component: () => import('./views/product/Detail.vue')
         },
         {
           name: 'plans',

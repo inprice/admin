@@ -128,6 +128,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item link :to="{name: 'smart-prices'}">
+          <v-list-item-action>
+            <v-icon>mdi-function-variant</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Smart Prices</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-divider inset></v-divider>
 
         <v-list-item disabled>
