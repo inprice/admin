@@ -3,6 +3,18 @@
   <div>
     <div class="title">Smart Price Formulas</div>
 
+    <div class="body-2 my-3">
+      <p>
+        The purporse of <i>Smart Pricing</i> is to suggest you a calculated <i>Price</i> based on some certain factors including your product price, minimum, average and maximum price of your active competitors.
+        When a change happened on any the factors, smart pricing mechanism immediately steps in and calculates a new price according to your formulas. Simply, this calculated price 
+        helps you in your price estimation effort.
+      </p>
+      <p>
+        You can use any of the factors mentioned above to create your formulas.
+        In addition to this, there are several built-in functions to form more complex formulas. We put some useful examples at the bottom of edit page to assist you.
+      </p>
+    </div>
+
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
@@ -24,7 +36,7 @@
       <v-btn 
         small
         class="my-auto"
-        @click="$router.push( { name: 'smart-price', id: 'new' })"
+        @click="$router.push( { name: 'smart-price', params: { id: 'new' } })"
         :disabled="$store.get('session/isNotEditor')"
       >
         Add
@@ -36,16 +48,22 @@
         <thead>
           <tr>
             <th class="text-left">Name</th>
+            <th class="text-left">Formula</th>
+            <th class="text-left">Lower Limit</th>
+            <th class="text-left">Upper Limit</th>
             <th width="4%"></th>
           </tr>
         </thead>
         <tbody>
           <tr 
             v-for="row in searchResult" :key="row.id"
-            @click="$router.push( { name: 'smart-price', id: row.id })"
+            @click="$router.push( { name: 'smart-price', params: { id: row.id } })"
             style="cursor: pointer"
           >
             <td>{{ row.name }}</td>
+            <td>{{ row.formula }}</td>
+            <td>{{ row.lowerLimitFormula }}</td>
+            <td>{{ row.upperLimitFormula }}</td>
             <td class="my-auto">
               <v-btn
                 small icon

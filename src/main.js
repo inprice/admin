@@ -83,6 +83,9 @@ Vue.mixin({
         return name.toLowerCase().replaceAll('_', ' ');
       }
       return name;
+    },
+    isNumeric(value) {
+      return /^-?\d+$/.test(value);
     }
   },
 })

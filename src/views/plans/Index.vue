@@ -226,7 +226,6 @@ export default {
           this.loading.tryFreeUse = true;
           const result = await SubsService.startFreeUse();
           if (result.status == true) {
-            console.log('aaa', this.$route.params.sid);
             this.$store.commit('session/SET_CURRENT', result.data.session);
           } else {
             this.$store.dispatch('session/refresh');

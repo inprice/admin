@@ -5,6 +5,11 @@ const baseURL = '/smart-price';
 
 export default {
 
+  async get(id) {
+    const res = await Helper.call('Find Smart Price', { method: 'get', url: baseURL + '/' + id });
+    return res;
+  },
+
   async getList() {
     const res = await Helper.call('Smart Price List', { method: 'get', url: baseURL + '/list' }, true);
     if (res.status == true) return res;
@@ -24,6 +29,16 @@ export default {
     }
 
     const res = await Helper.call('Save Smart Price', { method: (form.id && form.id > 0 ? 'put' : 'post'), url: baseURL, data: form });
+    return res;
+  },
+
+  async test(form) {
+    if (store.get('session/isNotEditor')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
+
+    const res = await Helper.call('Test Smart Price', { url: baseURL + '/test', data: form }, true);
     return res;
   },
 

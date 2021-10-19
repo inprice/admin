@@ -1,7 +1,7 @@
 <template>
   <div class="mt-2">
 
-    <div class="d-flex justify-space-between my-3">
+    <div class="d-flex justify-space-between mb-3 mt-5">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
 
       <div>
@@ -9,414 +9,414 @@
           small
           class="mr-1"
           color="error"
-          @click="deleteProduct"
+          @click="remove"
           :disabled="$store.get('session/isNotEditor')"
         >
           DELETE
         </v-btn>
+      </div>
+    </div>
 
-        <v-btn 
+    <v-card>
+      <v-card-title class="pb-3">
+        Definition
+      </v-card-title>
+
+      <v-card-text class="pb-0">
+        <v-form ref="form" v-model="valid" @submit.prevent>
+
+          <v-text-field
+            dense
+            outlined
+            label="Name"
+            v-model="form.name"
+            :rules="rules.name"
+            type="text"
+            maxlength="70"
+          />
+
+          <v-text-field
+            dense
+            outlined
+            label="Formula"
+            v-model="form.formula"
+            :rules="rules.formula"
+            type="text"
+            maxlength="255"
+          />
+
+          <v-text-field
+            dense
+            outlined
+            label="Lower Limit Formula"
+            v-model="form.lowerLimitFormula"
+            :rules="rules.lowerLimitFormula"
+            type="text"
+            maxlength="255"
+          />
+
+          <v-text-field
+            dense
+            outlined
+            label="Upper Limit Formula"
+            v-model="form.upperLimitFormula"
+            :rules="rules.upperLimitFormula"
+            type="text"
+            maxlength="255"
+          />
+        </v-form>
+      </v-card-text>
+
+      <v-card-actions class="pa-3 pt-0">
+        <span class="small-font">You are adviced to test your definition before save!</span>
+        <v-spacer></v-spacer>
+        <v-btn
           small
-          class="ml-1"
-          @click="openEditProductDialog"
+          color="warning"
+          @click="testTheForm"
           :disabled="$store.get('session/isNotEditor')"
         >
-          EDIT
-        </v-btn>
-      </div>
-    </div>
-
-    <v-divider></v-divider>
-
-    <block-message 
-      v-if="loading" dense
-      :loading="loading"
-      message="Loading, please wait..."
-    />
-
-    <div v-if="data && data.product">
-
-      <div class="d-flex justify-space-between py-3 title">
-        <div class="my-auto">
-          <div class="caption teal--text font-weight-medium">{{ data.product.sku }}</div>
-          <div>{{ data.product.name }}</div>
-        </div>
-        <div class="text-right">
-          <div class="caption teal--text font-weight-medium">{{ data.product.position }}</div>
-          <div class="my-auto">{{ data.product.price | toPrice }}</div>
-        </div>
-      </div>
-
-      <v-card tile>
-
-        <div class="d-flex">
-          <v-list dense class="col pa-1">
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Brand</div>
-                <div>{{ data.product.brandName || '-' }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Category</div>
-                <div>{{ data.product.categoryName || '-' }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Alarm</div>
-                <alarm-note
-                  :alarm="data.product.alarm"
-                  @clicked="openAlarmDialogForProduct"
-                ></alarm-note>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-
-          <v-list dense class="col pa-1">
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Minimum Price</div>
-                <div>
-                  <span>{{ data.product.minPrice | toPrice }}</span>
-                  <span class="caption mx-1" v-if="data.product.minSeller && data.product.minSeller != 'UNKNOWN'">by {{ data.product.minSeller }}</span>
-                  <span class="caption" v-if="data.product.minSeller != data.product.minPlatform">on {{ data.product.minPlatform }}</span>
-                </div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Average Price</div>
-                <div>{{ data.product.avgPrice | toPrice }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Maximum Price</div>
-                <div>
-                  <span>{{ data.product.maxPrice | toPrice }}</span>
-                  <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'UNKNOWN'">by {{ data.product.maxSeller }}</span>
-                  <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform">on {{ data.product.maxPlatform }}</span>
-                </div>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </div>
-      </v-card>
-    </div>
-
-    <div v-if="data && data.product" class="d-flex justify-space-between mt-6 mb-3">
-      <span class="title mr-2">Links</span>
-
-      <div>
-        <v-btn 
-          small
-          class="mx-1"
-          color="error"
-          @click="deleteMultiple"
-          :disabled="selected < 1 || $store.get('session/isNotEditor')"
-        >
-          Delete ({{ selected }})
+          Test
         </v-btn>
 
-        <v-btn 
+        <v-btn
           small
-          class="mr-1"
-          @click="moveMultiple"
-          :disabled="selected < 1 || $store.get('session/isNotEditor')"
-        >
-          Move
-        </v-btn>
-
-        <v-btn 
-          small
-          class="ml-1"
-          @click="openAddLinkDialog"
+          @click="save"
+          color="success"
           :disabled="$store.get('session/isNotEditor')"
         >
-          Add Links
+          Save
         </v-btn>
+      </v-card-actions>
+
+      <div v-show="testPanelOpened">
+        <v-divider class="mt-2"></v-divider>
+        <v-card-text class="my-2 pb-0">
+          <div class="title">Test your definition</div>
+
+          <div :class="{ 'd-flex': $vuetify.breakpoint.mdAndUp }">
+            <div class="pb-0" :class="{ 'col-4 pl-0': $vuetify.breakpoint.mdAndUp, 'mb-2': $vuetify.breakpoint.smAndDown }">
+              <p class="font-weight-medium blue--text">
+                The following values will be used in tests.
+              </p>
+              <table class="var-table">
+                <tr>
+                  <th class="large-th">Minimum</th>
+                  <td><i>$100.00</i></td>
+                </tr>
+                <tr>
+                  <th class="large-th">Average</th>
+                  <td><i>$200.00</i></td>
+                </tr>
+                <tr>
+                  <th class="large-th">Maximum</th>
+                  <td><i>$300.00</i></td>
+                </tr>
+                <tr>
+                  <th class="large-th">Product Price</th>
+                  <td><i>To variate test results, this value will be given in the Result Table</i></td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="pb-0" :class="{ 'col-8 pr-0': $vuetify.breakpoint.mdAndUp, 'mt-2': $vuetify.breakpoint.smAndDown }">
+              <p class="font-weight-medium blue--text">
+                The Result
+              </p>
+
+              <div v-if="testProblem">
+                <v-chip small label dark color="pink" class="font-weight-bold">
+                  ERROR
+                </v-chip>
+                <p>
+                  {{ testProblem }}
+                </p>
+              </div>
+
+              <table v-if="testResults" class="var-table narrow-line text-center">
+                <thead>
+                  <tr>
+                    <th>If Product Price</th>
+                    <th>Suggested Price</th>
+                    <th class="hidden-xs-only">Lower Limit</th>
+                    <th class="hidden-xs-only">Upper Limit</th>
+                  </tr>
+                </thead>
+                <tr v-for="(price, index) in instantPrices" :key="index">
+                  <th class="large-th text-center">{{ price }}</th>
+                  <td><i>&#36;{{ testResults[index].value | toPrice }}</i></td>
+                  <td class="hidden-xs-only"><i>&#36;{{ testResults[index].lowerLimit | toPrice }}</i></td>
+                  <td class="hidden-xs-only"><i>&#36;{{ testResults[index].upperLimit | toPrice }}</i></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </v-card-text>
+
+        <v-card-actions class="pa-3 justify-end">
+          <v-btn
+            small
+            @click="testPanelOpened=false"
+          >
+            Close the Panel
+          </v-btn>
+        </v-card-actions>
       </div>
+    </v-card>
+
+    <div class="mt-5">
+      <p class="title">
+        The formulas
+      </p>
+      <table class="var-table">
+        <tr>
+          <th class="large-th">Formula</th>
+          <td>The main formula used to calculate the <i>Suggested Price</i></td>
+        </tr>
+        <tr>
+          <th class="large-th">Lower Limit</th>
+          <td>Optional. This formula limits the suggested price in terms of <i>Lower Limit</i></td>
+        </tr>
+        <tr>
+          <th class="large-th">Upper Limit</th>
+          <td>Optional. This limits the suggested price in terms of <i>Upper Limit</i></td>
+        </tr>
+      </table>
     </div>
 
-    <v-expansion-panels v-if="data && data.product" multiple v-model="openedPanels">
-      <link-panel 
-        v-for="(value, key) in this.grouppedLinks" :key="key"
-        :name="key" 
-        :links="value"
-        @checked="refreshSelected" 
-        @deleteOne="deleteOneLink"
-        @moveOne="moveOneLink"
-        @openAlarmDialog="openAlarmDialogForLink"
-      ></link-panel>
-    </v-expansion-panels>
+    <div class="mt-5">
+      <div class="title">
+        The factors
+      </div>
+      <div class="body-2 mb-5">
+        To make your formulas dynamic, you need to design them with the following variables.
+      </div>
 
-    <block-message 
-      v-if="data && (!data.links || data.links.length == 0)" dense
-      message="No link found."
-    ></block-message>
+      <table class="var-table">
+        <tr>
+          <th>p</th>
+          <td>Represents <i>Your Product Price</i></td>
+        </tr>
+        <tr>
+          <th>i</th>
+          <td><i>Minimum price of your <a>active</a> competitors</i></td>
+        </tr>
+        <tr>
+          <th>a</th>
+          <td><i>Average price</i></td>
+        </tr>
+        <tr>
+          <th>x</th>
+          <td><i>Maximum price</i></td>
+        </tr>
+      </table>
+    </div>
 
-    <confirm ref="confirm" />
+    <div class="mt-5">
+      <div class="title">
+        Operators
+      </div>
+      <div class="body-2 mb-5">
+        How to use math operators
+      </div>
 
-    <add-link
-      v-if="data && data.product"
-      ref="addLinkDialog"
-      :productId="data.product.id"
-      :productName="data.product.name"
-      @added="addLinks"
-    />
+      <table class="var-table">
+        <tr>
+          <th class="large-th">Addition</th>
+          <td><i>2 + 2 = 4</i></td>
+          <th class="large-th">Multiplication</th>
+          <td><i>2 * 2 = 4</i></td>
+        </tr>
+        <tr>
+          <th class="large-th">Subtraction</th>
+          <td><i>2 - 1 = 1</i></td>
+          <th class="large-th">Division</th>
+          <td><i>4 / 2 = 2</i></td>
+        </tr>
+        <tr>
+          <th class="large-th">Exponentation</th>
+          <td><i>4 ^ 2 = 16</i></td>
+          <th class="large-th">Modulo</th>
+          <td><i>4 % 2 = 0</i></td>
+        </tr>
+      </table>
+    </div>
 
-    <alarm-dialog
-      :key="alarmRefresher"
-      ref="alarmDialog"
-      @setOff="setAlarmOff"
-      @saved="saveAlarm"
-    ></alarm-dialog>
+    <div class="my-6">
+      <div class="title">
+        Built-in functions
+      </div>
+      <div class="body-2 mb-5">
+        With the help of the following functions you can crate more dynamic formulas
+      </div>
 
-    <product-edit-dialog ref="productEditDialog" @saved="save"></product-edit-dialog>
-    <product-select-dialog ref="productSelectDialog"></product-select-dialog>
+      <table class="var-table">
+        <tr>
+          <th class="large-th">min</th>
+          <td>Minimum of two values -> <i><b>min</b></i>(4, 2) = 2</td>
+          <th class="large-th">floor</th>
+          <td>Nearest lower integer -> <i><b>floor</b></i>(3.85) = 3</td>
+        </tr>
+        <tr>
+          <th class="large-th">max</th>
+          <td>Maximum of two values -> <i><b>max</b>(4, 2) = 4</i></td>
+          <th class="large-th">ceil</th>
+          <td>Nearest upper integer -> <i><b>ceil</b></i>(3.05) = 4</td>
+        </tr>
+        <tr>
+          <th class="large-th">abs</th>
+          <td>Absolute value -> <i><b>abs</b></i>(2 - 4) = 2</td>
+          <th class="large-th">sqrt</th>
+          <td>Square root -> <i><b>sqrt</b></i>(4) = 2</td>
+        </tr>
+      </table>
+    </div>
 
+    <confirm ref="confirm"></confirm>
   </div>
+
 </template>
 
 <script>
-import ProductService from '@/service/product';
-import LinkService from '@/service/link';
-import AlarmService from '@/service/alarm';
+import SmartPriceService from '@/service/smartprice';
 
 export default {
   data() {
     return {
-      data: {},
-      grouppedLinks: {},
-      openedPanels: [0],
-      selected: 0,
+      valid: false,
+      rules: {},
+      form: {
+        name: '',
+        formula: '',
+        lowerLimitFormula: '',
+        upperLimitFormula: '',
+      },
+      testResults: null,
       loading: false,
-      alarmRefresher: 0
+      testProblem: null,
+      testPanelOpened: false,
+      instantPrices: [ '$50.00', '$100.00', '$150.00', '$200.00', '$250.00', '$300.00', '$350.00' ]
     };
   },
   methods: {
-    openEditProductDialog() {
-      let cloned = JSON.parse(JSON.stringify(this.data.product));
-      this.$refs.productEditDialog.open(cloned);
-    },
-    deleteProduct() {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.data.product.name).then(async (confirm) => {
-        if (confirm == true) {
-          const result = await ProductService.remove(this.data.product.id);
+    remove() {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', this.form.name).then(async (confirm) => {
+        if (confirm == true && this.isNumeric(this.$route.params.id)) {
+          const result = await SmartPriceService.remove(this.$route.params.id);
           if (result && result.status) this.$router.go(-1);
         }
       });
     },
-    async save(form) {
-      const result = await ProductService.save(form);
-      if (result && result.status) {
-        this.data.product = result.data.product;
-        this.$refs.productEditDialog.close();
-        this.refreshPanels();
+    async save() {
+      this.activateRules();
+      await this.$refs.form.validate();
+      if (this.valid) {
+        if (this.isNumeric(this.$route.params.id)) {
+          this.form.id = this.$route.params.id;
+        }
+        SmartPriceService.save(this.form).then(res => {
+          if (res && res.status) {
+            this.$store.commit('snackbar/setMessage', { text: 'Smart price has been successfully updated' });
+            if (this.isNumeric(this.$route.params.id) == false) this.$router.go(-1);
+          }
+        });
       }
     },
-    findProduct(hideLoading) {
-      if (!hideLoading) this.loading = true;
-      ProductService.getLinks(this.$route.params.id).then(res => {
+    async testTheForm() {
+      this.activateRules();
+      await this.$refs.form.validate();
+      if (this.valid) {
+        SmartPriceService.test(this.form).then(res => {
+          if (res.data) {
+            this.testProblem = null;
+            this.testResults = res.data;
+          } else {
+            this.testResults = null;
+            this.testProblem = res.error;
+          }
+          this.testPanelOpened=true;
+        });
+      }
+    },
+    find() {
+      if (this.isNumeric(this.$route.params.id) == false) {
+        return;
+      }
+      SmartPriceService.get(this.$route.params.id).then(res => {
         if (res && res.status == true) {
-          this.data = res.data;
-          this.refreshPanels();
-        }
-      }).finally(() => {
-        if (!hideLoading) this.loading = false;
-      });
-    },
-    refreshPanels() {
-      this.selected = 0;
-      this.grouppedLinks = {};
-      if (this.data && this.data.links) {
-        this.data.links.forEach(row => {
-          if (!this.grouppedLinks[row.grup]) this.grouppedLinks[row.grup] = [];
-          row.selected = false;
-          this.grouppedLinks[row.grup].push(row);
-          this.openedPanels = [1];
-          this.openedPanels = [0];
-        });
-      }
-    },
-    openAddLinkDialog() {
-      this.$refs.addLinkDialog.open();
-    },
-    async addLinks(links) {
-      const result = await ProductService.insertLinks(this.data.product.id, links);
-      if (result && result.status) {
-        this.data = result.data;
-        this.refreshPanels();
-      }
-    },
-    refreshSelected() {
-      let count = 0;
-      if (this.data && this.data.links) {
-        this.data.links.forEach(row => {
-          if (row.selected) count += 1;
-        });
-      }
-      this.selected = count;
-    },
-    async deleteOneLink(row) {
-      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', (row.name || row.url)).then(async (confirm) => {
-        if (confirm == true) {
-          const result = await LinkService.remove([ row.id ], this.data.product.id);
-          if (result && result.data) {
-            this.data = result.data;
-            this.refreshPanels();
-          }
+          this.form = res.data;
         }
       });
     },
-    deleteMultiple() {
-      if (this.selected) {
-        const selection = [];
-        if (this.data && this.data.links) {
-          this.data.links.forEach(row => {
-            if (row.selected) {
-              selection.push(row.id);
-            }
-          });
-        }
-        const title = `${selection.length} links`;
-        this.$refs.confirm.open('Delete', ' will be deleted. Are you sure?', title).then(async (confirm) => {
-          if (confirm == true) {
-            const result = await LinkService.remove(selection, this.data.product.id);
-            if (result && result.data) {
-              this.data = result.data;
-              this.refreshPanels();
-            }
-          }
-        });
+    activateRules() {
+      this.rules = {
+        name: [
+          v => !!v || "Required",
+          v => (v && v.length <= 255) || "Name must be less than 255 chars"
+        ],
+        formula: [
+          v => !!v || "Required",
+          v => (v && v.length <= 255) || "Name must be less than 255 chars"
+        ],
+        lowerLimitFormula: [
+          v => (!v || v.length <= 255) || "If given, must be less than 255 chars"
+        ],
+        upperLimitFormula: [
+          v => (!v || v.length <= 255) || "If given, must be less than 255 chars"
+        ],
       }
-    },
-    async moveOneLink(row) {
-      this.$refs.productSelectDialog.open('For the selected link, please select a product to move', this.data.product.id).then(async (data) => {
-        if (data && (data.id || data.name)) {
-          const result = await LinkService.moveTo({
-            fromProductId: this.data.product.id,
-            toProductId: data.id,
-            toProductName: data.name,
-            linkIdSet: [ row.id ],
-          });
-          if (result && result.data) {
-            this.data = result.data;
-            this.refreshPanels();
-          }
-        }
-      });
-    },
-    moveMultiple() {
-      if (this.selected) {
-        const selection = [];
-        if (this.data && this.data.links) {
-          this.data.links.forEach(row => {
-            if (row.selected) {
-              selection.push(row.id);
-            }
-          });
-        }
-        const title = `${selection.length} links`;
-        this.$refs.productSelectDialog.open(`For selected ${title}, please select a product to move`, this.data.product.id).then(async (data) => {
-          if (data && (data.id || data.name)) {
-            const result = await LinkService.moveTo({
-              fromProductId: this.data.product.id,
-              toProductId: data.id,
-              toProductName: data.name,
-              linkIdSet: selection,
-            });
-            if (result && result.data) {
-              this.data = result.data;
-              this.refreshPanels();
-            }
-          }
-        });
-      }
-    },
-    openAlarmDialogForProduct() {
-      let cloned = {};
-      if (this.data.product.alarm) {
-        cloned = JSON.parse(JSON.stringify(this.data.product.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'PRODUCT';
-      cloned.productId = this.data.product.id;
-      cloned.name = this.data.product.name;
-      this.$refs.alarmDialog.open(cloned);
-    },
-    openAlarmDialogForLink(link) {
-      let cloned = {};
-      if (link.alarm) {
-        cloned = JSON.parse(JSON.stringify(link.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'LINK';
-      cloned.linkId = link.id;
-      cloned.name = link.name || link.url;
-      this.$refs.alarmDialog.open(cloned);
-    },
-    async saveAlarm(form) {
-      const result = await AlarmService.save(form);
-      if (result && result.status) {
-        this.data.product.alarm = result.data;
-        this.alarmRefresher++;
-      }
-    },
-    setAlarmOff(form) {
-      AlarmService.remove(form.id).then((res) => {
-        if (res && res.status) {
-          this.data.product.alarm = null;
-          this.alarmRefresher++;
-        }
-      });
     },
   },
   mounted() {
-    this.findProduct();
+    this.find();
   },
   components: {
-    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
-    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
-    AddLink: () => import('./AddLink'),
-    LinkPanel: () => import('./LinkPanel'),
-    ProductEditDialog: () => import('./Edit'),
-    ProductSelectDialog: () => import('@/views/product/Select.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
   watch: {
     '$route.params.id': {
         handler: function() {
-          this.findProduct();
+          this.find();
         },
       }
   },
 };
 </script>
+
+<style scoped>
+  .var-table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #e8e8e8;
+  }
+
+  .var-table th, td {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-right: 1px solid #e8e8e8;
+    vertical-align: top;
+    line-height: 2.0;
+  }
+
+  .var-table th {
+    background-color: #fafafa;
+    color: rgba(0,0,0,.85);
+    font-weight: 600;
+    font-style: italic;
+    width: 120px;
+  }
+
+  .var-table tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .large-th {
+    font-style: normal !important;
+    font-weight: 500 !important;
+    text-align: left;
+  }
+  .narrow-line th, .narrow-line td {
+    line-height: 1.5 !important;
+  }
+</style>
