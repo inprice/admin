@@ -24,6 +24,7 @@
             :items="plansSets"
             item-text="name"
             return-object
+            :menu-props="{ bottom: true, offsetY: true }"
           ></v-select>
 
           <v-text-field

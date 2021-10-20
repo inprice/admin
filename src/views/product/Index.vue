@@ -57,6 +57,7 @@
                     :items="positionItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -67,6 +68,7 @@
                     :items="brands"
                     item-text="name"
                     return-object
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -77,6 +79,7 @@
                     :items="categories"
                     item-text="name"
                     return-object
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <div class="d-flex justify-space-around mb-4">
@@ -90,6 +93,7 @@
                       :items="orderByItems"
                       item-text="text"
                       item-value="value"
+                      :menu-props="{ bottom: true, offsetY: true }"
                     ></v-select>
 
                     <v-select
@@ -102,6 +106,7 @@
                       :items="orderDirItems"
                       item-text="text"
                       item-value="value"
+                      :menu-props="{ bottom: true, offsetY: true }"
                     ></v-select>
                   </div>
 
@@ -116,6 +121,7 @@
                       :items="alarmItems"
                       item-text="text"
                       item-value="value"
+                      :menu-props="{ bottom: true, offsetY: true }"
                     ></v-select>
 
                     <v-select
@@ -126,6 +132,7 @@
                       label="Row Limit"
                       v-model="searchForm.rowLimit"
                       :items="rowLimitItems"
+                      :menu-props="{ bottom: true, offsetY: true }"
                     ></v-select>
                   </div>
 

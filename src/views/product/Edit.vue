@@ -44,10 +44,21 @@
             v-model="form.price"
             :rules="rules.price"
             @blur="formatPrice"
-            class="mr-1"
             type="number"
             maxlength="10"
           ></v-text-field>
+
+          <v-select
+            dense
+            outlined
+            clearable
+            label="Smart Price"
+            v-model="form.smartPriceId"
+            :items="smartPriceItems"
+            item-text="name"
+            item-value="id"
+            :menu-props="{ bottom: true, offsetY: true }"
+          ></v-select>
 
           <v-combobox
             dense
@@ -109,6 +120,7 @@
 </template>
 
 <script>
+import SmartPriceService from '@/service/smartprice';
 import CategoryService from '@/service/category';
 import BrandService from '@/service/brand';
 
@@ -119,16 +131,19 @@ export default {
       valid: false,
       rules: {},
       form: {
+        id: null,
         sku: '',
         name: '',
         price: 0,
-        category: null,
+        smartPriceId: null,
         brand: null,
+        category: null,
       },
       newCategoryName: null,
       newBrandName: null,
-      categoryItems: [],
       brandItems: [],
+      categoryItems: [],
+      smartPriceItems: [],
     };
   },
   methods: {
@@ -144,15 +159,27 @@ export default {
         delete this.form.id;
         this.form.sku = '';
         this.form.name = '';
-        this.form.price = 0;
+        this.form.price = 0;  
       }
 
       let self = this;
       this.$nextTick(() => {
         self.$refs.form.resetValidation();
         self.formatPrice();
+
+        SmartPriceService.getList().then(res => {
+          if (res && res.data) {
+            this.smartPriceItems = res.data;
+          } else {
+            this.smartPriceItems = [];
+          }
+        }).finally(() => {
+          if (data && data.smartPriceId && this.smartPriceItems.length) {
+            this.form.smartPriceId = data.smartPriceId;
+          }
+        });
         BrandService.getList().then(res => {
-          if (res.data) {
+          if (res && res.data) {
             this.brandItems = res.data;
           } else {
             this.brandItems = [];
@@ -165,7 +192,7 @@ export default {
           }
         });
         CategoryService.getList().then(res => {
-          if (res.data) {
+          if (res && res.data) {
             this.categoryItems = res.data;
           } else {
             this.categoryItems = [];

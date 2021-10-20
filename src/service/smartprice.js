@@ -11,7 +11,7 @@ export default {
   },
 
   async getList() {
-    const res = await Helper.call('Smart Price List', { method: 'get', url: baseURL + '/list' }, true);
+    const res = await Helper.call('Smart Price List', { method: 'get', url: baseURL + 's' }, true);
     if (res.status == true) return res;
     return null;
   },

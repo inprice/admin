@@ -22,6 +22,7 @@
             :items="typeItems"
             item-text="secondary"
             item-value="value"
+            :menu-props="{ bottom: true, offsetY: true }"
           >
             <template v-slot:selection="{ item }">
               {{ item.secondary }}
@@ -36,6 +37,7 @@
             :items="priorityItems"
             item-text="text"
             item-value="value"
+            :menu-props="{ bottom: true, offsetY: true }"
           ></v-select>
 
           <v-select
@@ -46,6 +48,7 @@
             :items="subjectItems"
             item-text="text"
             item-value="value"
+            :menu-props="{ bottom: true, offsetY: true }"
           ></v-select>
 
           <v-textarea

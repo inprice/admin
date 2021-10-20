@@ -80,6 +80,7 @@
           label="New Status"
           v-model="status"
           :items="statusItems"
+          :menu-props="{ bottom: true, offsetY: true }"
         ></v-select>
         <v-btn
           class="my-auto ml-1"

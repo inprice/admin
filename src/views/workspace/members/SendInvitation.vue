@@ -29,7 +29,7 @@
             v-model="form.role"
             :rules="rules.role"
             :items="roles"
-            :menu-props="{ auto: true, overflowY: true }"
+            :menu-props="{ auto: true, overflowY: true, bottom: true, offsetY: true }"
           ></v-select>
         </v-form>
       </v-card-text>

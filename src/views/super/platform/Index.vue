@@ -58,6 +58,7 @@
                     :items="booleanItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -70,6 +71,7 @@
                     :items="booleanItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
 
@@ -84,6 +86,7 @@
                     :items="orderByItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -96,6 +99,7 @@
                     :items="orderDirItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
 
@@ -106,6 +110,7 @@
                   label="Row Limit"
                   v-model="searchForm.rowLimit"
                   :items="rowLimitItems"
+                  :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
               </v-card-text>

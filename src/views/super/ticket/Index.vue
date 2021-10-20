@@ -60,6 +60,7 @@
                   :items="statusItems"
                   item-text="text"
                   item-value="value"
+                  :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
                 <v-select
@@ -74,6 +75,7 @@
                   :items="priorityItems"
                   item-text="text"
                   item-value="value"
+                  :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
                 <v-select
@@ -88,6 +90,7 @@
                   :items="typeItems"
                   item-text="text"
                   item-value="value"
+                  :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
                 <v-select
@@ -102,6 +105,7 @@
                   :items="subjectItems"
                   item-text="text"
                   item-value="value"
+                  :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
                 <div class="d-flex justify-space-around mb-4">
@@ -115,6 +119,7 @@
                     :items="seenItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -125,6 +130,7 @@
                     label="Row Limit"
                     v-model="searchForm.rowLimit"
                     :items="rowLimitItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
 
@@ -139,6 +145,7 @@
                     :items="orderByItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -151,6 +158,7 @@
                     :items="orderDirItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
               </v-card-text>

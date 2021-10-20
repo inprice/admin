@@ -123,6 +123,7 @@
               :items="positions"
               item-text="text"
               item-value="value"
+              :menu-props="{ bottom: true, offsetY: true }"
               v-if="form.subject == 'POSITION' && form.subjectWhen != 'CHANGED'"
             ></v-select>
 

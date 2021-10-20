@@ -173,7 +173,7 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar app clipped-left color="blue-grey" dark>
+    <v-app-bar app clipped-left color="#37517e" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
       <workspace-menu v-if="!$store.get('session/isSuperUser') || !$store.get('session/isDemoUser')"></workspace-menu>

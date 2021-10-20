@@ -68,7 +68,7 @@
       </v-card-text>
 
       <v-card-actions class="pa-3 pt-0">
-        <span class="small-font">You are adviced to test your definition before save!</span>
+        <span class="body-2" v-show="!testPanelOpened">Please test your definition before save!</span>
         <v-spacer></v-spacer>
         <v-btn
           small
@@ -91,69 +91,42 @@
 
       <div v-show="testPanelOpened">
         <v-divider class="mt-2"></v-divider>
-        <v-card-text class="my-2 pb-0">
-          <div class="title">Test your definition</div>
-
-          <div :class="{ 'd-flex': $vuetify.breakpoint.mdAndUp }">
-            <div class="pb-0" :class="{ 'col-4 pl-0': $vuetify.breakpoint.mdAndUp, 'mb-2': $vuetify.breakpoint.smAndDown }">
-              <p class="font-weight-medium blue--text">
-                The following values will be used in tests.
-              </p>
-              <table class="var-table">
-                <tr>
-                  <th class="large-th">Minimum</th>
-                  <td><i>$100.00</i></td>
-                </tr>
-                <tr>
-                  <th class="large-th">Average</th>
-                  <td><i>$200.00</i></td>
-                </tr>
-                <tr>
-                  <th class="large-th">Maximum</th>
-                  <td><i>$300.00</i></td>
-                </tr>
-                <tr>
-                  <th class="large-th">Product Price</th>
-                  <td><i>To variate test results, this value will be given in the Result Table</i></td>
-                </tr>
-              </table>
-            </div>
-
-            <div class="pb-0" :class="{ 'col-8 pr-0': $vuetify.breakpoint.mdAndUp, 'mt-2': $vuetify.breakpoint.smAndDown }">
-              <p class="font-weight-medium blue--text">
-                The Result
-              </p>
-
-              <div v-if="testProblem">
-                <v-chip small label dark color="pink" class="font-weight-bold">
-                  ERROR
-                </v-chip>
-                <p>
-                  {{ testProblem }}
-                </p>
-              </div>
-
-              <table v-if="testResults" class="var-table narrow-line text-center">
-                <thead>
-                  <tr>
-                    <th>If Product Price</th>
-                    <th>Suggested Price</th>
-                    <th class="hidden-xs-only">Lower Limit</th>
-                    <th class="hidden-xs-only">Upper Limit</th>
-                  </tr>
-                </thead>
-                <tr v-for="(price, index) in instantPrices" :key="index">
-                  <th class="large-th text-center">{{ price }}</th>
-                  <td><i>&#36;{{ testResults[index].value | toPrice }}</i></td>
-                  <td class="hidden-xs-only"><i>&#36;{{ testResults[index].lowerLimit | toPrice }}</i></td>
-                  <td class="hidden-xs-only"><i>&#36;{{ testResults[index].upperLimit | toPrice }}</i></td>
-                </tr>
-              </table>
-            </div>
+        <v-card-text class="mb-2 pb-0">
+          <div class="title">
+            Test Results
           </div>
+          <p v-show="!testProblem">
+            For simplicity, the Minimum value is taken $100.00, Average $200.00 and Maximum $300.00
+          </p>
+
+          <div v-if="testProblem" class="mt-2">
+            <div class="font-weight-bold">
+              Error:
+            </div>
+            <p>
+              {{ testProblem }}
+            </p>
+          </div>
+
+          <table v-if="testResults" class="var-table narrow-line text-center">
+            <thead>
+              <tr>
+                <th class="large-th text-center">When the Price</th>
+                <th class="large-th text-center">Suggested Price</th>
+                <th class="large-th text-center hidden-xs-only">Lower Limit</th>
+                <th class="large-th text-center hidden-xs-only">Upper Limit</th>
+              </tr>
+            </thead>
+            <tr v-for="(price, index) in instantPrices" :key="index">
+              <th class="large-th text-center">{{ price }}</th>
+              <td><i>&#36;{{ testResults[index].value | toPrice }}</i></td>
+              <td class="hidden-xs-only"><i>&#36;{{ testResults[index].lowerLimit | toPrice }}</i></td>
+              <td class="hidden-xs-only"><i>&#36;{{ testResults[index].upperLimit | toPrice }}</i></td>
+            </tr>
+          </table>
         </v-card-text>
 
-        <v-card-actions class="pa-3 justify-end">
+        <v-card-actions class="pa-3 pb-4 justify-end">
           <v-btn
             small
             @click="testPanelOpened=false"
@@ -168,18 +141,22 @@
       <p class="title">
         The formulas
       </p>
+      <p>
+        Formulas can also be constant values, such as 250.10 or 1.25 
+      </p>
+
       <table class="var-table">
         <tr>
           <th class="large-th">Formula</th>
-          <td>The main formula used to calculate the <i>Suggested Price</i></td>
+          <td>The main formula and is used to calculate the <i>Suggested Price</i></td>
         </tr>
         <tr>
           <th class="large-th">Lower Limit</th>
-          <td>Optional. This formula limits the suggested price in terms of <i>Lower Limit</i></td>
+          <td>Optional. Lower bound. <i>Suggested Price</i> cannot be less than this.</td>
         </tr>
         <tr>
           <th class="large-th">Upper Limit</th>
-          <td>Optional. This limits the suggested price in terms of <i>Upper Limit</i></td>
+          <td>Optional. Upper bound. <i>Suggested Price</i> cannot be less than this.</td>
         </tr>
       </table>
     </div>
@@ -242,7 +219,7 @@
       </table>
     </div>
 
-    <div class="my-6">
+    <div class="my-5">
       <div class="title">
         Built-in functions
       </div>
@@ -272,6 +249,80 @@
       </table>
     </div>
 
+    <div class="my-5">
+      <div class="title">
+        Good formulas
+      </div>
+
+      <table class="var-table mt-2">
+        <tr>
+          <td class="formula-col">100.25</td>
+          <td>A constant value.</td>
+        </tr>
+        <tr>
+          <td class="formula-col">a/2</td>
+          <td>Half of the Average.</td>
+        </tr>
+        <tr>
+          <td class="formula-col">p + (i % 3)</td>
+          <td>The Price plus remainder of dividing the Minimum by three.</td>
+        </tr>
+        <tr>
+          <td class="formula-col">(p*1.10)+0.75</td>
+          <td>Ten percent more of the Price plus 75 cents.</td>
+        </tr>
+        <tr>
+          <td class="formula-col">(x+i+p)/2.13</td>
+          <td>The sum of the Minimum, Maximum and the Price then divided by 2.13.</td>
+        </tr>
+        <tr>
+          <td class="formula-col">min(p*1.25, x/2)</td>
+          <td>Whichever is less, twenty-five percent more of the Price OR half of the Maximum.</td>
+        </tr>
+        <tr>
+          <td class="formula-col">max(p*1.25, x/2)</td>
+          <td>Whichever is more, twenty-five percent more of the Price OR half of the Maximum.</td>
+        </tr>
+        <tr>
+          <td class="formula-col">abs((p*1.25) - (x/2))</td>
+          <td>The positive value of that the subtraction of half the Maximum from twenty-five percent more than the Price.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="my-5">
+      <div class="title">
+        Bad formulas
+      </div>
+
+      <table class="var-table mt-2">
+        <tr>
+          <td class="formula-col">p/0</td>
+          <td>Causes division by zero!</td>
+        </tr>
+        <tr>
+          <td class="formula-col">a+</td>
+          <td>Too many operators!</td>
+        </tr>
+        <tr>
+          <td class="formula-col">x+i,</td>
+          <td>Misplaced function separator ','</td>
+        </tr>
+        <tr>
+          <td class="formula-col">z * 0.20</td>
+          <td>Unknown function or variable 'z'</td>
+        </tr>
+        <tr>
+          <td class="formula-col">(p*1.25</td>
+          <td>Parentheses problem!</td>
+        </tr>
+        <tr>
+          <td class="formula-col">p-(p*2)</td>
+          <td>Negative value problem!</td>
+        </tr>
+      </table>
+    </div>
+
     <confirm ref="confirm"></confirm>
   </div>
 
@@ -292,6 +343,7 @@ export default {
         upperLimitFormula: '',
       },
       testResults: null,
+      oldFormulas: null,
       loading: false,
       testProblem: null,
       testPanelOpened: false,
@@ -323,20 +375,25 @@ export default {
       }
     },
     async testTheForm() {
-      this.activateRules();
-      await this.$refs.form.validate();
-      if (this.valid) {
-        SmartPriceService.test(this.form).then(res => {
-          if (res.data) {
-            this.testProblem = null;
-            this.testResults = res.data;
-          } else {
-            this.testResults = null;
-            this.testProblem = res.error;
-          }
-          this.testPanelOpened=true;
-        });
+      //to prevent unnecessary server calls
+      const newFormulas = this.form.formula+this.form.lowerLimitFormula+this.form.upperLimitFormula;
+      if (newFormulas != this.oldFormulas) {
+        this.oldFormulas = newFormulas;
+        this.activateRules();
+        await this.$refs.form.validate();
+        if (this.valid) {
+          SmartPriceService.test(this.form).then(res => {
+            if (res.data) {
+              this.testProblem = null;
+              this.testResults = res.data;
+            } else {
+              this.testResults = null;
+              this.testProblem = res.error;
+            }
+          });
+        }
       }
+      this.testPanelOpened=true;
     },
     find() {
       if (this.isNumeric(this.$route.params.id) == false) {
@@ -418,5 +475,17 @@ export default {
   }
   .narrow-line th, .narrow-line td {
     line-height: 1.5 !important;
+  }
+
+  .formula-col {
+    width: 18% !important;
+    text-align: right;
+    font-weight: 500 !important;
+  }
+
+  @media(max-width:576px){
+    .formula-col {
+      width: 50% !important;
+    }
   }
 </style>

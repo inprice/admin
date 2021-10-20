@@ -6,12 +6,15 @@
     <div class="body-2 my-3">
       <p>
         The purporse of <i>Smart Pricing</i> is to suggest you a calculated <i>Price</i> based on some certain factors including your product price, minimum, average and maximum price of your active competitors.
-        When a change happened on any the factors, smart pricing mechanism immediately steps in and calculates a new price according to your formulas. Simply, this calculated price 
+        Whenever a change happened on any of the factors, smart pricing mechanism immediately steps in and calculates a new price according to your formulas. So, this calculated price 
         helps you in your price estimation effort.
       </p>
       <p>
-        You can use any of the factors mentioned above to create your formulas.
+        You can use any of the factors mentioned above to build your formulas.
         In addition to this, there are several built-in functions to form more complex formulas. We put some useful examples at the bottom of edit page to assist you.
+      </p>
+      <p>
+        In order to put your smart prices in use, you need to bind them to related products. So that you will see suggested prices when your products have active competitors.
       </p>
     </div>
 

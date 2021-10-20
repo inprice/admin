@@ -162,6 +162,7 @@
               v-model="ticket.status"
               :items="ticketStatusItems"
               v-if="!updatingCommentId"
+              :menu-props="{ bottom: true, offsetY: true }"
             ></v-select>
 
             <v-textarea
