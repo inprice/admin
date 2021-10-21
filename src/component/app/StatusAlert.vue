@@ -9,7 +9,7 @@
         You've started {{ freeIndicator() }} period <ago class="d-inline font-weight-bold" :date="CURSTAT.subsRenewalAt" />.
         There are only <strong>{{ CURSTAT.daysToRenewal }} days</strong> left to end.
       </span>
-      <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">        
+      <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center' : 'right float-right')">
         <v-btn 
           small
           color="primary"

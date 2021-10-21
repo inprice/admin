@@ -25,27 +25,28 @@
             :items="levelItems"
             item-text="text"
             item-value="value"
+            :menu-props="{ bottom: true, offsetY: true }"
           ></v-select>
 
           <div class="d-flex">
             <v-text-field
               dense
               outlined
+              label="Starting At"
+              class="pr-1"
               v-mask="'####-##-## ##:##'"
               v-model="form.startingAt"
               :rules="rules.startingAt"
-              label="Starting At"
-              class="pr-1"
             ></v-text-field>
 
             <v-text-field
               dense
               outlined
+              label="Ending At"
+              class="pl-1"
               v-mask="'####-##-## ##:##'"
               v-model="form.endingAt"
               :rules="rules.endingAt"
-              label="Ending At"
-              class="pl-1"
             ></v-text-field>
           </div>
 

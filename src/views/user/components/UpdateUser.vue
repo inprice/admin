@@ -28,7 +28,7 @@
             label="Timezone"
             v-model="form.timezone"
             :items="timezones"
-            :menu-props="{ auto: true, overflowY: true }"
+            :menu-props="{ auto: true, overflowY: true, bottom: true, offsetY: true }"
           />
         </v-form>
       </v-card-text>
@@ -41,7 +41,7 @@
           @click="submit"
           color="primary"
           :loading="loading" 
-          :disabled="loading || $store.get('session/isNotAdmin')"
+          :disabled="loading || $store.get('session/isDemoUser')"
         >
           Save
         </v-btn>

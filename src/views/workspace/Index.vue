@@ -5,13 +5,13 @@
       show-arrows
     >
       <v-tab>
+        Workspace
+      </v-tab>
+      <v-tab>
         Subscription
       </v-tab>
       <v-tab>
         Plans
-      </v-tab>
-      <v-tab>
-        Workspace
       </v-tab>
       <v-tab>
         Team
@@ -20,17 +20,17 @@
         Voucher
       </v-tab>
 
+      <v-tab-item>
+        <edit-workspace></edit-workspace>
+        <delete-workspace></delete-workspace>
+      </v-tab-item>
+
       <v-tab-item >
         <billing-info></billing-info>
       </v-tab-item>
 
       <v-tab-item >
         <plans></plans>
-      </v-tab-item>
-
-      <v-tab-item>
-        <edit-workspace></edit-workspace>
-        <delete-workspace></delete-workspace>
       </v-tab-item>
 
       <v-tab-item >

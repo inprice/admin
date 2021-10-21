@@ -128,6 +128,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item link :to="{name: 'smart-prices'}">
+          <v-list-item-action>
+            <v-icon>mdi-function-variant</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Smart Prices</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-divider inset></v-divider>
 
         <v-list-item disabled>
@@ -164,7 +173,7 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar app clipped-left color="blue-grey" dark>
+    <v-app-bar app clipped-left class="appbar" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
       <workspace-menu v-if="!$store.get('session/isSuperUser') || !$store.get('session/isDemoUser')"></workspace-menu>
@@ -244,6 +253,11 @@ export default {
 <style>
   .v-menu__content, .search-box {
     max-width: 500px !important;
+  }
+  .appbar {
+    border-bottom: 1px solid #ccc;
+    background-color: #046190;
+    background-image: linear-gradient(270deg, #046190 0%, #00699a 75%);
   }
 </style>
 

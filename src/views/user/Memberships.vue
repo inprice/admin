@@ -38,11 +38,12 @@
                 v-if="row.role != 'ADMIN'"
                 :loading="loading.leave" 
                 @click="leave(row.id, row.workspace)"
-                :disabled="loading.leave || $store.get('session/isSuperUser')"
+                :disabled="loading.leave || $store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
               >
                 Leave
               </v-btn>
               <span 
+                v-else
                 class="caption font-weight-medium"
                 :style="'color: ' + (CURSTAT.workspace == row.name ? 'blue' : 'green')" 
               >

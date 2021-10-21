@@ -4,7 +4,7 @@
 
     <v-card tile
       v-for="plan in plansSets" :key="plan.id"
-      :class="`py-2 px-5 ${isThisSelected(plan.id) ? 'rainbow' : ''}`"
+      :class="`py-2 ${isThisSelected(plan.id) ? 'rainbow px-4' : 'px-5'}`"
     >
       <v-row no-gutters>
         <v-col sm="6" md="4" class="my-auto body-1 primary--text font-weight-bold">

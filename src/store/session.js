@@ -80,6 +80,7 @@ function buildCurrent(state) {
       fullName: selected.fullName,
       role: selected.role,
       timezone: selected.timezone,
+      currencyCode: selected.currencyCode,
       currencyFormat: selected.currencyFormat,
       everSubscribed: (selected.subsStartedAt != undefined),
     };
@@ -182,6 +183,16 @@ const getters = {
 
   getCurrentStatus: (state) => {
     return state.current;
+  },
+
+  getWorkspaceInfo: (state) => {
+    if (state.current) {
+      return {
+        name: state.current.workspace,
+        currency: state.current.currencyCode,
+        currencyFormat: state.current.currencyFormat,
+      }
+    }
   },
 
   isSuperUser: (state) => {

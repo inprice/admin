@@ -71,6 +71,7 @@
                   item-value="key"
                   clearable
                   @click:clear="searchForm.user=null"
+                  :menu-props="{ bottom: true, offsetY: true }"
                 >
                   <template v-slot:selection="{ item }">
                     {{ item.value }}
@@ -146,6 +147,7 @@
                     label="Order By"
                     v-model="searchForm.orderBy"
                     :items="orderByItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -156,6 +158,7 @@
                     label="Order Dir"
                     v-model="searchForm.orderDir"
                     :items="orderDirItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
 
@@ -168,6 +171,7 @@
                     label="Method"
                     v-model="searchForm.method"
                     :items="methodItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -178,6 +182,7 @@
                     label="Row Limit"
                     v-model="searchForm.rowLimit"
                     :items="rowLimitItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
               </v-card-text>

@@ -8,7 +8,16 @@
       <v-divider></v-divider>
 
       <v-card-text class="pt-3">
-        Update your timezone and full name.
+        <table class="desc-table">
+          <tr>
+            <th>Full Name</th>
+            <td>{{ CURSTAT.fullName }}</td>
+          </tr>
+          <tr>
+            <th>Timezone</th>
+            <td>{{ CURSTAT.timezone }}</td>
+          </tr>
+        </table>
       </v-card-text>
 
       <v-divider></v-divider>
@@ -17,14 +26,14 @@
         <v-btn 
           small
           @click="openUpdateUserDialog"
-          :disabled="$store.get('session/isSuperUser')"
+          :disabled="$store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
         >
           Update
         </v-btn>
       </v-card-actions>
     </v-card>
 
-    <v-card tile>
+    <v-card tile class="mt-5">
       <v-card-title class="py-2">
         Password
       </v-card-title>
@@ -41,7 +50,7 @@
         <v-btn 
           small
           @click="openChangePasswordDialog"
-          :disabled="$store.get('session/isSuperUser')"
+          :disabled="$store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
         >
           Change
         </v-btn>

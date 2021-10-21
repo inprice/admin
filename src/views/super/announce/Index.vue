@@ -60,6 +60,7 @@
                     :items="typeItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -74,6 +75,7 @@
                     :items="levelItems"
                     item-text="text"
                     item-value="value"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <div class="d-flex mb-4">
@@ -147,6 +149,7 @@
                       :items="orderByItems"
                       item-text="text"
                       item-value="value"
+                      :menu-props="{ bottom: true, offsetY: true }"
                     ></v-select>
 
                     <v-select
@@ -159,6 +162,7 @@
                       :items="orderDirItems"
                       item-text="text"
                       item-value="value"
+                      :menu-props="{ bottom: true, offsetY: true }"
                     ></v-select>
                   </div>
 
@@ -170,6 +174,7 @@
                     class="mb-2"
                     v-model="searchForm.rowLimit"
                     :items="rowLimitItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </v-card-text>
 

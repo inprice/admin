@@ -110,7 +110,7 @@
             style="cursor: pointer"
             link @click="$router.push({ name: 'product', params: { id: row.id } })"
             v-for="(row) in report.products.extremePrices.LOWEST" :key="row.id">
-            <td>{{ row.name }} {{ row.sku ? '( ' + row.sku + ' )' : '' }}</td>
+            <td>{{ row.name }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
             <td class="text-center">{{ row.actives + '/' + row.total }}</td>
             <td class="text-center">
@@ -157,7 +157,7 @@
             style="cursor: pointer"
             link @click="$router.push({ name: 'product', params: { id: row.id } })"
             v-for="(row) in report.products.extremePrices.HIGHEST" :key="row.id">
-            <td>{{ row.name }} {{ row.sku ? '( ' + row.sku + ' )' : '' }}</td>
+            <td>{{ row.name }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
             <td class="text-center">{{ row.actives + '/' + row.total }}</td>
             <td class="text-center">

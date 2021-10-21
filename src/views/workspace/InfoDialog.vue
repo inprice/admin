@@ -28,8 +28,8 @@
             label="Currency"
             v-model="form.currencyCode"
             :items="currencyNames"
-            :menu-props="{ auto: true, overflowY: true }"
             @change="setCurrencyFormat"
+            :menu-props="{ auto: true, overflowY: true, bottom: true, offsetY: true }"
           />
 
           <v-text-field

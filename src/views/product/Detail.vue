@@ -38,8 +38,7 @@
 
       <div class="d-flex justify-space-between py-3 title">
         <div class="my-auto">
-          <div class="caption teal--text font-weight-medium">{{ data.product.sku }}</div>
-          <div>{{ data.product.name }}</div>
+          {{ data.product.name }}
         </div>
         <div class="text-right">
           <div class="caption teal--text font-weight-medium">{{ data.product.position }}</div>
@@ -51,6 +50,15 @@
 
         <div class="d-flex">
           <v-list dense class="col pa-1">
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption blue--text">SKU</div>
+                <div>{{ data.product.sku || '-' }}</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
             <v-list-item>
               <v-list-item-content>
                 <div class="caption blue--text">Brand</div>
@@ -81,6 +89,17 @@
           </v-list>
 
           <v-list dense class="col pa-1">
+            <v-list-item>
+              <v-list-item-content>
+                <div class="caption blue--text">Suggested Price</div>
+                <div v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</div>
+                <div v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</div>
+                <div v-else-if="!data.product.smartPriceId">Not bound!</div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
             <v-list-item>
               <v-list-item-content>
                 <div class="caption blue--text">Minimum Price</div>
@@ -125,7 +144,7 @@
         <v-btn 
           small
           class="mx-1"
-          color="warning"
+          color="error"
           @click="deleteMultiple"
           :disabled="selected < 1 || $store.get('session/isNotEditor')"
         >

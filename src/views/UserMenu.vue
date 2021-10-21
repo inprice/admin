@@ -18,7 +18,7 @@
           </v-avatar>
         </v-list-item-avatar>
         <div>
-          <v-list-item-title class="subtitle-2">{{ CURSTAT.fullName }}</v-list-item-title>
+          <v-list-item-title class="subtitle-2">{{ CURSTAT.fullName ? CURSTAT.fullName : 'UNKNOWN' }}</v-list-item-title>
           <v-list-item-subtitle>Change your preferences</v-list-item-subtitle>
         </div>
       </v-list-item>
@@ -48,9 +48,12 @@ export default {
   computed: {
     CURSTAT: get('session/getCurrentStatus'),
     initials() {
-      const words = this.CURSTAT.fullName.toUpperCase().split(' ');
-      if (words.length == 1) return words[0][0];
-      return words[0][0]+words[1][0];
+      if (this.CURSTAT.fullName) {
+        const words = this.CURSTAT.fullName.replace(/\s+/g, ' ').trim().toUpperCase().split(' ');
+        if (words.length == 1) return words[0][0];
+        return words[0][0]+words[1][0];
+      }
+      return '?';
     }
   },
 }

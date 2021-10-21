@@ -66,9 +66,10 @@
                   outlined
                   hide-details
                   label="Positions"
+                  class="mb-4"
                   v-model="searchForm.positions"
                   :items="positionItems"
-                  class="mb-4"
+                  :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
                 <v-select
@@ -78,9 +79,10 @@
                   outlined
                   hide-details
                   label="Statuses"
+                  class="mb-4"
                   v-model="searchForm.statuses"
                   :items="statusItems"
-                  class="mb-4"
+                  :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
                 <div class="d-flex justify-space-around mb-4">
@@ -92,6 +94,7 @@
                     label="Order By"
                     v-model="searchForm.orderBy"
                     :items="orderByItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -102,6 +105,7 @@
                     label="Order Dir"
                     v-model="searchForm.orderDir"
                     :items="orderDirItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
 
@@ -114,6 +118,7 @@
                     label="Alarm ?"
                     v-model="searchForm.alarmStatus"
                     :items="alarmItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
                   <v-select
@@ -124,6 +129,7 @@
                     label="Row Limit"
                     v-model="searchForm.rowLimit"
                     :items="rowLimitItems"
+                    :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
               </v-card-text>

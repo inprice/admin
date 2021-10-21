@@ -35,9 +35,9 @@ Vue.mixin({
       switch (position) {
         case 'EQUAL': return 'blue';
         case 'LOWEST': return 'green';
-        case 'LOWER': return 'darkcyan';
+        case 'LOWER': return '#48D1CC';
         case 'AVERAGE': return 'primary';
-        case 'HIGHER': return 'pink';
+        case 'HIGHER': return '#FF6347';
         case 'HIGHEST': return 'red';
       }
     },
@@ -83,6 +83,9 @@ Vue.mixin({
         return name.toLowerCase().replaceAll('_', ' ');
       }
       return name;
+    },
+    isNumeric(value) {
+      return /^-?\d+$/.test(value);
     }
   },
 })

@@ -38,7 +38,7 @@
                 class="mr-1"
                 :loading="loading.reject" 
                 @click="reject(row.id, row.name)"
-                :disabled="loading.reject || $store.get('session/isSuperUser')"
+                :disabled="loading.reject || $store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
               >
                 Reject
               </v-btn>
@@ -48,7 +48,7 @@
                 color="success"
                 :loading="loading.accept" 
                 @click="accept(row.id)"
-                :disabled="loading.accept || $store.get('session/isSuperUser')"
+                :disabled="loading.accept || $store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
               >
                 Accept
               </v-btn>

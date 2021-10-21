@@ -110,7 +110,7 @@ export default {
     }
   },
   components: {
-    WorkspaceInfoDialog: () => import('./workspace/Info.vue'),
+    WorkspaceInfoDialog: () => import('./workspace/InfoDialog.vue'),
   }
 }
 </script>

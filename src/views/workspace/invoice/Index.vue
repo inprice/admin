@@ -70,19 +70,30 @@
       
       <v-divider></v-divider>
 
-      <v-card-text v-if="info.title" class="pt-3 ml-5">
-        <div class="subtitle">{{ info.contactName }}</div>
-        <div class="title">{{ info.title }}</div>
-        <v-divider class="mt-2 pb-1 col-sm-12 col-md-6"></v-divider>
-        <div class="font-weight-bold">Invoice Address</div>
-        <div>{{ info.address1 }}</div>
-        <div>{{ info.address2 }}</div>
-        <div class="mt-1">
-          <span class="mr-2" v-if="info.postcode">{{ info.postcode }},</span>
-          <span class="mr-2" v-if="info.city">{{ info.city }} -</span>
-          <span class="mr-2" v-if="info.state">{{ info.state }} /</span>
-          <span>{{ info.country }}</span>
-        </div>
+      <v-card-text v-if="info.title" class="pt-3">
+        <table class="desc-table">
+          <tr>
+            <th>Company</th>
+            <td>{{ info.title }}</td>
+          </tr>
+          <tr>
+            <th>Contact</th>
+            <td>{{ info.contactName }}</td>
+          </tr>
+          <tr>
+            <th>Address</th>
+            <td>
+              <div>{{ info.address1 }}</div>
+              <div>{{ info.address2 }}</div>
+              <div>
+                <span class="mr-2" v-if="info.postcode">{{ info.postcode }},</span>
+                <span class="mr-2" v-if="info.city">{{ info.city }} -</span>
+                <span class="mr-2" v-if="info.state">{{ info.state }} /</span>
+                <span>{{ info.country }}</span>
+              </div>
+            </td>
+          </tr>
+        </table>
       </v-card-text>
 
       <v-card-text v-else class="pt-3">
@@ -132,7 +143,11 @@ export default {
       info: {},
       transactions: [],
       invoices: [],
-      countries
+      countries,
+      loading: {
+        overlay: false,
+        tryFreeUse: false,
+      },
     };
   },
   methods: {

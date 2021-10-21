@@ -33,7 +33,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Delete Alarm', { method: 'delete', url: baseURL + '/' + id });
+    const res = await Helper.call('Delete Brand', { method: 'delete', url: baseURL + '/' + id });
     return res;
   },
 
