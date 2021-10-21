@@ -137,6 +137,11 @@ const router = new VueRouter({
       },
       children: [
         {
+          name: 'welcome',
+          path: 'welcome',
+          component: () => import('./views/dashboard/Welcome.vue')
+        },
+        {
           name: 'dashboard',
           path: 'dashboard',
           component: () => import('./views/dashboard/Index.vue')
