@@ -16,6 +16,12 @@ const BOOLEANS = [
   { text: 'False', value: 'FALSE' },
 ];
 
+const REPORT_UNITS = [
+  { text: 'Pdf', value: 'Pdf' },
+  { text: 'Csv', value: 'Csv' },
+  { text: 'Excel', value: 'Excel' },
+];
+
 const POSITIONS = [
   { text: 'Lowest', value: 'LOWEST' }, 
   { text: 'Highest', value: 'HIGHEST' }, 
@@ -97,7 +103,8 @@ export default {
   LIMITS,
   BOOLEANS,
   ROW_LIMITS,
-
+  REPORT_UNITS,
+ 
   POSITIONS,
   ORDERING,
   LINK_STATUSES,

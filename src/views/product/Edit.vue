@@ -48,6 +48,17 @@
             maxlength="10"
           ></v-text-field>
 
+          <v-text-field
+            dense
+            outlined
+            label="Base Price"
+            v-model="form.basePrice"
+            :rules="rules.basePrice"
+            @blur="formatPrice"
+            type="number"
+            maxlength="10"
+          ></v-text-field>
+
           <v-select
             dense
             outlined
@@ -58,6 +69,7 @@
             item-text="name"
             item-value="id"
             :menu-props="{ bottom: true, offsetY: true }"
+            hide-no-data
           ></v-select>
 
           <v-combobox
@@ -135,6 +147,7 @@ export default {
         sku: '',
         name: '',
         price: 0,
+        basePrice: 0,
         smartPriceId: null,
         brand: null,
         category: null,
@@ -155,11 +168,13 @@ export default {
         this.form.sku = data.sku;
         this.form.name = data.name;
         this.form.price = data.price;
+        this.form.basePrice = data.basePrice;
       } else {
         delete this.form.id;
         this.form.sku = '';
         this.form.name = '';
-        this.form.price = 0;  
+        this.form.price = 0;
+        this.form.basePrice = 0;
       }
 
       let self = this;
@@ -211,6 +226,7 @@ export default {
       await this.$refs.form.validate();
       if (this.valid) {
         this.form.price = parseFloat(this.form.price);
+        this.form.basePrice = parseFloat(this.form.basePrice);
         this.$emit('saved', this.form);
       }
     },
@@ -231,7 +247,10 @@ export default {
           v => (!v || (v.length <= 128)) || "Can be up to 128 chars"
         ],
         price: [
-          v => (!v || parseFloat(v) > -1) || "Price must be greater or equal than 0"
+          v => (!v || parseFloat(v) > -1) || "Price must be equal or greater than 0"
+        ],
+        basePrice: [
+          v => (!v || parseFloat(v) > -1) || "Base Price must be equal or greater than 0"
         ],
         brand: [
           v => (!v || (v.name && v.name.length >= 2 && v.name.length <= 50)) || "If given, must be between 2-50 chars"
@@ -243,6 +262,7 @@ export default {
     },
     formatPrice() {
       this.form.price = parseFloat(('0' + this.form.price).replace(/[^\d.]/g, '')).toFixed(2);
+      this.form.basePrice = parseFloat(('0' + this.form.basePrice).replace(/[^\d.]/g, '')).toFixed(2);
     }
   },
   watch: {

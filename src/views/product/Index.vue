@@ -246,9 +246,10 @@ import SystemData from '@/data/system';
 
 const ORDER_ITEMS = [
   { text: 'Name', value: 'NAME' },
+  { text: 'Price', value: 'PRICE' },
   { text: 'Sku', value: 'SKU' },
   { text: 'Brand', value: 'BRAND' },
-  { text: 'Category', value: 'CATEGORY' }
+  { text: 'Category', value: 'CATEGORY' },
 ];
 
 const baseSearchForm = {

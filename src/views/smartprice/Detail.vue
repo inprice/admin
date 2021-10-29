@@ -119,7 +119,7 @@
             </thead>
             <tr v-for="(price, index) in instantPrices" :key="index">
               <th class="large-th text-center">{{ price }}</th>
-              <td><i>&#36;{{ testResults[index].value | toPrice }}</i></td>
+              <td style="color: darkgreen; font-weight: 500"><i>&#36;{{ testResults[index].value | toPrice }}</i></td>
               <td class="hidden-xs-only"><i>&#36;{{ testResults[index].lowerLimit | toPrice }}</i></td>
               <td class="hidden-xs-only"><i>&#36;{{ testResults[index].upperLimit | toPrice }}</i></td>
             </tr>
@@ -138,12 +138,12 @@
     </v-card>
 
     <div class="mt-5">
-      <p class="title">
+      <div class="title">
         The formulas
-      </p>
-      <p>
-        Formulas can also be constant values, such as 250.10 or 1.25 
-      </p>
+      </div>
+      <div class="body-2 mb-3">
+        Formulas can also be constant values, such as 250.10 or 60.25
+      </div>
 
       <table class="var-table">
         <tr>
@@ -165,7 +165,7 @@
       <div class="title">
         The factors
       </div>
-      <div class="body-2 mb-5">
+      <div class="body-2 mb-3">
         To make your formulas dynamic, you need to design them with the following variables.
       </div>
 
@@ -173,6 +173,10 @@
         <tr>
           <th>p</th>
           <td>Represents <i>Your Product Price</i></td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td><i>Product Base Price</i></td>
         </tr>
         <tr>
           <th>i</th>
@@ -193,7 +197,7 @@
       <div class="title">
         Operators
       </div>
-      <div class="body-2 mb-5">
+      <div class="body-2 mb-3">
         How to use math operators
       </div>
 
@@ -223,7 +227,7 @@
       <div class="title">
         Built-in functions
       </div>
-      <div class="body-2 mb-5">
+      <div class="body-2 mb-3">
         With the help of the following functions you can crate more dynamic formulas
       </div>
 
@@ -264,7 +268,7 @@
           <td>Half of the Average.</td>
         </tr>
         <tr>
-          <td class="formula-col">p + (i % 3)</td>
+          <td class="formula-col">b + (i % 3)</td>
           <td>The Price plus remainder of dividing the Minimum by three.</td>
         </tr>
         <tr>
@@ -272,19 +276,19 @@
           <td>Ten percent more of the Price plus 75 cents.</td>
         </tr>
         <tr>
-          <td class="formula-col">(x+i+p)/2.13</td>
-          <td>The sum of the Minimum, Maximum and the Price then divided by 2.13.</td>
+          <td class="formula-col">(b+i+x)/2.13</td>
+          <td>The sum of the Minimum, Maximum and the Price then divided it by 2.13.</td>
         </tr>
         <tr>
           <td class="formula-col">min(p*1.25, x/2)</td>
           <td>Whichever is less, twenty-five percent more of the Price OR half of the Maximum.</td>
         </tr>
         <tr>
-          <td class="formula-col">max(p*1.25, x/2)</td>
+          <td class="formula-col">max(b*1.25, x/2)</td>
           <td>Whichever is more, twenty-five percent more of the Price OR half of the Maximum.</td>
         </tr>
         <tr>
-          <td class="formula-col">abs((p*1.25) - (x/2))</td>
+          <td class="formula-col">abs((b*1.25) - (x/2))</td>
           <td>The positive value of that the subtraction of half the Maximum from twenty-five percent more than the Price.</td>
         </tr>
       </table>
@@ -313,11 +317,11 @@
           <td>Unknown function or variable 'z'</td>
         </tr>
         <tr>
-          <td class="formula-col">(p*1.25</td>
+          <td class="formula-col">(b*1.25</td>
           <td>Parentheses problem!</td>
         </tr>
         <tr>
-          <td class="formula-col">p-(p*2)</td>
+          <td class="formula-col">b-(b*2)</td>
           <td>Negative value problem!</td>
         </tr>
       </table>
@@ -459,8 +463,7 @@ export default {
   .var-table th {
     background-color: #fafafa;
     color: rgba(0,0,0,.85);
-    font-weight: 600;
-    font-style: italic;
+    font-weight: 500;
     width: 120px;
   }
 
@@ -469,7 +472,6 @@ export default {
   }
 
   .large-th {
-    font-style: normal !important;
     font-weight: 500 !important;
     text-align: left;
   }
