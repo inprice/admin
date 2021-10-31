@@ -148,6 +148,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item link :to="{name: 'link-reports'}">
+          <v-list-item-action>
+            <v-icon>mdi-file-chart-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Link Reports</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-divider inset></v-divider>
 
         <v-list-item :to="{name: 'workspace-settings'}" :disabled="$store.get('session/isNotAdmin')">
