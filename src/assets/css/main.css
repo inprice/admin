@@ -51,6 +51,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  vertical-align: middle;
 }
 .info-table th {
   text-align: start;

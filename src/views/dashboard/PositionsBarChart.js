@@ -5,7 +5,7 @@ export default {
   props: ['series'],
   mounted() {
     this.renderChart({
-      labels: ['LOWEST','HIGHEST','LOWER','AVERAGE','HIGHER','EQUAL','UNKNOWN'],
+      labels: ['Lowest','Lower','Equal','Average','Higher','Highest','NotSet'],
       datasets: [
         {
           backgroundColor: [

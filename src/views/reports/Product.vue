@@ -31,6 +31,15 @@
           :menu-props="{ bottom: true, offsetY: true }"
         ></v-select>
 
+        <v-text-field
+          dense
+          outlined
+          label="Sku"
+          v-model="form.sku"
+          type="text"
+          maxlength="50"
+        />
+
         <v-select
           dense
           small-chips
@@ -119,6 +128,7 @@ const GROUPS = [
 ];
 
 const REPORTS_TYPES = [
+  { text: 'Links Report', value: 'Product_Links', fileName: 'ProductLinks' },
   { text: 'Prices Report', value: 'Product_Prices', fileName: 'ProductPrices' },
   { text: 'Groups Report', value: 'Product_Groups', fileName: 'ProductGroups' },
 ];
@@ -129,6 +139,7 @@ export default {
       form: {
         selectedReport: null,
         group: GROUPS[0].value,
+        sku: null,
         positions: [],
         brandId: null,
         categoryId: null,

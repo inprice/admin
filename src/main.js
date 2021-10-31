@@ -33,12 +33,12 @@ Vue.mixin({
   methods: {
     findPositionColor(position) {
       switch (position) {
-        case 'EQUAL': return 'blue';
-        case 'LOWEST': return 'green';
-        case 'LOWER': return '#48D1CC';
-        case 'AVERAGE': return 'primary';
-        case 'HIGHER': return '#FF6347';
-        case 'HIGHEST': return 'red';
+        case 'Lowest': return 'green';
+        case 'Lower': return '#48D1CC';
+        case 'Equal': return 'blue';
+        case 'Average': return 'primary';
+        case 'Higher': return '#FF6347';
+        case 'Highest': return 'red';
       }
     },
     findDiffColor(diffAmount) {

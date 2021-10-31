@@ -176,9 +176,10 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th width="7%" class="hidden-sm-and-down">Brand</th>
-            <th width="7%" class="hidden-sm-and-down">Category</th>
-            <th width="10%" class="text-right">Price</th>
+            <th width="12%" class="hidden-sm-and-down">Brand</th>
+            <th width="12%" class="hidden-sm-and-down">Category</th>
+            <th width="10%" class="text-right pr-8">Price</th>
+            <th width="10%" class="hidden-sm-and-down">Position</th>
           </tr>
         </thead>
         <tbody>
@@ -207,6 +208,7 @@
                 </v-icon>
               </div>
             </td>
+            <td class="hidden-sm-and-down">{{ row.position }}</td>
           </tr>
         </tbody>
       </table>
