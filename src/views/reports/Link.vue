@@ -123,6 +123,7 @@ import ApiService from '@/service/api';
 import SystemData from '@/data/system';
 
 const REPORTS_TYPES = [
+  { text: 'Prices Report', value: 'Link_Prices', fileName: 'LinkPrices' },
   { text: 'Status Report', value: 'Link_Status', fileName: 'LinkStatus' },
 ];
 

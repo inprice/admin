@@ -69,7 +69,7 @@
             item-text="name"
             item-value="id"
             :menu-props="{ bottom: true, offsetY: true }"
-            hide-no-data
+            :return-object="false"
           ></v-select>
 
           <v-combobox
@@ -81,6 +81,7 @@
             :rules="rules.brand"
             :items="brandItems"
             item-text="name"
+            item-value="id"
             :search-input.sync="newBrandName"
             hide-no-data
           >

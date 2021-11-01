@@ -255,7 +255,7 @@
 
     <div class="my-5">
       <div class="title">
-        Good formulas
+        Good formula examples
       </div>
 
       <table class="var-table mt-2">
@@ -296,7 +296,7 @@
 
     <div class="my-5">
       <div class="title">
-        Bad formulas
+        Bad formula examples
       </div>
 
       <table class="var-table mt-2">
