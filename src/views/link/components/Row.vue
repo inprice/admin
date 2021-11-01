@@ -51,7 +51,7 @@
             outlined
             :color="findPositionColor(row.position)"
             class="mr-1 px-1"
-            v-if="row.position != 'UNKNOWN'" 
+            v-if="row.position != 'NotSet'" 
           >
             {{ row.position }}
           </v-chip>
@@ -77,7 +77,7 @@
           v-if="!row.price"
           class="caption text-right d-inline">
             <span>{{ row.grup != 'WAITING' ? 'Checked' : 'Added' }}</span>
-            <ago :class="{ 'd-inline' : fromSearchPage || row.position == 'UNKNOWN' }" :date="(row.checkedAt || row.createdAt)" />
+            <ago :class="{ 'd-inline' : fromSearchPage || row.position == 'NotSet' }" :date="(row.checkedAt || row.createdAt)" />
         </div>
       </div>
 

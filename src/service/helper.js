@@ -13,9 +13,19 @@ function logoutCheck(reason, manualErrorHandling) {
 export default {
 
   toQueryString(form) {
+    /*
     return '?' + Object.keys(form).map((key) => {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(form[key])
+      if (form[key]) return encodeURIComponent(key) + '=' + encodeURIComponent(form[key]);
     }).join('&');    
+    */
+    return '?' + Object.entries(form).reduce((acc,[key,val])=>{
+        if(Array.isArray(val)){
+          val.forEach(e=>acc += (acc ? "&": "") + key + "=" + e);
+        } else if (val) {
+          acc += (acc ? "&": "") + key + "=" + val;
+        }
+        return acc;
+    }, "");
   },
 
   async call(caller, req, manualErrorHandling) {

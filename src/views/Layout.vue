@@ -139,12 +139,21 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item disabled>
+        <v-list-item link :to="{name: 'product-reports'}">
           <v-list-item-action>
             <v-icon>mdi-chart-box-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Reports</v-list-item-title>
+            <v-list-item-title>Product Reports</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link :to="{name: 'link-reports'}">
+          <v-list-item-action>
+            <v-icon>mdi-file-chart-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Link Reports</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

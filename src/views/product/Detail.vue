@@ -105,8 +105,8 @@
                 <div class="caption blue--text">Minimum Price</div>
                 <div>
                   <span>{{ data.product.minPrice | toPrice }}</span>
-                  <span class="caption mx-1" v-if="data.product.minSeller && data.product.minSeller != 'UNKNOWN'">by {{ data.product.minSeller }}</span>
-                  <span class="caption" v-if="data.product.minSeller != data.product.minPlatform">on {{ data.product.minPlatform }}</span>
+                  <span class="caption mx-1" v-if="data.product.minSeller && data.product.minSeller != 'NA'">by {{ data.product.minSeller }}</span>
+                  <span class="caption" v-if="data.product.minSeller != data.product.minPlatform && data.product.minSeller != 'You'">on {{ data.product.minPlatform }}</span>
                 </div>
               </v-list-item-content>
             </v-list-item>
@@ -127,8 +127,8 @@
                 <div class="caption blue--text">Maximum Price</div>
                 <div>
                   <span>{{ data.product.maxPrice | toPrice }}</span>
-                  <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'UNKNOWN'">by {{ data.product.maxSeller }}</span>
-                  <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform">on {{ data.product.maxPlatform }}</span>
+                  <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'NA'">by {{ data.product.maxSeller }}</span>
+                  <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform && data.product.maxSeller != 'You'">on {{ data.product.maxPlatform }}</span>
                 </div>
               </v-list-item-content>
             </v-list-item>

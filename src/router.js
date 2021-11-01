@@ -230,6 +230,16 @@ const router = new VueRouter({
           },
         },
         {
+          name: 'product-reports',
+          path: 'product-reports',
+          component: () => import('./views/reports/Product.vue')
+        },
+        {
+          name: 'link-reports',
+          path: 'link-reports',
+          component: () => import('./views/reports/Link.vue')
+        },
+        {
           name: 'payment-ok',
           path: 'payment-ok/:hash',
           component: () => import('./views/app/PaymentOK'),

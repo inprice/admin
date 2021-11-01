@@ -16,14 +16,20 @@ const BOOLEANS = [
   { text: 'False', value: 'FALSE' },
 ];
 
+const REPORT_UNITS = [
+  { text: 'Pdf', value: 'Pdf' },
+  { text: 'Csv', value: 'Csv' },
+  { text: 'Excel', value: 'Excel' },
+];
+
 const POSITIONS = [
-  { text: 'Lowest', value: 'LOWEST' }, 
-  { text: 'Highest', value: 'HIGHEST' }, 
-  { text: 'Lower', value: 'LOWER' },
-  { text: 'Average', value: 'AVERAGE' },
-  { text: 'Higher', value: 'HIGHER' },
-  { text: 'Equal', value: 'EQUAL' },
-  { text: 'Unknown', value: 'UNKNOWN' }
+  { text: 'Lowest', value: 'Lowest' }, 
+  { text: 'Highest', value: 'Highest' }, 
+  { text: 'Lower', value: 'Lower' },
+  { text: 'Average', value: 'Average' },
+  { text: 'Higher', value: 'Higher' },
+  { text: 'Equal', value: 'Equal' },
+  { text: 'Not Set', value: 'NotSet' }
 ];
 
 const LINK_STATUSES = [
@@ -97,7 +103,8 @@ export default {
   LIMITS,
   BOOLEANS,
   ROW_LIMITS,
-
+  REPORT_UNITS,
+ 
   POSITIONS,
   ORDERING,
   LINK_STATUSES,

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import store from '../store'
+import Helper from './helper';
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -39,6 +41,49 @@ export default {
   customRequest(data) {
     this.setSessionNo();
     return axios(data);
+  },
+
+  downloadReport(req) {
+    let type = 'application/pdf';
+    if (req.form.reportUnit == 'Excel')
+      type = 'application/vnd.ms-excel';
+    else if (req.form.reportUnit == 'Csv')
+      type = 'text/csv';
+
+    return axios.get(req.url + Helper.toQueryString(req.form), { responseType: 'blob' })
+      .then(res => {
+        if (res && res.status == 200) {
+          const blob = new Blob([res.data], { type });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = req.fileName;
+          link.click();
+          URL.revokeObjectURL(link.href);
+        } else {
+          store.commit('snackbar/setMessage', { text: res.data.reason, level: 'error' });
+        }
+      }).catch(async (err) => {
+        if (err.response) {
+          let errorJSON = err.response.data;
+          if (
+              err.request.responseType === 'blob' &&
+              err.response.data instanceof Blob &&
+              err.response.data.type &&
+              err.response.data.type.toLowerCase().indexOf('json') != -1
+          ) {
+            errorJSON = JSON.parse(await err.response.data.text());
+          }
+          store.commit('snackbar/setMessage', 
+            { 
+              text: (errorJSON.reason || errorJSON.message), 
+              color: (errorJSON.reason ? 'warning' : 'error'), 
+              timeout: 2100
+            }
+          );
+        } else {
+          store.commit('snackbar/setMessage', { text: err.message, level: 'error' });
+        }
+      });
   }
 
 };
