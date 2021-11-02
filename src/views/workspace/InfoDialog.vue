@@ -128,7 +128,7 @@ export default {
         ],
         currencyFormat: [
           v => v.length >= 3 && v.length <= 16 || "Must be between 3-16 chars",
-          v => ((v.match(/#/g)||[]).length == 3) || "Invalid format"
+          v => ((v.match(/#/g)||[]).length == 3) || "Invalid format. Must be like $#,##.00"
         ],
       }
     },

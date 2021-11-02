@@ -79,7 +79,7 @@ export default {
       this.rules = {
         text: [
           v => !!v || "Required",
-          v => (v && v.length >= 5 && v.length <= 128) || "Reason must be between 5-128 chars"
+          v => (v && v.length >= 5 && v.length <= 128) || "Must be between 5-128 chars"
         ],
       }
     },

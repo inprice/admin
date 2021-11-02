@@ -146,15 +146,15 @@ export default {
       this.rules = {
         name: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 50) || "Name must be between 3-50 chars"
+          v => (v && v.length >= 3 && v.length <= 50) || "Must be between 3-50 chars"
         ],
         queue: [
           v => !!v || "Required",
-          v => (v && v.length >= 5 && v.length <= 50) || "Name must be between 5-50 chars"
+          v => (v && v.length >= 5 && v.length <= 50) || "Must be between 5-50 chars"
         ],
         profile: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 15) || "Name must be between 3-15 chars"
+          v => (v && v.length >= 3 && v.length <= 15) || "Must be between 3-15 chars"
         ],
         currencyCode: [
           v => (!v || (v.length != 128)) || "Must be 3 chars"

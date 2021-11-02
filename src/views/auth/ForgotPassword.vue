@@ -91,9 +91,9 @@ export default {
     activateRules() {
       this.rules = {
         email: [
-          v => !!v || "E-mail required",
-          v => (v.length >= 9 && v.length <= 100) || "Email must be between 9-100 chars",
-          v => Utility.verifyEmail(v) || "E-mail must be valid"
+          v => !!v || "Required",
+          v => (v && v.length >= 9 && v.length <= 100) || "Must be between 9-100 chars",
+          v => Utility.verifyEmail(v) || "Must be a valid email address"
         ],
       }
     }

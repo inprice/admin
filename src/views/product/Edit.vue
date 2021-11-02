@@ -238,20 +238,19 @@ export default {
     activateRules() {
       this.rules = {
         sku: [
-          v => (!v || (v.length >= 2 && v.length <= 50)) || "If given, must be between 2-50 chars"
+          v => !!v || "Required",
+          v => (v && v.length >= 3 && v.length <= 50) || "Must be between 3-50 chars"
         ],
         name: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 250) || "Name must be between 3-250 chars"
-        ],
-        description: [
-          v => (!v || (v.length <= 128)) || "Can be up to 128 chars"
+          v => (v && v.length >= 3 && v.length <= 250) || "Must be between 3-250 chars"
         ],
         price: [
-          v => (!v || parseFloat(v) > -1) || "Price must be equal or greater than 0"
+          v => !!v || "Required",
+          v => (parseFloat(v) > 0) || "Must be greater than 0"
         ],
         basePrice: [
-          v => (!v || parseFloat(v) > -1) || "Base Price must be equal or greater than 0"
+          v => (!v || parseFloat(v) > -1) || "Must be equal or greater than 0"
         ],
         brand: [
           v => (!v || (v.name && v.name.length >= 2 && v.name.length <= 50)) || "If given, must be between 2-50 chars"

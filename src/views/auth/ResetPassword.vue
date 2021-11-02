@@ -101,8 +101,8 @@ export default {
     activateRules() {
       this.rules = {
         password: [
-          v => !!v || "Password required",
-          v => (v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
+          v => !!v || "Required",
+          v => (v && v.length >= 6 && v.length <= 16) || "Must be between 6-16 chars",
         ],
         repeatPassword: [
           v => !!v || "Repeat Password required",

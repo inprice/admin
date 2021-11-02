@@ -121,17 +121,17 @@ export default {
     activateRules() {
       this.rules = {
         oldPassword: [
-          v => !!v || "Old password required",
-          v => (v && v.length >= 6 && v.length <= 16) || "Old password must be between 6-16 chars",
+          v => !!v || "Required",
+          v => (v && v.length >= 6 && v.length <= 16) || "Must be between 6-16 chars",
         ],
         password: [
-          v => !!v || "New password required",
-          v => (v && v.length >= 6 && v.length <= 16) || "New password must be between 6-16 chars",
+          v => !!v || "Required",
+          v => (v && v.length >= 6 && v.length <= 16) || "Must be between 6-16 chars",
           v => (v && v != this.form.oldPassword) || "Old and New passwords must be different",
         ],
         repeatPassword: [
-          v => !!v || "Repeat Password required",
-          v => (v && v.length >= 6 && v.length <= 16) || "Repeat password must be between 6-16 chars",
+          v => !!v || "Required",
+          v => (v && v.length >= 6 && v.length <= 16) || "Must be between 6-16 chars",
           v => (v && v == this.form.password) || "Passwords must be the same"
         ],
       }

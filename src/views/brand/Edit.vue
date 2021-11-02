@@ -81,7 +81,7 @@ export default {
       this.rules = {
         value: [
           v => !!v || "Required",
-          v => (v && v.length >= 2 && v.length <= 50) || "Name must be between 2-50 chars"
+          v => (v && v.length >= 2 && v.length <= 50) || "Must be between 2-50 chars"
         ],
       }
     },

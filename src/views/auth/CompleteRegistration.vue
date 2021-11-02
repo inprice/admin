@@ -86,7 +86,7 @@ export default {
       this.rules = {
         code: [
           v => !!v || "Required",
-          v => (v.length == 7) || "Must be 6 chars"
+          v => (v && v.length == 7) || "Must be at least 6 chars"
         ],
       }
     }

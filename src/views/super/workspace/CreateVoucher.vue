@@ -127,7 +127,7 @@ export default {
         ],
         days: [
           v => !!v || "Required",
-          v => (parseInt(v) >= 14 && parseInt(v) <= 365) || "Days must be between 14-365"
+          v => (parseInt(v) >= 14 && parseInt(v) <= 365) || "Must be between 14-365"
         ],
         description: [
           v => (!v || (v.length >= 3 && v.length <= 128)) || "If given, must be between 3-128 chars"

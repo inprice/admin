@@ -130,26 +130,26 @@ export default {
     activateRules() {
       this.rules = {
         fullName: [
-          v => !!v || "Your full name required",
-          v => (v.length >= 3 && v.length <= 70) || "Your full name must be between 3-70 chars"
+          v => !!v || "Required",
+          v => (v && v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
         ],
         email: [
-          v => !!v || "E-mail required",
-          v => (v.length >= 9 && v.length <= 100) || "Email must be between 9-100 chars",
-          v => Utility.verifyEmail(v) || "E-mail must be valid"
+          v => !!v || "Required",
+          v => (v && v.length >= 9 && v.length <= 100) || "Must be between 9-100 chars",
+          v => Utility.verifyEmail(v) || "Must be a valid email address"
         ],
         workspaceName: [
-          v => !!v || "Company name required",
-          v => (v.length >= 3 && v.length <= 70) || "Company name must be between 3-70 chars"
+          v => !!v || "Required",
+          v => (v && v.length >= 3 && v.length <= 70) || "Must be between 3-70 chars"
         ],
         password: [
-          v => !!v || "Password required",
-          v => (v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
+          v => !!v || "Required",
+          v => (v && v.length >= 6 && v.length <= 16) || "Must be between 6-16 chars",
         ],
         repeatPassword: [
-          v => !!v || "Repeat Password required",
-          v => v === this.form.password || "Passwords must be the same"
-        ]
+          v => !!v || "Required",
+          v => (v == this.form.password) || "Passwords must be the same"
+        ],
       }
     }
   },

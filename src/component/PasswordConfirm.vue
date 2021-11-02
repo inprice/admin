@@ -75,7 +75,7 @@ export default {
       this.rules = {
         password: [
           v => !!v || "Required",
-          v => (v && v.length >= 6 && v.length <= 16) || "Password must be between 6-16 chars",
+          v => (v && v.length >= 6 && v.length <= 16) || "Must be between 6-16 chars",
         ],
       }
     },

@@ -186,7 +186,7 @@ export default {
       this.rules = {
         title: [
           v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3 - 255 chars"
+          v => (v && v.length >= 3 && v.length <= 255) || "Must be between 3-255 chars"
         ],
         contactName: [
           v => (!v || (v.length <= 70)) || "Can be up to 50 chars"
@@ -209,7 +209,7 @@ export default {
         ],
         city: [
           v => !!v || "Required",
-          v => (v && v.length >= 2 && v.length <= 50) || "Must be between 2 - 50 chars"
+          v => (v && v.length >= 2 && v.length <= 50) || "Must be between 2-50 chars"
         ],
         state: [
           v => (!v || v.length <= 50) || "Can be up to 50 chars"

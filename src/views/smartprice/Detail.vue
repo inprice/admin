@@ -413,11 +413,11 @@ export default {
       this.rules = {
         name: [
           v => !!v || "Required",
-          v => (v && v.length <= 255) || "Name must be less than 255 chars"
+          v => (v && v.length <= 255) || "Must be less than 255 chars"
         ],
         formula: [
           v => !!v || "Required",
-          v => (v && v.length <= 255) || "Name must be less than 255 chars"
+          v => (v && v.length <= 255) || "Must be less than 255 chars"
         ],
         lowerLimitFormula: [
           v => (!v || v.length <= 255) || "If given, must be less than 255 chars"
