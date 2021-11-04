@@ -1,70 +1,40 @@
 <template>
   <div class="mt-3">
-    <div>
-      <v-file-input
-        dense
-        counter
-        outlined
-        v-model="file"
-        placeholder="Click here to load your file"
-        prepend-icon=""
-        accept="text/csv"
-        :show-size="1000"
-        @click:clear="clear"
-        :disabled="loading"
-      >
-        <template v-slot:selection="{ index, text }">
-          <v-chip
-            dark
-            label
-            small
-            v-if="index < 2"
-          >
-            {{ text }}
-          </v-chip>
-          <span
-            v-else-if="index === 2"
-            class="text-overline grey--text text--darken-3 mx-2"
-          >
-            +{{ file.length - 2 }} File
-          </span>
-        </template>
-      </v-file-input>
-    </div>
 
-    <div v-show="result == null" class="mt-2">Specific rules</div>
-    <div v-show="result == null" class="ml-4 my-2 body-2">
-      - <span class="text-capitalize">{{ entityName }}</span> names cannot be shorter than 2 or longer than 50 chars
-    </div>
-
-    <div :class="{'mt-5' : !result }">Result</div>
-    <v-card class="my-3" v-if="result">
-      <table class="property-table">
-        <tr v-if="result.total != null">
-          <th width="10%">Total</th>
-          <td>{{ result.total }}</td>
-        </tr>
-        <tr v-if="result.successCount != null">
-          <th width="10%">Added</th>
-          <td>{{ generateAddedStatement(result) }}</td>
-        </tr>
-        <tr>
-          <th width="10%">Problems</th>
-          <td>
-            <div v-for="(problem, index) in result.problems" :key="index">{{ problem }}</div>
-          </td>
-        </tr>
-      </table>
-    </v-card>
-
-    <block-message 
-      class="my-3"
-      v-if="!result"
+    <div>File</div>
+    <v-file-input
+      dense
+      counter
+      outlined
+      class="mt-2"
+      v-model="file"
+      placeholder="Click here to load your file"
+      prepend-icon=""
+      accept="text/csv"
+      :show-size="1000"
+      @click:clear="clear"
+      :disabled="loading"
       :loading="loading"
-      :message="loading ? 'Loading, please wait...' : 'This area will be refreshed after your upload operation completed.'"
-    />
+    >
+      <template v-slot:selection="{ index, text }">
+        <v-chip
+          dark
+          label
+          small
+          v-if="index < 2"
+        >
+          {{ text }}
+        </v-chip>
+        <span
+          v-else-if="index === 2"
+          class="text-overline grey--text text--darken-3 mx-2"
+        >
+          +{{ file.length - 2 }} File
+        </span>
+      </template>
+    </v-file-input>
 
-    <div class="d-flex justify-end mt-5">
+    <div class="d-flex justify-end mt-4">
       <v-btn 
         small
         class="mr-1"
@@ -82,6 +52,63 @@
       >
         Upload
       </v-btn>
+    </div>
+
+    <div v-if="result != null" class="mt-2">
+      <div>Result</div>
+      <v-card>
+        <table class="property-table">
+          <tr v-if="result.total != null">
+            <th width="10%">Total</th>
+            <td>{{ result.total }}</td>
+          </tr>
+          <tr v-if="result.successCount != null">
+            <th width="10%">Added</th>
+            <td>{{ generateAddedStatement(result) }}</td>
+          </tr>
+          <tr>
+            <th width="10%">Problems</th>
+            <td>
+              <div v-for="(problem, index) in result.problems" :key="index">{{ problem }}</div>
+            </td>
+          </tr>
+        </table>
+      </v-card>
+    </div>
+
+    <div v-if="result == null" class="mt-2">
+      <div>Specific rules</div>
+      <v-card class="mt-2" tile>
+        <v-card-text>
+          <ul>
+            <li>Each row must have only one column: Name</li>
+            <li><span class="text-capitalize">{{ entityName }}</span> names cannot be shorter than 2 or longer than 50 chars</li>
+          </ul>
+        </v-card-text>
+      </v-card>
+    </div>
+
+    <div v-if="result == null" class="d-flex mt-5">
+      <div class="col pl-0">
+        <div>Good example</div>
+        <v-card class="mt-2" tile>
+          <v-card-text>
+            <div>APPLE</div>
+            <div>SONY</div>
+            <div>SAMSUNG</div>
+          </v-card-text>
+        </v-card>
+      </div>
+      <div class="col pr-0">
+        <div>Bad example</div>
+        <v-card class="mt-2" tile>
+          <v-card-text>
+            <div>A</div>
+            <div>AB</div>
+            <div>A BRAND NAME WITH MORE THAN 50 CHARS</div>
+          </v-card-text>
+        </v-card>
+      </div>
     </div>
   </div>
 </template>
@@ -105,9 +132,8 @@ export default {
       this.result = null;
       ApiService.uploadFile({
         file: this.file,
-        url: `/exim/${this.entityName}/import`
+        url: `/exim/${this.entityName}/upload`
       }).then(res => {
-        console.log(res);
         if (res && res.data.status == 200) {
           this.result = res.data.data;
         } else {
@@ -136,8 +162,5 @@ export default {
       } 
     }
   },
-  components: {
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
-  }
  }
 </script>
