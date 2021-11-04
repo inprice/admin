@@ -159,6 +159,26 @@
 
         <v-divider inset></v-divider>
 
+        <v-list-item link :to="{name: 'exim-import'}">
+          <v-list-item-action>
+            <v-icon>mdi-tray-arrow-up</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Upload Data</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item>
+          <v-list-item-action>
+            <v-icon>mdi-tray-arrow-down</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Download Data</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider inset></v-divider>
+
         <v-list-item :to="{name: 'workspace-settings'}" :disabled="$store.get('session/isNotAdmin')">
           <v-list-item-action>
             <v-icon>mdi-cog-outline</v-icon>

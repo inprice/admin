@@ -43,7 +43,11 @@ export default {
     return axios(data);
   },
 
-  downloadReport(req) {
+  uploadFile(req) {
+    return axios.post(req.url, req.file, { headers: { 'Content-Type': 'text/csv' } });
+  },
+
+  downloadFile(req) {
     let type = 'application/pdf';
     if (req.form.reportUnit == 'Excel')
       type = 'application/vnd.ms-excel';

@@ -156,7 +156,7 @@ export default {
     generate() {
       this.loading = true;
       this.form.selectedReport = this.selectedReport.value;
-      ApiService.downloadReport(
+      ApiService.downloadFile(
         {
           form: this.form,
           url: '/reports/link', 

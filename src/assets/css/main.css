@@ -15,7 +15,7 @@
   font-size: 0.85rem;
 }
 
-.list-table, .info-table {
+.list-table, .info-table, .property-table {
   width: 100%;
   border-spacing:0;
   border-collapse: collapse;
@@ -43,7 +43,7 @@
   background-color: #e5e5e5;
   border-bottom: 1px solid #aaa;
 }
-.list-table td, .info-table td {
+.list-table td, .info-table td, .property-table td {
   height: 40px;
   border: 0;
   padding: 5px 10px;
@@ -53,14 +53,14 @@
   white-space: nowrap;
   vertical-align: middle;
 }
-.info-table th {
+.info-table th, .property-table th {
   text-align: start;
   height: 30px;
   padding: 5px 10px;
   font-size: 90%;
   background-color: #e5e5e5;
 }
-.info-table td {
+.info-table td, .property-table td {
   height: 35px;
 }
 
@@ -71,7 +71,7 @@
   border: 1px solid #e8e8e8;
 }
 
-.desc-table th, td {
+.desc-table th, .desc-table td {
   font-size: 14px;
   padding: 5px 10px;
   border-right: 1px solid #e8e8e8;
@@ -86,6 +86,22 @@
   text-align: right;
   width: 110px;
 }
+
+.property-table tr {
+  border-bottom: 1px solid #e6e6e6;
+}
+.property-table th {
+  font-size: 13px;
+  width: 15%;
+  background-color: #eaeaea;
+}
+.property-table th {
+  border-right: 1px solid #e8e8e8;
+  border-bottom: 1px solid #d0d0d0;
+  vertical-align: top;
+}
+
+
 .v-slide-group {
   border-bottom: 1px solid #dedede;
 }

@@ -202,6 +202,11 @@ const router = new VueRouter({
           component: () => import('./views/announce/Index.vue')
         },
         {
+          name: 'exim-import',
+          path: 'exim-import',
+          component: () => import('./views/exim/Import.vue')
+        },
+        {
           name: 'vouchers',
           path: 'vouchers',
           component: () => import('./views/vouchers/Index.vue')
