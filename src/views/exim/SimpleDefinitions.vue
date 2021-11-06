@@ -50,13 +50,13 @@
         @click="upload" 
         :disabled="file == undefined || loading || result != null"
       >
-        Upload
+        Import
       </v-btn>
     </div>
 
     <div v-if="result != null" class="mt-2">
       <div>Result</div>
-      <v-card>
+      <v-card class="mt-2">
         <table class="property-table">
           <tr v-if="result.total != null">
             <th width="10%">Total</th>
@@ -66,7 +66,7 @@
             <th width="10%">Added</th>
             <td>{{ generateAddedStatement(result) }}</td>
           </tr>
-          <tr>
+          <tr v-if="result.problems && result.problems.length">
             <th width="10%">Problems</th>
             <td>
               <div v-for="(problem, index) in result.problems" :key="index">{{ problem }}</div>
@@ -92,7 +92,7 @@
       <div class="col pl-0">
         <div>Good example</div>
         <v-card class="mt-2" tile>
-          <v-card-text>
+          <v-card-text style="font-family: Courier;">
             <div>APPLE</div>
             <div>SONY</div>
             <div>SAMSUNG</div>
@@ -102,10 +102,10 @@
       <div class="col pr-0">
         <div>Bad example</div>
         <v-card class="mt-2" tile>
-          <v-card-text>
+          <v-card-text style="font-family: Courier;">
             <div>A</div>
             <div>AB</div>
-            <div>A BRAND NAME WITH MORE THAN 50 CHARS</div>
+            <div>A NAME WITH MORE THAN 50 CHARS</div>
           </v-card-text>
         </v-card>
       </div>
@@ -138,12 +138,12 @@ export default {
           this.result = res.data.data;
         } else {
           this.result = { 
-            problems: [ `Failed to upload: ${res.data.reason}` ]
+            problems: [ `Failed to import: ${res.data.reason}` ]
           };          
         }
       }).catch(err => {
         this.result = { 
-          problems: [ `An error occurred: ${err.message}` ]
+          problems: [ `Server error: ${err.message}` ]
         };
       }).finally(() => this.loading = false);
     },

@@ -161,19 +161,19 @@
 
         <v-list-item link :to="{name: 'exim-import'}">
           <v-list-item-action>
-            <v-icon>mdi-tray-arrow-up</v-icon>
+            <v-icon>mdi-tray-arrow-down</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Upload Data</v-list-item-title>
+            <v-list-item-title>Data Import</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
         <v-list-item>
           <v-list-item-action>
-            <v-icon>mdi-tray-arrow-down</v-icon>
+            <v-icon>mdi-tray-arrow-up</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Download Data</v-list-item-title>
+            <v-list-item-title>Data Export</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
