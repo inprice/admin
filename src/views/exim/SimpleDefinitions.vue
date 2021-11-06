@@ -67,7 +67,7 @@
             <td>{{ generateAddedStatement(result) }}</td>
           </tr>
           <tr v-if="result.problems && result.problems.length">
-            <th width="10%">Problems</th>
+            <th width="10%">Problems ({{ result.problems.length }})</th>
             <td>
               <div v-for="(problem, index) in result.problems" :key="index">{{ problem }}</div>
             </td>
@@ -154,9 +154,9 @@ export default {
     },
     generateAddedStatement(result) {
       if (result.successCount == 0) {
-        return 'None of them is added!';
+        return 'Failed, none of them is added!';
       } else if (result.successCount == result.total) {
-        return 'All of them is added.';
+        return 'All of them is successfully added.';
       } else {
         return result.successCount + ` ${this.entityName}(s) added`;
       } 

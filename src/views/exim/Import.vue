@@ -43,7 +43,7 @@
           Product Import
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <link />
+          <product-import />
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -52,7 +52,7 @@
           Link Import
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <product />
+          <link-import />
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -61,7 +61,7 @@
           Brand Import
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <simple-definitions entityName="brand" />
+          <simple-definition-import entityName="brand" />
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -70,7 +70,7 @@
           Category Import
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <simple-definitions entityName="category" />
+          <simple-definition-import entityName="category" />
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -86,9 +86,9 @@ export default {
     };
   },
   components: {
-    Product: () => import('./Product.vue'),
-    Link: () => import('./Link.vue'),
-    SimpleDefinitions: () => import('./SimpleDefinitions.vue'),
+    ProductImport: () => import('./Product.vue'),
+    LinkImport: () => import('./Link.vue'),
+    SimpleDefinitionImport: () => import('./SimpleDefinitions.vue'),
   }
  }
 </script>
