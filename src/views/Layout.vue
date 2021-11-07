@@ -159,7 +159,7 @@
 
         <v-divider inset></v-divider>
 
-        <v-list-item link :to="{name: 'exim-import'}">
+        <v-list-item link :to="{name: 'imbort'}">
           <v-list-item-action>
             <v-icon>mdi-tray-arrow-down</v-icon>
           </v-list-item-action>
@@ -168,7 +168,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item link :to="{name: 'exbort'}">
           <v-list-item-action>
             <v-icon>mdi-tray-arrow-up</v-icon>
           </v-list-item-action>

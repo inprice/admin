@@ -202,9 +202,14 @@ const router = new VueRouter({
           component: () => import('./views/announce/Index.vue')
         },
         {
-          name: 'exim-import',
-          path: 'exim-import',
-          component: () => import('./views/exim/Import.vue')
+          name: 'imbort',
+          path: 'imbort',
+          component: () => import('./views/exim/imbort/Index.vue')
+        },
+        {
+          name: 'exbort',
+          path: 'exbort',
+          component: () => import('./views/exim/exbort/Index.vue')
         },
         {
           name: 'vouchers',

@@ -48,13 +48,15 @@ export default {
   },
 
   downloadFile(req) {
-    let type = 'application/pdf';
-    if (req.form.reportUnit == 'Excel')
-      type = 'application/vnd.ms-excel';
-    else if (req.form.reportUnit == 'Csv')
-      type = 'text/csv';
+    let type = 'text/csv';
+    if (req.form && req.form.reportUnit) {
+      if (req.form.reportUnit == 'Excel')
+        type = 'application/vnd.ms-excel';
+      else if (req.form.reportUnit == 'Pdf')
+        type = 'application/pdf';
+    }
 
-    return axios.get(req.url + Helper.toQueryString(req.form), { responseType: 'blob' })
+    return axios.get(req.url + (req.form ? Helper.toQueryString(req.form) : ''), { responseType: 'blob' })
       .then(res => {
         if (res && res.status == 200) {
           const blob = new Blob([res.data], { type });

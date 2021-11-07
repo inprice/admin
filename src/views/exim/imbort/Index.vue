@@ -40,7 +40,7 @@
 
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Product Import
+          Products Import
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <product-import />
@@ -49,7 +49,7 @@
 
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Link Import
+          Links Import
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <link-import />
@@ -58,7 +58,7 @@
 
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Brand Import
+          Brands Import
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <simple-definition-import entityName="brand" />
@@ -67,7 +67,7 @@
 
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Category Import
+          Categories Import
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <simple-definition-import entityName="category" />
