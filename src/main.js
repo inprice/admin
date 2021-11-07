@@ -29,6 +29,8 @@ Vue.use(VuePageTransition);
 Vue.component('ago', () => import('./component/simple/Ago.vue'));
 Vue.component(ChartJsPluginDataLabels);
 
+import pluralize from 'pluralize'
+
 Vue.mixin({
   methods: {
     findPositionColor(position) {
@@ -86,6 +88,9 @@ Vue.mixin({
     },
     isNumeric(value) {
       return /^-?\d+$/.test(value);
+    },
+    pluralize(value, number) {
+      return pluralize(value, number);
     }
   },
 })

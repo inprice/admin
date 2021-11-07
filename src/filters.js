@@ -1,6 +1,7 @@
 import store from './store';
 import moment from 'moment-timezone';
 import numFormatter from 'number-format.js';
+import pluralize from 'pluralize'
 
 const SESSION = 'session/getCurrentStatus';
 
@@ -94,6 +95,10 @@ export default (Vue) => {
       console.error('Failed to format date', value, error);
     }
     return '-';
+  });
+
+  Vue.filter('pluralize', function (value, number) {
+    return pluralize(value, number)
   });
 
 };

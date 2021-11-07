@@ -46,7 +46,7 @@
         <v-text-field
           dense
           outlined
-          label="Sku"
+          label="Product Sku"
           v-model="form.sku"
           type="text"
           maxlength="50"
@@ -55,7 +55,7 @@
         <v-text-field
           dense
           outlined
-          label="Brand"
+          label="Link Brand"
           v-model="form.brand"
           type="text"
           maxlength="50"
@@ -147,8 +147,6 @@ export default {
       positionItems: SystemData.POSITIONS,
       alarmItems: SystemData.ALARM_STATES,
       reportUnits: SystemData.REPORT_UNITS,
-      brands: [],
-      categories: [],
       loading: false,
     };
   },
@@ -156,7 +154,7 @@ export default {
     generate() {
       this.loading = true;
       this.form.selectedReport = this.selectedReport.value;
-      ApiService.downloadReport(
+      ApiService.downloadFile(
         {
           form: this.form,
           url: '/reports/link', 

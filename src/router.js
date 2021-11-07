@@ -202,6 +202,16 @@ const router = new VueRouter({
           component: () => import('./views/announce/Index.vue')
         },
         {
+          name: 'imbort',
+          path: 'imbort',
+          component: () => import('./views/exim/imbort/Index.vue')
+        },
+        {
+          name: 'exbort',
+          path: 'exbort',
+          component: () => import('./views/exim/exbort/Index.vue')
+        },
+        {
           name: 'vouchers',
           path: 'vouchers',
           component: () => import('./views/vouchers/Index.vue')
