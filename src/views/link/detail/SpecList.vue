@@ -3,13 +3,13 @@
 
     <div class="title mb-2">Specs</div>
 
-    <v-card tile :loading="loading">
+    <v-card :loading="loading" style="max-height: 350px; overflow-y: auto;">
       <v-list dense v-if="list.length">
         <template v-for="(row, index) in list">
 
           <v-list-item :key="index" link>
             <v-list-item-avatar>
-              <v-icon style="font-size:40px;" color="green">mdi-circle-small</v-icon>
+              <v-icon color="green">mdi-circle-small</v-icon>
             </v-list-item-avatar>
 
             <v-list-item-content>

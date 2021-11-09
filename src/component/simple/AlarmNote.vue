@@ -6,8 +6,8 @@
       <span class="text-capitalize">{{ alarm.subject.toLowerCase()}}</span> 
       <span v-html="findLastPart()"></span>
       <v-chip
-        small dark label
-        color="success"
+        small text label
+        color="secondary"
         class="ml-1 font-weight-bold"
         v-if="editable"
         @click="$emit('clicked')"
@@ -18,8 +18,8 @@
     <div v-else>
       <span>No alarm set yet.</span>
       <v-chip
-        small dark label
-        color="success"
+        small outlined text
+        color="primary"
         class="ml-1 font-weight-bold"
         v-if="editable"
         @click="$emit('clicked')"

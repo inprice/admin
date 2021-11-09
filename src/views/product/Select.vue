@@ -11,27 +11,23 @@
         <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
-      <v-card-text class="py-0 mt-3">
-        <v-combobox
+      <v-card-text class="py-0 mt-3" v-if="products && products.length">
+        <v-select
           dense
           outlined
           label="Product"
-          :items="productNames"
-          :messages="messages"
-          :error="messages != null"
-          v-model="selectedName"
-          @input.native="selectedName=$event.srcElement.value"
+          :items="products"
+          item-value="left"
+          item-text="right"
+          v-model="selectedProduct"
+          return-object
+          hide-details
           @keyup.native.enter="agree"
-        ></v-combobox>
+          :menu-props="{ bottom: true, offsetY: true }"
+        ></v-select>
       </v-card-text>
 
-      <v-divider></v-divider>
-
-      <v-card-actions class="justify-space-between pa-3">
-        <div class="caption">
-          <v-icon color="green" class="mx-1" >mdi-shield-alert-outline</v-icon>
-          You can either select or create a new product by typing.
-        </div>
+      <v-card-actions class="justify-end pa-3">
         <v-btn
           text
           @click="agree"
@@ -56,10 +52,8 @@ export default {
       title: null,
       callback: null,
       products: [],
-      productNames: [],
-      selectedName: null,
+      selectedProduct: [],
       callerProductId: null,
-      messages: null,
     };
   },
   methods: {
@@ -68,43 +62,26 @@ export default {
       this.title = title;
       this.callerProductId = callerProductId;
 
-      ProductService.getIdNameList().then((res) => {
+      ProductService.getIdNameList(callerProductId).then((res) => {
         if (res && res.data) {
-          const names = [];
-          res.data.forEach(product => {
-            this.products[product.right.toLowerCase()] = product.left; //in order to finding id by name!
-            if (product.left != callerProductId) {
-              names.push(product.right);
-            }
-          });
-          this.productNames = names;
+          this.products = res.data;
+          this.selectedProduct = res.data[0];
         }
       });
       return new Promise((callback) => this.callback = callback);
     },
     agree() {
-      if (this.selectedName) {
-        if (this.selectedName.length > 2 && this.selectedName.length < 251) {
-          const id = this.products[this.selectedName.toLowerCase()];
-          if (!id || id != this.callerProductId) {
-            this.close({ id, name: this.selectedName });
-          } else {
-            this.messages = 'Same product, please select different one!';
-          }
-        } else {
-          this.messages = 'Name must be between 3-250 chars!';
+      if (this.selectedProduct) {
+        if (this.selectedProduct && this.selectedProduct.left && this.selectedProduct.left != this.callerProductId) {
+          this.close({ id: this.selectedProduct.left, name: this.selectedProduct.right });
         }
-      } else {
-        this.messages = 'Please select a product!';
       }
     },
     close(selected) {
       this.callback(selected);
       this.show = false;
-      this.selectedName = null;
-      this.messages = null;
-      this.products = {};
-      this.productNames = [];
+      this.selectedProduct = null;
+      this.products = [];
     }
   }
 }

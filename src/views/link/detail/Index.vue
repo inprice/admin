@@ -13,111 +13,91 @@
       </v-btn>
     </div>
 
-    <div class="title">Link Details</div>
-
-    <v-divider class="my-2"></v-divider>
-
     <div v-if="link">
-
-      <div v-if="link.info.name" class="d-flex justify-space-between px-2 subtitle">
-        <div>
-          <div class="caption teal--text font-weight-medium">{{ link.info.sku }}</div>
-          <div>{{ link.info.name }}</div>
-        </div>
+      <div v-if="link.info.name" class="d-flex justify-space-between title">
+        <div>{{ link.info.name }}</div>
         <div class="pl-3 text-right">
-          <div class="caption teal--text font-weight-medium">{{ link.info.position }}</div>
-          <div>{{ (link.info.price || 0) | toPrice }}</div>
+          {{ (link.info.price || 0) | toCurrency }}
         </div>
       </div>
 
-      <div v-else class="body-2">
-        {{ link.info.url }}
+      <div v-else>
+        <div class="title">Url</div>
+        <v-divider class="my-2"></v-divider>
+        <div class="col caption pa-0">
+          <div class="d-flex justify-space-between">
+            <a class="my-auto" :href="link.info.url" target="_blank">{{ link.info.url }}</a>
+            <v-btn
+              small
+              icon
+              title="Copy Url"
+              class="my-auto"
+              @click.stop="copyTheLink(link.info.url)"
+            >
+              <v-icon>mdi-content-copy</v-icon>
+            </v-btn>
+          </div>
+        </div>
+        <v-divider class="mt-2"></v-divider>
       </div>
 
-      <v-divider class="my-2"></v-divider>
+      <v-card v-if="link.info.name" class="mt-2">
+        <table class="property-table" v-show="$vuetify.breakpoint.smAndUp">
+          <tr>
+            <th>Status</th>
+            <td>{{ link.info.grup }}</td>
+            <th>Sku</th>
+            <td>{{ link.info.sku }}</td>
+          </tr>
 
-      <v-card v-if="link.info.name" tile class="mt-4">
-        <div class="d-flex">
-          <v-list dense class="col pa-1">
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Seller</div>
-                <div class="body-2">{{ link.info.seller }}</div>
-              </v-list-item-content>
-            </v-list-item>
+          <tr>
+            <th>Position</th>
+            <td>{{ link.info.position }}</td>
+            <th>Seller</th>
+            <td>{{ link.info.seller }}</td>
+          </tr>
 
-            <v-divider></v-divider>
+          <tr>
+            <th>Checked</th>
+            <td>{{ link.info.checkedAt | formatPlainDate }}</td>
+            <th>Brand</th>
+            <td>{{ link.info.brand }}</td>
+          </tr>
 
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Brand</div>
-                <div class="body-2">{{ link.info.brand }}</div>
-              </v-list-item-content>
-            </v-list-item>
+          <tr>
+            <th>Updated</th>
+            <td>{{ link.info.updatedAt | formatPlainDate }}</td>
+            <th>Shipment</th>
+            <td>{{ link.info.shipment }}</td>
+          </tr>
+        </table>
 
-            <v-divider></v-divider>
+        <table class="property-table" v-show="$vuetify.breakpoint.xs">
+          <tr><th>Status</th><td>{{ link.info.grup }}</td></tr>
+          <tr><th>Position</th><td>{{ link.info.position }}</td></tr>
+          <tr><th>Checked</th><td>{{ link.info.checkedAt | formatPlainDate }}</td></tr>
+          <tr><th>Updated</th><td>{{ link.info.updatedAt | formatPlainDate }}</td></tr>
+          <tr><th>Sku</th><td>{{ link.info.sku }}</td></tr>
+          <tr><th>Seller</th><td>{{ link.info.seller }}</td></tr>
+          <tr><th>Brand</th><td>{{ link.info.brand }}</td></tr>
+          <tr><th>Shipment</th><td>{{ link.info.shipment }}</td></tr>
+        </table>
 
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Shipment</div>
-                <div class="body-2">{{ link.info.shipment }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-          </v-list>
-
-          <v-list dense class="col pa-1">
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Status</div>
-                <div class="body-2">{{ link.info.grup }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Last Checked</div>
-                <div class="body-2">{{ link.info.checkedAt | formatPlainDate }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Last Updated</div>
-                <div class="body-2">{{ link.info.updatedAt | formatPlainDate }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-          </v-list>
+        <div class="col caption pa-2">
+          <div class="d-flex justify-space-between">
+            <a class="my-auto" :href="link.info.url" target="_blank">{{ link.info.url }}</a>
+            <v-btn
+              small
+              icon
+              title="Copy Url"
+              class="my-auto"
+              @click.stop="copyTheLink(link.info.url)"
+            >
+              <v-icon>mdi-content-copy</v-icon>
+            </v-btn>
+          </div>
         </div>
-
-        <v-list class="col caption pa-1 pt-0">
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex justify-space-between">
-              <a :href="link.info.url" target="_blank">{{ link.info.url }}</a>
-              <v-btn
-                small
-                icon
-                title="Copy Url"
-                class="my-auto"
-                @click.stop="copyTheLink(link.info.url)"
-              >
-                <v-icon>mdi-content-copy</v-icon>
-              </v-btn>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
       </v-card>
-
 
       <div class="title mt-5 mb-2">Alarm</div>
       <v-card class="pa-4 pl-3">

@@ -37,103 +37,119 @@
     <div v-if="data && data.product">
 
       <div class="d-flex justify-space-between py-3 title">
-        <div class="my-auto">
+        <span class="my-auto">
           {{ data.product.name }}
-        </div>
-        <div class="text-right">
-          <div class="caption teal--text font-weight-medium">{{ data.product.position }}</div>
-          <div class="my-auto">{{ data.product.price | toPrice }}</div>
-        </div>
+        </span>
+        <span class="text-right my-auto">
+          {{ data.product.price | toCurrency }}
+        </span>
       </div>
 
-      <v-card tile>
+      <v-card>
+        <table class="property-table" v-show="$vuetify.breakpoint.smAndUp">
+          <tr>
+            <th>Position</th>
+            <td>{{ data.product.position }}</td>
+            <th>Base Price</th>
+            <td>
+              {{ data.product.basePrice | toPrice }}
+            </td>
+          </tr>
 
-        <div class="d-flex">
-          <v-list dense class="col pa-1">
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">SKU</div>
-                <div>{{ data.product.sku || '-' }}</div>
-              </v-list-item-content>
-            </v-list-item>
+          <tr>
+            <th>Sku</th>
+            <td>{{ data.product.sku }}</td>
+            <th>Suggested</th>
+            <td>
+              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</span>
+              <span v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</span>
+              <span v-else-if="!data.product.smartPriceId">Not bound!</span>
+            </td>
+          </tr>
 
-            <v-divider></v-divider>
+          <tr>
+            <th>Brand</th>
+            <td>{{ data.product.brandName }}</td>
+            <th>Min Price</th>
+            <td>
+              <span>{{ data.product.minPrice | toPrice }}</span>
+              <span class="caption mx-1" v-if="data.product.minSeller && data.product.minSeller != 'NA'">by {{ data.product.minSeller }}</span>
+              <span class="caption" v-if="data.product.minSeller != data.product.minPlatform && data.product.minSeller != 'You'">on {{ data.product.minPlatform }}</span>
+            </td>
+          </tr>
 
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Brand</div>
-                <div>{{ data.product.brandName || '-' }}</div>
-              </v-list-item-content>
-            </v-list-item>
+          <tr>
+            <th>Category</th>
+            <td>{{ data.product.categoryName }}</td>
+            <th>Avg Price</th>
+            <td>
+              {{ data.product.avgPrice | toPrice }}
+            </td>
+          </tr>
 
-            <v-divider></v-divider>
+          <tr>
+            <th>Alarm</th>
+            <td>
+              <alarm-note
+                :alarm="data.product.alarm"
+                @clicked="openAlarmDialogForProduct"
+              ></alarm-note>
+            </td>
+            <th>Max Price</th>
+            <td>
+              <span>{{ data.product.maxPrice | toPrice }}</span>
+              <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'NA'">by {{ data.product.maxSeller }}</span>
+              <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform && data.product.maxSeller != 'You'">on {{ data.product.maxPlatform }}</span>
+            </td>
+          </tr>
+        </table>
 
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Category</div>
-                <div>{{ data.product.categoryName || '-' }}</div>
-              </v-list-item-content>
-            </v-list-item>
+        <table class="property-table" v-show="$vuetify.breakpoint.xs">
+          <tr><th>Position</th><td>{{ data.product.position }}</td></tr>
+          <tr><th>Sku</th><td>{{ data.product.sku }}</td></tr>
+          <tr><th>Brand</th><td>{{ data.product.brandName }}</td></tr>
+          <tr><th>Category</th><td>{{ data.product.categoryName }}</td></tr>
+          <tr>
+            <th>Alarm</th>
+            <td>
+              <alarm-note
+                :alarm="data.product.alarm"
+                @clicked="openAlarmDialogForProduct"
+              ></alarm-note>
+            </td>
+          </tr>
 
-            <v-divider></v-divider>
+          <tr><th>Base Price</th><td>{{ data.product.basePrice | toPrice }}</td></tr>
 
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Alarm</div>
-                <alarm-note
-                  :alarm="data.product.alarm"
-                  @clicked="openAlarmDialogForProduct"
-                ></alarm-note>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+          <tr>
+            <th>Suggested</th>
+            <td>
+              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</span>
+              <span v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</span>
+              <span v-else-if="!data.product.smartPriceId">Not bound!</span>
+            </td>
+          </tr>
 
-          <v-list dense class="col pa-1">
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Suggested Price</div>
-                <div v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</div>
-                <div v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</div>
-                <div v-else-if="!data.product.smartPriceId">Not bound!</div>
-              </v-list-item-content>
-            </v-list-item>
+          <tr>
+            <th>Min Price</th>
+            <td>
+              <span>{{ data.product.minPrice | toPrice }}</span>
+              <span class="caption mx-1" v-if="data.product.minSeller && data.product.minSeller != 'NA'">by {{ data.product.minSeller }}</span>
+              <span class="caption" v-if="data.product.minSeller != data.product.minPlatform && data.product.minSeller != 'You'">on {{ data.product.minPlatform }}</span>
+            </td>
+          </tr>
 
-            <v-divider></v-divider>
+          <tr><th>Avg Price</th><td>{{ data.product.avgPrice | toPrice }}</td></tr>
 
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Minimum Price</div>
-                <div>
-                  <span>{{ data.product.minPrice | toPrice }}</span>
-                  <span class="caption mx-1" v-if="data.product.minSeller && data.product.minSeller != 'NA'">by {{ data.product.minSeller }}</span>
-                  <span class="caption" v-if="data.product.minSeller != data.product.minPlatform && data.product.minSeller != 'You'">on {{ data.product.minPlatform }}</span>
-                </div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Average Price</div>
-                <div>{{ data.product.avgPrice | toPrice }}</div>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider></v-divider>
-
-            <v-list-item>
-              <v-list-item-content>
-                <div class="caption blue--text">Maximum Price</div>
-                <div>
-                  <span>{{ data.product.maxPrice | toPrice }}</span>
-                  <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'NA'">by {{ data.product.maxSeller }}</span>
-                  <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform && data.product.maxSeller != 'You'">on {{ data.product.maxPlatform }}</span>
-                </div>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </div>
+          <tr>
+            <th>Max Price</th>
+            <td>
+              <span>{{ data.product.maxPrice | toPrice }}</span>
+              <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'NA'">by {{ data.product.maxSeller }}</span>
+              <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform && data.product.maxSeller != 'You'">on {{ data.product.maxPlatform }}</span>
+            </td>
+          </tr>
+        </table>
       </v-card>
     </div>
 
@@ -153,7 +169,7 @@
 
         <v-btn 
           small
-          class="mr-1"
+          class="mx-1"
           @click="moveMultiple"
           :disabled="selected < 1 || $store.get('session/isNotEditor')"
         >
@@ -162,7 +178,7 @@
 
         <v-btn 
           small
-          class="ml-1"
+          class="mx-1"
           @click="openAddLinkDialog"
           :disabled="$store.get('session/isNotEditor')"
         >
