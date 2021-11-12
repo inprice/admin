@@ -170,6 +170,8 @@ const ACTIVE_WORKSPACE_STATUSES = [
   'SUBSCRIBED'
 ];
 
+const demoEmail = 'demo@inprice.io';
+
 const getters = {
 
   hasASession: (state) => {
@@ -204,27 +206,19 @@ const getters = {
   },
 
   isAdmin: (state) => {
-    return (state.current && (state.current.role === 'ADMIN'));
+    return (state.current && (state.current.role === 'ADMIN' || state.current.email === demoEmail));
   },
 
   isNotAdmin: (state) => {
-    return (state.current && (state.current.role !== 'ADMIN'));
-  },
-
-  isEditor: (state) => {
-    return (state.current && (state.current.role === 'ADMIN' || state.current.role === 'EDITOR'));
+    return (state.current && (state.current.role !== 'ADMIN' && state.current.email !== demoEmail));
   },
 
   isNotEditor: (state) => {
-    return (state.current && !(state.current.role === 'ADMIN' || state.current.role === 'EDITOR'));
-  },
-
-  isViewer: (state) => {
-    return (state.current && state.current.role === 'VIEWER');
+    return (state.current && (state.current.email !== demoEmail && !(state.current.role === 'ADMIN' || state.current.role === 'EDITOR')));
   },
 
   isDemoUser: (state) => {
-    return (state.current && state.current.email === 'demo@inprice.io');
+    return (state.current && state.current.email === demoEmail);
   }
 
 };

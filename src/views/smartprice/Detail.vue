@@ -1,9 +1,8 @@
 <template>
-  <div class="mt-2">
-
-    <div class="d-flex justify-space-between mb-3 mt-5">
+  <div>
+    <div class="d-flex justify-space-between my-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
-
+      <span class="title font-weight-light">Smart Price Details</span>
       <div>
         <v-btn 
           small
@@ -387,12 +386,14 @@ export default {
         await this.$refs.form.validate();
         if (this.valid) {
           SmartPriceService.test(this.form).then(res => {
-            if (res.data) {
-              this.testProblem = null;
-              this.testResults = res.data;
-            } else {
-              this.testResults = null;
-              this.testProblem = res.error;
+            if (res) {
+              if (res.data) {
+                this.testProblem = null;
+                this.testResults = res.data;
+              } else {
+                this.testResults = null;
+                this.testProblem = res.error;
+              }
             }
           });
         }

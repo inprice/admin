@@ -152,6 +152,7 @@ export default {
         smartPriceId: null,
         brand: null,
         category: null,
+        from: null,
       },
       newCategoryName: null,
       newBrandName: null,
@@ -170,6 +171,7 @@ export default {
         this.form.name = data.name;
         this.form.price = data.price;
         this.form.basePrice = data.basePrice;
+        this.form.from = data.from;
       } else {
         delete this.form.id;
         this.form.sku = '';

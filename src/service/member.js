@@ -6,7 +6,7 @@ const baseURL = '/membership';
 export default {
 
   async list() {
-    if (store.get('session/isViewer')) {
+    if (store.get('session/isNotAdmin')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to list members!' });
       return;
     }
@@ -27,7 +27,7 @@ export default {
   },
 
   async resend(id) {
-    if (store.get('session/isNotAdmin')) {
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'Membership invitations can be sent only by admin!' });
       return;
     }
@@ -37,7 +37,7 @@ export default {
   },
 
   async changeRole(data) {
-    if (store.get('session/isNotAdmin')) {
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to change memberships\' roles!' });
       return;
     }
@@ -47,7 +47,7 @@ export default {
   },
 
   async remove(id) {
-    if (store.get('session/isNotEditor')) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
       return;
     }
@@ -57,7 +57,7 @@ export default {
   },
 
   async pause(id) {
-    if (store.get('session/isNotAdmin')) {
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to pause membersip!' });
       return;
     }
@@ -67,7 +67,7 @@ export default {
   },
 
   async resume(id) {
-    if (store.get('session/isNotAdmin')) {
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to resume membersip!' });
       return;
     }

@@ -3,7 +3,7 @@
 
     <div class="d-flex justify-space-between my-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
-
+      <span class="title font-weight-light">Product Details</span>
       <div>
         <v-btn 
           small
@@ -26,17 +26,17 @@
       </div>
     </div>
 
-    <v-divider></v-divider>
-
     <block-message 
       v-if="loading" dense
       :loading="loading"
       message="Loading, please wait..."
     />
 
+    <v-divider class="my-3" ></v-divider>
+
     <div v-if="data && data.product">
 
-      <div class="d-flex justify-space-between py-3 title">
+      <div class="d-flex justify-space-between title">
         <span class="my-auto">
           {{ data.product.name }}
         </span>
@@ -44,6 +44,8 @@
           {{ data.product.price | toCurrency }}
         </span>
       </div>
+
+      <v-divider class="my-3" ></v-divider>
 
       <v-card>
         <table class="property-table" v-show="$vuetify.breakpoint.smAndUp">

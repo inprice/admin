@@ -271,7 +271,7 @@
               {{ row.endingAt | formatPlainDate }}
             </v-col>
           
-            <v-menu offset-y bottom left>
+            <v-menu offset-y bottom left :disabled="isNotEditable(row)">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   small icon
@@ -285,10 +285,10 @@
               </template>
 
               <v-list dense>
-                <v-list-item :disabled="isNotEditable(row)" @click="openEditDialog(row)">
+                <v-list-item @click="openEditDialog(row)">
                   <v-list-item-title>EDIT</v-list-item-title>
                 </v-list-item>
-                <v-list-item :disabled="isNotEditable(row)" @click="remove(row.id)">
+                <v-list-item @click="remove(row.id)">
                   <v-list-item-title>DELETE</v-list-item-title>
                 </v-list-item>
               </v-list>

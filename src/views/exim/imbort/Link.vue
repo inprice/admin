@@ -202,12 +202,18 @@ export default {
         file: this.file,
         url: `/exim/link/upload`
       }).then(res => {
-        if (res && res.data.status == 200) {
-          this.result = res.data.data;
+        if (res && res.data) {
+          if (res.data.status == 200) {
+            this.result = res.data.data;
+          } else {
+            this.result = { 
+              problems: [ `Failed to import: ${res.data.reason}` ]
+            };
+          }
         } else {
           this.result = { 
-            problems: [ `Failed to import: ${res.data.reason}` ]
-          };          
+            problems: [ `Failed to import: ${res}` ]
+          };
         }
       }).catch(err => {
         this.result = { 

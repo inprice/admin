@@ -16,7 +16,7 @@ export default {
   },
 
   async save(form) {
-    if (store.get('session/isNotEditor')) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to save any data!' });
       return;
     }
@@ -32,7 +32,7 @@ export default {
   },
 
   async insertLinks(productId, linksText) {
-    if (store.get('session/isNotEditor')) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to insert any data!' });
       return;
     }
@@ -54,7 +54,7 @@ export default {
   },
 
   async toggle(id) {
-    if (store.get('session/isNotEditor')) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
       return;
     }
@@ -64,7 +64,7 @@ export default {
   },
 
   async remove(id) {
-    if (store.get('session/isNotEditor')) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
       return;
     }

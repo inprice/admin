@@ -33,6 +33,7 @@
           </td>
           <td class="my-auto">
             <div v-if="row.seller" class="caption teal--text font-weight-medium">{{ row.seller }}</div>
+            <div v-if="row.grup == 'PROBLEM'" class="caption pink--text">{{ row.statusDescription }}</div>
             <div>{{ row.name || row.url }}</div>
           </td>
           <td class="align-center pr-0">

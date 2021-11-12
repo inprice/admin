@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="d-flex justify-space-between my-3 mb-5">
+    <div class="d-flex justify-space-between mt-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
-
+      <span class="title font-weight-light">Link Details</span>
       <v-btn
         small
         color="error"
@@ -13,6 +13,8 @@
       </v-btn>
     </div>
 
+    <v-divider class="my-3" ></v-divider>
+
     <div v-if="link">
       <div v-if="link.info.name" class="d-flex justify-space-between title">
         <div>{{ link.info.name }}</div>
@@ -22,8 +24,6 @@
       </div>
 
       <div v-else>
-        <div class="title">Url</div>
-        <v-divider class="my-2"></v-divider>
         <div class="col caption pa-0">
           <div class="d-flex justify-space-between">
             <a class="my-auto" :href="link.info.url" target="_blank">{{ link.info.url }}</a>
@@ -41,7 +41,7 @@
         <v-divider class="mt-2"></v-divider>
       </div>
 
-      <v-card v-if="link.info.name" class="mt-2">
+      <v-card v-if="link.info.name" class="mt-3">
         <table class="property-table" v-show="$vuetify.breakpoint.smAndUp">
           <tr>
             <th>Status</th>

@@ -99,6 +99,18 @@
   vertical-align: top;
 }
 
+.specs-table {
+  width: 100%;
+  border-collapse: collapse; 
+}
+.specs-table tr {
+  line-height: 2.4;
+  border-bottom: 1px solid #d0d0d0;
+}
+.specs-table td {
+  padding: 4px;
+}
+
 .v-slide-group {
   border-bottom: 1px solid #dedede;
 }

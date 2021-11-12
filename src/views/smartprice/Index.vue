@@ -68,14 +68,26 @@
             <td>{{ row.lowerLimitFormula }}</td>
             <td>{{ row.upperLimitFormula }}</td>
             <td class="my-auto">
-              <v-btn
-                small icon
-                title="DELETE"
-                @click.stop="remove(row)"
-                :disabled="$store.get('session/isNotEditor')"
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
+              <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    small icon
+                    v-on="on"
+                    v-bind="attrs"
+                  >
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item link @click="$router.push( { name: 'smart-price', params: { id: row.id } })">
+                    <v-list-item-title>EDIT</v-list-item-title>
+                  </v-list-item>
+
+                  <v-list-item link @click="remove(row)">
+                    <v-list-item-title>DELETE</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </td>
           </tr>
         </tbody>
