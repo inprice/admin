@@ -3,23 +3,45 @@
     <div class="d-flex justify-space-between mt-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
       <span class="title font-weight-light">Link Details</span>
-      <v-btn
-        small
-        color="error"
-        @click="remove"
-        :disabled="$store.get('session/isNotEditor')"
-      >
-        Delete
-      </v-btn>
+
+      <v-menu offset-y bottom left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            small icon
+            v-on="on"
+            v-bind="attrs"
+          >
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list dense>
+          <v-list-item link @click="$router.push({ name: 'product', params: { id: link.info.productId } })">
+            <v-list-item-title>OPEN PRODUCT</v-list-item-title>
+          </v-list-item>
+          <v-list-item link @click="remove" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item-title>DELETE</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
 
     <v-divider class="my-3" ></v-divider>
 
     <div v-if="link">
       <div v-if="link.info.name" class="d-flex justify-space-between title">
-        <div>{{ link.info.name }}</div>
-        <div class="pl-3 text-right">
-          {{ (link.info.price || 0) | toCurrency }}
+        <div class="my-auto">
+          <div class="caption font-weight-medium teal--text">{{ link.info.sku }}</div>
+          <div>{{ link.info.name }}</div>
+        </div>
+        <div class="text-right my-auto">
+          <div 
+            class="caption font-weight-medium" 
+            :style="'color: ' + findPositionColor(link.info.position)"
+          >
+            {{ link.info.position }}
+          </div>
+          <div>{{ link.info.price | toPrice }}</div>
         </div>
       </div>
 
@@ -41,7 +63,7 @@
         <v-divider class="mt-2"></v-divider>
       </div>
 
-      <v-card v-if="link.info.name" class="mt-3">
+      <v-card v-if="link.info.name" class="mt-2">
         <table class="property-table" v-show="$vuetify.breakpoint.smAndUp">
           <tr>
             <th>Status</th>
@@ -109,8 +131,8 @@
       </v-card>
 
       <price-list :list="link.priceList"></price-list>
-      <spec-list :list="link.specList"></spec-list>
       <history-list :list="link.historyList"></history-list>
+      <spec-list :list="link.specList"></spec-list>
 
       <alarm-dialog
         ref="alarmDialog"

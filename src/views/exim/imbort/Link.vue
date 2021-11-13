@@ -232,7 +232,7 @@ export default {
       } else if (result.successCount == result.total) {
         return 'All of them is successfully added.';
       } else {
-        return result.successCount + 'link(s) added';
+        return result.successCount + ' link(s) successfully added.';
       } 
     }
   },

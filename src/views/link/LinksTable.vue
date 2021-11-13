@@ -48,13 +48,13 @@
                 </div>
                 <div>{{ row.price | toPrice }}</div>
               </div>
-              <v-icon 
+              <!--v-icon 
                 class="hidden-xs-only"
                 :color="row.alarmId ? '' : 'transparent'" 
                 style="font-size:20px"
               >
                 mdi-alarm
-              </v-icon>
+              </v-icon-->
             </div>
           </td>
           <td class="my-auto">
@@ -74,8 +74,14 @@
                   <v-list-item-title>COPY URL</v-list-item-title>
                 </v-list-item>
 
+                <v-divider></v-divider>
+
                 <v-list-item link target="_blank" :href="row.url">
                   <v-list-item-title>OPEN WEBPAGE</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item link @click="$router.push({ name: 'product', params: { id: row.productId } })" v-if="fromLinksPage">
+                  <v-list-item-title>OPEN PRODUCT</v-list-item-title>
                 </v-list-item>
 
                 <v-divider></v-divider>

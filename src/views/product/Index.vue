@@ -176,9 +176,9 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th width="12%" class="hidden-sm-and-down">Brand</th>
             <th width="12%" class="hidden-sm-and-down">Category</th>
             <th width="10%" class="text-right pr-8">Price</th>
-            <th width="10%" class="hidden-sm-and-down">Position</th>
             <th width="4%"></th>
           </tr>
         </thead>
@@ -192,22 +192,28 @@
               <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>
               <div>{{ row.name }}</div>
             </td>
+            <td class="hidden-sm-and-down">{{ row.brandName }}</td>
             <td class="hidden-sm-and-down">{{ row.categoryName }}</td>
             <td class="align-center">
-              <div class="d-flex justify-end my-auto">
+              <div class="text-right my-auto">
+                <div 
+                  class="caption font-weight-medium" 
+                  :style="'color: ' + findPositionColor(row.position)"
+                >
+                  {{ row.position }}
+                </div>
                 <div class="mr-1">
                   {{ (row.price || 0) | toPrice }}
                 </div>
-                <v-icon 
+                <!--v-icon 
                   class="hidden-xs-only"
                   :color="row.alarmId ? '' : 'transparent'" 
                   style="font-size:20px"
                 >
                   mdi-alarm
-                </v-icon>
+                </v-icon-->
               </div>
             </td>
-            <td class="hidden-sm-and-down">{{ row.position }}</td>
             <td class="my-auto">
               <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
                 <template v-slot:activator="{ on, attrs }">

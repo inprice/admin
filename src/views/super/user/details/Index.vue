@@ -14,7 +14,7 @@
           class="my-auto"
           @click="$router.go(-1)"
         >
-          Go Back
+          Back
         </v-btn>
 
       </div>

@@ -9,7 +9,7 @@
           class="mr-1"
           color="error"
           @click="remove"
-          :disabled="$store.get('session/isNotEditor')"
+          :disabled="$store.get('session/isNotEditor') || !form.id"
         >
           DELETE
         </v-btn>
@@ -378,27 +378,31 @@ export default {
       }
     },
     async testTheForm() {
-      //to prevent unnecessary server calls
-      const newFormulas = this.form.formula+this.form.lowerLimitFormula+this.form.upperLimitFormula;
-      if (newFormulas != this.oldFormulas) {
-        this.oldFormulas = newFormulas;
-        this.activateRules();
-        await this.$refs.form.validate();
-        if (this.valid) {
-          SmartPriceService.test(this.form).then(res => {
-            if (res) {
-              if (res.data) {
-                this.testProblem = null;
-                this.testResults = res.data;
-              } else {
-                this.testResults = null;
-                this.testProblem = res.error;
+      this.activateRules();
+      await this.$refs.form.validate();
+      if (this.valid) {
+        //to prevent unnecessary server calls
+        const newFormulas = this.form.formula+this.form.lowerLimitFormula+this.form.upperLimitFormula;
+        if (newFormulas != this.oldFormulas) {
+          this.oldFormulas = newFormulas;
+          this.activateRules();
+          await this.$refs.form.validate();
+          if (this.valid) {
+            SmartPriceService.test(this.form).then(res => {
+              if (res) {
+                if (res.data) {
+                  this.testProblem = null;
+                  this.testResults = res.data;
+                } else {
+                  this.testResults = null;
+                  this.testProblem = res.error;
+                }
               }
-            }
-          });
+            });
+          }
         }
+        this.testPanelOpened=true;
       }
-      this.testPanelOpened=true;
     },
     find() {
       if (this.isNumeric(this.$route.params.id) == false) {

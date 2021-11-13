@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <div class="title">Smart Price Formulas</div>
+    <div class="title">Smart Prices</div>
 
     <div class="body-2 my-3">
       <p>

@@ -4,26 +4,34 @@
     <div class="d-flex justify-space-between my-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
       <span class="title font-weight-light">Product Details</span>
-      <div>
-        <v-btn 
-          small
-          class="mr-1"
-          color="error"
-          @click="deleteProduct"
-          :disabled="$store.get('session/isNotEditor')"
-        >
-          DELETE
-        </v-btn>
 
-        <v-btn 
-          small
-          class="ml-1"
-          @click="openEditProductDialog"
-          :disabled="$store.get('session/isNotEditor')"
-        >
-          EDIT
-        </v-btn>
-      </div>
+      <v-menu offset-y bottom left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            small icon
+            v-on="on"
+            v-bind="attrs"
+          >
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list dense>
+          <v-list-item link @click="findProduct">
+            <v-list-item-title>REFRESH</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click="openEditProductDialog" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item-title>EDIT</v-list-item-title>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item link @click="deleteProduct" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item-title>DELETE</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
 
     <block-message 
@@ -37,30 +45,28 @@
     <div v-if="data && data.product">
 
       <div class="d-flex justify-space-between title">
-        <span class="my-auto">
-          {{ data.product.name }}
-        </span>
-        <span class="text-right my-auto">
-          {{ data.product.price | toCurrency }}
-        </span>
+        <div class="my-auto">
+          <div class="caption font-weight-medium teal--text">{{ data.product.sku }}</div>
+          <div>{{ data.product.name }}</div>
+        </div>
+        <div class="text-right my-auto">
+          <div 
+            class="caption font-weight-medium" 
+            :style="'color: ' + findPositionColor(data.product.position)"
+          >
+            {{ data.product.position }}
+          </div>
+          <div>{{ data.product.price | toPrice }}</div>
+        </div>
       </div>
 
-      <v-divider class="my-3" ></v-divider>
-
-      <v-card>
+      <v-card class="mt-2">
         <table class="property-table" v-show="$vuetify.breakpoint.smAndUp">
           <tr>
-            <th>Position</th>
-            <td>{{ data.product.position }}</td>
             <th>Base Price</th>
             <td>
               {{ data.product.basePrice | toPrice }}
             </td>
-          </tr>
-
-          <tr>
-            <th>Sku</th>
-            <td>{{ data.product.sku }}</td>
             <th>Suggested</th>
             <td>
               <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</span>

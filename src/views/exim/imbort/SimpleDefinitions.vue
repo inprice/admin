@@ -158,7 +158,7 @@ export default {
       } else if (result.successCount == result.total) {
         return 'All of them is successfully added.';
       } else {
-        return result.successCount + ` ${this.entityName}(s) added`;
+        return result.successCount + ` ${this.entityName}(s) successfully added.`;
       } 
     }
   },

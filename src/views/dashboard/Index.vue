@@ -83,39 +83,43 @@
     <!-- ------------------------------------ -->
     <!-- N Products having the lowest prices -->
     <!-- ------------------------------------ -->
-    <v-card class="mt-4" :loading="loading">
+    <v-card class="mt-5" :loading="loading">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-down-circle-outline</v-icon>
         <div>
-          <div>Low prices</div>
-          <div class="caption">Top 5 products with low prices</div>
+          <div>Lowest prices</div>
+          <div class="caption">Your Top-5 products with the lowest prices</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
 
       <table 
         class="pb-2 info-table"
-        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.LOWEST.length"
+        v-if="report && report.products && report.products.extremePrices.Lowest && report.products.extremePrices.Lowest.length"
       >
         <thead>
           <tr>
             <th>Name</th>
-            <th width="15%" class="text-right">Price</th>
-            <th width="10%" class="text-center">Links</th>
-            <th width="15%" class="text-center">Updated</th>
+            <th width="8%" class="text-right">Price</th>
+            <th width="8%" class="text-right">Min</th>
+            <th width="10%" class="text-left hidden-sm-and-down">Seller</th>
+            <th width="8%" class="text-right hidden-sm-and-down">Avg</th>
+            <th width="8%" class="text-right">Max</th>
+            <th width="10%" class="text-left hidden-xs-only">Seller</th>
           </tr>
         </thead>
         <tbody>
           <tr
             style="cursor: pointer"
             link @click="$router.push({ name: 'product', params: { id: row.id } })"
-            v-for="(row) in report.products.extremePrices.LOWEST" :key="row.id">
+            v-for="(row) in report.products.extremePrices.Lowest" :key="row.id">
             <td>{{ row.name }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
-            <td class="text-center">{{ row.actives + '/' + row.total }}</td>
-            <td class="text-center">
-              <ago :date="row.updatedAt" />
-            </td>
+            <td class="text-right">{{ row.minPrice | toPrice }}</td>
+            <td class="text-left hidden-sm-and-down">{{ row.minSeller }}</td>
+            <td class="text-right hidden-sm-and-down">{{ row.avgPrice | toPrice }}</td>
+            <td class="text-right">{{ row.maxPrice | toPrice }}</td>
+            <td class="text-left hidden-xs-only">{{ row.maxSeller }}</td>
           </tr>
         </tbody>
       </table>
@@ -130,39 +134,43 @@
     <!-- ------------------------------------- -->
     <!-- N Products having the highest prices -->
     <!-- ------------------------------------- -->
-    <v-card class="mt-4" :loading="loading">
+    <v-card class="mt-5" :loading="loading">
       <v-card-title class="pa-2">
         <v-icon class="mr-4 hidden-xs-only">mdi-arrow-up-circle-outline</v-icon>
         <div>
-          <div>High prices</div>
-          <div class="caption">Top 5 products with high prices</div>
+          <div>Highest prices</div>
+          <div class="caption">Your Top-5 products with the highest prices</div>
         </div>
       </v-card-title>
       <v-divider></v-divider>
 
       <table 
         class="pb-2 info-table"
-        v-if="report && report.products && report.products.extremePrices.LOWEST && report.products.extremePrices.HIGHEST.length"
+        v-if="report && report.products && report.products.extremePrices.Highest && report.products.extremePrices.Highest.length"
       >
         <thead>
           <tr>
             <th>Name</th>
-            <th width="15%" class="text-right">Price</th>
-            <th width="10%" class="text-center">Links</th>
-            <th width="15%" class="text-center">Updated</th>
+            <th width="8%" class="text-right">Price</th>
+            <th width="8%" class="text-right">Min</th>
+            <th width="10%" class="text-left hidden-xs-only">Seller</th>
+            <th width="8%" class="text-right hidden-sm-and-down">Avg</th>
+            <th width="8%" class="text-right">Max</th>
+            <th width="10%" class="text-left hidden-sm-and-down">Seller</th>
           </tr>
         </thead>
         <tbody>
           <tr 
             style="cursor: pointer"
             link @click="$router.push({ name: 'product', params: { id: row.id } })"
-            v-for="(row) in report.products.extremePrices.HIGHEST" :key="row.id">
+            v-for="(row) in report.products.extremePrices.Highest" :key="row.id">
             <td>{{ row.name }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
-            <td class="text-center">{{ row.actives + '/' + row.total }}</td>
-            <td class="text-center">
-              <ago :date="row.updatedAt" />
-            </td>
+            <td class="text-right">{{ row.minPrice | toPrice }}</td>
+            <td class="text-left hidden-xs-only">{{ row.minSeller }}</td>
+            <td class="text-right hidden-sm-and-down">{{ row.avgPrice | toPrice }}</td>
+            <td class="text-right">{{ row.maxPrice | toPrice }}</td>
+            <td class="text-left hidden-sm-and-down">{{ row.maxSeller }}</td>
           </tr>
         </tbody>
       </table>
@@ -175,52 +183,98 @@
     </v-card>
 
     <!-- ------------------ -->
-    <!-- MRU 10 Links -->
+    <!-- MRU 25 Links -->
     <!-- ------------------ -->
-    <v-card class="mt-4" :loading="loading">
+    <v-card class="mt-5" :loading="loading">
       <v-card-title class="pa-2 d-flex">
         <v-icon class="mr-4 hidden-xs-only">mdi-account-search-outline</v-icon>
         <div>
           <div>Links</div>
-          <div class="caption">Most recently updated 10 links.</div>
+          <div class="caption">Most recently updated 25 links.</div>
         </div>
       </v-card-title>
 
       <v-divider></v-divider>
 
       <table class="list-table" v-if="report && report.links && report.links.mru25.length">
-        <tr
-          style="cursor: pointer"
-          v-for="row in report.links.mru25" :key="row.id" 
-          @click="$router.push({ name: 'link', params: { id: row.id } })"
-        >
-          <td>
-            <div class="caption teal--text font-weight-medium">{{ row.seller }}</div>
-            <div class="body-2" :class="{'caption font-italic' : !row.name}">{{ row.name || row.url }}</div>
-          </td>
+        <thead>
+          <tr>
+            <th>Competitor</th>
+            <th>Updated</th>
+            <th class="text-right">Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            style="cursor: pointer"
+            v-for="row in report.links.mru25" :key="row.id" 
+            @click="$router.push({ name: 'link', params: { id: row.id } })"
+          >
+            <td>
+              <div class="caption teal--text font-weight-medium">{{ row.seller }}</div>
+              <div class="body-2" :class="{'caption font-italic' : !row.name}">{{ row.name || row.url }}</div>
+            </td>
 
-          <td width="12%" class="align-center">
-            <div class="text-right d-flex justify-end my-auto">
-              <div class="mr-1">
-                <div 
-                  v-if="row.price"
-                  class="caption font-weight-medium" 
-                  :style="'color: ' + findPositionColor(row.position)"
-                >
-                  {{ row.position }}
+            <td width="12%" class="hidden-sm-and-down">
+              <ago class="caption" :date="row.updatedAt || row.checkedAt" />
+            </td>
+
+            <td width="12%" class="text-center">
+              <div class="text-right d-flex justify-end my-auto">
+                <div class="mr-1">
+                  <div 
+                    v-if="row.price"
+                    class="caption font-weight-medium" 
+                    :style="'color: ' + findPositionColor(row.position)"
+                  >
+                    {{ row.position }}
+                  </div>
+                  <div>{{ row.price | toPrice }}</div>
                 </div>
-                <div>{{ row.price | toPrice }}</div>
+                <!--v-icon 
+                  class="hidden-xs-only"
+                  :color="row.alarmId ? '' : 'transparent'" 
+                  style="font-size:20px"
+                >
+                  mdi-alarm
+                </v-icon-->
               </div>
-              <v-icon 
-                class="hidden-xs-only"
-                :color="row.alarmId ? '' : 'transparent'" 
-                style="font-size:20px"
-              >
-                mdi-alarm
-              </v-icon>
-            </div>
-          </td>
-        </tr>
+            </td>
+
+            <td width="4%" class="text-center pl-0">
+              <v-menu offset-y bottom left>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    small icon
+                    v-on="on"
+                    v-bind="attrs"
+                  >
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-list dense>
+                  <v-list-item link @click="copyTheLink(row.url)">
+                    <v-list-item-title>COPY URL</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="$router.push({ name: 'link', params: { id: row.id } })">
+                    <v-list-item-title>OPEN LINK</v-list-item-title>
+                  </v-list-item>
+
+                  <v-divider></v-divider>
+
+                  <v-list-item link @click="$router.push({ name: 'product', params: { id: row.productId } })">
+                    <v-list-item-title>OPEN PRODUCT</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link target="_blank" :href="row.url">
+                    <v-list-item-title>OPEN WEBPAGE</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </tbody>
       </table>
 
       <block-message 
@@ -280,7 +334,11 @@ export default {
           this.total.link = compCount;
         }
       }).finally(() => this.loading = false);
-    },  
+    },
+    copyTheLink(url) {
+      this.copyToClipboard(url);
+      this.$store.commit('snackbar/setMessage', { text: 'Url copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+    },
   },
   mounted() {
     this.refresh();
@@ -295,7 +353,13 @@ export default {
 </script>
 
 <style scoped>
-  td {
-    padding: 15px 10px;
+  .info-table {
+    font-size: 85% !important;
+  }
+  .info-table tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+  .info-table tr:hover {
+    background-color: #e5e5e5;
   }
 </style>
