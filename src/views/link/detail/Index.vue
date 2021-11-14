@@ -10,8 +10,9 @@
             small icon
             v-on="on"
             v-bind="attrs"
+            elevation="1"
           >
-            <v-icon>mdi-dots-vertical</v-icon>
+            <v-icon>mdi-dots-vertical-circle-outline</v-icon>
           </v-btn>
         </template>
 
@@ -26,7 +27,7 @@
       </v-menu>
     </div>
 
-    <v-divider class="my-3" ></v-divider>
+    <v-divider class="my-2" ></v-divider>
 
     <div v-if="link">
       <div v-if="link.info.name" class="d-flex justify-space-between title">
