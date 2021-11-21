@@ -374,7 +374,7 @@ export default {
       }
     },
     async moveOne(row) {
-      this.$refs.productSelectDialog.open('For the selected link, please select a product to move').then(async (data) => {
+      this.$refs.productSelectDialog.open().then(async (data) => {
         if (data && (data.id || data.name)) {
           const result = await LinkService.moveTo({
             toProductId: data.id,
@@ -395,8 +395,7 @@ export default {
             }
           });
         }
-        const title = `${selection.length} links`;
-        this.$refs.productSelectDialog.open(`For selected ${title}, please select a product to move`).then(async (data) => {
+        this.$refs.productSelectDialog.open().then(async (data) => {
           if (data && (data.id || data.name)) {
             const result = await LinkService.moveTo({
               toProductId: data.id,

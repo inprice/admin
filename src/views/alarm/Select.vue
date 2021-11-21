@@ -7,19 +7,20 @@
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <span>Please select target product</span>
+        <span>Please select a condition</span>
         <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
-      <v-card-text class="py-0 mt-3" v-if="products && products.length">
+      <v-card-text class="py-0 mt-3" v-if="alarms && alarms.length">
         <v-select
           dense
           outlined
-          label="Product"
-          :items="products"
-          item-value="left"
-          item-text="right"
-          v-model="selectedProduct"
+          clearable
+          label="Alarm"
+          :items="alarms"
+          item-value="id"
+          item-text="name"
+          v-model="selectedAlarm"
           return-object
           hide-details
           @keyup.native.enter="agree"
@@ -41,45 +42,44 @@
 </template>
 
 <script>
-import ProductService from '@/service/product';
+import Alarmservice from '@/service/alarm';
 
 export default {
-  name: 'product-select',
+  name: 'alarm-select',
   data() {
     return {
       show: false,
-      resolve: null,
+      title: null,
       callback: null,
-      products: [],
-      selectedProduct: [],
-      callerProductId: null,
+      alarms: [],
+      selectedAlarm: [],
+      selectedAlarmId: null,
     };
   },
   methods: {
-    open(callerProductId) {
+    open(selectedAlarmId) {
       this.show = true;
-      this.callerProductId = callerProductId;
+      this.title = title;
 
-      ProductService.getIdNameList(callerProductId).then((res) => {
+      Alarmservice.getIdNameList().then((res) => {
         if (res && res.data) {
-          this.products = res.data;
-          this.selectedProduct = res.data[0];
+          this.alarms = res.data;
+          this.selectedAlarm = res.data[selectedAlarmId || 0];
         }
       });
       return new Promise((callback) => this.callback = callback);
     },
     agree() {
-      if (this.selectedProduct) {
-        if (this.selectedProduct && this.selectedProduct.left && this.selectedProduct.left != this.callerProductId) {
-          this.close({ id: this.selectedProduct.left, name: this.selectedProduct.right });
-        }
+    agree() {
+      if (this.selectedAlarm) {
+        this.close({ id: this.selectedAlarm.left, name: this.selectedAlarm.right });
       }
     },
     close(selected) {
       this.callback(selected);
       this.show = false;
-      this.selectedProduct = null;
-      this.products = [];
+      this.selectedAlarm = null;
+      this.alarms = [];
     }
   }
 }

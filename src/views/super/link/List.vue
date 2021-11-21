@@ -60,7 +60,7 @@
 
       <v-card 
         tile 
-        v-for="(row, index) in rows" 
+        v-for="row in rows" 
         class="pa-2 pt-0"
         :key="row.id" 
         :loading="detailLoading && loadingId==row.id"
@@ -70,7 +70,7 @@
         <template slot="progress">
           <v-progress-linear color="green" indeterminate></v-progress-linear>
         </template>
-        <link-row
+        <!--link-row
           :row="row"
           :details="row.details"
           :isChecked="row.selected"
@@ -83,7 +83,7 @@
           @changeOneStatus="changeOneStatus"
           @undoOne="undoOne"
           @rowSelected="changeRowSelection(index)"
-        />
+        /-->
       </v-card>
     </div>
 
@@ -219,7 +219,6 @@ export default {
     },
   },
   components: {
-    LinkRow: () => import('../../link/components/Row.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }

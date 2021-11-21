@@ -11,7 +11,6 @@
             small icon
             v-on="on"
             v-bind="attrs"
-            elevation="1"
           >
             <v-icon>mdi-dots-vertical-circle-outline</v-icon>
           </v-btn>
@@ -99,10 +98,7 @@
           <tr>
             <th>Alarm</th>
             <td>
-              <alarm-note
-                :alarm="data.product.alarm"
-                @clicked="openAlarmDialogForProduct"
-              ></alarm-note>
+              Alarm note here!
             </td>
             <th>Max Price</th>
             <td>
@@ -121,10 +117,7 @@
           <tr>
             <th>Alarm</th>
             <td>
-              <alarm-note
-                :alarm="data.product.alarm"
-                @clicked="openAlarmDialogForProduct"
-              ></alarm-note>
+              Alarm note here!
             </td>
           </tr>
 
@@ -350,7 +343,7 @@ export default {
       }
     },
     async moveOneLink(row) {
-      this.$refs.productSelectDialog.open('For the selected link, please select a product to move', this.data.product.id).then(async (data) => {
+      this.$refs.productSelectDialog.open(this.data.product.id).then(async (data) => {
         if (data && (data.id || data.name)) {
           const result = await LinkService.moveTo({
             fromProductId: this.data.product.id,
@@ -375,8 +368,7 @@ export default {
             }
           });
         }
-        const title = `${selection.length} links`;
-        this.$refs.productSelectDialog.open(`For selected ${title}, please select a product to move`, this.data.product.id).then(async (data) => {
+        this.$refs.productSelectDialog.open(this.data.product.id).then(async (data) => {
           if (data && (data.id || data.name)) {
             const result = await LinkService.moveTo({
               fromProductId: this.data.product.id,
@@ -446,7 +438,6 @@ export default {
     this.findProduct();
   },
   components: {
-    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
     AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     AddLink: () => import('./AddLink'),
     LinkPanel: () => import('./LinkPanel'),

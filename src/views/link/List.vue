@@ -131,7 +131,7 @@ export default {
       });
     },
     async moveOne(row) {
-      this.$refs.productSelectDialog.open('For the selected row, please select a product to move', this.productId).then(async (data) => {
+      this.$refs.productSelectDialog.open(this.productId).then(async (data) => {
         if (data && (data.id || data.name)) {
           const result = await LinkService.moveTo({
             fromProductId: this.productId,

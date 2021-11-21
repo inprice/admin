@@ -162,6 +162,16 @@ const router = new VueRouter({
           component: () => import('./views/category/Index.vue')
         },
         {
+          name: 'alarms',
+          path: 'alarms',
+          component: () => import('./views/alarm/Index.vue')
+        },
+        {
+          name: 'alarm',
+          path: 'alarm/:id',
+          component: () => import('./views/alarm/Detail.vue')
+        },
+        {
           name: 'smart-prices',
           path: 'smart-prices',
           component: () => import('./views/smartprice/Index.vue')

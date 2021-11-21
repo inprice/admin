@@ -10,7 +10,6 @@
             small icon
             v-on="on"
             v-bind="attrs"
-            elevation="1"
           >
             <v-icon>mdi-dots-vertical-circle-outline</v-icon>
           </v-btn>
@@ -124,11 +123,7 @@
 
       <div class="title mt-5 mb-2">Alarm</div>
       <v-card class="pa-4 pl-3">
-        <alarm-note
-          :key="alarmRefresher"
-          :alarm="link.info.alarm"
-          @clicked="openAlarmDialog"
-        ></alarm-note>
+        Alarm note here!
       </v-card>
 
       <price-list :list="link.priceList"></price-list>
@@ -243,7 +238,6 @@ export default {
     PriceList: () => import('./PriceList.vue'),
     HistoryList: () => import('./HistoryList.vue'),
     SpecList: () => import('./SpecList.vue'),
-    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
     AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
