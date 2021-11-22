@@ -189,8 +189,20 @@
             @click="$router.push({ name: 'product', params: { id: row.id } })"
           >
             <td>
-              <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>
-              <div>{{ row.name }}</div>
+              <div class="d-flex">
+                <v-icon 
+                  class="hidden-xs-only mr-1"
+                  style="font-size:18px"
+                  :color="row.alarmId ? 'pink' : '#ccc'" 
+                  :title="row.alarmId ? row.alarmName : 'NotSet'" 
+                >
+                  mdi-clock-outline
+                </v-icon>
+                <div>
+                  <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>
+                  <div>{{ row.name }}</div>
+                </div>
+              </div>
             </td>
             <td class="hidden-sm-and-down">{{ row.brandName }}</td>
             <td class="hidden-sm-and-down">{{ row.categoryName }}</td>
@@ -205,13 +217,6 @@
                 <div class="mr-1">
                   {{ (row.price || 0) | toPrice }}
                 </div>
-                <!--v-icon 
-                  class="hidden-xs-only"
-                  :color="row.alarmId ? '' : 'transparent'" 
-                  style="font-size:20px"
-                >
-                  mdi-alarm
-                </v-icon-->
               </div>
             </td>
             <td class="my-auto">
@@ -229,6 +234,15 @@
                   <v-list-item link @click="openUpdateDialog(row)">
                     <v-list-item-title>EDIT</v-list-item-title>
                   </v-list-item>
+
+                  <v-list-item link @click="setProductAlarmOff(row)" :disabled="$store.get('session/isNotEditor')" v-if="row.alarmId">
+                    <v-list-item-title>SET ALARM OFF</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="openSelectAlarmDialogForProduct(row)" :disabled="$store.get('session/isNotEditor')" v-else>
+                    <v-list-item-title>SET AN ALARM</v-list-item-title>
+                  </v-list-item>
+
+                  <v-divider></v-divider>
 
                   <v-list-item link @click="remove(row)">
                     <v-list-item-title>DELETE</v-list-item-title>
@@ -261,6 +275,7 @@
     <edit ref="editDialog" @saved="save" />
     <confirm ref="confirm" />
 
+    <alarm-select-dialog ref="alarmSelectDialog"></alarm-select-dialog>
   </div>
 
 </template>
@@ -401,6 +416,28 @@ export default {
         return this.search();
       }
     },
+    openSelectAlarmDialogForProduct(product) {
+      this.$refs.alarmSelectDialog.open('PRODUCT').then(async (selectedAlarmId) => {
+        if (selectedAlarmId) {
+          ProductService.setAlarmON({ alarmId: selectedAlarmId, entityIdSet: [ product.id ] }).then((res) => {
+            if (res && res.status) {
+              this.search();
+            }
+          });
+        }
+      });
+    },
+    setProductAlarmOff(product) {
+      this.$refs.confirm.open('Set Alarm Off', 'Alarm will be off for this product. Are you sure?').then(async (confirm) => {
+        if (confirm == true) {
+          ProductService.setAlarmOFF({ entityIdSet: [ product.id ] }).then((res) => {
+            if (res && res.status) {
+              this.search();
+            }
+          });
+        }
+      });
+    },
   },
   watch: {
     searchForm() {
@@ -424,6 +461,7 @@ export default {
     Edit: () => import('./Edit.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
+    AlarmSelectDialog: () => import('@/views/alarm/Select.vue'),
   },
 }
 </script>

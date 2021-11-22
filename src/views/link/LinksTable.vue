@@ -31,10 +31,22 @@
               @click.stop="checkOne"
             />
           </td>
-          <td class="my-auto">
-            <div v-if="row.seller" class="caption teal--text font-weight-medium">{{ row.seller }}</div>
-            <div v-if="row.grup == 'PROBLEM'" class="caption pink--text">{{ row.statusDescription }}</div>
-            <div>{{ row.name || row.url }}</div>
+          <td class="pl-0">
+            <div class="d-flex">
+              <v-icon 
+                class="hidden-xs-only mr-1"
+                style="font-size:18px"
+                :color="row.alarmId ? 'pink' : '#ccc'" 
+                :title="row.alarmId ? row.alarmName : 'NotSet'" 
+              >
+                mdi-clock-outline
+              </v-icon>
+              <div>
+                <div v-if="row.seller" class="caption teal--text font-weight-medium">{{ row.seller }}</div>
+                <div v-if="row.grup == 'PROBLEM'" class="caption pink--text">{{ row.statusDescription }}</div>
+                <div>{{ row.name || row.url }}</div>
+              </div>
+            </div>
           </td>
           <td class="align-center pr-0">
             <div class="text-right d-flex justify-end my-auto">
@@ -48,13 +60,6 @@
                 </div>
                 <div>{{ row.price | toPrice }}</div>
               </div>
-              <!--v-icon 
-                class="hidden-xs-only"
-                :color="row.alarmId ? '' : 'transparent'" 
-                style="font-size:20px"
-              >
-                mdi-alarm
-              </v-icon-->
             </div>
           </td>
           <td class="my-auto">
@@ -86,8 +91,11 @@
 
                 <v-divider></v-divider>
 
-                <v-list-item link @click="$emit('openAlarmDialog', row)" :disabled="$store.get('session/isNotEditor')">
-                  <v-list-item-title>SET ALARM</v-list-item-title>
+                <v-list-item link @click="$emit('setAlarmOff', row)" :disabled="$store.get('session/isNotEditor')" v-if="row.alarmId">
+                  <v-list-item-title>SET ALARM OFF</v-list-item-title>
+                </v-list-item>
+                <v-list-item link @click="$emit('openAlarmDialog', row)" :disabled="$store.get('session/isNotEditor')" v-else>
+                  <v-list-item-title>SET AN ALARM</v-list-item-title>
                 </v-list-item>
 
                 <v-list-item link @click="$emit('moveOne', row)" :disabled="$store.get('session/isNotEditor')">

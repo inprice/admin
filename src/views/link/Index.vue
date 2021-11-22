@@ -192,6 +192,7 @@
           @deleteOne="deleteOne"
           @moveOne="moveOne"
           @openAlarmDialog="openAlarmDialog"
+          @setAlarmOff="setAlarmOff"
         >
         </links-table>
 
@@ -234,6 +235,7 @@
 
     <confirm ref="confirm" />
 
+    <alarm-select-dialog ref="alarmSelectDialog"></alarm-select-dialog>
     <product-select-dialog ref="productSelectDialog"></product-select-dialog>
 
   </div>
@@ -241,7 +243,6 @@
 
 <script>
 import LinkService from '@/service/link';
-import AlarmService from '@/service/alarm';
 import { get } from 'vuex-pathify'
 
 import SystemData from '@/data/system';
@@ -408,27 +409,26 @@ export default {
       }
     },
     openAlarmDialog(link) {
-      let cloned = {};
-      if (link.alarm) {
-        cloned = JSON.parse(JSON.stringify(link.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'LINK';
-      cloned.linkId = link.id;
-      cloned.name = link.name || link.url;
-      this.$refs.alarmDialog.open(cloned);
+      this.$refs.alarmSelectDialog.open('LINK').then(async (selectedAlarmId) => {
+        if (selectedAlarmId) {
+          LinkService.setAlarmON({ alarmId: selectedAlarmId, entityIdSet: [ link.id ] }).then((res) => {
+            if (res && res.status) {
+              this.search(false);
+            }
+          });
+        }
+      });
     },
-    saveAlarm(form) {
-      AlarmService.save(form);
-    },
-    setAlarmOff(form) {
-      AlarmService.remove(form.id);
+    setAlarmOff(link) {
+      this.$refs.confirm.open('Set Alarm Off', 'Alarm will be off for this link. Are you sure?').then(async (confirm) => {
+        if (confirm == true) {
+          LinkService.setAlarmOFF({ entityIdSet: [ link.id ] }).then((res) => {
+            if (res && res.status) {
+              this.search(false);
+            }
+          });
+        }
+      });
     },
   },
   mounted() {
@@ -441,6 +441,7 @@ export default {
   },
   components: {
     LinksTable: () => import('../link/LinksTable.vue'),
+    AlarmSelectDialog: () => import('@/views/alarm/Select.vue'),
     ProductSelectDialog: () => import('@/views/product/Select.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),

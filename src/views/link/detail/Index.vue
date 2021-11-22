@@ -7,11 +7,11 @@
       <v-menu offset-y bottom left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            small icon
+            small
             v-on="on"
             v-bind="attrs"
           >
-            <v-icon>mdi-dots-vertical-circle-outline</v-icon>
+            Menu
           </v-btn>
         </template>
 
@@ -122,21 +122,32 @@
       </v-card>
 
       <div class="title mt-5 mb-2">Alarm</div>
-      <v-card class="pa-4 pl-3">
-        Alarm note here!
+      <v-card class="pa-4 pl-3 d-flex justify-space-between">
+        <span>{{ link.info.alarmName || 'NotSet' }}</span>
+        <v-btn
+          small dark
+          color="red"
+          @click="setAlarmOff"
+          v-if="link.info.alarmId"
+        >
+          Set Off
+        </v-btn>
+        <v-btn
+          small
+          color="success"
+          @click="openSelectAlarmDialog"
+          v-else
+        >
+          Set On
+        </v-btn>
       </v-card>
 
       <price-list :list="link.priceList"></price-list>
       <history-list :list="link.historyList"></history-list>
       <spec-list :list="link.specList"></spec-list>
 
-      <alarm-dialog
-        ref="alarmDialog"
-        @setOff="setAlarmOff"
-        @saved="saveAlarm"
-      ></alarm-dialog>
-
       <confirm ref="confirm"></confirm>
+      <alarm-select-dialog ref="alarmSelectDialog"></alarm-select-dialog>
     </div>
 
     <block-message 
@@ -150,7 +161,6 @@
 
 <script>
 import LinkService from '@/service/link';
-import AlarmService from '@/service/alarm';
 
 export default {
   data() {
@@ -169,38 +179,23 @@ export default {
         }
       });
     },
-    openAlarmDialog() {
-      let cloned = {};
-      if (this.link.info.alarm) {
-        cloned = JSON.parse(JSON.stringify(this.link.info.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'link';
-      cloned.name = this.link.info.name || this.link.info.url;
-      this.$refs.alarmDialog.open(cloned);
-    },
-    async saveAlarm(form) {
-      form.linkId = this.link.info.id;
-      const result = await AlarmService.save(form);
-      if (result && result.status) {
-        this.link.info.alarm = result.data;
-        this.alarmRefresher++;
-      }
-    },
-    setAlarmOff(form) {
-      this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
-        if (confirm == true) {
-          const self = this;
-          AlarmService.remove(form.id).then((res) => {
+    openSelectAlarmDialog() {
+      this.$refs.alarmSelectDialog.open('LINK').then(async (selectedAlarmId) => {
+        if (selectedAlarmId) {
+          LinkService.setAlarmON({ alarmId: selectedAlarmId, entityIdSet: [ this.link.info.id ] }).then((res) => {
             if (res && res.status) {
-              self.link.info.alarm = null;
-              this.alarmRefresher++;
+              this.getDetails();
+            }
+          });
+        }
+      });
+    },
+    setAlarmOff() {
+      this.$refs.confirm.open('Set Alarm Off', 'Alarm will be off for this link. Are you sure?').then(async (confirm) => {
+        if (confirm == true) {
+          LinkService.setAlarmOFF({ entityIdSet: [ this.link.info.id ] }).then((res) => {
+            if (res && res.status) {
+              this.getDetails();
             }
           });
         }
@@ -238,7 +233,7 @@ export default {
     PriceList: () => import('./PriceList.vue'),
     HistoryList: () => import('./HistoryList.vue'),
     SpecList: () => import('./SpecList.vue'),
-    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
+    AlarmSelectDialog: () => import('@/views/alarm/Select.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },

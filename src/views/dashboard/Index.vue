@@ -211,9 +211,19 @@
             v-for="row in report.links.mru25" :key="row.id" 
             @click="$router.push({ name: 'link', params: { id: row.id } })"
           >
-            <td>
-              <div class="caption teal--text font-weight-medium">{{ row.seller }}</div>
-              <div class="body-2" :class="{'caption font-italic' : !row.name}">{{ row.name || row.url }}</div>
+            <td class="d-flex">
+              <v-icon 
+                class="hidden-xs-only mr-1"
+                style="font-size:18px"
+                :color="row.alarmId ? 'pink' : '#ccc'" 
+                :title="row.alarmId ? row.alarmName : 'NotSet'" 
+              >
+                mdi-clock-outline
+              </v-icon>
+              <div>
+                <div class="caption teal--text font-weight-medium">{{ row.seller }}</div>
+                <div class="body-2" :class="{'caption font-italic' : !row.name}">{{ row.name || row.url }}</div>
+              </div>
             </td>
 
             <td width="12%" class="hidden-sm-and-down">
@@ -232,13 +242,6 @@
                   </div>
                   <div>{{ row.price | toPrice }}</div>
                 </div>
-                <!--v-icon 
-                  class="hidden-xs-only"
-                  :color="row.alarmId ? '' : 'transparent'" 
-                  style="font-size:20px"
-                >
-                  mdi-alarm
-                </v-icon-->
               </div>
             </td>
 

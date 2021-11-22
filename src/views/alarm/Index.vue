@@ -46,12 +46,12 @@
         <tbody>
           <tr 
             v-for="row in searchResult" :key="row.id"
-            @click="openAlarmDialog(row)"
+            @click="$router.push( { name: 'alarm', params: { id: row.id } })"
             style="cursor: pointer"
           >
             <td>{{ row.name }}</td>
             <td class="my-auto">
-              <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
+              <v-menu offset-y bottom left>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     small icon
@@ -62,11 +62,11 @@
                   </v-btn>
                 </template>
                 <v-list dense>
-                  <v-list-item link @click="$router.push( { name: 'alarm', params: { id: row.id } })">
-                    <v-list-item-title>LINKED ENTITIES</v-list-item-title>
+                  <v-list-item link @click="openAlarmDialog(row)">
+                    <v-list-item-title>EDIT</v-list-item-title>
                   </v-list-item>
 
-                  <v-list-item link @click="remove(row)">
+                  <v-list-item link @click="remove(row)" :disabled="$store.get('session/isNotEditor')">
                     <v-list-item-title>DELETE</v-list-item-title>
                   </v-list-item>
                 </v-list>

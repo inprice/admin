@@ -8,11 +8,11 @@
       <v-menu offset-y bottom left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            small icon
+            small
             v-on="on"
             v-bind="attrs"
           >
-            <v-icon>mdi-dots-vertical-circle-outline</v-icon>
+            Menu
           </v-btn>
         </template>
 
@@ -98,7 +98,7 @@
           <tr>
             <th>Alarm</th>
             <td>
-              Alarm note here!
+              {{ data.product.alarmName || 'NotSet' }}
             </td>
             <th>Max Price</th>
             <td>
@@ -114,12 +114,6 @@
           <tr><th>Sku</th><td>{{ data.product.sku }}</td></tr>
           <tr><th>Brand</th><td>{{ data.product.brandName }}</td></tr>
           <tr><th>Category</th><td>{{ data.product.categoryName }}</td></tr>
-          <tr>
-            <th>Alarm</th>
-            <td>
-              Alarm note here!
-            </td>
-          </tr>
 
           <tr><th>Base Price</th><td>{{ data.product.basePrice | toPrice }}</td></tr>
 
@@ -197,7 +191,8 @@
         @checked="refreshSelected" 
         @deleteOne="deleteOneLink"
         @moveOne="moveOneLink"
-        @openAlarmDialog="openAlarmDialogForLink"
+        @openAlarmDialog="openSelectAlarmDialogForLink"
+        @setAlarmOff="setLinkAlarmOff"
       ></link-panel>
     </v-expansion-panels>
 
@@ -216,12 +211,7 @@
       @added="addLinks"
     />
 
-    <alarm-dialog
-      :key="alarmRefresher"
-      ref="alarmDialog"
-      @setOff="setAlarmOff"
-      @saved="saveAlarm"
-    ></alarm-dialog>
+    <alarm-select-dialog ref="alarmSelectDialog"></alarm-select-dialog>
 
     <product-edit-dialog ref="productEditDialog" @saved="save"></product-edit-dialog>
     <product-select-dialog ref="productSelectDialog"></product-select-dialog>
@@ -232,7 +222,6 @@
 <script>
 import ProductService from '@/service/product';
 import LinkService from '@/service/link';
-import AlarmService from '@/service/alarm';
 
 export default {
   data() {
@@ -384,52 +373,25 @@ export default {
         });
       }
     },
-    openAlarmDialogForProduct() {
-      let cloned = {};
-      if (this.data.product.alarm) {
-        cloned = JSON.parse(JSON.stringify(this.data.product.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'PRODUCT';
-      cloned.productId = this.data.product.id;
-      cloned.name = this.data.product.name;
-      this.$refs.alarmDialog.open(cloned);
+    openSelectAlarmDialogForLink(link) {
+      this.$refs.alarmSelectDialog.open('LINK').then(async (selectedAlarmId) => {
+        if (selectedAlarmId) {
+          LinkService.setAlarmON({ alarmId: selectedAlarmId, entityIdSet: [ link.id ] }).then((res) => {
+            if (res && res.status) {
+              this.findProduct(true);
+            }
+          });
+        }
+      });
     },
-    openAlarmDialogForLink(link) {
-      let cloned = {};
-      if (link.alarm) {
-        cloned = JSON.parse(JSON.stringify(link.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'LINK';
-      cloned.linkId = link.id;
-      cloned.name = link.name || link.url;
-      this.$refs.alarmDialog.open(cloned);
-    },
-    async saveAlarm(form) {
-      const result = await AlarmService.save(form);
-      if (result && result.status) {
-        this.data.product.alarm = result.data;
-        this.alarmRefresher++;
-      }
-    },
-    setAlarmOff(form) {
-      AlarmService.remove(form.id).then((res) => {
-        if (res && res.status) {
-          this.data.product.alarm = null;
-          this.alarmRefresher++;
+    setLinkAlarmOff(link) {
+      this.$refs.confirm.open('Set Alarm Off', 'Alarm will be off for this link. Are you sure?').then(async (confirm) => {
+        if (confirm == true) {
+          LinkService.setAlarmOFF({ entityIdSet: [ link.id ] }).then((res) => {
+            if (res && res.status) {
+              this.findProduct(true);
+            }
+          });
         }
       });
     },
@@ -438,11 +400,11 @@ export default {
     this.findProduct();
   },
   components: {
-    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     AddLink: () => import('./AddLink'),
     LinkPanel: () => import('./LinkPanel'),
     ProductEditDialog: () => import('./Edit'),
     ProductSelectDialog: () => import('@/views/product/Select.vue'),
+    AlarmSelectDialog: () => import('@/views/alarm/Select.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },

@@ -7,35 +7,38 @@
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <span>Please select a condition</span>
-        <v-btn icon @click="close"><v-icon>mdi-close</v-icon></v-btn>
+        <span v-if="alarms.length">Please select an alarm</span>
+        <span v-else>No alarm!</span>
+        <v-btn icon @click="close(null)"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
+
+      <v-divider v-if="!alarms.length" class="my-2"></v-divider>
 
       <v-card-text class="py-0 mt-3" v-if="alarms && alarms.length">
         <v-select
           dense
           outlined
-          clearable
+          hide-details
           label="Alarm"
           :items="alarms"
-          item-value="id"
-          item-text="name"
-          v-model="selectedAlarm"
-          return-object
-          hide-details
+          item-value="left"
+          item-text="right"
+          v-model="selectedAlarmId"
           @keyup.native.enter="agree"
           :menu-props="{ bottom: true, offsetY: true }"
         ></v-select>
       </v-card-text>
 
-      <v-card-actions class="justify-end pa-3">
+      <v-card-actions class="pa-3 pt-0" :class="{ 'justify-end': alarms.length > 0}">
         <v-btn
           text
           @click="agree"
+          v-if="alarms.length"
           :disabled="$store.get('session/isNotEditor')"
         >
           OK
         </v-btn>
+        <div v-else class="pa-3">You need to define alarms first!</div>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -49,36 +52,31 @@ export default {
   data() {
     return {
       show: false,
-      title: null,
       callback: null,
       alarms: [],
-      selectedAlarm: [],
       selectedAlarmId: null,
     };
   },
   methods: {
-    open(selectedAlarmId) {
+    open(topic) {
       this.show = true;
-      this.title = title;
-
-      Alarmservice.getIdNameList().then((res) => {
+      Alarmservice.getIdNameList(topic).then((res) => {
         if (res && res.data) {
           this.alarms = res.data;
-          this.selectedAlarm = res.data[selectedAlarmId || 0];
+          if (this.alarms && this.alarms.length) this.selectedAlarmId = this.alarms[0].left;
         }
       });
       return new Promise((callback) => this.callback = callback);
     },
     agree() {
-    agree() {
-      if (this.selectedAlarm) {
-        this.close({ id: this.selectedAlarm.left, name: this.selectedAlarm.right });
+      if (this.selectedAlarmId) {
+        this.close(this.selectedAlarmId);
       }
     },
     close(selected) {
       this.callback(selected);
       this.show = false;
-      this.selectedAlarm = null;
+      this.selectedAlarmId = null;
       this.alarms = [];
     }
   }

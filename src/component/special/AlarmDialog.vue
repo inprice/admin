@@ -7,7 +7,7 @@
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between no-gutters">
         <div class="mr-2">
-          {{ form.id ? 'Edit' : 'Add a new' }} alarm
+          {{ form.id ? 'Edit' : 'Add a new' }} {{ form.topic.toLowerCase() }} alarm
         </div>
         <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
@@ -29,6 +29,7 @@
         <v-stepper-content step="1">
           <v-radio-group
             dense
+            :disabled="form.id > 0"
             @change="resetSubject"
             v-model="form.topic"
           >
@@ -57,7 +58,7 @@
           color="success"
         >
           <div>Subject</div>
-          <div><small class="caption">For which subject <b>{{ form.topic == 'LINK' && form.subject == 'POSITION' ? 'STATUS' : form.subject }}</b></small></div>
+          <div><small class="caption">For which subject: <b>{{ form.topic == 'LINK' && form.subject == 'POSITION' ? 'STATUS' : form.subject }}</b></small></div>
         </v-stepper-step>
         <v-stepper-content step="2">
           <v-radio-group
@@ -99,7 +100,7 @@
           class="font-weight-medium"
         >
           When
-          <small class="caption">For which changing:  <b>{{ form.subjectWhen }}</b></small>
+          <small class="caption">For which changing:  <b>{{ form.subjectWhen ? form.subjectWhen.replaceAll('_', ' ') : form.subjectWhen }}</b></small>
         </v-stepper-step>
         <v-stepper-content step="3">
           <v-radio-group

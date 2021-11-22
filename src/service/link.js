@@ -53,4 +53,24 @@ export default {
     return res.status;
   },
 
+  async setAlarmON(form) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
+
+    const res = await Helper.call('Set Alarm On', { method: 'put', url: baseURL + '/alarm/on', data: form });
+    return res;
+  },
+
+  async setAlarmOFF(form) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+      return;
+    }
+
+    const res = await Helper.call('Set Alarm Off', { method: 'put', url: baseURL + '/alarm/off', data: form });
+    return res;
+  },
+
 };
