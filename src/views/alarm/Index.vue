@@ -4,7 +4,7 @@
     <div class="title">Alarms</div>
 
     <div class="body-2 my-3">
-      In order to be notified for any changings, define alarms here and set them on to your products and competitor links.
+      In order to be notified for any changings, please define your alarm conditions here and use them on your products and competitor links.
     </div>
 
     <!-- --------------- -->

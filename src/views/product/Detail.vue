@@ -17,18 +17,18 @@
         </template>
 
         <v-list dense>
-          <v-list-item link @click="findProduct">
-            <v-list-item-title>REFRESH</v-list-item-title>
-          </v-list-item>
-
           <v-list-item link @click="openEditProductDialog" :disabled="$store.get('session/isNotEditor')">
             <v-list-item-title>EDIT</v-list-item-title>
           </v-list-item>
 
-          <v-divider></v-divider>
-
           <v-list-item link @click="deleteProduct" :disabled="$store.get('session/isNotEditor')">
             <v-list-item-title>DELETE</v-list-item-title>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item link @click="findProduct">
+            <v-list-item-title>REFRESH</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -69,7 +69,9 @@
             </td>
             <th>Suggested</th>
             <td>
-              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</span>
+              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">
+                {{ data.product.suggestedPrice | toPrice }} (<span class="green--text font-weight-medium">{{ data.product.smartPriceName }}</span>)
+              </span>
               <span v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</span>
               <span v-else-if="!data.product.smartPriceId">Not bound!</span>
             </td>
@@ -96,7 +98,7 @@
           </tr>
 
           <tr>
-            <th>Alarm</th>
+            <th>Alarm Cond.</th>
             <td>
               {{ data.product.alarmName || 'NotSet' }}
             </td>
@@ -118,15 +120,6 @@
           <tr><th>Base Price</th><td>{{ data.product.basePrice | toPrice }}</td></tr>
 
           <tr>
-            <th>Suggested</th>
-            <td>
-              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</span>
-              <span v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</span>
-              <span v-else-if="!data.product.smartPriceId">Not bound!</span>
-            </td>
-          </tr>
-
-          <tr>
             <th>Min Price</th>
             <td>
               <span>{{ data.product.minPrice | toPrice }}</span>
@@ -143,6 +136,17 @@
               <span>{{ data.product.maxPrice | toPrice }}</span>
               <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'NA'">by {{ data.product.maxSeller }}</span>
               <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform && data.product.maxSeller != 'You'">on {{ data.product.maxPlatform }}</span>
+            </td>
+          </tr>
+
+          <tr>
+            <th>Suggested</th>
+            <td>
+              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">
+                {{ data.product.suggestedPrice | toPrice }} (<span class="green--text font-weight-medium">{{ data.product.smartPriceName }}</span>)
+              </span>
+              <span v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</span>
+              <span v-else-if="!data.product.smartPriceId">Not bound!</span>
             </td>
           </tr>
         </table>

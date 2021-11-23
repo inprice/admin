@@ -200,9 +200,9 @@
         <thead>
           <tr>
             <th>Competitor</th>
-            <th>Updated</th>
-            <th class="text-right">Price</th>
-            <th></th>
+            <th width="12%">Updated</th>
+            <th width="12%" class="text-right">Price</th>
+            <th width="4%"></th>
           </tr>
         </thead>
         <tbody>
@@ -211,26 +211,28 @@
             v-for="row in report.links.mru25" :key="row.id" 
             @click="$router.push({ name: 'link', params: { id: row.id } })"
           >
-            <td class="d-flex">
-              <v-icon 
-                class="hidden-xs-only mr-1"
-                style="font-size:18px"
-                :color="row.alarmId ? 'pink' : '#ccc'" 
-                :title="row.alarmId ? row.alarmName : 'NotSet'" 
-              >
-                mdi-clock-outline
-              </v-icon>
-              <div>
-                <div class="caption teal--text font-weight-medium">{{ row.seller }}</div>
-                <div class="body-2" :class="{'caption font-italic' : !row.name}">{{ row.name || row.url }}</div>
+            <td>
+              <div class="d-flex">
+                <v-icon 
+                  class="hidden-xs-only mr-1"
+                  style="font-size:18px"
+                  :color="row.alarmId ? 'pink' : '#ccc'" 
+                  :title="row.alarmId ? `Alarming when ${row.alarmName}` : 'NotSet'" 
+                >
+                  mdi-clock-outline
+                </v-icon>
+                <div>
+                  <div class="caption teal--text">{{ row.seller }}</div>
+                  <div class="body-2" :class="{'caption font-italic' : !row.name}">{{ row.name || row.url }}</div>
+                </div>
               </div>
             </td>
 
-            <td width="12%" class="hidden-sm-and-down">
+            <td class="hidden-sm-and-down">
               <ago class="caption" :date="row.updatedAt || row.checkedAt" />
             </td>
 
-            <td width="12%" class="text-center">
+            <td class="text-center">
               <div class="text-right d-flex justify-end my-auto">
                 <div class="mr-1">
                   <div 
@@ -245,7 +247,7 @@
               </div>
             </td>
 
-            <td width="4%" class="text-center pl-0">
+            <td class="text-center pl-0">
               <v-menu offset-y bottom left>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -364,5 +366,8 @@ export default {
   }
   .info-table tr:hover {
     background-color: #e5e5e5;
+  }
+  .list-table td {
+    padding: 8px;
   }
 </style>

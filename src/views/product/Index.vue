@@ -194,7 +194,7 @@
                   class="hidden-xs-only mr-1"
                   style="font-size:18px"
                   :color="row.alarmId ? 'pink' : '#ccc'" 
-                  :title="row.alarmId ? row.alarmName : 'NotSet'" 
+                  :title="row.alarmId ? `Be notified when ${row.alarmName}` : 'NotSet'"
                 >
                   mdi-clock-outline
                 </v-icon>

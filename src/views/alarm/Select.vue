@@ -8,7 +8,7 @@
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
         <span v-if="alarms.length">Please select an alarm</span>
-        <span v-else>No alarm!</span>
+        <span v-else>No condition found!</span>
         <v-btn icon @click="close(null)"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
@@ -38,7 +38,7 @@
         >
           OK
         </v-btn>
-        <div v-else class="pa-3">You need to define alarms first!</div>
+        <div v-else class="pa-3">You need to define your alarm conditions first!</div>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -37,13 +37,14 @@
                 class="hidden-xs-only mr-1"
                 style="font-size:18px"
                 :color="row.alarmId ? 'pink' : '#ccc'" 
-                :title="row.alarmId ? row.alarmName : 'NotSet'" 
+                :title="row.alarmId ? `Be notified when ${row.alarmName}` : 'NotSet'" 
               >
                 mdi-clock-outline
               </v-icon>
               <div>
-                <div v-if="row.seller" class="caption teal--text font-weight-medium">{{ row.seller }}</div>
-                <div v-if="row.grup == 'PROBLEM'" class="caption pink--text">{{ row.statusDescription }}</div>
+                <div v-if="row.grup == 'WAITING'" class="caption green--text">{{ row.statusDescription }}</div>
+                <div v-else-if="row.grup == 'ACTIVE'" class="caption blue--text font-weight-medium">{{ row.seller }}</div>
+                <div v-else class="caption red--text">{{ row.statusDescription }}</div>
                 <div>{{ row.name || row.url }}</div>
               </div>
             </div>

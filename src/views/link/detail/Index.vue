@@ -121,7 +121,7 @@
         </div>
       </v-card>
 
-      <div class="title mt-5 mb-2">Alarm</div>
+      <div class="title mt-5 mb-2">Alarm Condition</div>
       <v-card class="pa-4 pl-3 d-flex justify-space-between">
         <span>{{ link.info.alarmName || 'NotSet' }}</span>
         <v-btn
