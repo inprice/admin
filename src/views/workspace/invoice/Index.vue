@@ -68,39 +68,33 @@
         </v-chip>
       </v-card-title>
       
-      <v-divider></v-divider>
-
       <v-card-text v-if="info.title" class="pt-3">
-        <table class="desc-table">
-          <tr>
-            <th>Company</th>
-            <td>{{ info.title }}</td>
-          </tr>
-          <tr>
-            <th>Contact</th>
-            <td>{{ info.contactName }}</td>
-          </tr>
-          <tr>
-            <th>Address</th>
-            <td>
-              <div>{{ info.address1 }}</div>
-              <div>{{ info.address2 }}</div>
-              <div>
-                <span class="mr-2" v-if="info.postcode">{{ info.postcode }},</span>
-                <span class="mr-2" v-if="info.city">{{ info.city }} -</span>
-                <span class="mr-2" v-if="info.state">{{ info.state }} /</span>
-                <span>{{ info.country }}</span>
-              </div>
-            </td>
-          </tr>
-        </table>
+        <v-card>
+          <table class="property-table">
+            <tr>
+              <th>Company</th>
+              <td>{{ info.title }}</td>
+            </tr>
+
+            <tr>
+              <th>Contact</th>
+              <td>{{ info.contactName }}</td>
+            </tr>
+            <tr>
+              <th>Address</th>
+              <td>{{ info.address1 }} {{ info.address2 }}</td>
+            </tr>
+            <tr>
+              <th></th>
+              <td>{{ info.postcode ? info.postcode+', ': '' }} {{ info.city ? info.city+' - ' : '' }} {{ info.state ? info.state+' / ' : '' }}  {{ info.country }}</td>
+            </tr>
+          </table>
+        </v-card>
       </v-card-text>
 
       <v-card-text v-else class="pt-3">
         Before start a subscription, you need to enter your billing info, Company Name, Address etc.
       </v-card-text>
-
-      <v-divider></v-divider>
 
       <v-card-actions class="pa-3">
         <v-btn

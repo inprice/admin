@@ -13,7 +13,7 @@ export default {
 
   async create(form) {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any data!' });
+      store.commit('snackbar/setMessage', { text: Helper.NOT_ALLOWED() });
       return;
     }
 
@@ -23,7 +23,7 @@ export default {
 
   async update(form) {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any data!' });
+      store.commit('snackbar/setMessage', { text: Helper.NOT_ALLOWED() });
       return;
     }
 

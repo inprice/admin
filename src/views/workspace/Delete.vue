@@ -7,9 +7,9 @@
       
       <v-divider></v-divider>
 
-      <v-card-text class="pt-3">
+      <v-card-text class="py-3">
         <div class="font-weight-bold">Please keep in mind;</div>
-        <ul>
+        <ul class="py-2">
           <li>Are you absolutely sure? If so, in opening dialog, please provide your password to execute the operation.</li>
           <li>Once you delete a workspace, there is no going back! All your data is permanently deleted. Please be certain!</li>
           <li>You cannot delete your workspace while you have an active subscription. To proceed, you need to cancel it first.</li>

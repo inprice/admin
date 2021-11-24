@@ -4,26 +4,41 @@
       Edit workspace
     </v-card-title>
 
-    <v-divider></v-divider>
+    <v-card-text class="pt-3" v-if="wsinfo.workspace">
+      <v-card>
+        <table class="property-table">
+          <tr>
+            <th>Name</th>
+            <td>{{ wsinfo.workspace.name }}</td>
+            <th>Plan Name</th>
+            <td>{{ wsinfo.workspace.plan.name }}</td>
+          </tr>
 
-    <v-card-text class="pt-3">
-      <table class="desc-table">
-        <tr>
-          <th>Name</th>
-          <td>{{ WORKSPACE.name }}</td>
-        </tr>
-        <tr>
-          <th>Currency</th>
-          <td>{{ WORKSPACE.currency }}</td>
-        </tr>
-        <tr>
-          <th>Format</th>
-          <td>{{ WORKSPACE.currencyFormat }}</td>
-        </tr>
-      </table>
+          <tr>
+            <th>Renewal</th>
+            <td>
+              {{ wsinfo.workspace.subsRenewalAt }} (<span class="green--text font-weight-medium">{{ wsinfo.workspace.status }}</span>)
+            </td>
+            <th>User Limit</th>
+            <td>{{ wsinfo.userCount }} / {{ wsinfo.userLimit+1 }}</td>
+          </tr>
+
+          <tr>
+            <th>Currency</th>
+            <td>{{ wsinfo.workspace.currencyCode }}</td>
+            <th>Link Limit</th>
+            <td>{{ wsinfo.linkCount }} / {{ wsinfo.linkLimit }}</td>
+          </tr>
+
+          <tr>
+            <th>Format</th>
+            <td>{{ wsinfo.workspace.currencyFormat }}</td>
+            <th>Alarm Limit</th>
+            <td>{{ wsinfo.alarmCount }} / {{ wsinfo.alarmLimit }}</td>
+          </tr>
+        </table>
+      </v-card>
     </v-card-text>
-
-    <v-divider></v-divider>
 
     <v-card-actions class="pa-3">
       <v-btn 
@@ -41,11 +56,13 @@
 
 <script>
 import WorkspaceService from '@/service/workspace';
-import { get } from 'vuex-pathify'
+import SystemService from '@/service/system';
 
 export default {
-  computed: {
-    WORKSPACE: get('session/getWorkspaceInfo'),
+  data() {
+    return {
+      wsinfo: {}
+    }
   },
   methods: {
     async openWorkspaceInfoDialog() {
@@ -54,6 +71,13 @@ export default {
         this.$refs.infoDialog.edit(result);
       }
     },
+  },
+  mounted() {
+    SystemService.getStatistics().then((res) => {
+      if (res && res.status) {
+        this.wsinfo = res.data;
+      }
+    });
   },
   components: {
     InfoDialog: () => import('./InfoDialog.vue'),

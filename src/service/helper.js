@@ -13,11 +13,6 @@ function logoutCheck(reason, manualErrorHandling) {
 export default {
 
   toQueryString(form) {
-    /*
-    return '?' + Object.keys(form).map((key) => {
-      if (form[key]) return encodeURIComponent(key) + '=' + encodeURIComponent(form[key]);
-    }).join('&');    
-    */
     return '?' + Object.entries(form).reduce((acc,[key,val])=>{
         if(Array.isArray(val)){
           val.forEach(e=>acc += (acc ? "&": "") + key + "=" + e);
@@ -59,6 +54,10 @@ export default {
       }
       return { error: err.message, status: false };
     }
+  },
+
+  NOT_ALLOWED() {
+    return 'You are not allowed to change any data!';
   }
 
 };
