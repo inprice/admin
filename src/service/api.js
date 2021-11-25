@@ -44,7 +44,11 @@ export default {
   },
 
   uploadFile(req) {
-    return axios.post(req.url, req.file, { headers: { 'Content-Type': 'text/csv' } });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      return Promise.reject();
+    } else {
+      return axios.post(req.url, req.file, { headers: { 'Content-Type': 'text/csv' } });
+    }
   },
 
   downloadFile(req) {

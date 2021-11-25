@@ -34,7 +34,7 @@
       </div>
 
 
-      <v-list-item @click.stop="openCreateWorkspace" :disabled="$store.get('session/isDemoUser')">
+      <v-list-item @click.stop="openCreateWorkspace">
         <v-icon class="mr-3">mdi-folder-plus-outline</v-icon>
         <v-list-item-content>
           <v-list-item-title>CREATE A NEW WORKSPACE</v-list-item-title>
@@ -98,7 +98,7 @@ export default {
       const base = (session.workspaceStatus == 'SUBSCRIBED' ? -3 : 0); //subscribers can use the system for extra three days!!!
       const hasTime = (dayDiff >= base && session.workspaceStatus != 'CANCELLED' && session.workspaceStatus != 'STOPPED');
 
-      let toPage = 'plans';
+      let toPage = 'welcome';
       if (hasTime) {
         if (session.linkCount > 0) {
           toPage = 'dashboard';

@@ -10,6 +10,7 @@
         @deleteOne="deleteOne"
         @moveOne="moveOne"
         @openAlarmDialog="openAlarmDialog"
+        @setAlarmOff="setAlarmOff"
       >
       </links-table>
     </v-expansion-panel-content>
@@ -34,6 +35,9 @@ export default {
     },
     moveOne(row) {
       this.$emit('moveOne', row);
+    },
+    setAlarmOff(row) {
+      this.$emit('setAlarmOff', row);
     },
   },
   components: {

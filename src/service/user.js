@@ -7,8 +7,8 @@ const baseURL = '/user';
 export default {
 
   async update(form) {
-    if (store.get('session/isSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -18,8 +18,8 @@ export default {
   },
 
   async changePassword(form) {
-    if (store.get('session/isSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -35,8 +35,8 @@ export default {
   },
 
   async acceptInvitation(id) {
-    if (store.get('session/isSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -45,8 +45,8 @@ export default {
   },
 
   async rejectInvitation(id) {
-    if (store.get('session/isSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -61,8 +61,8 @@ export default {
   },
 
   async leaveMember(id) {
-    if (store.get('session/isSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any user info!' });
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -77,8 +77,8 @@ export default {
   },
 
   async closeAllSessions() {
-    if (store.get('session/isSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to close sessions!' });
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 

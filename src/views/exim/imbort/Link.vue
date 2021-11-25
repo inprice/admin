@@ -202,17 +202,27 @@ export default {
         file: this.file,
         url: `/exim/link/upload`
       }).then(res => {
-        if (res && res.data.status == 200) {
-          this.result = res.data.data;
+        if (res && res.data) {
+          if (res.data.status == 200) {
+            this.result = res.data.data;
+          } else {
+            this.result = { 
+              problems: [ `Failed to import: ${res.data.reason}` ]
+            };
+          }
         } else {
           this.result = { 
-            problems: [ `Failed to import: ${res.data.reason}` ]
-          };          
+            problems: [ `Failed to import: ${res}` ]
+          };
         }
       }).catch(err => {
-        this.result = { 
-          problems: [ `Server error: ${err.message}` ]
-        };
+        if (err && err.message) {
+          this.result = { 
+            problems: [ `Server error: ${err.message}` ]
+          };
+        } else {
+          this.$store.dispatch('snackbar/notAllowed');
+        }
       }).finally(() => this.loading = false);
     },
     clear() {
@@ -226,7 +236,7 @@ export default {
       } else if (result.successCount == result.total) {
         return 'All of them is successfully added.';
       } else {
-        return result.successCount + 'link(s) added';
+        return result.successCount + ' link(s) successfully added.';
       } 
     }
   },

@@ -18,7 +18,7 @@
             </td>
             <td>{{ row.event }}</td>
             <td class="hidden-sm-and-down">
-              <div class="text-truncate" v-if="$store.get('session/isEditor')">
+              <div class="text-truncate" v-if="$store.get('session/isAdmin')">
                 <a :href="row.fileUrl" target="_blank">{{ row.fileUrl }}</a>
               </div>
               <span v-else>Hidden for unauthorized users!</span>

@@ -18,8 +18,8 @@ export default {
   },
 
   async remove(ids, from_product_id=null) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -28,8 +28,8 @@ export default {
   },
 
   async moveTo(form) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -44,13 +44,33 @@ export default {
   },
 
   async toggleStatus(id) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
     const res = await Helper.call('Toggle Status', { method: 'put', url: baseURL + '/toggle/' + id });
     return res.status;
+  },
+
+  async setAlarmON(form) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
+      return;
+    }
+
+    const res = await Helper.call('Set Alarm On', { method: 'put', url: baseURL + '/alarm/on', data: form });
+    return res;
+  },
+
+  async setAlarmOFF(form) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
+      return;
+    }
+
+    const res = await Helper.call('Set Alarm Off', { method: 'put', url: baseURL + '/alarm/off', data: form });
+    return res;
   },
 
 };

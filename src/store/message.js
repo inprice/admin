@@ -25,7 +25,10 @@ const actions = {
   },
 
   markAllAnnouncesAsRead({ state }) {
-    if (store.get('session/isSuperUser')) return;
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
+      return;
+    }
 
     ApiService.put('/announce')
       .then((res) => {

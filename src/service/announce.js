@@ -1,4 +1,5 @@
 import Helper from './helper';
+import store from '../store';
 
 const baseURL = '/announce';
 
@@ -11,6 +12,11 @@ export default {
   },
 
   markAllAsRead() {
+    if (store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
+      return;
+    }
+
     return Helper.call('Clear Announces', { method: 'put', url: baseURL });
   },
 

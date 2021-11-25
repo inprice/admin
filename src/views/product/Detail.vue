@@ -3,30 +3,36 @@
 
     <div class="d-flex justify-space-between my-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
+      <span class="title font-weight-light">Product Details</span>
 
-      <div>
-        <v-btn 
-          small
-          class="mr-1"
-          color="error"
-          @click="deleteProduct"
-          :disabled="$store.get('session/isNotEditor')"
-        >
-          DELETE
-        </v-btn>
+      <v-menu offset-y bottom left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            small
+            v-on="on"
+            v-bind="attrs"
+          >
+            Menu
+          </v-btn>
+        </template>
 
-        <v-btn 
-          small
-          class="ml-1"
-          @click="openEditProductDialog"
-          :disabled="$store.get('session/isNotEditor')"
-        >
-          EDIT
-        </v-btn>
-      </div>
+        <v-list dense>
+          <v-list-item link @click="openEditProductDialog" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item-title>EDIT</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click="deleteProduct" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item-title>DELETE</v-list-item-title>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item link @click="findProduct">
+            <v-list-item-title>REFRESH</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
-
-    <v-divider></v-divider>
 
     <block-message 
       v-if="loading" dense
@@ -34,34 +40,38 @@
       message="Loading, please wait..."
     />
 
+    <v-divider class="my-2" ></v-divider>
+
     <div v-if="data && data.product">
 
-      <div class="d-flex justify-space-between py-3 title">
-        <span class="my-auto">
-          {{ data.product.name }}
-        </span>
-        <span class="text-right my-auto">
-          {{ data.product.price | toCurrency }}
-        </span>
+      <div class="d-flex justify-space-between title">
+        <div class="my-auto">
+          <div class="caption font-weight-medium teal--text">{{ data.product.sku }}</div>
+          <div>{{ data.product.name }}</div>
+        </div>
+        <div class="text-right my-auto">
+          <div 
+            class="caption font-weight-medium" 
+            :style="'color: ' + findPositionColor(data.product.position)"
+          >
+            {{ data.product.position }}
+          </div>
+          <div>{{ data.product.price | toPrice }}</div>
+        </div>
       </div>
 
-      <v-card>
+      <v-card class="mt-2">
         <table class="property-table" v-show="$vuetify.breakpoint.smAndUp">
           <tr>
-            <th>Position</th>
-            <td>{{ data.product.position }}</td>
             <th>Base Price</th>
             <td>
               {{ data.product.basePrice | toPrice }}
             </td>
-          </tr>
-
-          <tr>
-            <th>Sku</th>
-            <td>{{ data.product.sku }}</td>
             <th>Suggested</th>
             <td>
-              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</span>
+              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">
+                {{ data.product.suggestedPrice | toPrice }} (<span class="green--text font-weight-medium">{{ data.product.smartPriceName }}</span>)
+              </span>
               <span v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</span>
               <span v-else-if="!data.product.smartPriceId">Not bound!</span>
             </td>
@@ -88,12 +98,9 @@
           </tr>
 
           <tr>
-            <th>Alarm</th>
+            <th>Alarm Cond.</th>
             <td>
-              <alarm-note
-                :alarm="data.product.alarm"
-                @clicked="openAlarmDialogForProduct"
-              ></alarm-note>
+              {{ data.product.alarmName || 'NotSet' }}
             </td>
             <th>Max Price</th>
             <td>
@@ -109,26 +116,8 @@
           <tr><th>Sku</th><td>{{ data.product.sku }}</td></tr>
           <tr><th>Brand</th><td>{{ data.product.brandName }}</td></tr>
           <tr><th>Category</th><td>{{ data.product.categoryName }}</td></tr>
-          <tr>
-            <th>Alarm</th>
-            <td>
-              <alarm-note
-                :alarm="data.product.alarm"
-                @clicked="openAlarmDialogForProduct"
-              ></alarm-note>
-            </td>
-          </tr>
 
           <tr><th>Base Price</th><td>{{ data.product.basePrice | toPrice }}</td></tr>
-
-          <tr>
-            <th>Suggested</th>
-            <td>
-              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">{{ data.product.suggestedPrice | toPrice }}</span>
-              <span v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</span>
-              <span v-else-if="!data.product.smartPriceId">Not bound!</span>
-            </td>
-          </tr>
 
           <tr>
             <th>Min Price</th>
@@ -147,6 +136,17 @@
               <span>{{ data.product.maxPrice | toPrice }}</span>
               <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'NA'">by {{ data.product.maxSeller }}</span>
               <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform && data.product.maxSeller != 'You'">on {{ data.product.maxPlatform }}</span>
+            </td>
+          </tr>
+
+          <tr>
+            <th>Suggested</th>
+            <td>
+              <span v-if="data.product.smartPriceId && !data.product.suggestedPriceProblem">
+                {{ data.product.suggestedPrice | toPrice }} (<span class="green--text font-weight-medium">{{ data.product.smartPriceName }}</span>)
+              </span>
+              <span v-else-if="data.product.suggestedPriceProblem">{{ data.product.suggestedPriceProblem }}</span>
+              <span v-else-if="!data.product.smartPriceId">Not bound!</span>
             </td>
           </tr>
         </table>
@@ -195,7 +195,8 @@
         @checked="refreshSelected" 
         @deleteOne="deleteOneLink"
         @moveOne="moveOneLink"
-        @openAlarmDialog="openAlarmDialogForLink"
+        @openAlarmDialog="openSelectAlarmDialogForLink"
+        @setAlarmOff="setLinkAlarmOff"
       ></link-panel>
     </v-expansion-panels>
 
@@ -214,12 +215,7 @@
       @added="addLinks"
     />
 
-    <alarm-dialog
-      :key="alarmRefresher"
-      ref="alarmDialog"
-      @setOff="setAlarmOff"
-      @saved="saveAlarm"
-    ></alarm-dialog>
+    <alarm-select-dialog ref="alarmSelectDialog"></alarm-select-dialog>
 
     <product-edit-dialog ref="productEditDialog" @saved="save"></product-edit-dialog>
     <product-select-dialog ref="productSelectDialog"></product-select-dialog>
@@ -230,7 +226,6 @@
 <script>
 import ProductService from '@/service/product';
 import LinkService from '@/service/link';
-import AlarmService from '@/service/alarm';
 
 export default {
   data() {
@@ -341,7 +336,7 @@ export default {
       }
     },
     async moveOneLink(row) {
-      this.$refs.productSelectDialog.open('For the selected link, please select a product to move', this.data.product.id).then(async (data) => {
+      this.$refs.productSelectDialog.open(this.data.product.id).then(async (data) => {
         if (data && (data.id || data.name)) {
           const result = await LinkService.moveTo({
             fromProductId: this.data.product.id,
@@ -366,8 +361,7 @@ export default {
             }
           });
         }
-        const title = `${selection.length} links`;
-        this.$refs.productSelectDialog.open(`For selected ${title}, please select a product to move`, this.data.product.id).then(async (data) => {
+        this.$refs.productSelectDialog.open(this.data.product.id).then(async (data) => {
           if (data && (data.id || data.name)) {
             const result = await LinkService.moveTo({
               fromProductId: this.data.product.id,
@@ -383,52 +377,25 @@ export default {
         });
       }
     },
-    openAlarmDialogForProduct() {
-      let cloned = {};
-      if (this.data.product.alarm) {
-        cloned = JSON.parse(JSON.stringify(this.data.product.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'PRODUCT';
-      cloned.productId = this.data.product.id;
-      cloned.name = this.data.product.name;
-      this.$refs.alarmDialog.open(cloned);
+    openSelectAlarmDialogForLink(link) {
+      this.$refs.alarmSelectDialog.open('LINK').then(async (selectedAlarmId) => {
+        if (selectedAlarmId) {
+          LinkService.setAlarmON({ alarmId: selectedAlarmId, entityIdSet: [ link.id ] }).then((res) => {
+            if (res && res.status) {
+              this.findProduct(true);
+            }
+          });
+        }
+      });
     },
-    openAlarmDialogForLink(link) {
-      let cloned = {};
-      if (link.alarm) {
-        cloned = JSON.parse(JSON.stringify(link.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'LINK';
-      cloned.linkId = link.id;
-      cloned.name = link.name || link.url;
-      this.$refs.alarmDialog.open(cloned);
-    },
-    async saveAlarm(form) {
-      const result = await AlarmService.save(form);
-      if (result && result.status) {
-        this.data.product.alarm = result.data;
-        this.alarmRefresher++;
-      }
-    },
-    setAlarmOff(form) {
-      AlarmService.remove(form.id).then((res) => {
-        if (res && res.status) {
-          this.data.product.alarm = null;
-          this.alarmRefresher++;
+    setLinkAlarmOff(link) {
+      this.$refs.confirm.open('Set Alarm Off', 'Alarm will be off for this link. Are you sure?').then(async (confirm) => {
+        if (confirm == true) {
+          LinkService.setAlarmOFF({ entityIdSet: [ link.id ] }).then((res) => {
+            if (res && res.status) {
+              this.findProduct(true);
+            }
+          });
         }
       });
     },
@@ -437,12 +404,11 @@ export default {
     this.findProduct();
   },
   components: {
-    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
-    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
     AddLink: () => import('./AddLink'),
     LinkPanel: () => import('./LinkPanel'),
     ProductEditDialog: () => import('./Edit'),
     ProductSelectDialog: () => import('@/views/product/Select.vue'),
+    AlarmSelectDialog: () => import('@/views/alarm/Select.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },

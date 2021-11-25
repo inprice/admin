@@ -76,7 +76,7 @@ export default {
         this.overlay = true;
         const result = await AuthService.completeRegistration(this.form.code.replaceAll('-', ''));
         if (result.status) {
-          this.$router.push({ name: 'plans', params: { sid: 0 } });
+          this.$router.push({ name: 'welcome', params: { sid: 0 } });
           this.$store.commit('snackbar/setMessage', { text: 'Congrats, you have successfully registered your workspace.' });
         }
         this.overlay = false;

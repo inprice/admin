@@ -266,7 +266,7 @@ export default {
       } else if (result.successCount == result.total) {
         return 'All of them is successfully added.';
       } else {
-        return result.successCount + 'product(s) added';
+        return result.successCount + ' product(s) successfully added.';
       } 
     }
   },

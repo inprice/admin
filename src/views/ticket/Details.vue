@@ -4,13 +4,13 @@
     <div v-if="ticket">
 
       <div class="title d-flex justify-space-between mt-3">
-        <span class="text-capitalize">Ticket Details - {{ normalizeEnum(ticket.status) }}</span>
+        <span class="text-capitalize">Ticket Details ({{ normalizeEnum(ticket.status) }})</span>
         <div class="d-flex justify-end">
           <v-btn 
             small
             @click="$router.go(-1)"
           >
-            Go Back
+            Back
           </v-btn>
         </div>
       </div>

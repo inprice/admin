@@ -12,8 +12,8 @@ export default {
   },
 
   async create(form) {
-    if (store.get('session/isSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any data!' });
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -22,8 +22,8 @@ export default {
   },
 
   async update(form) {
-    if (store.get('session/isSuperUser')) {
-      store.commit('snackbar/setMessage', { text: 'Super users are not allowed to edit any data!' });
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -32,7 +32,7 @@ export default {
   },
 
   async deleteWorkspace(password) {
-    if (store.get('session/isNotAdmin')) {
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'Workspaces can be deleted only by admin!' });
       return;
     }

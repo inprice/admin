@@ -63,6 +63,19 @@
             dense
             outlined
             clearable
+            label="Alarm"
+            v-model="form.alarmId"
+            :items="alarmItems"
+            item-text="right"
+            item-value="left"
+            :menu-props="{ bottom: true, offsetY: true }"
+            :return-object="false"
+          ></v-select>
+
+          <v-select
+            dense
+            outlined
+            clearable
             label="Smart Price"
             v-model="form.smartPriceId"
             :items="smartPriceItems"
@@ -133,6 +146,7 @@
 </template>
 
 <script>
+import AlarmService from '@/service/alarm';
 import SmartPriceService from '@/service/smartprice';
 import CategoryService from '@/service/category';
 import BrandService from '@/service/brand';
@@ -149,14 +163,17 @@ export default {
         name: '',
         price: 0,
         basePrice: 0,
+        alarmId: null,
         smartPriceId: null,
         brand: null,
         category: null,
+        from: null,
       },
       newCategoryName: null,
       newBrandName: null,
       brandItems: [],
       categoryItems: [],
+      alarmItems: [],
       smartPriceItems: [],
     };
   },
@@ -170,6 +187,7 @@ export default {
         this.form.name = data.name;
         this.form.price = data.price;
         this.form.basePrice = data.basePrice;
+        this.form.from = data.from;
       } else {
         delete this.form.id;
         this.form.sku = '';
@@ -183,6 +201,18 @@ export default {
         self.$refs.form.resetValidation();
         self.formatPrice();
 
+        AlarmService.getIdNameList('PRODUCT').then(res => {
+          if (res && res.data) {
+            this.alarmItems = res.data;
+          } else {
+            this.alarmItems = [];
+          }
+        }).finally(() => {
+          this.form.alarmId = null;
+          if (data && data.alarmId && this.alarmItems.length) {
+            this.form.alarmId = data.alarmId;
+          }
+        });
         SmartPriceService.getList().then(res => {
           if (res && res.data) {
             this.smartPriceItems = res.data;
@@ -190,6 +220,7 @@ export default {
             this.smartPriceItems = [];
           }
         }).finally(() => {
+          this.form.smartPriceId = null;
           if (data && data.smartPriceId && this.smartPriceItems.length) {
             this.form.smartPriceId = data.smartPriceId;
           }

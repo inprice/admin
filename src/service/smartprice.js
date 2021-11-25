@@ -23,8 +23,8 @@ export default {
   },
 
   async save(form) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -33,18 +33,13 @@ export default {
   },
 
   async test(form) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
-      return;
-    }
-
     const res = await Helper.call('Test Smart Price', { url: baseURL + '/test', data: form }, true);
     return res;
   },
 
   async remove(id) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 

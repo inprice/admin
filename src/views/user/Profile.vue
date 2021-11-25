@@ -5,28 +5,34 @@
         Profile
       </v-card-title>
 
-      <v-divider></v-divider>
-
       <v-card-text class="pt-3">
-        <table class="desc-table">
-          <tr>
-            <th>Full Name</th>
-            <td>{{ CURSTAT.fullName }}</td>
-          </tr>
-          <tr>
-            <th>Timezone</th>
-            <td>{{ CURSTAT.timezone }}</td>
-          </tr>
-        </table>
+        <v-card>
+          <table class="property-table">
+            <tr>
+              <th>Full Name</th>
+              <td>{{ CURSTAT.fullName }}</td>
+            </tr>
+            <tr>
+              <th>Email</th>
+              <td>{{ CURSTAT.email }}</td>
+            </tr>
+            <tr>
+              <th>Role</th>
+              <td>{{ CURSTAT.role }}</td>
+            </tr>
+            <tr>
+              <th>Timezone</th>
+              <td>{{ CURSTAT.timezone }}</td>
+            </tr>
+          </table>
+        </v-card>
       </v-card-text>
-
-      <v-divider></v-divider>
 
       <v-card-actions class="pa-3">
         <v-btn 
           small
           @click="openUpdateUserDialog"
-          :disabled="$store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
+          :disabled="$store.get('session/isSuperUser')"
         >
           Update
         </v-btn>
@@ -50,7 +56,7 @@
         <v-btn 
           small
           @click="openChangePasswordDialog"
-          :disabled="$store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
+          :disabled="$store.get('session/isSuperUser')"
         >
           Change
         </v-btn>

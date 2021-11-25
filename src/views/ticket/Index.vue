@@ -210,26 +210,21 @@
         :class="{ 'elevation-10': !row.seenByUser}"
         v-for="row in searchResult" :key="row.id"
       >
-        <div class="d-flex justify-space-between mb-1">
+        <div 
+          class="d-flex justify-space-between mb-1"
+          style="cursor: pointer"
+          @click="openDetails(row.id)"
+        >
           <div
             class="body-2 text-truncate"
             :class="{ 'font-weight-bold': !row.seenByUser}"
-            style="cursor: pointer"
-            @click="openDetails(row.id)"
           >
             <v-icon color="green" class="mr-2" v-if="!row.seenByUser">mdi-alert-rhombus</v-icon>
             {{ row.body }}
           </div>
 
-          <div>
-            <v-btn
-              small
-              class="mr-1"
-              @click="openDetails(row.id)"
-            >
-              Details
-            </v-btn>
-
+          <div class="caption text-right" >
+            <span>Created at</span> <ago class="d-inline font-weight-medium" :date="row.createdAt" />
             <v-menu offset-y bottom left>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -244,8 +239,8 @@
               </template>
 
               <v-list dense>
-                <v-list-item @click="copyTheContent(row.body)">
-                  <v-list-item-title>COPY</v-list-item-title>
+                <v-list-item @click="openDetails(row.id)">
+                  <v-list-item-title>DETAILS</v-list-item-title>
                 </v-list-item>
 
                 <v-divider></v-divider>
@@ -259,6 +254,9 @@
 
                 <v-divider></v-divider>
 
+                <v-list-item @click="copyTheContent(row.body)">
+                  <v-list-item-title>COPY</v-list-item-title>
+                </v-list-item>
                 <v-list-item @click="toggleSeenValue(row)">
                   <v-list-item-title>MARK AS {{ row.seenByUser ? 'UN' : '' }}SEEN</v-list-item-title>
                 </v-list-item>
@@ -267,7 +265,11 @@
           </div>
         </div>
 
-        <div class="d-flex justify-space-between">
+        <div 
+          class="d-flex justify-space-between" 
+          style="cursor: pointer"
+          @click="openDetails(row.id)"
+        >
           <div>
             <v-chip
               small
@@ -275,7 +277,7 @@
               label
               outlined
               class="mr-1 font-weight-medium"
-              :color="findStatusColor(row.status)"
+              color="blue"
             >
               {{ row.status }}
             </v-chip>
@@ -286,7 +288,7 @@
               label
               outlined
               class="mx-1 font-weight-medium"
-              :color="findPriorityColor(row.priority)"
+              color="pink"
             >
               {{ row.priority }}
             </v-chip>
@@ -297,7 +299,7 @@
               label
               outlined
               class="mx-1 font-weight-medium"
-              :color="findTypeColor(row.type)"
+              color="teal"
             >
               {{ row.type }}
             </v-chip>
@@ -308,14 +310,10 @@
               label
               outlined
               class="mx-1 font-weight-medium"
-              color="teal"
+              color="purple"
             >
               {{ row.subject }}
             </v-chip>
-          </div>
-
-          <div class="caption text-right" >
-            <span>Created at</span> <ago class="d-inline font-weight-medium" :date="row.createdAt" />
           </div>
         </div>
       </v-card>
@@ -466,33 +464,6 @@ export default {
     copyTheContent(text) {
       this.copyToClipboard(text);
       this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
-    },
-    findStatusColor(status) {
-      switch (status) {
-        case 'OPENED': return 'blue lighten-2';
-        case 'IN_PROGRESS': return 'green lighten-2';
-        case 'WAITING_FOR_USER': return 'orange lighten-2';
-        case 'WAITING_FOR_VERSION': return 'cyan lighten-2';
-        case 'CLOSED': return 'red lighten-2';
-      }
-      return 'gray';
-    },
-    findPriorityColor(priority) {
-      switch (priority) {
-        case 'LOW': return 'green lighten-2';
-        case 'NORMAL': return 'blue lighten-2';
-        case 'HIGH': return 'pink lighten-2';
-        case 'CRITICAL': return 'red lighten-2';
-      }
-      return 'gray';
-    },
-    findTypeColor(type) {
-      switch (type) {
-        case 'FEEDBACK': return 'blue lighten-2';
-        case 'SUPPORT': return 'green lighten-2';
-        case 'PROBLEM': return 'pink lighten-2';
-      }
-      return 'gray';
     },
   },
   mounted() {

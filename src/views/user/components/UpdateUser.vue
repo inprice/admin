@@ -41,7 +41,7 @@
           @click="submit"
           color="primary"
           :loading="loading" 
-          :disabled="loading || $store.get('session/isDemoUser')"
+          :disabled="loading"
         >
           Save
         </v-btn>

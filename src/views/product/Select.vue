@@ -49,7 +49,6 @@ export default {
     return {
       show: false,
       resolve: null,
-      title: null,
       callback: null,
       products: [],
       selectedProduct: [],
@@ -57,9 +56,8 @@ export default {
     };
   },
   methods: {
-    open(title, callerProductId) {
+    open(callerProductId) {
       this.show = true;
-      this.title = title;
       this.callerProductId = callerProductId;
 
       ProductService.getIdNameList(callerProductId).then((res) => {

@@ -162,6 +162,16 @@ const router = new VueRouter({
           component: () => import('./views/category/Index.vue')
         },
         {
+          name: 'alarms',
+          path: 'alarms',
+          component: () => import('./views/alarm/Index.vue')
+        },
+        {
+          name: 'alarm',
+          path: 'alarm/:id',
+          component: () => import('./views/alarm/Detail.vue')
+        },
+        {
           name: 'smart-prices',
           path: 'smart-prices',
           component: () => import('./views/smartprice/Index.vue')
@@ -175,11 +185,6 @@ const router = new VueRouter({
           name: 'brands',
           path: 'brands',
           component: () => import('./views/brand/Index.vue')
-        },
-        {
-          name: 'plans',
-          path: 'plans',
-          component: () => import('./views/plans/Index.vue')
         },
         {
           name: 'subscription',
@@ -318,7 +323,7 @@ router.beforeEach((to, from, next) => {
 
   if (to.matched.some(record => record.meta.requiresAdminOrSuperUser)) {
     const CURSTAT = store.get('session/getCurrentStatus');
-    if (CURSTAT.role !== 'ADMIN' && CURSTAT.role !== 'SUPER') {
+    if (CURSTAT.email !== 'demo@inprice.io' && CURSTAT.role !== 'ADMIN' && CURSTAT.role !== 'SUPER') {
       return next({ name: 'forbidden' });
     }
   }

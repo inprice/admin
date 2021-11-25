@@ -26,9 +26,9 @@
       <v-btn
         class="mt-10"
         color="primary"
-        :to="{ name: 'plans' }"
+        :to="{ name: 'workspace-settings' }"
       >
-        Turn to plans
+        Turn to settings
       </v-btn>
     </div>
   </div>

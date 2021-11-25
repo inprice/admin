@@ -16,8 +16,8 @@ export default {
   },
 
   async save(form) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to save any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -32,8 +32,8 @@ export default {
   },
 
   async insertLinks(productId, linksText) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to insert any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -54,8 +54,8 @@ export default {
   },
 
   async toggle(id) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to edit any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -64,13 +64,33 @@ export default {
   },
 
   async remove(id) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
     const res = await Helper.call('Product Delete', { method: 'delete', url: baseURL + '/' + id });
     return res;
-  }
+  },
+
+  async setAlarmON(form) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
+      return;
+    }
+
+    const res = await Helper.call('Set Alarm On', { method: 'put', url: baseURL + '/alarm/on', data: form });
+    return res;
+  },
+
+  async setAlarmOFF(form) {
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
+      return;
+    }
+
+    const res = await Helper.call('Set Alarm Off', { method: 'put', url: baseURL + '/alarm/off', data: form });
+    return res;
+  },
 
 };

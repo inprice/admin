@@ -6,8 +6,8 @@ const baseURL = '/membership';
 export default {
 
   async list() {
-    if (store.get('session/isViewer')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to list members!' });
+    if (store.get('session/isNotAdmin')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -27,7 +27,7 @@ export default {
   },
 
   async resend(id) {
-    if (store.get('session/isNotAdmin')) {
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
       store.commit('snackbar/setMessage', { text: 'Membership invitations can be sent only by admin!' });
       return;
     }
@@ -37,8 +37,8 @@ export default {
   },
 
   async changeRole(data) {
-    if (store.get('session/isNotAdmin')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to change memberships\' roles!' });
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -47,8 +47,8 @@ export default {
   },
 
   async remove(id) {
-    if (store.get('session/isNotEditor')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+    if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -57,8 +57,8 @@ export default {
   },
 
   async pause(id) {
-    if (store.get('session/isNotAdmin')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to pause membersip!' });
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -67,8 +67,8 @@ export default {
   },
 
   async resume(id) {
-    if (store.get('session/isNotAdmin')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to resume membersip!' });
+    if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 

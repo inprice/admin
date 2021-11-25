@@ -1,29 +1,51 @@
 <template>
   <div>
-    <div class="d-flex justify-space-between my-3 mb-5">
+    <div class="d-flex justify-space-between mt-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
+      <span class="title font-weight-light">Link Details</span>
 
-      <v-btn
-        small
-        color="error"
-        @click="remove"
-        :disabled="$store.get('session/isNotEditor')"
-      >
-        Delete
-      </v-btn>
+      <v-menu offset-y bottom left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            small
+            v-on="on"
+            v-bind="attrs"
+          >
+            Menu
+          </v-btn>
+        </template>
+
+        <v-list dense>
+          <v-list-item link @click="$router.push({ name: 'product', params: { id: link.info.productId } })">
+            <v-list-item-title>OPEN PRODUCT</v-list-item-title>
+          </v-list-item>
+          <v-list-item link @click="remove" :disabled="$store.get('session/isNotEditor')">
+            <v-list-item-title>DELETE</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
+
+    <v-divider class="my-2" ></v-divider>
 
     <div v-if="link">
       <div v-if="link.info.name" class="d-flex justify-space-between title">
-        <div>{{ link.info.name }}</div>
-        <div class="pl-3 text-right">
-          {{ (link.info.price || 0) | toCurrency }}
+        <div class="my-auto">
+          <div class="caption font-weight-medium teal--text">{{ link.info.sku }}</div>
+          <div>{{ link.info.name }}</div>
+        </div>
+        <div class="text-right my-auto">
+          <div 
+            class="caption font-weight-medium" 
+            :style="'color: ' + findPositionColor(link.info.position)"
+          >
+            {{ link.info.position }}
+          </div>
+          <div>{{ link.info.price | toPrice }}</div>
         </div>
       </div>
 
       <div v-else>
-        <div class="title">Url</div>
-        <v-divider class="my-2"></v-divider>
         <div class="col caption pa-0">
           <div class="d-flex justify-space-between">
             <a class="my-auto" :href="link.info.url" target="_blank">{{ link.info.url }}</a>
@@ -99,26 +121,33 @@
         </div>
       </v-card>
 
-      <div class="title mt-5 mb-2">Alarm</div>
-      <v-card class="pa-4 pl-3">
-        <alarm-note
-          :key="alarmRefresher"
-          :alarm="link.info.alarm"
-          @clicked="openAlarmDialog"
-        ></alarm-note>
+      <div class="title mt-5 mb-2">Alarm Condition</div>
+      <v-card class="pa-4 pl-3 d-flex justify-space-between">
+        <span>{{ link.info.alarmName || 'NotSet' }}</span>
+        <v-btn
+          small dark
+          color="red"
+          @click="setAlarmOff"
+          v-if="link.info.alarmId"
+        >
+          Set Off
+        </v-btn>
+        <v-btn
+          small
+          color="success"
+          @click="openSelectAlarmDialog"
+          v-else
+        >
+          Set On
+        </v-btn>
       </v-card>
 
       <price-list :list="link.priceList"></price-list>
-      <spec-list :list="link.specList"></spec-list>
       <history-list :list="link.historyList"></history-list>
-
-      <alarm-dialog
-        ref="alarmDialog"
-        @setOff="setAlarmOff"
-        @saved="saveAlarm"
-      ></alarm-dialog>
+      <spec-list :list="link.specList"></spec-list>
 
       <confirm ref="confirm"></confirm>
+      <alarm-select-dialog ref="alarmSelectDialog"></alarm-select-dialog>
     </div>
 
     <block-message 
@@ -132,7 +161,6 @@
 
 <script>
 import LinkService from '@/service/link';
-import AlarmService from '@/service/alarm';
 
 export default {
   data() {
@@ -151,38 +179,23 @@ export default {
         }
       });
     },
-    openAlarmDialog() {
-      let cloned = {};
-      if (this.link.info.alarm) {
-        cloned = JSON.parse(JSON.stringify(this.link.info.alarm));
-      } else {
-        cloned = {
-          subject: 'POSITION',
-          subjectWhen: 'CHANGED',
-          amountLowerLimit: 0,
-          amountUpperLimit: 0,
-        };
-      }
-      cloned.topic = 'link';
-      cloned.name = this.link.info.name || this.link.info.url;
-      this.$refs.alarmDialog.open(cloned);
-    },
-    async saveAlarm(form) {
-      form.linkId = this.link.info.id;
-      const result = await AlarmService.save(form);
-      if (result && result.status) {
-        this.link.info.alarm = result.data;
-        this.alarmRefresher++;
-      }
-    },
-    setAlarmOff(form) {
-      this.$refs.confirm.open('Remove', 'will be removed. Are you sure?', 'This alarm').then((confirm) => {
-        if (confirm == true) {
-          const self = this;
-          AlarmService.remove(form.id).then((res) => {
+    openSelectAlarmDialog() {
+      this.$refs.alarmSelectDialog.open('LINK').then(async (selectedAlarmId) => {
+        if (selectedAlarmId) {
+          LinkService.setAlarmON({ alarmId: selectedAlarmId, entityIdSet: [ this.link.info.id ] }).then((res) => {
             if (res && res.status) {
-              self.link.info.alarm = null;
-              this.alarmRefresher++;
+              this.getDetails();
+            }
+          });
+        }
+      });
+    },
+    setAlarmOff() {
+      this.$refs.confirm.open('Set Alarm Off', 'Alarm will be off for this link. Are you sure?').then(async (confirm) => {
+        if (confirm == true) {
+          LinkService.setAlarmOFF({ entityIdSet: [ this.link.info.id ] }).then((res) => {
+            if (res && res.status) {
+              this.getDetails();
             }
           });
         }
@@ -220,8 +233,7 @@ export default {
     PriceList: () => import('./PriceList.vue'),
     HistoryList: () => import('./HistoryList.vue'),
     SpecList: () => import('./SpecList.vue'),
-    AlarmNote: () => import('@/component/simple/AlarmNote.vue'),
-    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
+    AlarmSelectDialog: () => import('@/views/alarm/Select.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },

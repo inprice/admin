@@ -19,7 +19,7 @@
             dark
             outlined
             class="mx-1 font-weight-medium"
-            :color="findPriorityColor()"
+            color="pink"
           >
             {{ ticket.priority }}
           </v-chip>
@@ -30,7 +30,7 @@
             dark
             outlined
             class="mx-1 font-weight-medium"
-            :color="findTypeColor()"
+            color="teal"
           >
             {{ ticket.type }}
           </v-chip>
@@ -118,23 +118,6 @@ export default {
     copyIssue(text) {
       this.copyToClipboard(text);
       this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
-    },
-    findPriorityColor() {
-      switch (this.ticket.priority) {
-        case 'LOW': return 'green';
-        case 'NORMAL': return 'blue';
-        case 'HIGH': return 'pink';
-        case 'CRITICAL': return 'red';
-      }
-      return 'gray';
-    },
-    findTypeColor() {
-      switch (this.ticket.type) {
-        case 'FEEDBACK': return 'blue';
-        case 'SUPPORT': return 'green';
-        case 'PROBLEM': return 'pink';
-      }
-      return 'gray';
     },
   },
   components: {

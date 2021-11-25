@@ -7,9 +7,9 @@
       
       <v-divider></v-divider>
 
-      <v-card-text class="pt-3">
+      <v-card-text class="py-3">
         <div class="font-weight-bold">Please keep in mind;</div>
-        <ul>
+        <ul class="py-2">
           <li>You can use only those vouchers <strong>assigned</strong> to your workspace.</li>
           <li>Vouchers can be used when you have <strong>no active subscription</strong>.</li>
           <li>Cancelled vouchers will never be used again.</li>
@@ -23,7 +23,7 @@
           small
           color="error"
           class="mr-2"
-          :disabled="CURSTAT.status != 'VOUCHERED' || $store.get('session/isNotAdmin')"
+          :disabled="CURSTAT.status != 'VOUCHERED'"
           @click="cancel"
         >
           Cancel
@@ -33,7 +33,7 @@
           small
           color="success"
           class="ml-2"
-          :disabled="CURSTAT.isActive || $store.get('session/isNotAdmin')"
+          :disabled="CURSTAT.isActive"
           @click="openApplyVoucherDialog"
         >
           Apply

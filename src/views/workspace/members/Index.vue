@@ -7,9 +7,9 @@
       
       <v-divider></v-divider>
 
-      <v-card-text class="pt-3">
+      <v-card-text class="py-3">
         <div class="font-weight-bold">Please keep in mind;</div>
-        <ul>
+        <ul class="py-2">
           <li>In order to invite new members, you must have ADMIN role and subscribe to Starter or a higher plan.</li>
           <li>Members are not deleted immediately. This operation is completed within three hours.</li>
         </ul>
@@ -21,7 +21,7 @@
         <v-btn
           small
           @click="openSendDialog"
-          :disabled="$store.get('session/isNotAdmin') || !CURSTAT.planId || CURSTAT.planId == 1"
+          :disabled="!CURSTAT.planId || CURSTAT.planId == 1"
         >
           Invite
         </v-btn>

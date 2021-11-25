@@ -179,7 +179,7 @@
             <th width="12%" class="hidden-sm-and-down">Brand</th>
             <th width="12%" class="hidden-sm-and-down">Category</th>
             <th width="10%" class="text-right pr-8">Price</th>
-            <th width="10%" class="hidden-sm-and-down">Position</th>
+            <th width="4%"></th>
           </tr>
         </thead>
         <tbody>
@@ -189,26 +189,67 @@
             @click="$router.push({ name: 'product', params: { id: row.id } })"
           >
             <td>
-              <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>
-              <div>{{ row.name }}</div>
+              <div class="d-flex">
+                <v-icon 
+                  class="hidden-xs-only mr-1"
+                  style="font-size:18px"
+                  :color="row.alarmId ? 'pink' : '#ccc'" 
+                  :title="row.alarmId ? `Be notified when ${row.alarmName}` : 'NotSet'"
+                >
+                  mdi-clock-outline
+                </v-icon>
+                <div>
+                  <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>
+                  <div>{{ row.name }}</div>
+                </div>
+              </div>
             </td>
             <td class="hidden-sm-and-down">{{ row.brandName }}</td>
             <td class="hidden-sm-and-down">{{ row.categoryName }}</td>
             <td class="align-center">
-              <div class="d-flex justify-end my-auto">
+              <div class="text-right my-auto">
+                <div 
+                  class="caption font-weight-medium" 
+                  :style="'color: ' + findPositionColor(row.position)"
+                >
+                  {{ row.position }}
+                </div>
                 <div class="mr-1">
                   {{ (row.price || 0) | toPrice }}
                 </div>
-                <v-icon 
-                  class="hidden-xs-only"
-                  :color="row.alarmId ? '' : 'transparent'" 
-                  style="font-size:20px"
-                >
-                  mdi-alarm
-                </v-icon>
               </div>
             </td>
-            <td class="hidden-sm-and-down">{{ row.position }}</td>
+            <td class="my-auto">
+              <v-menu offset-y bottom left :disabled="$store.get('session/isNotEditor')">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    small icon
+                    v-on="on"
+                    v-bind="attrs"
+                  >
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item link @click="openUpdateDialog(row)">
+                    <v-list-item-title>EDIT</v-list-item-title>
+                  </v-list-item>
+
+                  <v-list-item link @click="setProductAlarmOff(row)" :disabled="$store.get('session/isNotEditor')" v-if="row.alarmId">
+                    <v-list-item-title>SET ALARM OFF</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="openSelectAlarmDialogForProduct(row)" :disabled="$store.get('session/isNotEditor')" v-else>
+                    <v-list-item-title>SET AN ALARM</v-list-item-title>
+                  </v-list-item>
+
+                  <v-divider></v-divider>
+
+                  <v-list-item link @click="remove(row)">
+                    <v-list-item-title>DELETE</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -231,8 +272,10 @@
       />
     </v-card>
 
-    <edit ref="editDialog" @saved="saveNew" />
+    <edit ref="editDialog" @saved="save" />
+    <confirm ref="confirm" />
 
+    <alarm-select-dialog ref="alarmSelectDialog"></alarm-select-dialog>
   </div>
 
 </template>
@@ -295,6 +338,11 @@ export default {
     edit(id) {
       this.$router.push({ name: 'product', params: { id } });
     },
+    openUpdateDialog(row) {
+      let cloned = JSON.parse(JSON.stringify(row));
+      cloned.from = 'SearchPage';
+      this.$refs.editDialog.open(cloned);
+    },
     applyOptions() {
       this.filterPanelShow = false;
       this.search();
@@ -328,7 +376,7 @@ export default {
           }
       }).finally(() => this.loading = false);
     },
-    async saveNew(form) {
+    async save(form) {
       const result = await ProductService.save(form);
       if (result && result.status) {
         this.$refs.editDialog.close();
@@ -352,17 +400,43 @@ export default {
         this.search();
       }
     },
-    removed(index) {
-      if (this.searchResult && this.searchResult.length > index) {
-        this.searchResult.splice(index, 1);
-        if (!this.searchResult || !this.searchResult.length) this.search();
-      }
+    remove(row) {
+      this.$refs.confirm.open('Delete', 'will be deleted. Are you sure?', row.name).then(async (confirm) => {
+        if (confirm == true) {
+          const result = await ProductService.remove(row.id);
+          if (result && result.status) {
+            this.search();
+          }
+        }
+      });
     },
     isSearchable(e) {
       let char = e.keyCode || e.charCode;
       if (char == 8 || char == 46 || (char > 47 && char < 91) || (char > 96 && char < 123)) {
         return this.search();
       }
+    },
+    openSelectAlarmDialogForProduct(product) {
+      this.$refs.alarmSelectDialog.open('PRODUCT').then(async (selectedAlarmId) => {
+        if (selectedAlarmId) {
+          ProductService.setAlarmON({ alarmId: selectedAlarmId, entityIdSet: [ product.id ] }).then((res) => {
+            if (res && res.status) {
+              this.search();
+            }
+          });
+        }
+      });
+    },
+    setProductAlarmOff(product) {
+      this.$refs.confirm.open('Set Alarm Off', 'Alarm will be off for this product. Are you sure?').then(async (confirm) => {
+        if (confirm == true) {
+          ProductService.setAlarmOFF({ entityIdSet: [ product.id ] }).then((res) => {
+            if (res && res.status) {
+              this.search();
+            }
+          });
+        }
+      });
     },
   },
   watch: {
@@ -385,7 +459,9 @@ export default {
   },
   components: {
     Edit: () => import('./Edit.vue'),
-    BlockMessage: () => import('@/component/simple/BlockMessage.vue')
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
+    AlarmSelectDialog: () => import('@/views/alarm/Select.vue'),
   },
 }
 </script>

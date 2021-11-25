@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import moment from 'moment-timezone';
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -91,6 +92,20 @@ Vue.mixin({
     },
     pluralize(value, number) {
       return pluralize(value, number);
+    },
+    formatDate(value, tz) {
+      try {
+        if (value) {
+          if (tz) {
+            return moment.utc(value).tz(tz).fromNow();
+          } else {
+            return moment(value).fromNow();
+          }
+        }
+      } catch (error) {
+        console.error('Failed to format date (main.js)', value, error);
+      }
+      return '-';
     }
   },
 })
