@@ -21,7 +21,7 @@
         <v-btn
           small
           @click="openSendDialog"
-          :disabled="$store.get('session/isNotAdmin') || !CURSTAT.planId || CURSTAT.planId == 1"
+          :disabled="!CURSTAT.planId || CURSTAT.planId == 1"
         >
           Invite
         </v-btn>

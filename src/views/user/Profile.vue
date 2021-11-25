@@ -32,7 +32,7 @@
         <v-btn 
           small
           @click="openUpdateUserDialog"
-          :disabled="$store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
+          :disabled="$store.get('session/isSuperUser')"
         >
           Update
         </v-btn>
@@ -56,7 +56,7 @@
         <v-btn 
           small
           @click="openChangePasswordDialog"
-          :disabled="$store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
+          :disabled="$store.get('session/isSuperUser')"
         >
           Change
         </v-btn>

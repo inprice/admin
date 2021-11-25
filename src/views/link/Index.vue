@@ -225,7 +225,7 @@
             :disabled="$store.get('session/isNotEditor')"
             color="success"
             class="my-auto"
-            @click="$router.push( { name: 'plans' })"
+            @click="$router.push( { name: 'workspace-settings' })"
           >
             See Plans
           </v-btn>

@@ -45,9 +45,10 @@ export default {
 
   uploadFile(req) {
     if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
-      return Promise.resolve('You are not allowed to upload any data!');
+      return Promise.reject();
+    } else {
+      return axios.post(req.url, req.file, { headers: { 'Content-Type': 'text/csv' } });
     }
-    return axios.post(req.url, req.file, { headers: { 'Content-Type': 'text/csv' } });
   },
 
   downloadFile(req) {

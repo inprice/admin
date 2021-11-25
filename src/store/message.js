@@ -26,7 +26,7 @@ const actions = {
 
   markAllAnnouncesAsRead({ state }) {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to change any data!' });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 

@@ -23,7 +23,7 @@
           small
           color="error"
           class="mr-2"
-          :disabled="CURSTAT.status != 'VOUCHERED' || $store.get('session/isNotAdmin')"
+          :disabled="CURSTAT.status != 'VOUCHERED'"
           @click="cancel"
         >
           Cancel
@@ -33,7 +33,7 @@
           small
           color="success"
           class="ml-2"
-          :disabled="CURSTAT.isActive || $store.get('session/isNotAdmin')"
+          :disabled="CURSTAT.isActive"
           @click="openApplyVoucherDialog"
         >
           Apply

@@ -1,5 +1,57 @@
 <template>
   <div>
+
+    <div class="title mt-3">Your current status</div>
+    <block-message 
+      class="mb-0"
+      v-if="CURSTAT.isFree">
+      Your actual status is {{ CURSTAT.status }}. It's ending {{ prettyRemainingDaysForFree() }}
+      You can subscribe to any plan below
+      <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+        <v-btn 
+          small
+          color="error"
+          class="my-auto"
+          @click="cancel"
+        >
+          Or Cancel
+        </v-btn>
+      </div>
+    </block-message>
+
+    <v-card v-if="CURSTAT.status == 'CREATED'" class="mt-2">
+      <v-card-title class="pa-2">
+        <v-icon class="mr-2 hidden-xs-only">mdi-arrow-right-thin-circle-outline</v-icon>
+        <div>Free use</div>
+      </v-card-title>
+
+      <v-divider></v-divider>
+
+      <div class="pa-3" style="background-color: lightyellow">
+        You have a <b>Free-Use</b> right! You are highly advised to start with a <b>14-day free</b> trial period.
+        <div :class="'text-'+($vuetify.breakpoint.smAndDown ? 'center mt-2' : 'right float-right')">
+          <v-btn
+            small 
+            color="success"
+            class="my-auto ml-3"
+            :loading="loading.tryFreeUse" 
+            :disabled="loading.tryFreeUse || $store.get('session/isNotAdmin')"
+            @click="startFreeUse"
+          >
+            Let me try
+          </v-btn>
+        </div>
+      </div>
+    </v-card>
+
+    <block-message
+      class="mb-0" 
+      v-if="CURSTAT.isActive == false && CURSTAT.status != 'CREATED'"
+    >
+      This workspace has been {{ CURSTAT.status.toLowerCase() }}
+      <ago class="d-inline" :date="CURSTAT.lastStatusUpdate" />
+    </block-message>
+
     <div class="title mt-5 mb-2">All Plans</div>
 
     <v-card tile
@@ -125,7 +177,31 @@ export default {
     },
     subscribe() {
       this.$refs.info.open('Sorry!', 'Our payment gateway is not yet fully operational. We will make an announcement when it is completed. Thank you for your interest.');
-    }
+    },
+    async startFreeUse() {
+      this.$refs.confirm.open('Free Use', 'is going to be started now. Are you sure?', 'Your 14 days free Basic Plan').then(async (confirm) => {
+        if (confirm == true) {
+          this.loading.tryFreeUse = true;
+          const result = await SubsService.startFreeUse();
+          if (result.status == true) {
+            this.$store.commit('session/SET_CURRENT', result.data.session);
+          } else {
+            this.$store.dispatch('session/refresh');
+          }
+          this.loading.tryFreeUse = false;
+        }
+      });
+    },
+    prettyRemainingDaysForFree() {
+      let res;
+      if (this.CURSTAT.daysToRenewal == 0) 
+        res = 'TODAY!';
+      else if (this.CURSTAT.daysToRenewal == 1) 
+        res = 'TOMORROW!';
+      else
+        res = 'in ' + this.CURSTAT.daysToRenewal + ' DAYS!';
+      return res;
+    },
   },
   mounted() {
     const self = this;
@@ -141,6 +217,7 @@ export default {
   components: {
     InfoDialog: () => import('@/component/InfoDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 }
 </script>

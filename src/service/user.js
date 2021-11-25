@@ -8,7 +8,7 @@ export default {
 
   async update(form) {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: Helper.NOT_ALLOWED() });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -19,7 +19,7 @@ export default {
 
   async changePassword(form) {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: Helper.NOT_ALLOWED() });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -36,7 +36,7 @@ export default {
 
   async acceptInvitation(id) {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: Helper.NOT_ALLOWED() });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -46,7 +46,7 @@ export default {
 
   async rejectInvitation(id) {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: Helper.NOT_ALLOWED() });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -62,7 +62,7 @@ export default {
 
   async leaveMember(id) {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: Helper.NOT_ALLOWED() });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -78,7 +78,7 @@ export default {
 
   async closeAllSessions() {
     if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: Helper.NOT_ALLOWED() });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 

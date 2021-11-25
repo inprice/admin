@@ -14,7 +14,7 @@
           small
           color="primary"
           class="ml-2"
-          @click="$router.push( { name: 'plans' })">
+          @click="$router.push( { name: 'workspace-settings' })">
             See Plans
         </v-btn>
       </div>
@@ -30,7 +30,7 @@
         <v-btn 
           small
           color="success"
-          @click="$router.push( { name: 'plans' })">
+          @click="$router.push( { name: 'workspace-settings' })">
             See Plans
         </v-btn>
       </div>

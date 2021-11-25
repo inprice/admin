@@ -38,7 +38,7 @@
                 v-if="row.role != 'ADMIN'"
                 :loading="loading.leave" 
                 @click="leave(row.id, row.workspace)"
-                :disabled="loading.leave || $store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
+                :disabled="loading.leave || $store.get('session/isSuperUser')"
               >
                 Leave
               </v-btn>

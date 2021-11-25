@@ -7,7 +7,7 @@ export default {
 
   async list() {
     if (store.get('session/isNotAdmin')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to list members!' });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -38,7 +38,7 @@ export default {
 
   async changeRole(data) {
     if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to change memberships\' roles!' });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -48,7 +48,7 @@ export default {
 
   async remove(id) {
     if (store.get('session/isNotEditor') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to delete any data!' });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -58,7 +58,7 @@ export default {
 
   async pause(id) {
     if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to pause membersip!' });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 
@@ -68,7 +68,7 @@ export default {
 
   async resume(id) {
     if (store.get('session/isNotAdmin') || store.get('session/isDemoUser')) {
-      store.commit('snackbar/setMessage', { text: 'You are not allowed to resume membersip!' });
+      store.dispatch('snackbar/notAllowed');
       return;
     }
 

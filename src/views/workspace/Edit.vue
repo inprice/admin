@@ -10,29 +10,28 @@
           <tr>
             <th>Name</th>
             <td>{{ wsinfo.workspace.name }}</td>
-            <th>Plan Name</th>
-            <td>{{ wsinfo.workspace.plan.name }}</td>
-          </tr>
-
-          <tr>
-            <th>Renewal</th>
-            <td>
-              {{ wsinfo.workspace.subsRenewalAt }} (<span class="green--text font-weight-medium">{{ wsinfo.workspace.status }}</span>)
-            </td>
             <th>User Limit</th>
-            <td>{{ wsinfo.userCount }} / {{ wsinfo.userLimit+1 }}</td>
+            <td>{{ wsinfo.userCount }} / {{ (wsinfo.userLimit || 0) +1 }}</td>
           </tr>
 
           <tr>
-            <th>Currency</th>
-            <td>{{ wsinfo.workspace.currencyCode }}</td>
+            <th>Plan</th>
+            <td>
+              <div v-if="wsinfo.workspace.plan">
+                {{ wsinfo.workspace.plan.name }} /
+                {{ wsinfo.workspace.subsRenewalAt }} (<span class="green--text font-weight-medium">{{ wsinfo.workspace.status }}</span>)
+              </div>
+              <div v-else>
+                Please select a plan on Plans section here.
+              </div>
+            </td>
             <th>Link Limit</th>
             <td>{{ wsinfo.linkCount }} / {{ wsinfo.linkLimit }}</td>
           </tr>
 
           <tr>
-            <th>Format</th>
-            <td>{{ wsinfo.workspace.currencyFormat }}</td>
+            <th>Currency</th>
+            <td>{{ wsinfo.workspace.currencyCode }} - {{ wsinfo.workspace.currencyFormat }}</td>
             <th>Alarm Limit</th>
             <td>{{ wsinfo.alarmCount }} / {{ wsinfo.alarmLimit }}</td>
           </tr>

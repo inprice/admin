@@ -216,7 +216,7 @@
     <v-app-bar app clipped-left class="appbar" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
-      <workspace-menu v-if="!$store.get('session/isSuperUser') || !$store.get('session/isDemoUser')"></workspace-menu>
+      <workspace-menu v-if="!$store.get('session/isSuperUser')"></workspace-menu>
 
       <v-spacer v-if="$store.get('session/isNotSuperUser') || CURSTAT.workspaceId"></v-spacer>
 

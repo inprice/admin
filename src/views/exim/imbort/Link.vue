@@ -196,11 +196,6 @@ export default {
   methods: {
     upload() {
       if (!this.file) return;
-      if (this.$store.get('session/isNotEditor') || this.$store.get('session/isDemoUser')) {
-        this.$store.commit('snackbar/setMessage', { text: 'You are not allowed to import data!' });
-        return;
-      }
-
       this.loading = true;
       this.result = null;
       ApiService.uploadFile({
@@ -221,9 +216,13 @@ export default {
           };
         }
       }).catch(err => {
-        this.result = { 
-          problems: [ `Server error: ${err.message}` ]
-        };
+        if (err && err.message) {
+          this.result = { 
+            problems: [ `Server error: ${err.message}` ]
+          };
+        } else {
+          this.$store.dispatch('snackbar/notAllowed');
+        }
       }).finally(() => this.loading = false);
     },
     clear() {

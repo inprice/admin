@@ -8,6 +8,14 @@ const state = {
   counter: 0,
 };
 
+const actions = {
+
+  notAllowed({ commit }) {
+    commit('setMessage', { text: 'Your are not allowed to update any data' });
+  }
+
+};
+
 const mutations = {
 
   setMessage(state, message) {
@@ -44,5 +52,6 @@ const mutations = {
 export default {
   namespaced: true,
   state,
+  actions,
   mutations
 };

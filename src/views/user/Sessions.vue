@@ -21,7 +21,7 @@
           small
           :loading="loading.closeall" 
           @click="closeAllSessions"
-          :disabled="loading.closeall || $store.get('session/isSuperUser') || $store.get('session/isDemoUser')"
+          :disabled="loading.closeall || $store.get('session/isSuperUser')"
         >
           Close All
         </v-btn>

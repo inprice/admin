@@ -187,11 +187,6 @@ const router = new VueRouter({
           component: () => import('./views/brand/Index.vue')
         },
         {
-          name: 'plans',
-          path: 'plans',
-          component: () => import('./views/plans/Index.vue')
-        },
-        {
           name: 'subscription',
           path: 'subscription',
           component: () => import('./views/subscription/Index.vue')
