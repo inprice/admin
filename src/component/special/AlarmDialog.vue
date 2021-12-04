@@ -100,7 +100,7 @@
           class="font-weight-medium"
         >
           When
-          <small class="caption">For which changing:  <b>{{ form.subjectWhen ? form.subjectWhen.replaceAll('_', ' ') : form.subjectWhen }}</b></small>
+          <small class="caption">For which changing:  <b>{{ whenText }}</b></small>
         </v-stepper-step>
         <v-stepper-content step="3">
           <v-radio-group
@@ -284,6 +284,14 @@ export default {
       whens,
       problem: null,
     };
+  },
+  computed: {
+    whenText() {
+      if (this.form) {
+        return this.form.subjectWhen ? this.form.subjectWhen.replaceAll('_', ' ') : this.form.subjectWhen;
+      }
+      return '';
+    }
   },
   methods: {
     open(data) {

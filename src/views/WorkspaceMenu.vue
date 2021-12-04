@@ -14,38 +14,54 @@
 
     <v-list dense>
       <div v-if="sesList && sesList.length > 1">
-        <template v-for="({ workspace }, i) in sesList">
+        <template v-for="(ses, i) in sesList">
           <v-list-item
             :key="i"
-            :href="CURSTAT.workspace != workspace ? findPath(i) : null"
+            :href="findPath(i)"
+            v-if="CURSTAT.workspace != ses.workspace || CURSTAT.email != ses.email"
           >
-            <v-icon 
-              class="mr-2"
-              :color="workspace == CURSTAT.workspace ? 'green' : 'transparent'"
-            >
-              mdi-check
-            </v-icon>
+            <v-icon class="mr-3">mdi-swap-horizontal</v-icon>
             <v-list-item-content>
-              <v-list-item-title>{{ workspace }}</v-list-item-title>
+              <v-list-item-title>{{ ses.workspace }}</v-list-item-title>
+              <v-list-item-subtitle>
+                {{ ses.email }} 
+              </v-list-item-subtitle>
             </v-list-item-content>
+            <v-list-item-action>
+              <v-chip 
+                outlined 
+                small label 
+                color="green"
+                class="font-weight-medium"
+              >
+                {{ ses.role }}
+              </v-chip>
+            </v-list-item-action>
           </v-list-item>
         </template>
         <v-divider></v-divider>
       </div>
 
+      <v-list-item :to="{name: 'workspace-settings'}">
+        <v-icon class="mr-3">mdi-cog-outline</v-icon>
+        <v-list-item-content>
+          <v-list-item-title>SETTINGS</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
       <v-list-item @click.stop="openCreateWorkspace">
         <v-icon class="mr-3">mdi-folder-plus-outline</v-icon>
         <v-list-item-content>
-          <v-list-item-title>CREATE A NEW WORKSPACE</v-list-item-title>
+          <v-list-item-title>CREATE NEW WORKSPACE</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
-      <!--v-list-item :href="`/login?m=addNew`" target="_blank">
+      <v-list-item href="/login?m=addNew" target="_blank">
+        <v-icon class="mr-3">mdi-account-arrow-right-outline</v-icon>
         <v-list-item-content>
-          <v-list-item-subtitle>LOGIN WITH ANOTHER EMAIL</v-list-item-subtitle>
+          <v-list-item-title>LOGIN ANOTHER WORKSPACE</v-list-item-title>
         </v-list-item-content>
-      </v-list-item-->
+      </v-list-item>
     </v-list>
 
     <v-list dense v-if="$store.get('session/isSuperUser')">

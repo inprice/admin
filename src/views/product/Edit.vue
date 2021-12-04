@@ -69,7 +69,6 @@
             item-text="right"
             item-value="left"
             :menu-props="{ bottom: true, offsetY: true }"
-            :return-object="false"
           ></v-select>
 
           <v-select
@@ -82,7 +81,6 @@
             item-text="name"
             item-value="id"
             :menu-props="{ bottom: true, offsetY: true }"
-            :return-object="false"
           ></v-select>
 
           <v-combobox

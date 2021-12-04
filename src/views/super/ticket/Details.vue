@@ -69,7 +69,7 @@
 
                         <v-list dense>
                           <v-list-item @click="updateComment(comment)" :disabled="!isEditable(comment)" v-if="!comment.addedByUser">
-                            <v-list-item-title>Update</v-list-item-title>
+                            <v-list-item-title>Edit</v-list-item-title>
                           </v-list-item>
                           <v-list-item @click="removeComment(comment.id)" :disabled="!isEditable(comment)" v-if="!comment.addedByUser">
                             <v-list-item-title>Delete</v-list-item-title>

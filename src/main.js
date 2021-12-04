@@ -37,10 +37,10 @@ Vue.mixin({
     findPositionColor(position) {
       switch (position) {
         case 'Lowest': return 'green';
-        case 'Lower': return '#48D1CC';
-        case 'Equal': return 'blue';
+        case 'Low': return '#48D1CC';
         case 'Average': return 'primary';
-        case 'Higher': return '#FF6347';
+        case 'Equal': return 'blue';
+        case 'High': return '#FF6347';
         case 'Highest': return 'red';
       }
     },

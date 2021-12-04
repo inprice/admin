@@ -1,18 +1,11 @@
 <template>
   <div>
-
     <div v-if="ticket">
 
-      <div class="title d-flex justify-space-between mt-3">
-        <span class="text-capitalize">Ticket Details ({{ normalizeEnum(ticket.status) }})</span>
-        <div class="d-flex justify-end">
-          <v-btn 
-            small
-            @click="$router.go(-1)"
-          >
-            Back
-          </v-btn>
-        </div>
+      <div class="d-flex justify-space-between my-3">
+        <v-btn small @click="$router.go(-1)">Back</v-btn>
+        <span class="title font-weight-light">Ticket Details</span>
+        <div></div>
       </div>
 
       <ticket
@@ -58,7 +51,7 @@
 
                   <v-list dense>
                     <v-list-item @click="updateComment(comment)" :disabled="!isEditable(comment)" v-if="comment.addedByUser">
-                      <v-list-item-title>Update</v-list-item-title>
+                      <v-list-item-title>Edit</v-list-item-title>
                     </v-list-item>
                     <v-list-item @click="removeComment(comment.id)" :disabled="!isEditable(comment)" v-if="comment.addedByUser">
                       <v-list-item-title>Delete</v-list-item-title>

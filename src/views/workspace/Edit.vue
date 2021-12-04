@@ -1,7 +1,7 @@
 <template>
   <v-card tile class="mt-3">
     <v-card-title class="py-2">
-      Edit workspace
+      Overview
     </v-card-title>
 
     <v-card-text class="pt-3" v-if="wsinfo.workspace">

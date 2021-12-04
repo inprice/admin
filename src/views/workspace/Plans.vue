@@ -75,7 +75,9 @@
 
         <v-col class="my-auto text-right">
           <v-btn
-            small
+            small dark
+            class="col-4"
+            color="cyan"
             @click="subscribe(plan.id)"
             v-if="CURSTAT.isSubscriber == false"
             :disabled="$store.get('session/isNotAdmin')" 
@@ -85,6 +87,8 @@
 
           <div v-if="CURSTAT.isSubscriber == true && CURSTAT.planId !== undefined">
             <v-btn
+              small
+              class="col-4"
               color="error"
               @click="cancel()"
               v-if="plan.id == CURSTAT.planId"
@@ -94,9 +98,10 @@
             </v-btn>
             <v-btn 
               v-else
-              dark
+              small dark
+              class="col-4"
               @click="changeTo(plan.id)"
-              :color="plan.id > CURSTAT.planId ? 'success' : 'cyan'"
+              :color="plan.id > CURSTAT.planId ? 'cyan' : 'success'"
               :disabled="$store.get('session/isNotAdmin')"
             >
               {{ plan.id > CURSTAT.planId ? 'UPGRADE' : 'DOWNGRADE' }}
@@ -191,6 +196,33 @@ export default {
           this.loading.tryFreeUse = false;
         }
       });
+    },
+    async changeTo(planId) {
+      this.$refs.info.open('Sorry!', 'Our subscription system is not yet fully operational. We will make an announcement when it is completed. Thank you for your interest.');
+      console.log(planId);
+      /*
+      const dir = (planId > this.CURSTAT.planId ? 'UPGRADED' : 'DOWNGRADED');
+      this.$refs.confirm.open('Change Plan', 'will be '+dir+'. Are you sure?', 'Your actual plan').then(async (confirm) => {
+        if (confirm == true) {
+          this.loading.overlay = true;
+          const res = await SubsService.changeTo(planId);
+          if (res.status == true) {
+            let retry = 0;
+            const refreshId = setInterval(() => {
+              this.$store.dispatch('session/refresh'); 
+              if (this.CURSTAT.planId == planId || retry >= 5) {
+                clearInterval(refreshId);
+                this.loading.overlay = false;
+                this.$store.commit('snackbar/setMessage', { text: 'Your subscription has been successfully ' + dir });
+              }
+              retry++;
+            }, 1000);
+          } else {
+            this.loading.overlay = false;
+          }
+        }
+      });
+      */
     },
     prettyRemainingDaysForFree() {
       let res;

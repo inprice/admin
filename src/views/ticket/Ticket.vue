@@ -39,7 +39,7 @@
         <v-btn
           small
           icon
-          title="Copy issue"
+          title="Copy description"
           class="my-auto"
           @click="copyIssue(ticket.body)"
         >
@@ -51,7 +51,7 @@
     <v-divider></v-divider>
 
     <v-card-text class="pa-3 pb-5">
-      <div class="overline pb-1">Issue</div>
+      <div class="font-weight-medium teal--text">Description</div>
       {{ ticket.body }}
     </v-card-text>
 
@@ -117,7 +117,7 @@ export default {
     },
     copyIssue(text) {
       this.copyToClipboard(text);
-      this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+      this.$store.commit('snackbar/setMessage', { text: 'Description copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
     },
   },
   components: {

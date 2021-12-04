@@ -187,17 +187,6 @@
             <v-list-item-title>Data Export</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
-        <v-divider inset></v-divider>
-
-        <v-list-item :to="{name: 'workspace-settings'}" :disabled="$store.get('session/isNotAdmin')">
-          <v-list-item-action>
-            <v-icon>mdi-cog-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>SETTINGS</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
 
       <template v-slot:append>

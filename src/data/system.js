@@ -24,10 +24,10 @@ const REPORT_UNITS = [
 
 const POSITIONS = [
   { text: 'Lowest', value: 'Lowest' }, 
-  { text: 'Lower', value: 'Lower' },
+  { text: 'Low', value: 'Low' },
   { text: 'Average', value: 'Average' },
   { text: 'Equal', value: 'Equal' },
-  { text: 'Higher', value: 'Higher' },
+  { text: 'High', value: 'High' },
   { text: 'Highest', value: 'Highest' }, 
   { text: 'Not Set', value: 'NotSet' }
 ];

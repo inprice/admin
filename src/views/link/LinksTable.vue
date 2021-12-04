@@ -39,7 +39,7 @@
                 :color="row.alarmId ? 'pink' : '#ccc'" 
                 :title="row.alarmId ? `Be notified when ${row.alarmName}` : 'NotSet'" 
               >
-                mdi-clock-outline
+                mdi-bell{{ row.alarmId ? '-ring' : '-outline' }}
               </v-icon>
               <div>
                 <div v-if="row.grup == 'WAITING'" class="caption green--text">{{ row.statusDescription }}</div>

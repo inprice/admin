@@ -2,7 +2,7 @@
   <div class="mt-5">
     <v-card tile>
       <v-card-title class="py-2">
-        Delete workspace
+        Danger Zone
       </v-card-title>
       
       <v-divider></v-divider>
@@ -20,7 +20,8 @@
 
       <v-card-actions class="pa-3">
         <v-btn
-          small
+          small dark
+          color="pink"
           :loading="loading" 
           @click="openPasswordConfirmDialog"
           :disabled="$store.get('session/isNotAdmin') || (loading && CURSTAT.isSubscriber == false)"

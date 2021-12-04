@@ -7,18 +7,10 @@
       nudge-width="400"
     >
       <template v-slot:activator="{ on }">
-        <v-btn icon v-on="on">
-          <v-badge
-            dot
-            overlap
-            bordered
-            color="red"
-            offset-x="10"
-            offset-y="10"
-            :value="hasAnnounce()"
-          >
-            <v-icon>mdi-bell{{ !hasAnnounce() ? '-outline' : '' }}</v-icon>
-          </v-badge>
+        <v-btn icon fab v-on="on">
+          <v-icon :color="hasAnnounce() ? 'pink' : ''" >
+            mdi-bell{{ hasAnnounce() ? '-ring' : '-outline' }}
+          </v-icon>
         </v-btn>
       </template>
 

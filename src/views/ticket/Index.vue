@@ -200,13 +200,13 @@
         @click="openTicket"
         :disabled="$store.get('session/isNotEditor')"
       >
-        New
+        Add
       </v-btn>
     </div>
 
     <div v-if="searchResult && searchResult.length">
       <v-card
-        class="my-4 pa-4"
+        class="my-2 pa-4"
         :class="{ 'elevation-10': !row.seenByUser}"
         v-for="row in searchResult" :key="row.id"
       >
@@ -463,7 +463,7 @@ export default {
     },
     copyTheContent(text) {
       this.copyToClipboard(text);
-      this.$store.commit('snackbar/setMessage', { text: 'Issue copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+      this.$store.commit('snackbar/setMessage', { text: 'Ticket copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
     },
   },
   mounted() {

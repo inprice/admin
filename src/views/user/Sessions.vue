@@ -1,22 +1,8 @@
 <template>
   <div class="mt-3">
-    <v-card tile>
-      <v-card-title class="py-2">
-        Sessions
-      </v-card-title>
-
-      <v-divider></v-divider>
-
-      <v-card-text class="pt-3">
-        <div>Your opened sessions.</div>
-        <div>
-          <b>Please note</b>, if you click <b class="teal--text">Close All</b> button, all your sessions including this will be terminated.
-        </div>
-      </v-card-text>
-
-      <v-divider></v-divider>
-
-      <v-card-actions class="pa-3">
+    <v-card tile class="pb-1">
+      <v-card-title class="py-2 d-flex justify-space-between">
+        <span>Your opened sessions</span>
         <v-btn
           small
           :loading="loading.closeall" 
@@ -25,34 +11,39 @@
         >
           Close All
         </v-btn>
-      </v-card-actions>
+
+      </v-card-title>
+
+      <v-divider></v-divider>
+
+      <v-card-text class="pt-3">
+        <b>Please note</b>, if you click <b class="teal--text">Close All</b> button, all your sessions including this will be terminated.
+      </v-card-text>
+
+      <v-card v-if="sesList.length" class="ma-2 mt-0">
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th width="15%">IP</th>
+              <th>Client</th>
+              <th width="15%">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in sesList" :key="index">
+              <td>{{ row.ip }}</td>
+              <td>{{ row.userAgent }}</td>
+              <td><ago :date="row.accessedAt" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </v-card>
+
+      <block-message 
+        v-else dense
+        :message="'You have no active session.'"
+      />
     </v-card>
-
-    <div class="title mt-5 mb-2">Active sessions</div>
-
-    <v-card v-if="sesList.length">
-      <table class="info-table">
-        <thead>
-          <tr>
-            <th width="15%">IP</th>
-            <th>System</th>
-            <th width="15%">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in sesList" :key="index">
-            <td>{{ row.ip }}</td>
-            <td>{{ row.browser }} on {{ row.os }}</td>
-            <td><ago :date="row.accessedAt" /></td>
-          </tr>
-        </tbody>
-      </table>
-    </v-card>
-
-    <block-message 
-      v-else dense
-      :message="'You have no active session.'"
-    />
 
   </div>
 </template>

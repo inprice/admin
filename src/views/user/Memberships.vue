@@ -47,7 +47,7 @@
                 class="caption font-weight-medium"
                 :style="'color: ' + (CURSTAT.workspace == row.name ? 'blue' : 'green')" 
               >
-                {{ CURSTAT.workspace == row.name ? 'THIS' : 'YOURS' }}
+                Disabled
               </span>
             </td>
           </tr>

@@ -34,7 +34,7 @@
           @click="openUpdateUserDialog"
           :disabled="$store.get('session/isSuperUser')"
         >
-          Update
+          Edit
         </v-btn>
       </v-card-actions>
     </v-card>

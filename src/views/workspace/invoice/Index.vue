@@ -2,7 +2,7 @@
   <div>
     <v-card tile class="mt-3">
       <v-card-title class="py-2">
-        <span>Company Details</span>
+        <span>Overview</span>
         <v-spacer></v-spacer>
         <v-chip 
           label 

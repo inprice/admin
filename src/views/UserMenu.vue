@@ -26,12 +26,21 @@
       <v-divider></v-divider>
 
       <v-list-item :to="{name: 'ticket'}">
+        <v-icon class="mr-3">mdi-lifebuoy</v-icon>
         <v-list-item-content>
           <v-list-item-title>SUPPORT</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
+      <v-list-item :href="helpURL">
+        <v-icon class="mr-3">mdi-help-circle-outline</v-icon>
+        <v-list-item-content>
+          <v-list-item-title>HELP</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item @click="$store.dispatch('session/logout', false)">
+        <v-icon class="mr-3">mdi-logout</v-icon>
         <v-list-item-content>
           <v-list-item-title>LOGOUT</v-list-item-title>
         </v-list-item-content>
@@ -54,6 +63,9 @@ export default {
         return words[0][0]+words[1][0];
       }
       return '?';
+    },
+    helpURL() {
+      return process.env.VUE_APP_WEB_URL + '/help';
     }
   },
 }

@@ -60,7 +60,7 @@
         <div class="body-1">More than one workspace?</div>
         <v-divider class="my-2"></v-divider>
         <p>
-          Create new workspace! You are allowed to create and join multiple workspaces. Besides, you can invite new users into your workspace.
+          Create a new workspace! You are allowed to create and join multiple workspaces. Besides, you can invite new users into your workspace.
         </p>
       </div>
     </div>
@@ -70,7 +70,7 @@
         <v-icon color="black" class="pr-3">mdi-lightbulb-on-outline</v-icon>
       </div>
       <div>
-        <div class="body-1">A special subscription plan?</div>
+        <div class="body-1">A custom subscription plan?</div>
         <v-divider class="my-2"></v-divider>
         <p>
           Buy a voucher! Let us know what your needs are. So that we can arrange a tailor made plan for you. To do that you can either send an email explaining the details to us over <b><i>support@inprice.io</i></b> 

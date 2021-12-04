@@ -35,7 +35,7 @@
 
             <v-text-field
               outlined dense
-              label="Company Name"
+              label="Workspace Name"
               v-model="form.workspaceName"
               :rules="rules.workspaceName"
               type="text"

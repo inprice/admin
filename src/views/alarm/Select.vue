@@ -5,10 +5,11 @@
     content-class="rounded-dialog"
     style="z-index: 100"
   >
-    <v-card>
+    <v-card :loading="loading">
       <v-card-title class="pb-0 d-flex justify-space-between">
         <span v-if="alarms.length">Please select an alarm</span>
-        <span v-else>No condition found!</span>
+        <span v-else-if="loading == false">No condition found!</span>
+        <span v-else-if="loading == true">Loading...</span>
         <v-btn icon @click="close(null)"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
@@ -38,7 +39,8 @@
         >
           OK
         </v-btn>
-        <div v-else class="pa-3">You need to define your alarm conditions first!</div>
+        <div v-else-if="loading == true">Please wait...</div>
+        <div v-else-if="loading == false" class="pa-3">You need to define your alarm conditions first!</div>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -55,17 +57,19 @@ export default {
       callback: null,
       alarms: [],
       selectedAlarmId: null,
+      loading: false,
     };
   },
   methods: {
     open(topic) {
+      this.loading = true;
       this.show = true;
       Alarmservice.getIdNameList(topic).then((res) => {
         if (res && res.data) {
           this.alarms = res.data;
           if (this.alarms && this.alarms.length) this.selectedAlarmId = this.alarms[0].left;
         }
-      });
+      }).finally(() => this.loading = false);
       return new Promise((callback) => this.callback = callback);
     },
     agree() {

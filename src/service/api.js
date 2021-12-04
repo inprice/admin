@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '../store'
 import Helper from './helper';
 
-axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 30000;
 

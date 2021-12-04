@@ -219,7 +219,7 @@
                   :color="row.alarmId ? 'pink' : '#ccc'" 
                   :title="row.alarmId ? `Alarming when ${row.alarmName}` : 'NotSet'" 
                 >
-                  mdi-clock-outline
+                  mdi-bell{{ row.alarmId ? '-ring' : '-outline' }}
                 </v-icon>
                 <div>
                   <div class="caption teal--text">{{ row.seller }}</div>

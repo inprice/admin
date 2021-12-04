@@ -56,7 +56,7 @@
             outlined
             v-model="form.body"
             :rules="rules.body"
-            label="Issue"
+            label="Description"
             rows="8"
             maxlength="512"
           ></v-textarea>

@@ -26,7 +26,7 @@
           :disabled="CURSTAT.status != 'VOUCHERED'"
           @click="cancel"
         >
-          Cancel
+          Remove
         </v-btn>
 
         <v-btn 
@@ -34,9 +34,9 @@
           color="success"
           class="ml-2"
           :disabled="CURSTAT.isActive"
-          @click="openApplyVoucherDialog"
+          @click="openAddVoucherDialog"
         >
-          Apply
+          Add
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -71,8 +71,8 @@
                 v-else small dark
                 class="my-1"
                 color="light-blue"
-                :disabled="loading.apply || CURSTAT.isActive == true || $store.get('session/isNotAdmin')"
-                @click="apply(cpn.code)"
+                :disabled="loading.add || CURSTAT.isActive == true || $store.get('session/isNotAdmin')"
+                @click="add(cpn.code)"
                 style="min-width: 75%; max-height: 80%"
               >
                 Use
@@ -90,7 +90,7 @@
       :message="'No assigned or used voucher found.'"
     />
 
-    <apply-voucher ref="applyVoucherDialog" @applied="getVouchers" />
+    <add-voucher ref="addVoucherDialog" @applied="getVouchers" />
     <confirm ref="confirm"></confirm>
 
     <overlay :show="overlay" />
@@ -112,7 +112,7 @@ export default {
     return {
       overlay: false,
       loading: {
-        apply: false,
+        add: false,
       },
       vouchers: []
     };
@@ -130,24 +130,24 @@ export default {
           this.loading.refresh = false;
         });
     },
-    async apply(code) {
+    async add(code) {
       if (code) {
         this.$refs.confirm.open('Voucher', 'is going to be applied right now. Are you sure?', 'This voucher').then(async (confirm) => {
           if (confirm == true) {
-            this.applyVoucher(code);
+            this.addVoucher(code);
           }
         });
       }
     },
-    async applyVoucher(code) {
-      this.loading.apply = true;
-      const result = await VoucherService.applyVoucher(code);
+    async addVoucher(code) {
+      this.loading.add = true;
+      const result = await VoucherService.addVoucher(code);
       if (result && result.status == true) {
         this.$store.commit('session/SET_CURRENT', result.data.session);
         this.$store.commit('snackbar/setMessage', { text: 'Your voucher has been successfully applied.' });
         this.getVouchers();
       }
-      this.loading.apply = false;
+      this.loading.add = false;
     },
     cancel() {
       this.$refs.confirm.open('Cancel Voucher', 'will be cancelled. Are you sure?', 'Your actual voucher use').then(async (confirm) => {
@@ -162,8 +162,8 @@ export default {
         }
       });
     },
-    openApplyVoucherDialog() {
-      this.$refs.applyVoucherDialog.open();
+    openAddVoucherDialog() {
+      this.$refs.addVoucherDialog.open();
     },
     maskCode(voucher) {
       if (!voucher.issuedAt && this.$store.get('session/isNotAdmin')) {
@@ -176,7 +176,7 @@ export default {
     this.getVouchers();
   },
   components: {
-    ApplyVoucher: () => import('./ApplyVoucher.vue'),
+    AddVoucher: () => import('./AddVoucher.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
     Overlay: () => import('@/component/app/Overlay.vue'),

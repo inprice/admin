@@ -8,10 +8,10 @@
         Workspace
       </v-tab>
       <v-tab>
-        Subscription
+        Company
       </v-tab>
       <v-tab>
-        Plans
+        Subscription
       </v-tab>
       <v-tab>
         Team

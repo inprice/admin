@@ -167,7 +167,7 @@
         @click="addNew"
         :disabled="$store.get('session/isNotEditor')"
       >
-        Add New
+        Add
       </v-btn>
     </div>
 
@@ -196,7 +196,7 @@
                   :color="row.alarmId ? 'pink' : '#ccc'" 
                   :title="row.alarmId ? `Be notified when ${row.alarmName}` : 'NotSet'"
                 >
-                  mdi-clock-outline
+                  mdi-bell{{ row.alarmId ? '-ring' : '-outline' }}
                 </v-icon>
                 <div>
                   <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>
@@ -266,7 +266,7 @@
       </v-btn>
     </div>
 
-    <v-card v-else-if="!loading" >
+    <v-card v-else-if="!loading && !searchResult.length" >
       <block-message 
         :message="'No product found! You can add a new one or change your criteria.'" 
       />

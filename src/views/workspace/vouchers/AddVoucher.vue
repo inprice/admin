@@ -6,7 +6,7 @@
   >
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
-        <span>Apply voucher</span>
+        <span>Add voucher</span>
         <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
 
@@ -34,7 +34,7 @@
           :loading="loading"
           :disabled="loading || $store.get('session/isNotEditor')"
         >
-          Apply
+          OK
         </v-btn>
       </v-card-actions>
     </v-card>

@@ -255,6 +255,7 @@ export default {
       const result = await ProductService.save(form);
       if (result && result.status) {
         this.data.product = result.data.product;
+        this.data.links = result.data.links;
         this.$refs.productEditDialog.close();
         this.refreshPanels();
       }
