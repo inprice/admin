@@ -11,6 +11,8 @@
 </template>
 
 <script>
+//TODO: must be deleted!!!
+
 export default {
   props: {
     name: {

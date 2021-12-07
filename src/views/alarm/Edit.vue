@@ -7,7 +7,7 @@
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between no-gutters">
         <div class="mr-2">
-          {{ form.id ? 'Edit' : 'Add a new' }} {{ form.topic.toLowerCase() }} alarm
+          {{ form.id ? 'Edit' : 'Add a new' }} <span class="text-lowercase">{{ form.topic }}</span> alarm
         </div>
         <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
@@ -141,11 +141,11 @@
           class="font-weight-medium"
         >
           Conditions
-          <small>{{ isConditionsBlockShowed() ? 'Please specify your conditions' : 'No condition needed!' }}</small>
+          <small>{{ isConditionsBlockShowed ? 'Please specify your conditions' : 'No condition needed!' }}</small>
         </v-stepper-step>
 
         <v-stepper-content step="4">
-          <div v-if="isConditionsBlockShowed()" class="mr-5">
+          <div v-if="isConditionsBlockShowed" class="mr-5">
             <v-select
               dense
               outlined
@@ -225,8 +225,8 @@
 import SystemData from '@/data/system';
 
 const topics = [
-  { text: 'Products', value: 'PRODUCT' },
-  { text: 'Links', value: 'LINK' }
+  { text: 'Product', value: 'PRODUCT' },
+  { text: 'Link', value: 'LINK' }
 ];
 
 const subjects = {

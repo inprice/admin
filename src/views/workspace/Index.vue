@@ -8,10 +8,10 @@
         Workspace
       </v-tab>
       <v-tab>
-        Company
+        Subscription
       </v-tab>
       <v-tab>
-        Subscription
+        Billing
       </v-tab>
       <v-tab>
         Team
@@ -26,11 +26,11 @@
       </v-tab-item>
 
       <v-tab-item >
-        <billing-info></billing-info>
+        <plans></plans>
       </v-tab-item>
 
       <v-tab-item >
-        <plans></plans>
+        <billing-info></billing-info>
       </v-tab-item>
 
       <v-tab-item >

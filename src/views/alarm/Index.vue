@@ -4,7 +4,7 @@
     <div class="title">Alarms</div>
 
     <div class="body-2 my-3">
-      In order to be notified for any changings, please define your alarm conditions here and use them on your products and competitor links.
+      In order to getting notified for price or position change, please define an alarm condition here and bind it to your products and competitor links.
     </div>
 
     <!-- --------------- -->
@@ -147,7 +147,7 @@ export default {
     this.search();
   },
   components: {
-    AlarmDialog: () => import('@/component/special/AlarmDialog.vue'),
+    AlarmDialog: () => import('./Edit.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
   },

@@ -193,10 +193,10 @@
                 <v-icon 
                   class="hidden-xs-only mr-1"
                   style="font-size:18px"
-                  :color="row.alarmId ? 'pink' : '#ccc'" 
+                  :color="row.alarmId ? 'pink' : '#ddd'" 
                   :title="row.alarmId ? `Be notified when ${row.alarmName}` : 'NotSet'"
                 >
-                  mdi-bell{{ row.alarmId ? '-ring' : '-outline' }}
+                  mdi-bell
                 </v-icon>
                 <div>
                   <div class="caption teal--text font-weight-medium">{{ row.sku }}</div>

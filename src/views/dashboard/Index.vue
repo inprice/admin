@@ -182,6 +182,54 @@
       />
     </v-card>
 
+    <!-- ------------------------------------- -->
+    <!-- Link status distribution by platform  -->
+    <!-- ------------------------------------- -->
+    <v-card class="mt-5" :loading="loading">
+      <v-card-title class="pa-2">
+        <v-icon class="mr-4 hidden-xs-only">mdi-chart-arc</v-icon>
+        <div>
+          <div>Platform Statuses</div>
+          <div class="caption">Link status distribution by platform</div>
+        </div>
+      </v-card-title>
+      <v-divider></v-divider>
+
+      <div 
+        style="max-height: 300px; overflow: auto"
+        v-if="report && report.platformStatusDist && report.platformStatusDist.length"
+      >
+        <table class="pb-2 info-table">
+          <thead>
+            <tr>
+              <th>Platform</th>
+              <th width="10%" class="text-right">Active</th>
+              <th width="10%" class="text-right">Waiting</th>
+              <th width="10%" class="text-right hidden-xs-only">Trying</th>
+              <th width="10%" class="text-right hidden-sm-and-down">Problem</th>
+              <th width="10%" class="text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row) in report.platformStatusDist" :key="row.domain">
+              <td>{{ row.domain }}</td>
+              <td class="text-right">{{ row.actives }}</td>
+              <td class="text-right">{{ row.waitings }}</td>
+              <td class="text-right">{{ row.tryings }}</td>
+              <td class="text-right">{{ row.problems }}</td>
+              <td class="text-right">{{ row.total }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <block-message 
+        v-else dense
+        class="mb-0"
+        :message="loading ? 'Loading, please wait...' : 'No data.'"
+      />
+    </v-card>
+
     <!-- ------------------ -->
     <!-- MRU 25 Links -->
     <!-- ------------------ -->
@@ -216,10 +264,10 @@
                 <v-icon 
                   class="hidden-xs-only mr-1"
                   style="font-size:18px"
-                  :color="row.alarmId ? 'pink' : '#ccc'" 
+                  :color="row.alarmId ? 'pink' : '#ddd'" 
                   :title="row.alarmId ? `Alarming when ${row.alarmName}` : 'NotSet'" 
                 >
-                  mdi-bell{{ row.alarmId ? '-ring' : '-outline' }}
+                  mdi-bell
                 </v-icon>
                 <div>
                   <div class="caption teal--text">{{ row.seller }}</div>
