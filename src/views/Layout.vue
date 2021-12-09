@@ -205,14 +205,12 @@
     <v-app-bar app clipped-left class="appbar" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
-      <workspace-menu v-if="!$store.get('session/isSuperUser')"></workspace-menu>
+      <workspace-menu v-if="CURSTAT.workspaceId"></workspace-menu>
+      <div v-else class="title">Please join to a workspace!</div>
 
-      <v-spacer v-if="$store.get('session/isNotSuperUser') || CURSTAT.workspaceId"></v-spacer>
+      <v-spacer></v-spacer>
 
-      <notification-menu 
-        v-if="CURSTAT.role != 'SUPER'"
-      >
-      </notification-menu>
+      <notification-menu v-if="CURSTAT.role != 'SUPER'"></notification-menu>
       <user-menu></user-menu>
 
     </v-app-bar>

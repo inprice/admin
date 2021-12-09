@@ -31,8 +31,8 @@
           
             <v-card style="max-width:350px">
               <v-card-text class="pb-1">
-                <div class="pb-2 d-flex justify-space-between">
-                  <span class="body-1 my-auto">Filters</span>
+                <div class="body-1 pb-2 d-flex justify-space-between">
+                  <span class="my-auto">Filters</span>
                   <v-btn
                     icon
                     tabindex="-1"
@@ -69,6 +69,8 @@
                   class="mb-4"
                   v-model="searchForm.positions"
                   :items="positionItems"
+                  item-text="text"
+                  item-value="value"
                   :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
@@ -82,6 +84,8 @@
                   class="mb-4"
                   v-model="searchForm.statuses"
                   :items="statusItems"
+                  item-text="text"
+                  item-value="value"
                   :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
 
@@ -94,6 +98,8 @@
                     label="Order By"
                     v-model="searchForm.orderBy"
                     :items="orderByItems"
+                    item-text="text"
+                    item-value="value"
                     :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
@@ -105,6 +111,8 @@
                     label="Order Dir"
                     v-model="searchForm.orderDir"
                     :items="orderDirItems"
+                    item-text="text"
+                    item-value="value"
                     :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
                 </div>
@@ -118,6 +126,8 @@
                     label="Alarm ?"
                     v-model="searchForm.alarmStatus"
                     :items="alarmItems"
+                    item-text="text"
+                    item-value="value"
                     :menu-props="{ bottom: true, offsetY: true }"
                   ></v-select>
 
@@ -159,11 +169,33 @@
       </v-text-field>
     </div>
 
-    <list
-      ref="list"
-      :rows="searchResult"
-      @refreshList="search"
-    />
+    <div class="col pa-0">
+      <div v-if="searchResult && searchResult.length">
+        <links-table
+          :fromLinksPage="true"
+          :links="searchResult"
+        >
+        </links-table>
+
+        <div class="mt-3 text-right">
+          <v-btn 
+            small
+            @click="loadmore" 
+            :disabled="isLoadMoreDisabled" 
+            v-if="searchResult.length > 0"
+          >
+            More
+          </v-btn>
+        </div>
+      </div>
+
+      <v-card v-else>
+        <block-message 
+          :loading="loading"
+          :message="loading ? 'Loading, please wait...' : 'No link found! Please change your criteria.'" 
+        />
+      </v-card>
+    </div>
 
     <div class="mt-3">
       <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">More</v-btn>
@@ -287,7 +319,8 @@ export default {
     }
   },
   components: {
-    List: () => import('./List'),
+    LinksTable: () => import('../../link/LinksTable.vue'),
+    BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 }
 </script>

@@ -11,7 +11,7 @@
     </template>
 
     <v-list dense>
-      <v-list-item :to="{name: 'user-settings'}">
+      <v-list-item :to="{name: 'user-settings'}" v-if="$store.get('session/isNotSuperUser')">
         <v-list-item-avatar class="mr-3">
           <v-avatar color="pink" size="36">
             <span class="white--text font-weight-bold">{{ initials }}</span>
@@ -23,16 +23,16 @@
         </div>
       </v-list-item>
 
-      <v-divider></v-divider>
+      <v-divider v-if="$store.get('session/isNotSuperUser')"></v-divider>
 
-      <v-list-item :to="{name: 'ticket'}">
+      <v-list-item :to="{name: 'ticket'}" v-if="$store.get('session/isNotSuperUser')">
         <v-icon class="mr-3">mdi-lifebuoy</v-icon>
         <v-list-item-content>
           <v-list-item-title>SUPPORT</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item :href="helpURL">
+      <v-list-item :href="helpURL" v-if="$store.get('session/isNotSuperUser')">
         <v-icon class="mr-3">mdi-help-circle-outline</v-icon>
         <v-list-item-content>
           <v-list-item-title>HELP</v-list-item-title>
