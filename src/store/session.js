@@ -99,6 +99,7 @@ function buildCurrent(state) {
         stat.lastStatusUpdate = stat.subsRenewalAt;
       }
     }
+    if (selected.workspaceId) stat.workspaceId = selected.workspaceId; //super user is binding
     state.current = stat;
   }
 }

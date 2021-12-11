@@ -205,9 +205,7 @@
     <v-app-bar app clipped-left class="appbar" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
-      <workspace-menu v-if="CURSTAT.workspaceId"></workspace-menu>
-      <div v-else class="title">Please join to a workspace!</div>
-
+      <workspace-menu></workspace-menu>
       <v-spacer></v-spacer>
 
       <notification-menu v-if="CURSTAT.role != 'SUPER'"></notification-menu>

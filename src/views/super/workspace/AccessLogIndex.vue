@@ -1,12 +1,7 @@
 <template>
-
   <div>
-
-    <div class="d-flex justify-space-between px-4 py-2 pt-4">
-      <div>
-        <div class="title">{{ $route.query.name }}</div>
-        <div class="body-2">Workspace's access logs.</div>
-      </div>
+    <div class="d-flex justify-space-between">
+      <div class="title">Access logs of {{ $route.query.name }}</div>
 
       <v-btn 
         small
@@ -16,8 +11,6 @@
         Back
       </v-btn>
     </div>
-
-    <v-divider class="mt-2"></v-divider>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->

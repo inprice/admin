@@ -7,12 +7,12 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <div class="d-flex" v-bind="attrs" v-on="on">
-        <div class="title">{{ CURSTAT.workspace || 'No workspace selected' }}</div>
+        <div class="title">{{ CURSTAT.workspace }}</div>
         <v-icon class="ml-2">mdi-chevron-down</v-icon>
       </div>
     </template>
 
-    <v-list dense>
+    <v-list dense v-if="CURSTAT.workspace != 'Please bind a workspace'">
       <div v-if="sesList && sesList.length > 1">
         <template v-for="(ses, i) in sesList">
           <v-list-item
@@ -65,17 +65,18 @@
     </v-list>
 
     <v-list dense v-if="$store.get('session/isSuperUser')">
+      <v-divider></v-divider>
       <v-list-item v-if="!CURSTAT.workspaceId" :to="{name: 'sys-workspaces'}">
-        <v-icon class="mr-3">mdi-link-variant</v-icon>
+        <v-icon class="mr-3">mdi-lan-connect</v-icon>
         <v-list-item-content>
-          <v-list-item-subtitle>Bind to a workspace</v-list-item-subtitle>
+          <v-list-item-title>BIND TO A WORKSPACE {{ CURSTAT.workspaceId }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
       <v-list-item v-else @click="unbindWorkspace">
-        <v-icon class="mr-3">mdi-link-variant-off</v-icon>
+        <v-icon class="mr-3">mdi-lan-disconnect</v-icon>
         <v-list-item-content>
-          <v-list-item-subtitle>Unbind current</v-list-item-subtitle>
+          <v-list-item-title>UNBIND CURRENT</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>

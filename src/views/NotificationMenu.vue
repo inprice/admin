@@ -8,7 +8,7 @@
     >
       <template v-slot:activator="{ on }">
         <v-btn icon fab v-on="on">
-          <v-icon :color="hasAnnounce() ? 'pink' : ''" >
+          <v-icon :style="hasAnnounce() ? 'color: lime' : ''">
             mdi-bell{{ hasAnnounce() ? '-ring' : '-outline' }}
           </v-icon>
         </v-btn>

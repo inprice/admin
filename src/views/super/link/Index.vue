@@ -5,10 +5,7 @@
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div 
-      class="pl-0 d-flex"
-      :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
-    >
+    <div class="d-flex justify-space-between">
       <v-text-field 
         :loading="loading"
         v-model="searchForm.term"
@@ -16,6 +13,8 @@
         maxlength="100"
         hide-details
         placeholder="Search..."
+        class="pt-2 pb-3"
+        :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
       >
         <template v-slot:append>
           <v-menu
@@ -167,40 +166,77 @@
           </v-menu>
         </template>
       </v-text-field>
-    </div>
 
-    <div class="col pa-0">
-      <div v-if="searchResult && searchResult.length">
-        <links-table
-          :fromLinksPage="true"
-          :links="searchResult"
-        >
-        </links-table>
-
-        <div class="mt-3 text-right">
-          <v-btn 
+      <v-menu bottom right offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
             small
-            @click="loadmore" 
-            :disabled="isLoadMoreDisabled" 
-            v-if="searchResult.length > 0"
+            class="ml-2 my-auto"
+            v-on="on"
+            v-bind="attrs"
+            :disabled="!selected"
           >
-            More
+            Menu ({{ selected }})
           </v-btn>
-        </div>
-      </div>
+        </template>
 
-      <v-card v-else>
-        <block-message 
-          :loading="loading"
-          :message="loading ? 'Loading, please wait...' : 'No link found! Please change your criteria.'" 
-        />
-      </v-card>
+        <v-list dense>
+          <v-list-item link @click="changeMultipleStatus('REFRESHED')">
+            <v-list-item-title>REFRESHED</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click="changeMultipleStatus('RESOLVED')">
+            <v-list-item-title>RESOLVED</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click="changeMultipleStatus('PAUSED')">
+            <v-list-item-title>PAUSED</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item link @click="changeMultipleStatus('NOT_SUITABLE')">
+            <v-list-item-title>NOT SUITABLE</v-list-item-title>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item link @click="undoMultiple()">
+            <v-list-item-title>UNDO LAST CHANGE</v-list-item-title>
+          </v-list-item>
+
+        </v-list>
+      </v-menu>
+      
     </div>
 
-    <div class="mt-3">
-      <v-btn @click="loadmore" :disabled="isLoadMoreDisabled">More</v-btn>
+    <div v-if="searchResult && searchResult.length">
+      <links-table
+        :fromLinksPage="true"
+        :links="searchResult"
+        @changeStatus="changeOneStatus"
+        @undoStatus="undoOne"
+        @checked="refreshSelected"
+      >
+      </links-table>
     </div>
 
+    <div class="pa-3 pr-0 text-right" v-if="searchResult && searchResult.length">
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+      >
+        More
+      </v-btn>
+    </div>
+
+    <v-card v-else>
+      <block-message 
+        :loading="loading"
+        :message="loading ? 'Loading, please wait...' : 'No link found! Please change your criteria.'" 
+      />
+    </v-card>
+
+    <confirm ref="confirm"></confirm>
   </div>
 
 </template>
@@ -242,6 +278,7 @@ export default {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
       filterPanelShow: false,
       searchResult: [],
+      selected: 0,
       workspaces: [],
       isWorkspacesLoading: false,
       isLoadMoreDisabled: true,
@@ -260,6 +297,75 @@ export default {
     applyOptions() {
       this.filterPanelShow = false;
       this.search();
+    },
+    changeOneStatus(data) {
+      this.changeStatusCommon([ data.id ], data.newStatus);
+    },
+    changeMultipleStatus(newStatus) {
+      const selection = this.findSelectedIds();
+      this.changeStatusCommon(selection, newStatus);
+    },
+    changeStatusCommon(ids, newStatus) {
+      if (ids && ids.length && newStatus) {
+        let title = '';
+        if (ids.length > 1) {
+          title = `${ids.length} links statuses`;
+        } else {
+          title = 'Link status';
+        }
+        this.$refs.confirm.open('Change Status', `${title} will be changed to ${newStatus}. Are you sure?`).then(async (confirm) => {
+          if (confirm == true) {
+            const result = await SU_LinkService.changeStatus(ids, newStatus);
+            if (result) {
+              this.search();
+              this.$store.commit('snackbar/setMessage', { text: `${title} successfully updated.` });
+            }
+          }
+        });
+      }
+    },
+    undoOne(id) {
+      this.undoCommon([ id ]);
+    },
+    undoMultiple() {
+      const selection = this.findSelectedIds();
+      this.undoCommon(selection);
+    },
+    undoCommon(ids) {
+      if (ids && ids.length) {
+        let title = '';
+        if (ids.length > 1) {
+          title = `${ids.length} links last transactions `;
+        } else {
+          title = 'Link\'s last transaction ';
+        }
+        this.$refs.confirm.open('Undo Last', `${title} will be rolled back. Are you sure?`).then(async (confirm) => {
+          if (confirm == true) {
+            const result = await SU_LinkService.undo(ids);
+            if (result) {
+              this.search();
+              this.$store.commit('snackbar/setMessage', { text: `${title} successfully rolled back to previous status.` });
+            }
+          }
+        });
+      }
+    },
+    findSelectedIds() {
+      let selection = [];
+      for (var i=0; i<this.searchResult.length; i++) {
+        const link = this.searchResult[i];
+        if (link.selected) selection.push(link.id);
+      }
+      return selection;
+    },
+    refreshSelected() {
+      let count = 0;
+      if (this.searchResult) {
+        this.searchResult.forEach(row => {
+          if (row.selected) count += 1;
+        });
+      }
+      this.selected = count;
     },
     search() {
       this.loading = true;
@@ -289,7 +395,10 @@ export default {
           if (res) {
             this.isLoadMoreDisabled = (res.length < this.searchForm.rowLimit);
           }
-      }).finally(() => this.loading = false);
+      }).finally(() => {
+        this.loading = false
+        this.selected = 0;
+      });
     },
     resetForm() {
       this.filterPanelShow = false;
@@ -320,6 +429,7 @@ export default {
   },
   components: {
     LinksTable: () => import('../../link/LinksTable.vue'),
+    Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   },
 }

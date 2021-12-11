@@ -42,8 +42,8 @@
                 mdi-bell
               </v-icon>
               <div>
-                <div v-if="row.grup == 'WAITING'" class="caption green--text">{{ row.statusDescription }}</div>
-                <div v-else-if="row.grup == 'ACTIVE'" class="caption blue--text font-weight-medium">{{ row.seller }}</div>
+                <div v-if="row.status == 'AVAILABLE'" class="caption blue--text font-weight-medium">{{ row.seller }}</div>
+                <div v-else-if="row.grup == 'ACTIVE' || row.grup == 'WAITING'" class="caption green--text">{{ row.statusDescription }}</div>
                 <div v-else class="caption red--text">{{ row.statusDescription }}</div>
                 <div>{{ row.name || row.url }}</div>
               </div>
@@ -123,28 +123,26 @@
                     </v-list-item-content>
                   </template>
 
-                  <v-list-item link @click="changeStatus(row, 'REFRESHED')">
+                  <v-list-item link @click="$emit('changeStatus', { id: row.id, newStatus: 'REFRESHED' })">
                     <v-list-item-title>TO REFRESHED</v-list-item-title>
                   </v-list-item>
 
-                  <v-list-item link @click="changeStatus(row, 'RESOLVED')">
+                  <v-list-item link @click="$emit('changeStatus', { id: row.id, newStatus: 'RESOLVED' })">
                     <v-list-item-title>TO RESOLVED</v-list-item-title>
                   </v-list-item>
 
-                  <v-list-item link @click="changeStatus(row, 'PAUSED')">
+                  <v-list-item link @click="$emit('changeStatus', { id: row.id, newStatus: 'PAUSED' })">
                     <v-list-item-title>TO PAUSED</v-list-item-title>
                   </v-list-item>
 
-                  <v-list-item link @click="changeStatus(row, 'NOT_SUITABLE')">
+                  <v-list-item link @click="$emit('changeStatus', { id: row.id, newStatus: 'NOT_SUITABLE' })">
                     <v-list-item-title>TO NOT SUITABLE</v-list-item-title>
                   </v-list-item>
                 </v-list-group>
 
-                <template v-if="$store.get('session/isSuperUser')">
-                  <v-list-item link @click="undoStatus(row)">
-                    <v-list-item-title>UNDO LAST CHANGE</v-list-item-title>
-                  </v-list-item>
-                </template>
+                <v-list-item link @click="$emit('undoStatus', row.id)" v-if="$store.get('session/isSuperUser')">
+                  <v-list-item-title>UNDO LAST CHANGE</v-list-item-title>
+                </v-list-item>
 
               </v-list>
             </v-menu>

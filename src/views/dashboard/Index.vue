@@ -20,7 +20,10 @@
 
     <v-divider class="my-2"></v-divider>
 
-    <div class="row justify-space-around">
+    <div
+      class="row justify-space-around" 
+      v-if="(report && report.products && report.products.positionSeries) || (report && report.links && report.links.grupSeries)"
+    >
       <!-- ------------------------------- -->
       <!-- Products' position distributions   -->
       <!-- ------------------------------- -->

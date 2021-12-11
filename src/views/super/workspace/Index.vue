@@ -1,12 +1,6 @@
 <template>
-
   <div>
-    <div>
-      <div class="title">Workspaces</div>
-      <div class="body-2">All the registered workspaces.</div>
-    </div>
-
-    <v-divider class="mt-2"></v-divider>
+    <div class="title">Workspaces</div>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
@@ -29,12 +23,12 @@
       </div>
 
       <v-btn
-        color="white"
+        small
         class="my-auto"
         @click="unbindWorkspace"
         :disabled="!CURSTAT.workspaceId || $store.get('session/isNotSuperUser')"
       >
-        Unbind Current
+        Unbind
       </v-btn>
     </div>
 
@@ -50,7 +44,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in searchResult" :key="row.id" :style="(CURSTAT.workspaceId && CURSTAT.workspaceId == row.id ? 'background-color: lightcyan' : '')">
+          <tr v-for="row in searchResult" :key="row.id" :style="(CURSTAT.workspaceId && CURSTAT.workspaceId == row.id ? 'background-color: lightblue' : '')">
             <td style="padding: 3px 10px">
               {{ row.name }}
               <div class="caption font-weight-light">{{ row.email }}</div>
@@ -78,44 +72,41 @@
                     </v-list-item-title>
                   </v-list-item>
 
-                  <v-divider></v-divider>
+                  <template v-if="row.id > 1">
+                    <v-divider></v-divider>
 
-                  <v-list-item link :to="{ name: 'sys-workspace-details', params: { aid: row.id } }">
-                    <v-list-item-title>DETAILS</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item link :to="{ name: 'sys-workspace-logs', params: { aid: row.id }, query: { name: row.name } }">
-                    <v-list-item-title>ACCESS LOGS</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="openCreateVoucherDialog(row.id, row.name)">
-                    <v-list-item-title>CREATE VOUCHER</v-list-item-title>
-                  </v-list-item>
+                    <v-list-item link :to="{ name: 'sys-workspace-logs', params: { aid: row.id }, query: { name: row.name } }">
+                      <v-list-item-title>ACCESS LOGS</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="openCreateVoucherDialog(row.id, row.name)">
+                      <v-list-item-title>CREATE VOUCHER</v-list-item-title>
+                    </v-list-item>
 
-                  <v-divider></v-divider>
+                    <v-divider></v-divider>
 
-                  <v-list-item @click="makeAnAnnouncement(row.id, row.name)">
-                    <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
-                  </v-list-item>
+                    <v-list-item @click="makeAnAnnouncement(row.id, row.name)">
+                      <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
+                    </v-list-item>
+                  </template>
+
                 </v-list>
               </v-menu>
             </td>
           </tr>
         </tbody>
       </table>
-
-      <v-divider></v-divider>
-
-      <div class="pl-3 py-3">
-        <v-btn 
-          small
-          @click="loadmore" 
-          :disabled="isLoadMoreDisabled" 
-          v-if="searchResult.length > 0"
-        >
-          More
-        </v-btn>
-      </div>
-      
     </v-card>
+
+    <div class="pa-3 pr-0 text-right" v-if="searchResult && searchResult.length">
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
+      >
+        More
+      </v-btn>
+    </div>
 
     <v-card v-else >
       <block-message :message="'No workspace found! You may want to change your criteria.'" />

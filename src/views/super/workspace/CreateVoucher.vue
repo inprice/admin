@@ -7,8 +7,8 @@
     <v-card>
       <v-card-title class="pb-0 d-flex justify-space-between">
         <div>
-          <div>Create Voucher</div>
-          <div class="caption">For {{ form.name }}</div>
+          <div>{{ form.name }}</div>
+          <div class="caption">Create Voucher</div>
         </div>
         <v-btn icon @click="close" class="my-auto"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>

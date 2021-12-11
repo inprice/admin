@@ -82,11 +82,6 @@ const router = new VueRouter({
           component: () => import('./views/super/workspace/Index.vue')
         },
         {
-          name: 'sys-workspace-details',
-          path: 'workspace-details/:aid',
-          component: () => import('./views/super/workspace/details/Index.vue')
-        },
-        {
           name: 'sys-workspace-logs',
           path: 'workspace-logs/:aid',
           component: () => import('./views/super/workspace/AccessLogIndex.vue')
