@@ -14,7 +14,7 @@
 
       <v-divider class="py-2"></v-divider>
 
-      <v-simple-table class="property-table">
+      <!-- v-simple-table class="property-table">
         <template v-slot:default>
           <tbody>
             <property valueClass="col-4" name="Status" :value="CURSTAT.status" />
@@ -22,7 +22,7 @@
             <property valueClass="col-4" name="Renewal At" :value="CURSTAT.subsRenewalAt" />
           </tbody>
         </template>
-      </v-simple-table>
+      </v-simple-table -->
     </v-card>
     
     <v-card class="pa-5 mt-5" v-else>
@@ -85,7 +85,6 @@ export default {
   },
   components: {
     Overlay: () => import('@/component/app/Overlay.vue'),
-    Property: () => import('@/component/app/Property.vue')
   }
 }
 </script>

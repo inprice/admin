@@ -1,23 +1,16 @@
 <template>
-
   <div>
-
-    <div class="d-flex justify-space-between px-4 py-2 pt-4">
-      <div>
-        <div class="body-2">User's access logs.</div>
-        <div class="title">{{ $route.query.email }}</div>
-      </div>
+    <div class="d-flex justify-space-between">
+      <div class="title">Access logs of {{ $route.query.email }}</div>
 
       <v-btn 
         small
         class="my-auto"
         @click="$router.go(-1)"
       >
-        Go Back
+        Back
       </v-btn>
     </div>
-
-    <v-divider class="mt-2"></v-divider>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
@@ -212,7 +205,7 @@
       </v-text-field>
     </div>
     
-    <div class="col pa-0" v-if="searchResult">
+    <div class="col pa-0" v-if="searchResult && searchResult.length > 0">
       <list :rows="searchResult" :selectedId="showingRowId" @selected="rowSelected" />
 
       <div class="mt-3">
@@ -256,7 +249,7 @@ export default {
   data() {
     baseSearchForm.userId = this.$route.params.uid;
     return {
-      searchMenuOpen: false,
+      filterPanelShow: false,
       startDateMenuOpen: false,
       endDateMenuOpen: false,
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
@@ -275,7 +268,7 @@ export default {
   },
   methods: {
     applyOptions() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.search();
     },
     search() {
@@ -314,17 +307,9 @@ export default {
       }).finally(() => this.loading = false);
     },
     resetForm() {
-      this.searchMenuOpen = false;
+      this.filterPanelShow = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
-    },
-    resetStartDate() {
-      this.searchForm.startDate = null;
-      this.$refs.startDateMenu.save(null);
-    },
-    resetEndDate() {
-      this.searchForm.endDate = null;
-      this.$refs.endDateMenu.save(null);
     },
     loadmore() {
       this.isLoadMoreClicked = true;

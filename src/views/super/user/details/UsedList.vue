@@ -6,7 +6,7 @@
           <div class="d-flex">
             <v-icon class="mr-4 hidden-xs-only">mdi-alpha-s-circle-outline</v-icon>
             <div class="d-inline">
-              <div>Used services</div>
+              <div>Services usage</div>
               <div class="caption">Onetime used services.</div>
             </div>
           </div>
@@ -14,7 +14,6 @@
           <div :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')">
             <v-btn
               small
-              color="white"
               class="my-auto"
               @click="$emit('refreshed')"
               :disabled="$store.get('session/isNotSuperUser')"
@@ -26,71 +25,60 @@
       </v-card-title>
 
       <div v-if="list.length">
-        <v-divider></v-divider>
+        <table class="list-table">
+          <thead>
+            <tr>
+              <th width="25%">Service</th>
+              <th width="15%" class="text-center">Date</th>
+              <th>String</th>
+              <th width="8%" class="text-center hidden-sm-and-down">Boolean</th>
+              <th width="8%" class="text-center">Integer</th>
+              <th width="15%" class="text-center">Time</th>
+              <th width="5%" class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in list" :key="row.id">
+              <td>{{ row.mark }}</td>
+              <td class="text-center">{{ row.createdAt | formatPlainDate }}</td>
+              <td :title="row.stringVal">{{ row.stringVal }}</td>
+              <td class="text-center">{{ row.booleanVal ? 'YES' : 'NO' }}</td>
+              <td class="text-center">{{ row.integerVal }}</td>
+              <td class="text-center">{{ row.dateVal }}</td>
 
-        <div 
-          class="v-data-table v-data-table--dense theme--light put-behind">
-          <div class="v-data-table__wrapper">
-            <table :style="{'table-layout': RESPROPS['table-layout']}">
-              <thead>
-                <tr>
-                  <th :width="RESPROPS.table.service">Service</th>
-                  <th class="text-center" :width="RESPROPS.table.date">Date</th>
-                  <th class="text-center" :width="RESPROPS.table.whitelisted">Boolean</th>
-                  <th class="text-center" :width="RESPROPS.table.whitelisted">String</th>
-                  <th class="text-center" :width="RESPROPS.table.whitelisted">Integer</th>
-                  <th class="text-center" :width="RESPROPS.table.whitelisted">Date</th>
-                  <th class="text-center" :width="RESPROPS.table.action">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in list" :key="row.id">
-                  <td>{{ row.type }}</td>
-                  <td class="text-center">{{ row.createdAt | formatPlainDate }}</td>
-                  <td class="text-center">{{ row.booleanVal ? 'YES' : 'NO' }}</td>
-                  <td class="text-center">{{ row.stringVal }}</td>
-                  <td class="text-center">{{ row.integerVal }}</td>
-                  <td class="text-center">{{ row.dateVal }}</td>
+              <td style="padding: 0px !important; text-align: center !important;">
+                <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
+                  <template v-slot:activator="{ on }">
+                    <v-btn small icon v-on="on">
+                      <v-icon dark>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
 
-                  <td style="padding: 0px !important; text-align: center !important;">
-                    <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
-                      <template v-slot:activator="{ on }">
-                        <v-btn small icon v-on="on">
-                          <v-icon dark>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                      </template>
+                  <v-list dense>
+                    <v-list-item @click="remove(row.id, row.type)">
+                      <v-list-item-title>
+                        DELETE THIS USE
+                      </v-list-item-title>
+                    </v-list-item>
 
-                      <v-list dense>
-                        <v-list-item @click="remove(row.id, row.type)">
-                          <v-list-item-title>
-                            DELETE THIS USE
-                          </v-list-item-title>
-                        </v-list-item>
-
-                        <v-divider></v-divider>
-
-                        <v-list-item link v-if="row.mark == 'FREE_USE'" @click="toggleUnlimitedServiceUse(row)">
-                          <v-list-item-title>{{ row.booleanVal ? 'REMOVE' : 'ALLOW' }} UNLIMITED USE</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+                    <v-list-item link v-if="row.mark == 'FREE_USE'" @click="toggleUnlimitedServiceUse(row)">
+                      <v-list-item-title>{{ row.booleanVal ? 'REMOVE' : 'ALLOW' }} UNLIMITED USE</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <block-message 
         v-else dense
-        :message="'No used service found.'"
+        :message="'No service found.'"
       />
-
     </v-card>
 
     <confirm ref="confirm"></confirm>
-
   </div>
 </template>
 
@@ -113,30 +101,5 @@ export default {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
   },
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { service: '250px', date: '200px', whitelisted: '100px', action: '100px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { service: '', date: '20%', whitelisted: '12%', action: '12%' },
-          };
-        }
-      }
-    },
-  },
 }
 </script>
-
-<style scoped>
-  .v-data-table th {
-    height: 30px;
-  }
-</style>

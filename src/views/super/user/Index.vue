@@ -1,12 +1,6 @@
 <template>
-
   <div>
-    <div>
-      <div class="title">Users</div>
-      <div class="body-2">All the registered users.</div>
-    </div>
-
-    <v-divider class="mt-2"></v-divider>
+    <div class="title">Users</div>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
@@ -28,80 +22,74 @@
     </div>
 
     <v-card v-if="searchResult && searchResult.length">
-      <div class="v-data-table v-data-table--dense theme--light put-behind">
-        <div class="v-data-table__wrapper">
+      <table class="pb-2 list-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th width="15%">Banned</th>
+            <th>Reason</th>
+            <th width="5%">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in searchResult" :key="row.id">
+            <td>{{ row.email }}</td>
+            <td><ago :date="row.bannedAt" /></td>
+            <td>{{ row.banReason }}</td>
+            <td style="padding: 0px !important; text-align: center !important;">
+              <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
+                <template v-slot:activator="{ on }">
+                  <v-btn small icon v-on="on">
+                    <v-icon dark>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
 
-          <table
-            class="pb-2"
-            :style="{'table-layout': RESPROPS['table-layout']}"
-            style="border-collapse: collapse;line-height: 40px;"
-          >
-            <thead>
-              <tr>
-                <th :width="RESPROPS.table.email">Email</th>
-                <th :width="RESPROPS.table.bannedAt">Banned</th>
-                <th :width="RESPROPS.table.reason">Reason</th>
-                <th :width="RESPROPS.table.action">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in searchResult" :key="row.id">
-                <td>{{ row.email }}</td>
-                <td><ago :date="row.bannedAt" /></td>
-                <td>{{ row.banReason }}</td>
-                <td style="padding: 0px !important; text-align: center !important;">
-                  <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
-                    <template v-slot:activator="{ on }">
-                      <v-btn small icon v-on="on">
-                        <v-icon dark>mdi-dots-vertical</v-icon>
-                      </v-btn>
-                    </template>
+                <v-list dense>
+                  <v-list-item link :to="{ name: 'sys-user-details', params: { uid: row.id } }">
+                    <v-list-item-title>DETAILS</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link :to="{ name: 'sys-user-logs', params: { uid: row.id }, query: { email: row.email } }">
+                    <v-list-item-title>ACCESS LOGS</v-list-item-title>
+                  </v-list-item>
 
-                    <v-list dense>
-                      <v-list-item link :to="{ name: 'sys-user-details', params: { uid: row.id } }">
-                        <v-list-item-title>DETAILS</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item link :to="{ name: 'sys-user-logs', params: { uid: row.id }, query: { email: row.email } }">
-                        <v-list-item-title>ACCESS LOGS</v-list-item-title>
-                      </v-list-item>
+                  <v-divider></v-divider>
 
-                      <v-divider></v-divider>
+                  <v-list-item @click="banUser(row.id, row.email)" v-if="!row.bannedAt">
+                    <v-list-item-title>BAN THIS USER</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="revokeUserBan(row.id, row.email)" v-else>
+                    <v-list-item-title>REVOKE USER BAN</v-list-item-title>
+                  </v-list-item>
 
-                      <v-list-item @click="banUser(row.id, row.email)" v-if="!row.bannedAt">
-                        <v-list-item-title>BAN THIS USER</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="revokeUserBan(row.id, row.email)" v-else>
-                        <v-list-item-title>REVOKE USER BAN</v-list-item-title>
-                      </v-list-item>
+                  <v-divider></v-divider>
 
-                      <v-divider></v-divider>
-
-                      <v-list-item @click="makeAnAnnouncement(row.id, row.email)">
-                        <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <v-divider></v-divider>
-
-      <div class="pl-3 py-3">
-        <v-btn @click="loadmore" :disabled="isLoadMoreDisabled" v-if="searchResult.length > 0">More</v-btn>
-      </div>
-
+                  <v-list-item @click="makeAnAnnouncement(row.id, row.email)">
+                    <v-list-item-title>MAKE AN ANNOUNCEMENT</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </v-card>
+
+    <div class="pa-3 pr-0 text-right" v-if="searchResult && searchResult.length">
+      <v-btn 
+        small
+        @click="loadmore" 
+        :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
+      >
+        More
+      </v-btn>
+    </div>
 
     <v-card v-else >
       <block-message :message="'No user found! You may want to change your criteria.'" />
     </v-card>
 
     <ban-dialog subject="User" ref="banDialog" @banned="banned" />
-
     <announce-dialog ref="announceDialog" @saved="saveAnnounce" />
 
     <confirm ref="confirm"></confirm>
@@ -224,25 +212,6 @@ export default {
     AnnounceDialog: () => import('../announce/Edit.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     BlockMessage: () => import('@/component/simple/BlockMessage.vue')
-  },
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { email: '', reason: '', bannedAt: '150px', action: '70px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { email: '', reason: '', bannedAt: '15%', action: '8%' },
-          };
-        }
-      }
-    },
   },
 }
 </script>

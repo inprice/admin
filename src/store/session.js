@@ -21,7 +21,7 @@ const actions = {
     return res;
   },
 
-  logout({ state, commit }, expired) {
+  logout({ state, commit }, expired=false) {
     if (state.current.role != 'SUPER') logoutChannel.postMessage();
     if (expired == false) {
       ApiService.post('/logout')
@@ -120,7 +120,6 @@ const mutations = {
     } else {
       state.no = 0;
     }
-    if (state.no == undefined || state.no < 0 || state.no >= state.list.length) state.no = 0;
     buildCurrent(state);
   },
 
@@ -128,8 +127,11 @@ const mutations = {
     if (data.sessions) {
       state.list = data.sessions;
     }
-    if (data.sessionNo !== undefined && data.sessionNo > -1 && data.sessionNo <= state.list.length) {
+
+    if (data.sessionNo > -1 && data.sessionNo < state.list.length) {
       state.no = data.sessionNo;
+    } else {
+      state.no = 0;
     }
   },
 
@@ -141,7 +143,7 @@ const mutations = {
   },
 
   RESET(state) {
-    state.no = null;
+    state.no = -1;
     state.list = [];
   },
 
