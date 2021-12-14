@@ -36,8 +36,21 @@ const actions = {
           state.announces = [];
         }
       });
-  }
+  },
 
+  markAnAnnounceAsRead({ state }, id) {
+    if (store.get('session/isSuperUser') || store.get('session/isDemoUser')) {
+      store.dispatch('snackbar/notAllowed');
+      return;
+    }
+
+    ApiService.put('/announce/'+id)
+      .then((res) => {
+        if (res && res.data && res.data.ok) {
+          state.announces = res.data.data;
+        }
+      });
+  }
 };
 
 const getters = {

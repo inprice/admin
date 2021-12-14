@@ -1,20 +1,11 @@
 <template>
-
   <div>
-    <div>
-      <div class="title">Tickets for Super User</div>
-      <div class="body-2">The tickets opened by your members.</div>
-    </div>
-
-    <v-divider class="mt-2"></v-divider>
+    <div class="title">Tickets</div>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
     <!-- --------------- -->
-    <div 
-      class="pl-0 d-flex"
-      :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
-    >
+    <div class="px-0 pt-2 d-flex justify-space-between">
       <v-text-field 
         :loading="loading"
         v-model="searchForm.term"
@@ -22,6 +13,7 @@
         maxlength="100"
         hide-details
         placeholder="Search..."
+        :class="$vuetify.breakpoint.name == 'xs' ? 'col-10' : 'col-6'"
       >
         <template v-slot:append>
           <v-menu
@@ -186,11 +178,21 @@
           </v-menu>
         </template>
       </v-text-field>
+
+      <v-btn
+        small
+        class="my-auto"
+        @click="search"
+        :disabled="$store.get('session/isNotSuperUser')"
+        :class="'my-auto text-'+($vuetify.breakpoint.xsOnly ? 'center mt-2' : 'right')"
+      >
+        Refresh
+      </v-btn>
     </div>
 
     <div v-if="searchResult && searchResult.length">
       <v-card
-        class="my-4 pa-4"
+        class="my-3 pa-3"
         :class="{ 'elevation-3': !row.seenBySuper}"
         v-for="row in searchResult" :key="row.id"
       >
@@ -206,65 +208,60 @@
             {{ row.body }}
           </div>
 
-          <div>
-            <v-btn
-              small text
-              outlined
-              class="mr-1"
-              @click="openDetails(row.id)"
-            >
-              Details
-            </v-btn>
+          <v-menu offset-y bottom left>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                small icon
+                class="my-auto"
+                v-bind="attrs"
+                v-on="on"
+                @click.stop=""
+              >
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
 
-            <v-menu offset-y bottom left>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  small icon
-                  class="my-auto"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click.stop=""
+            <v-list dense>
+              <v-list-item @click="openDetails(row.id)">
+                <v-list-item-title>DETAILS</v-list-item-title>
+              </v-list-item>
+
+              <v-divider></v-divider>
+
+              <v-list-item @click="copyTheContent(row.body)">
+                <v-list-item-title>COPY</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="openEditDialog(row)">
+                <v-list-item-title>EDIT</v-list-item-title>
+              </v-list-item>
+
+              <v-divider></v-divider>
+
+              <v-list-item @click="toggleSeenValue(row)">
+                <v-list-item-title>MARK AS {{ row.seenBySuper ? 'UN' : '' }}SEEN</v-list-item-title>
+              </v-list-item>
+
+              <v-list-group
+                no-action
+                :value="false"
+                @click.stop=""
+              >
+                <template v-slot:activator>
+                  <v-list-item-title>CHANGE STATUS</v-list-item-title>
+                </template>
+
+                <v-list-item
+                  link
+                  v-for="(status, i) in statusItemsWOOpened" :key="i"
+                  :disabled="row.status == status"
+                  @click="changeStatus(row.id, status.value)"
                 >
-                  <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
-              </template>
-
-              <v-list dense>
-                <v-list-item @click="copyTheContent(row.body)">
-                  <v-list-item-title>COPY</v-list-item-title>
+                  <v-list-item-title class="text-capitalize" link v-text="status.text"></v-list-item-title>
                 </v-list-item>
-
-                <v-divider></v-divider>
-
-                <v-list-item @click="openEditDialog(row)">
-                  <v-list-item-title>EDIT</v-list-item-title>
-                </v-list-item>
-
-                <v-list-item @click="toggleSeenValue(row)">
-                  <v-list-item-title>MARK AS {{ row.seenBySuper ? 'UN' : '' }}SEEN</v-list-item-title>
-                </v-list-item>
-
-                <v-list-group
-                  no-action
-                  :value="false"
-                  @click.stop=""
-                >
-                  <template v-slot:activator>
-                    <v-list-item-title>CHANGE STATUS</v-list-item-title>
-                  </template>
-
-                  <v-list-item
-                    link
-                    v-for="(status, i) in statusItemsWOOpened" :key="i"
-                    :disabled="row.status == status"
-                    @click="changeStatus(row.id, status)"
-                  >
-                    <v-list-item-title class="text-capitalize" link v-text="normalizeEnum(status)"></v-list-item-title>
-                  </v-list-item>
-                </v-list-group>
-              </v-list>
-            </v-menu>
-          </div>
+              </v-list-group>
+            </v-list>
+          </v-menu>
         </div>
 
         <div class="d-flex justify-space-between">
@@ -320,11 +317,7 @@
       </v-card>
     </div>
 
-    <v-card v-else >
-      <block-message :message="'No ticket found! You can add a new one or change your criteria.'" />
-    </v-card>
-
-    <div class="mt-3">
+    <div class="pa-3 pr-0 text-right" v-if="searchResult && searchResult.length">
       <v-btn 
         small
         @click="loadmore" 
@@ -335,10 +328,12 @@
       </v-btn>
     </div>
 
+    <v-card v-else >
+      <block-message :message="'No ticket found!'" />
+    </v-card>
+
     <edit ref="editDialog"></edit>
-
   </div>
-
 </template>
 
 <script>
@@ -347,7 +342,7 @@ import SU_TicketService from '@/service/super/ticket';
 import SystemData from '@/data/system';
 
 const ORDER_ITEMS = [
-  { text: 'Status', value: 'Status' },
+  { text: 'Status', value: 'STATUS' },
   { text: 'Priority', value: 'PRIORITY' },
   { text: 'Type', value: 'TYPE' },
   { text: 'Subject', value: 'SUBJECT' },
@@ -371,12 +366,13 @@ export default {
   data() {
     return {
       searchForm: JSON.parse(JSON.stringify(baseSearchForm)),
-      filterPanelOpen: false,
+      filterPanelShow: false,
       searchResult: [],
       isLoadMoreDisabled: true,
       isLoadMoreClicked: false,
       showingId: 0,
       showDetails: false,
+      loading: false,
       statusItems: SystemData.TICKET_STATUSES,
       statusItemsWOOpened: SystemData.TICKET_STATUSES,
       priorityItems: SystemData.TICKET_PRIORITIES,
@@ -411,7 +407,7 @@ export default {
       this.search();
     },
     applyOptions() {
-      this.filterPanelOpen = false;
+      this.filterPanelShow = false;
       this.search();
     },
     search() {
@@ -447,7 +443,7 @@ export default {
       this.$router.push({ name: 'sys-ticket-details', params: { ticketId: id } });
     },
     resetForm() {
-      this.filterPanelOpen = false;
+      this.filterPanelShow = false;
       this.searchForm = JSON.parse(JSON.stringify(baseSearchForm));
       this.search();
     },
