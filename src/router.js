@@ -69,7 +69,7 @@ const router = new VueRouter({
         {
           name: 'sys-dashboard',
           path: 'dashboard',
-          component: () => import('./views/super/Dashboard.vue')
+          component: () => import('./views/super/dashboard/Index.vue')
         },
         {
           name: 'sys-links',
