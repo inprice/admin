@@ -48,7 +48,7 @@
         color="success"
         class="ml-1"
         @click="upload" 
-        :disabled="file == undefined || loading || result != null"
+        :disabled="$store.get('session/hasPassiveSubscription') || file == undefined || loading || result != null"
       >
         Import
       </v-btn>

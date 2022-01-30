@@ -6,6 +6,7 @@ const KEYS = {
 const ROW_LIMITS = [25, 50, 100];
 
 const LIMITS = {
+  LINK_ADDING: 25,
   DAYS_FOR_FREE_USE: 14,
   ROW_LIMIT_FOR_LISTS: ROW_LIMITS[0],
 };
@@ -88,6 +89,7 @@ const TICKET_SUBJECTS = [
   { text: 'Link', value: 'LINK' },
   { text: 'Product', value: 'PRODUCT' },
   { text: 'Workspace', value: 'WORKSPACE' },
+  { text: 'Account', value: 'ACCOUNT' },
   { text: 'Voucher', value: 'VOUCHER' },
   { text: 'Other', value: 'OTHER' }
 ];

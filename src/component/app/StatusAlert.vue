@@ -56,7 +56,7 @@ export default {
       }
     },
     infoForPassiveWorkspace() {
-      if (this.CURSTAT.linkCount > 0) {
+      if (this.CURSTAT.productCount > 0) {
         return "You need to start a new subscription to continue monitoring.";
       } else {
         if (this.CURSTAT == 'CREATED') {

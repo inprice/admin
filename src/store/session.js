@@ -74,7 +74,7 @@ function buildCurrent(state) {
       planId: selected.planId,
       planName: selected.planName,
       subsRenewalAt: selected.subsRenewalAt,
-      linkCount: selected.linkCount,
+      productCount: selected.productCount,
       lastStatusUpdate: selected.lastStatusUpdate,
       email: selected.email,
       fullName: selected.fullName,
@@ -135,10 +135,10 @@ const mutations = {
     }
   },
 
-  SET_LINK_COUNT(state, val) {
+  SET_PRODUCT_COUNT(state, val) {
     if (state.list[state.no]) {
-      state.list[state.no].linkCount = val;
-      state.current.linkCount = val;
+      state.list[state.no].productCount = val;
+      state.current.productCount = val;
     }
   },
 
@@ -176,6 +176,11 @@ const ACTIVE_WORKSPACE_STATUSES = [
 const demoEmail = 'demo@inprice.io';
 
 const getters = {
+
+  hasPassiveSubscription: (state) => {
+    if (state) return state.current.isActive == false;
+    return false;
+  },
 
   hasASession: (state) => {
     if (state) return state.current.status != 'UNKNOWN';

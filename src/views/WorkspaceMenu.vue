@@ -117,7 +117,7 @@ export default {
 
       let toPage = 'welcome';
       if (hasTime) {
-        if (session.linkCount > 0) {
+        if (session.productCount > 0) {
           toPage = 'dashboard';
         } else {
           toPage = 'products';

@@ -95,7 +95,7 @@ export default {
               this.$router.push({ name: 'sys-dashboard', params: { sid: 0 } });
             } else {
               if (ses.planName) {
-                if (ses.linkCount > 0) {
+                if (ses.productCount > 0) {
                   this.$router.push({ name: 'dashboard', params: { sid: resData.sessionNo } });
                 } else {
                   this.$router.push({ name: 'welcome', params: { sid: resData.sessionNo } });

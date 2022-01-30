@@ -165,7 +165,7 @@
         small
         class="my-auto"
         @click="addNew"
-        :disabled="$store.get('session/isNotEditor')"
+        :disabled="$store.get('session/hasPassiveSubscription') || $store.get('session/isNotEditor')"
       >
         Add
       </v-btn>

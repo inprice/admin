@@ -365,12 +365,12 @@ export default {
         }
 
         if (this.report && this.report.products && this.report.products.positionSeries) {
-          let linkCount = 0;
+          let productCount = 0;
           for (var i = 0; i < this.report.products.positionSeries.length; i++) {
             const dist = this.report.products.positionSeries[i];
-            linkCount += dist.count;
+            productCount += dist.count;
           }
-          this.total.product = linkCount;
+          this.total.product = productCount;
 
           let compCount = 0;
           if (this.report.links.statusSeries) {
