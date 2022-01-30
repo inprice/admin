@@ -20,7 +20,10 @@
 
     <v-divider class="my-2"></v-divider>
 
-    <div class="row justify-space-around">
+    <div
+      class="row justify-space-around" 
+      v-if="(report && report.products && report.products.positionSeries) || (report && report.links && report.links.grupSeries)"
+    >
       <!-- ------------------------------- -->
       <!-- Products' position distributions   -->
       <!-- ------------------------------- -->
@@ -101,11 +104,9 @@
           <tr>
             <th>Name</th>
             <th width="8%" class="text-right">Price</th>
-            <th width="8%" class="text-right">Min</th>
-            <th width="10%" class="text-left hidden-sm-and-down">Seller</th>
-            <th width="8%" class="text-right hidden-sm-and-down">Avg</th>
             <th width="8%" class="text-right">Max</th>
             <th width="10%" class="text-left hidden-xs-only">Seller</th>
+            <th width="8%" class="text-right hidden-sm-and-down">Avg</th>
           </tr>
         </thead>
         <tbody>
@@ -115,11 +116,9 @@
             v-for="(row) in report.products.extremePrices.Lowest" :key="row.id">
             <td>{{ row.name }}</td>
             <td class="text-right">{{ row.price | toPrice }}</td>
-            <td class="text-right">{{ row.minPrice | toPrice }}</td>
-            <td class="text-left hidden-sm-and-down">{{ row.minSeller }}</td>
-            <td class="text-right hidden-sm-and-down">{{ row.avgPrice | toPrice }}</td>
             <td class="text-right">{{ row.maxPrice | toPrice }}</td>
             <td class="text-left hidden-xs-only">{{ row.maxSeller }}</td>
+            <td class="text-right hidden-sm-and-down">{{ row.avgPrice | toPrice }}</td>
           </tr>
         </tbody>
       </table>
@@ -155,8 +154,6 @@
             <th width="8%" class="text-right">Min</th>
             <th width="10%" class="text-left hidden-xs-only">Seller</th>
             <th width="8%" class="text-right hidden-sm-and-down">Avg</th>
-            <th width="8%" class="text-right">Max</th>
-            <th width="10%" class="text-left hidden-sm-and-down">Seller</th>
           </tr>
         </thead>
         <tbody>
@@ -169,8 +166,6 @@
             <td class="text-right">{{ row.minPrice | toPrice }}</td>
             <td class="text-left hidden-xs-only">{{ row.minSeller }}</td>
             <td class="text-right hidden-sm-and-down">{{ row.avgPrice | toPrice }}</td>
-            <td class="text-right">{{ row.maxPrice | toPrice }}</td>
-            <td class="text-left hidden-sm-and-down">{{ row.maxSeller }}</td>
           </tr>
         </tbody>
       </table>
@@ -204,9 +199,9 @@
             <tr>
               <th>Platform</th>
               <th width="10%" class="text-right">Active</th>
-              <th width="10%" class="text-right">Waiting</th>
+              <th width="10%" class="text-right hidden-sm-and-down">Waiting</th>
               <th width="10%" class="text-right hidden-xs-only">Trying</th>
-              <th width="10%" class="text-right hidden-sm-and-down">Problem</th>
+              <th width="10%" class="text-right">Problem</th>
               <th width="10%" class="text-right">Total</th>
             </tr>
           </thead>
@@ -214,8 +209,8 @@
             <tr v-for="(row) in report.platformStatusDist" :key="row.domain">
               <td>{{ row.domain }}</td>
               <td class="text-right">{{ row.actives }}</td>
-              <td class="text-right">{{ row.waitings }}</td>
-              <td class="text-right">{{ row.tryings }}</td>
+              <td class="text-right hidden-sm-and-down">{{ row.waitings }}</td>
+              <td class="text-right hidden-xs-only">{{ row.tryings }}</td>
               <td class="text-right">{{ row.problems }}</td>
               <td class="text-right">{{ row.total }}</td>
             </tr>
@@ -370,12 +365,12 @@ export default {
         }
 
         if (this.report && this.report.products && this.report.products.positionSeries) {
-          let linkCount = 0;
+          let productCount = 0;
           for (var i = 0; i < this.report.products.positionSeries.length; i++) {
             const dist = this.report.products.positionSeries[i];
-            linkCount += dist.count;
+            productCount += dist.count;
           }
-          this.total.product = linkCount;
+          this.total.product = productCount;
 
           let compCount = 0;
           if (this.report.links.statusSeries) {

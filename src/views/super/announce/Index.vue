@@ -1,11 +1,6 @@
 <template>
-
   <div>
-    <div>
-      <div class="title">Announcements</div>
-    </div>
-
-    <v-divider class="mt-2"></v-divider>
+    <div class="title">Announcements</div>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
@@ -214,7 +209,6 @@
     </div>
 
     <div v-if="searchResult && searchResult.length" style="border: 1px solid #ddd">
-
       <div
         class="body-2"
         v-for="(row, index) in searchResult" :key="row.id"
@@ -246,7 +240,7 @@
         </div>
 
         <div class="row-wrapper">
-          <v-row class="px-2 mx-0" @click="toggleDetailPanel(row.id)">
+          <v-row class="px-2 mx-0" @click="toggleDetailPanel(row.id)" style="line-height: 28px">
             <v-col
               cols="2"
               class="font-weight-medium hidden-sm-and-down"
@@ -311,11 +305,7 @@
       </div>
     </div>
 
-    <v-card v-else >
-      <block-message :message="'No announce found! You can add a new one or change your criteria.'" />
-    </v-card>
-
-    <div class="mt-3">
+    <div class="pa-3 pr-0 text-right" v-if="searchResult && searchResult.length">
       <v-btn 
         small
         @click="loadmore" 
@@ -326,11 +316,13 @@
       </v-btn>
     </div>
 
+    <v-card v-else >
+      <block-message :message="'No announce found!'" />
+    </v-card>
+
     <confirm ref="confirm"></confirm>
     <edit ref="editDialog" @saved="saved" />
-
   </div>
-
 </template>
 
 <script>
@@ -495,5 +487,4 @@ export default {
   .col {
     padding: 6px !important;
   }
-
 </style>

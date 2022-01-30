@@ -15,7 +15,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Add Voucher', { method: 'put', url: baseURL + '/apply/' + code });
+    const res = await Helper.call('Apply Voucher', { method: 'put', url: baseURL + '/apply/' + code });
     return res;
   },
 

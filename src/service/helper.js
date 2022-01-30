@@ -3,8 +3,17 @@ import store from '../store'
 import router from '../router';
 
 function logoutCheck(reason, manualErrorHandling) {
-  if (reason.includes("sign in") || reason.includes("be expired") || (reason.includes("Network Error") && !window.location.href.includes("/login"))) {
+  if (reason.includes("sign in") 
+  || reason.includes("be expired") 
+  || (reason.includes("Network Error") && !window.location.href.includes("/login"))) {
     store.dispatch('session/logout', true);
+  } else if (reason.includes("must bind an workspace")) {
+    store.dispatch('session/logout');
+  } else if (reason.includes("Banned user")) {
+    if (!window.location.href.includes("/login")) {
+      store.dispatch('session/logout');
+    }
+    store.commit('snackbar/setMessage', { text: reason, level: 'error' });
   } else if (!manualErrorHandling) {
     store.commit('snackbar/setMessage', { text: reason, level: 'error' });
   }

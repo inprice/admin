@@ -69,7 +69,7 @@ const router = new VueRouter({
         {
           name: 'sys-dashboard',
           path: 'dashboard',
-          component: () => import('./views/super/Dashboard.vue')
+          component: () => import('./views/super/dashboard/Index.vue')
         },
         {
           name: 'sys-links',
@@ -80,11 +80,6 @@ const router = new VueRouter({
           name: 'sys-workspaces',
           path: 'workspaces',
           component: () => import('./views/super/workspace/Index.vue')
-        },
-        {
-          name: 'sys-workspace-details',
-          path: 'workspace-details/:aid',
-          component: () => import('./views/super/workspace/details/Index.vue')
         },
         {
           name: 'sys-workspace-logs',

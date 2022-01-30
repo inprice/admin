@@ -21,7 +21,7 @@ const actions = {
     return res;
   },
 
-  logout({ state, commit }, expired) {
+  logout({ state, commit }, expired=false) {
     if (state.current.role != 'SUPER') logoutChannel.postMessage();
     if (expired == false) {
       ApiService.post('/logout')
@@ -74,7 +74,7 @@ function buildCurrent(state) {
       planId: selected.planId,
       planName: selected.planName,
       subsRenewalAt: selected.subsRenewalAt,
-      linkCount: selected.linkCount,
+      productCount: selected.productCount,
       lastStatusUpdate: selected.lastStatusUpdate,
       email: selected.email,
       fullName: selected.fullName,
@@ -99,6 +99,7 @@ function buildCurrent(state) {
         stat.lastStatusUpdate = stat.subsRenewalAt;
       }
     }
+    if (selected.workspaceId) stat.workspaceId = selected.workspaceId; //super user is binding
     state.current = stat;
   }
 }
@@ -119,7 +120,6 @@ const mutations = {
     } else {
       state.no = 0;
     }
-    if (state.no == undefined || state.no < 0 || state.no >= state.list.length) state.no = 0;
     buildCurrent(state);
   },
 
@@ -127,20 +127,23 @@ const mutations = {
     if (data.sessions) {
       state.list = data.sessions;
     }
-    if (data.sessionNo !== undefined && data.sessionNo > -1 && data.sessionNo <= state.list.length) {
+
+    if (data.sessionNo > -1 && data.sessionNo < state.list.length) {
       state.no = data.sessionNo;
+    } else {
+      state.no = 0;
     }
   },
 
-  SET_LINK_COUNT(state, val) {
+  SET_PRODUCT_COUNT(state, val) {
     if (state.list[state.no]) {
-      state.list[state.no].linkCount = val;
-      state.current.linkCount = val;
+      state.list[state.no].productCount = val;
+      state.current.productCount = val;
     }
   },
 
   RESET(state) {
-    state.no = null;
+    state.no = -1;
     state.list = [];
   },
 
@@ -173,6 +176,11 @@ const ACTIVE_WORKSPACE_STATUSES = [
 const demoEmail = 'demo@inprice.io';
 
 const getters = {
+
+  hasPassiveSubscription: (state) => {
+    if (state) return state.current.isActive == false;
+    return false;
+  },
 
   hasASession: (state) => {
     if (state) return state.current.status != 'UNKNOWN';

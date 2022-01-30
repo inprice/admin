@@ -64,6 +64,7 @@
               label="Parked ?"
               color="red"
               v-model="form.parked"
+              class="mt-0 pt-0"
               hide-details
             />
 
@@ -71,14 +72,13 @@
               label="Blocked ?"
               color="red"
               v-model="form.blocked"
+              class="mt-0 pt-0"
               hide-details
             />
           </div>
 
         </v-form>
       </v-card-text>
-
-      <v-divider></v-divider>
 
       <v-card-actions class="justify-end pa-3">
         <v-btn
@@ -153,8 +153,7 @@ export default {
           v => (v && v.length >= 5 && v.length <= 50) || "Must be between 5-50 chars"
         ],
         profile: [
-          v => !!v || "Required",
-          v => (v && v.length >= 3 && v.length <= 15) || "Must be between 3-15 chars"
+          v => (!v || (v.length >= 3 && v.length <= 15)) || "Must be between 3-15 chars"
         ],
         currencyCode: [
           v => (!v || (v.length != 128)) || "Must be 3 chars"

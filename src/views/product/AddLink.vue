@@ -19,7 +19,7 @@
           <v-textarea
             outlined
             v-model="form.linksText"
-            :label="`${rowLimit - lines} links can be added.`"
+            :label="`${SystemConsts.LIMITS.LINK_ADDING - lines} links can be added.`"
             rows="5"
             :rules="rules.linksText"
             @keyup="checkRowLimit"
@@ -52,13 +52,13 @@
 <script>
 import Utility from '@/helpers/utility';
 import SystemService from '@/service/system';
+import SystemConsts from '@/data/system';
 
 export default {
   props: ["productId", "productName"],
   data() {
     return {
       lines: 0,
-      rowLimit: 0,
       show: false,
       loading: false,
       valid: false,
@@ -77,14 +77,12 @@ export default {
           const result = res.data;
           if (result.remainingLink) {
             this.show = true;
-            this.rowLimit = (result.remainingLink <= 100 ? result.remainingLink : 100);
-            if (this.rowLimit < 0) this.rowLimit = 0;
 
             let self = this;
             this.$nextTick(() => {
               self.$refs.form.resetValidation();
             });
-            this.$store.commit('session/SET_LINK_COUNT', result.linkCount);
+            this.$store.commit('session/SET_PRODUCT_COUNT', result.productCount);
           } else {
             this.$store.commit('snackbar/setMessage', 
               { 
@@ -99,7 +97,7 @@ export default {
       });
     },
     async save() {
-      if (this.lines <= this.rowLimit) {
+      if (this.lines <= SystemConsts.LIMITS.LINK_ADDING) {
         this.activateRules();
         await this.$refs.form.validate();
         if (this.valid) {
@@ -108,7 +106,7 @@ export default {
           this.close();
         }
       } else {
-        this.$store.commit('snackbar/setMessage', { text: 'You can add up to ' + this.rowLimit + ' links.' });
+        this.$store.commit('snackbar/setMessage', { text: 'You can add up to ' + SystemConsts.LIMITS.LINK_ADDING + ' links.' });
       }
     },
     close() {
@@ -141,7 +139,7 @@ export default {
         const newLines = this.form.linksText.split("\n").length;
         this.lines = newLines;
         if(e.keyCode == 13) {
-          if (newLines >= this.rowLimit)
+          if (newLines >= SystemConsts.LIMITS.LINK_ADDING)
           e.preventDefault();
           return false;
         }

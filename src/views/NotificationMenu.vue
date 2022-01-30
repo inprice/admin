@@ -1,14 +1,19 @@
 <template>
   <div>
     <v-menu
-      v-model="menu"
       offset-y
+      v-model="menu"
       :close-on-content-click="false"
       nudge-width="400"
     >
       <template v-slot:activator="{ on }">
-        <v-btn icon fab v-on="on">
-          <v-icon :color="hasAnnounce() ? 'pink' : ''" >
+        <v-btn 
+          small fab 
+          v-on="on" 
+          :elevation="hasAnnounce() ? 1 : 0"
+          :color="hasAnnounce() ? 'white' : 'transparent'"
+        >
+          <v-icon :style="hasAnnounce() ? 'color: red' : ''">
             mdi-bell{{ hasAnnounce() ? '-ring' : '-outline' }}
           </v-icon>
         </v-btn>
@@ -18,8 +23,8 @@
         <v-list two-line>
           <v-list-item-group v-if="hasAnnounce()">
             <v-list-item
-              @click="showDetails(row)"
               :ripple="false"
+              @click.stop="showDetails(row)"
               class="pb-1 pt-0 pr-0"
               v-for="row in announces" :key="row.id"
               style="border-bottom: 1px solid #ddd"
@@ -44,19 +49,16 @@
               </v-list-item-content>
 
               <v-list-item-action>
-                <v-list-item-action-text><ago class="d-inline font-weight-bold" :date="row.createdAt" /></v-list-item-action-text>
                 <v-btn
-                  small
-                  text
-                  outlined
-                  color="white"
+                  small text outlined
+                  color="primary"
                   v-if="row.link"
-                  :target="row.link.startsWith('http') ? '_blank' : ''"
-                  :href="row.link"
+                  @click.stop="openLink(row.link)"
                 >
                   Open
                 </v-btn>
-                <v-list-item-action-text v-else>{{ row.type }}</v-list-item-action-text>
+                <v-list-item-action-text v-if="!row.link">{{ row.type }}</v-list-item-action-text>
+                <v-list-item-action-text><ago class="d-inline font-weight-bold" :date="row.createdAt" /></v-list-item-action-text>
               </v-list-item-action>
             </v-list-item>
           </v-list-item-group>
@@ -119,7 +121,16 @@ export default {
       this.$router.push({ name: 'announce' });
     },
     showDetails(announce) {
+      this.$store.dispatch('message/markAnAnnounceAsRead', announce.id);
       this.$refs.info.open(announce.title, null, announce.body);
+    },
+    openLink(url) {
+      this.menu = false;
+      if (url.startsWith('http')) {
+        window.open(url, '_blank');
+      } else {
+        this.$router.push({ path: `/${this.$route.params.sid}/app${url}` });
+      }
     }
   },
   components: {

@@ -1,8 +1,6 @@
 <template>
   <div>
-
     <div v-if="ticket">
-
       <div class="title d-flex justify-space-between mt-3">
         <span class="text-capitalize">Ticket Details ({{ normalizeEnum(ticket.status) }})</span>
         <div class="d-flex justify-end">
@@ -21,20 +19,15 @@
       />
 
       <v-card v-if="ticket" class="mt-3 py-2 px-1">
-
-        <v-btn-toggle tile :value="selectedTab">
-          <v-btn @click="selectedTab=0" small>
-            Comments ({{ ticket.commentList.length }})
-          </v-btn>
-
-          <v-btn @click="selectedTab=1" small>
-            History ({{ ticket.historyList.length }})
-          </v-btn>
-        </v-btn-toggle>
-
-        <v-divider></v-divider>
-
         <v-tabs v-model="selectedTab">
+          <v-tab>
+            Comments ({{ ticket.commentList.length }})
+          </v-tab>
+
+          <v-tab>
+            History ({{ ticket.historyList.length }})
+          </v-tab>
+
           <v-tab-item>
             <div v-if="ticket.commentList.length">
 
@@ -95,34 +88,31 @@
           </v-tab-item>
 
           <v-tab-item>
-            <div 
-              v-if="ticket.historyList.length"
-              class="v-data-table v-data-table--dense theme--light put-behind">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Priority</th>
-                      <th>Type</th>
-                      <th>Subject</th>
-                      <th>Full Name</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="row in ticket.historyList" :key="row.id">
-                      <td>{{ row.createdAt | formatPlainDate }}</td>
-                      <td>{{ row.status }}</td>
-                      <td>{{ row.priority }}</td>
-                      <td>{{ row.type }}</td>
-                      <td>{{ row.subject }}</td>
-                      <td>{{ row.fullName }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div v-if="ticket.historyList.length">
+              <table class="pb-2 list-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th width="8%" class="hidden-sm-and-down">Priority</th>
+                    <th width="15%" class="hidden-xs-only">Type</th>
+                    <th width="15%" class="hidden-xs-only">Subject</th>
+                    <th width="15%">Full Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="row in ticket.historyList" :key="row.id">
+                    <td>{{ row.createdAt | formatPlainDate }}</td>
+                    <td>{{ row.status }}</td>
+                    <td class="hidden-sm-and-down">{{ row.priority }}</td>
+                    <td class="hidden-xs-only">{{ row.type }}</td>
+                    <td class="hidden-xs-only">{{ row.subject }}</td>
+                    <td>{{ row.fullName }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+
             <block-message 
               v-else dense
               :message="'No history.'"
@@ -132,7 +122,6 @@
       </v-card>
 
       <div v-if="ticket.status != 'CLOSED'">
-
         <div  class="my-3">
           <v-btn
             small
@@ -198,7 +187,6 @@
     </v-card>
 
     <confirm ref="confirm"></confirm>
-
   </div>
 </template>
 
@@ -330,7 +318,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
   .scrollable {
     overflow: hidden;
     overflow-y: auto;

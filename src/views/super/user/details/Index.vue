@@ -1,67 +1,73 @@
 <template>
+  <div v-if="user">
+    <div class="d-flex justify-space-between">
+      <div class="title">The details of {{ user.email }}</div>
 
-  <div v-if="user" class="mt-3">
+      <v-btn 
+        small
+        class="my-auto"
+        @click="$router.go(-1)"
+      >
+        Back
+      </v-btn>
+    </div>
 
-    <v-card>
-      <div class="d-flex justify-space-between px-4 py-2 pt-4">
-        <div class="d-flex">
-          <v-icon class="mr-4 hidden-xs-only">mdi-account</v-icon>
-          <div class="d-inline title">{{ user.email }}</div>
-        </div>
-
-        <v-btn 
-          small
-          class="my-auto"
-          @click="$router.go(-1)"
-        >
-          Back
-        </v-btn>
-
-      </div>
-
-      <v-divider class="mt-2"></v-divider>
-
-      <v-simple-table class="property-table pt-3 pb-2" dense>
-        <template v-slot:default>
-          <tbody>
-            <property :valueClass="RESPROPS.properties.name" name="Name" :value="user.name" />
-            <property :valueClass="RESPROPS.properties.timezone" name="Timezone" :value="user.timezone" />
-            <property :valueClass="RESPROPS.properties.bannedAt" name="Banned At" :value="user.bannedAt" v-if="user.banned" />
-            <property :valueClass="RESPROPS.properties.banReason" name="Ban Reason" :value="user.banReason" v-if="user.banned" />
-            <property :valueClass="RESPROPS.properties.createdAt" name="Created At" :value="user.createdAt" />
-            <tr>
-              <td colspan="2">
-                <v-divider></v-divider>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2" class="text-center">
-                <v-btn 
-                  small dark
-                  class="red"
-                  v-if="!user.banned"
-                  @click="banUser"
-                >
-                  <v-icon small>mdi-close-circle</v-icon> <span class="ml-2">Ban This User</span>
-                </v-btn>
-                <v-btn 
-                  small dark
-                  class="success"
-                  v-else
-                  @click="revokeUserBan"
-                >
-                  <v-icon small>mdi-human-greeting</v-icon> <span class="ml-2">Revoke User's Ban</span>
-                </v-btn>
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
+    <v-card class="mt-3">
+      <table class="property-table">
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <td>{{ user.fullName }}</td>
+          <tr>
+          <tr>
+            <th>Timezone</th>
+            <td>{{ user.timezone }}</td>
+          <tr>
+          <tr v-if="user.banned">
+            <th>Banned At</th>
+            <td>{{ user.bannedAt }}</td>
+          <tr>
+          <tr v-if="user.banned">
+            <th>Reason</th>
+            <td>{{ user.banReason }}</td>
+          <tr>
+          <tr>
+            <th>Created At</th>
+            <td>{{ user.createdAt }}</td>
+          <tr>
+          <tr>
+            <td colspan="2" class="text-center">
+              <v-btn 
+                small dark
+                class="red"
+                v-if="!user.banned"
+                @click="banUser"
+              >
+                <v-icon small>mdi-close-circle</v-icon> <span class="ml-2">Ban This User</span>
+              </v-btn>
+              <v-btn 
+                small dark
+                class="success"
+                v-else
+                @click="revokeUserBan"
+              >
+                <v-icon small>mdi-human-greeting</v-icon> <span class="ml-2">Revoke User's Ban</span>
+              </v-btn>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </v-card>
 
     <membership-list :list="membershipList" @refreshed="refreshMembershipList" />
     <used-list :list="usedServiceList" @deleted="deleteUsedService"  @toggledUnlimitedUse="toggleUnlimitedUsedService" @refreshed="refreshUsedServiceList" />
-    <session-list :list="sessionList"  @terminated="terminateSession" @refreshed="refreshSessionList" />
+    <session-list 
+      :email="user.email"
+      :list="sessionList"
+      @terminated="terminateSession"
+      @allTerminated="terminateAllSessions(user.id)"
+      @refreshed="refreshSessionList" 
+    />
 
     <ban-dialog subject="User" ref="banDialog" @banned="banned" />
     <confirm ref="confirm"></confirm>
@@ -86,6 +92,13 @@ export default {
       SU_UserService.terminateSession(hash).then((res) => {
         if (res && res.status) {
           this.sessionList = res.data;
+        }
+      });
+    },
+    terminateAllSessions(userId) {
+      SU_UserService.terminateAllSessions(userId).then((res) => {
+        if (res && res.status) {
+          this.sessionList = [];
         }
       });
     },
@@ -137,9 +150,10 @@ export default {
       SU_UserService.ban(form)
         .then((res) => {
           if (res && res.status) {
-            this.$store.commit('snackbar/setMessage', { text: `${form.name} is successfully banned.` });
+            console.log('--', res);
+            this.$store.commit('snackbar/setMessage', { text: `${form.email} is successfully banned.` });
             this.user.bannedAt = 'JUST NOW';
-            this.user.banReason = form.reason;
+            this.user.banReason = res.data.reason;
             this.user.banned = true;
           }
         });
@@ -173,29 +187,12 @@ export default {
       });
     });
   },
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': {
-          return {
-            properties: { name: 'col-10', timezone: 'col-5', banned: 'col-2', bannedAt: 'col-5', banReason: 'col-10', createdAt: 'col-5' },
-          };
-        }
-        default: {
-          return {
-            properties: { name: 'col-7', timezone: 'col-3', banned: 'col-1', bannedAt: 'col-3', banReason: 'col-7', createdAt: 'col-3' },
-          };
-        }
-      }
-    },
-  },
   components: {
     BanDialog: () => import('../BanDialog.vue'),
     Confirm: () => import('@/component/Confirm.vue'),
     MembershipList: () => import('./MembershipList'),
     UsedList: () => import('./UsedList'),
     SessionList: () => import('./SessionList'),
-    Property: () => import('@/component/app/Property.vue')
   }
 };
 </script>

@@ -1,11 +1,6 @@
 <template>
-
   <div>
-    <div>
-      <div class="title">Platforms</div>
-    </div>
-
-    <v-divider class="mt-2"></v-divider>
+    <div class="title">Platforms</div>
 
     <!-- --------------- -->
     <!-- Filter and Rows -->
@@ -26,7 +21,7 @@
           <v-menu
             offset-y
             bottom left
-            v-model="filterPanelShow"
+            v-model="filterPanelOpen"
             :close-on-content-click="false"
             transition="scale-x-transition"
           >
@@ -41,7 +36,7 @@
                   <v-btn
                     icon
                     tabindex="-1"
-                    @click="filterPanelShow = false"
+                    @click="filterPanelOpen = false"
                   >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
@@ -140,85 +135,81 @@
       </v-text-field>
     </div>
 
-    <div v-if="searchResult.length" class="v-data-table v-data-table--dense theme--light put-behind">
-      <div class="v-data-table__wrapper">
-        <table :style="{'table-layout': RESPROPS['table-layout']}">
-          <thead>
-            <tr>
-              <th :width="RESPROPS.table.name">Name</th>
-              <th class="hidden-sm-and-down" :width="RESPROPS.table.name">Country</th>
-              <th class="hidden-sm-and-down" :width="RESPROPS.table.name">Queue</th>
-              <th class="hidden-sm-and-down" :width="RESPROPS.table.profile">Profile</th>
-              <th class="text-center" :width="RESPROPS.table.parked">Parked</th>
-              <th class="text-center" :width="RESPROPS.table.parked">Blocked</th>
-              <th class="hidden-sm-and-down" :width="RESPROPS.table.curcode">Curency</th>
-              <th :width="RESPROPS.table.action">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in searchResult" :key="row.id" :style="findRowColor(row)" @click="openUpdateDialog(row)" style="cursor: pointer">
-              <td>{{ row.name }}</td>
-              <td class="hidden-sm-and-down">{{ row.country }}</td>
-              <td class="hidden-sm-and-down">{{ row.queue }}</td>
-              <td class="hidden-sm-and-down">{{ row.profile }}</td>
-              <td class="text-center" :style="row.parked ? 'color: red; font-weight: bold' : ''">{{ row.parked ? 'YES' : 'NO' }}</td>
-              <td class="text-center" :style="row.blocked ? 'color: red; font-weight: bold' : ''">{{ row.blocked ? 'YES' : 'NO' }}</td>
-              <td class="hidden-sm-and-down">{{ row.currencyCode }}</td>
-              <td style="padding: 0px !important; text-align: center !important;">
-                <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
-                  <template v-slot:activator="{ on }">
-                    <v-btn small icon v-on="on">
-                      <v-icon dark>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                  </template>
+    <v-card v-if="searchResult && searchResult.length">
+      <table class="pb-2 list-table">
+        <thead>
+          <tr>
+              <th width="15%">Name</th>
+              <th width="15%" class="hidden-sm-and-down">Country</th>
+              <th class="hidden-sm-and-down">Queue</th>
+              <th width="10%" class="hidden-sm-and-down">Profile</th>
+              <th width="8%" class="text-center">Parked</th>
+              <th width="8%" class="text-center">Blocked</th>
+              <th width="8%" class="text-center hidden-sm-and-down">Curency</th>
+              <th width="8%">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in searchResult" :key="row.id" :style="findRowColor(row)" @click="openUpdateDialog(row)" style="cursor: pointer">
+            <td>{{ row.name }}</td>
+            <td class="hidden-sm-and-down">{{ row.country }}</td>
+            <td class="hidden-sm-and-down">{{ row.queue }}</td>
+            <td class="hidden-sm-and-down">{{ row.profile }}</td>
+            <td class="text-center" :style="row.parked ? 'color: red; font-weight: bold' : ''">{{ row.parked ? 'YES' : 'NO' }}</td>
+            <td class="text-center" :style="row.blocked ? 'color: red; font-weight: bold' : ''">{{ row.blocked ? 'YES' : 'NO' }}</td>
+            <td class="text-center hidden-sm-and-down">{{ row.currencyCode }}</td>
+            <td style="padding: 0px !important; text-align: center !important;">
+              <v-menu offset-y bottom left :disabled="$store.get('session/isNotSuperUser')">
+                <template v-slot:activator="{ on }">
+                  <v-btn small icon v-on="on">
+                    <v-icon dark>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
 
-                  <v-list dense>
-                    <v-list-item @click="openUpdateDialog(row)">
-                      <v-list-item-title>
-                        UPDATE
-                      </v-list-item-title>
-                    </v-list-item>
+                <v-list dense>
+                  <v-list-item @click="openUpdateDialog(row)">
+                    <v-list-item-title>
+                      UPDATE
+                    </v-list-item-title>
+                  </v-list-item>
 
-                    <v-divider></v-divider>
+                  <v-divider></v-divider>
 
-                    <v-list-item @click="toggleParked(row.id)">
-                      <v-list-item-title>
-                        TOGGLE PARKED
-                      </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="toggleBlocked(row.id)">
-                      <v-list-item-title>
-                        TOGGLE BLOCKED
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+                  <v-list-item @click="toggleParked(row.id)">
+                    <v-list-item-title>
+                      TOGGLE PARKED
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="toggleBlocked(row.id)">
+                    <v-list-item-title>
+                      TOGGLE BLOCKED
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </v-card>
 
-    <block-message 
-      v-else dense
-      :message="`No plaform found.`"
-    />
-
-    <div class="mt-3">
+    <div class="pa-3 pr-0 text-right" v-if="searchResult && searchResult.length">
       <v-btn 
         small
         @click="loadmore" 
         :disabled="isLoadMoreDisabled" 
+        v-if="searchResult.length > 0"
       >
         More
       </v-btn>
     </div>
 
+    <v-card v-else >
+      <block-message :message="'No platform found!'" />
+    </v-card>
+
     <edit ref="platformDialog" @saved="update" />
-
   </div>
-
 </template>
 
 <script>
@@ -258,25 +249,6 @@ export default {
       baseSearchForm,
       loading: false,
     };
-  },
-  computed: {
-    RESPROPS() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm': {
-          return {
-            'table-layout': 'fixed',
-            table: { name: '', queue: '200px', profile: '120px', parked: '70px', action: '70px' },
-          };
-        }
-        default: {
-          return {
-            'table-layout': '',
-            table: { name: '', queue: '30%', profile: '15%', parked: '7%', action: '7%' },
-          };
-        }
-      }
-    },
   },
   methods: {
     applyOptions() {
@@ -349,11 +321,11 @@ export default {
     },
     findRowColor(platform) {
       if (platform.parked == true && platform.blocked == true) {
-        return 'background-color: orange';
+        return 'background-color: yellow';
       } else if (platform.parked == true) {
         return 'background-color: lightcyan';
         } else if (platform.blocked == true) {
-        return 'background-color: pink';
+        return 'background-color: lightgreen';
       }
       return '';
     }

@@ -33,8 +33,7 @@ export default {
       return;
     }
 
-    const res = await Helper.call('Ban User', { url: baseURL + '/ban', data: form });
-    return res;
+    return Helper.call('Ban User', { url: baseURL + '/ban', data: form });
   },
 
   async revokeBan(id) {
@@ -99,6 +98,15 @@ export default {
     }
 
     return Helper.call('Terminate Session', { method: 'delete', url: baseURL + '/session/terminate/' + hash });
+  },
+
+  terminateAllSessions(userId) {
+    if (store.get('session/isNotSuperUser')) {
+      store.commit('snackbar/setMessage', { text: 'You must be super user!' });
+      return;
+    }
+
+    return Helper.call('Terminate All Sessions', { method: 'delete', url: baseURL + '/session/terminate-all/' + userId });
   },
 
   deleteUsedService(id) {

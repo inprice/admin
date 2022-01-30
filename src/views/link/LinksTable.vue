@@ -42,8 +42,8 @@
                 mdi-bell
               </v-icon>
               <div>
-                <div v-if="row.grup == 'WAITING'" class="caption green--text">{{ row.statusDescription }}</div>
-                <div v-else-if="row.grup == 'ACTIVE'" class="caption blue--text font-weight-medium">{{ row.seller }}</div>
+                <div v-if="row.status == 'AVAILABLE'" class="caption blue--text font-weight-medium">{{ row.seller }}</div>
+                <div v-else-if="row.grup == 'ACTIVE' || row.grup == 'WAITING'" class="caption green--text">{{ row.statusDescription }}</div>
                 <div v-else class="caption red--text">{{ row.statusDescription }}</div>
                 <div>{{ row.name || row.url }}</div>
               </div>
@@ -92,21 +92,56 @@
 
                 <v-divider></v-divider>
 
-                <v-list-item link @click="$emit('setAlarmOff', row)" :disabled="$store.get('session/isNotEditor')" v-if="row.alarmId">
-                  <v-list-item-title>SET ALARM OFF</v-list-item-title>
-                </v-list-item>
-                <v-list-item link @click="$emit('openAlarmDialog', row)" :disabled="$store.get('session/isNotEditor')" v-else>
-                  <v-list-item-title>SET AN ALARM</v-list-item-title>
-                </v-list-item>
+                <template v-if="$store.get('session/isNotSuperUser')">
+                  <v-list-item link @click="$emit('setAlarmOff', row)" :disabled="$store.get('session/isNotEditor')" v-if="row.alarmId">
+                    <v-list-item-title>SET ALARM OFF</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="$emit('openAlarmDialog', row)" :disabled="$store.get('session/isNotEditor')" v-else>
+                    <v-list-item-title>SET AN ALARM</v-list-item-title>
+                  </v-list-item>
 
-                <v-list-item link @click="$emit('moveOne', row)" :disabled="$store.get('session/isNotEditor')">
-                  <v-list-item-title>MOVE</v-list-item-title>
-                </v-list-item>
+                  <v-list-item link @click="$emit('moveOne', row)" :disabled="$store.get('session/isNotEditor')">
+                    <v-list-item-title>MOVE</v-list-item-title>
+                  </v-list-item>
 
-                <v-divider></v-divider>
+                  <v-divider></v-divider>
 
-                <v-list-item link @click="$emit('deleteOne', row)" :disabled="$store.get('session/isNotEditor')">
-                  <v-list-item-title>DELETE</v-list-item-title>
+                  <v-list-item link @click="$emit('deleteOne', row)" :disabled="$store.get('session/isNotEditor')">
+                    <v-list-item-title>DELETE</v-list-item-title>
+                  </v-list-item>
+                </template>
+
+                <v-list-group
+                  v-else
+                  :value="true"
+                  no-action
+                  sub-group
+                >
+                  <template v-slot:activator>
+                    <v-list-item-content>
+                      <v-list-item-title>CHANGE STATUS</v-list-item-title>
+                    </v-list-item-content>
+                  </template>
+
+                  <v-list-item link @click="$emit('changeStatus', { id: row.id, newStatus: 'REFRESHED' })">
+                    <v-list-item-title>TO REFRESHED</v-list-item-title>
+                  </v-list-item>
+
+                  <v-list-item link @click="$emit('changeStatus', { id: row.id, newStatus: 'RESOLVED' })">
+                    <v-list-item-title>TO RESOLVED</v-list-item-title>
+                  </v-list-item>
+
+                  <v-list-item link @click="$emit('changeStatus', { id: row.id, newStatus: 'PAUSED' })">
+                    <v-list-item-title>TO PAUSED</v-list-item-title>
+                  </v-list-item>
+
+                  <v-list-item link @click="$emit('changeStatus', { id: row.id, newStatus: 'NOT_SUITABLE' })">
+                    <v-list-item-title>TO NOT SUITABLE</v-list-item-title>
+                  </v-list-item>
+                </v-list-group>
+
+                <v-list-item link @click="$emit('undoStatus', row.id)" v-if="$store.get('session/isSuperUser')">
+                  <v-list-item-title>UNDO LAST CHANGE</v-list-item-title>
                 </v-list-item>
 
               </v-list>
@@ -149,6 +184,12 @@ export default {
       this.links.forEach(row => row.selected = this.selectAll);
       this.$emit('checked');
       this.indeterminate = false;
+    },
+    changeStatus(row, newStatus) {
+      console.log('Change status to ', newStatus, ' id: ', row.id);
+    },
+    undoStatus(row) {
+      console.log('Undo status id: ', row.id);
     }
   }
 }

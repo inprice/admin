@@ -68,9 +68,9 @@
             <td class="text-center">
               <ago :date="cpn.issuedAt" v-if="cpn.issuedAt" />
               <v-btn
-                v-else small dark
-                class="my-1"
+                v-else
                 color="light-blue"
+                class="py-3"
                 :disabled="loading.add || CURSTAT.isActive == true || $store.get('session/isNotAdmin')"
                 @click="add(cpn.code)"
                 style="min-width: 75%; max-height: 80%"
@@ -141,7 +141,7 @@ export default {
     },
     async addVoucher(code) {
       this.loading.add = true;
-      const result = await VoucherService.addVoucher(code);
+      const result = await VoucherService.applyVoucher(code);
       if (result && result.status == true) {
         this.$store.commit('session/SET_CURRENT', result.data.session);
         this.$store.commit('snackbar/setMessage', { text: 'Your voucher has been successfully applied.' });

@@ -25,8 +25,8 @@
                 Please select a plan on Plans section here.
               </div>
             </td>
-            <th>Link Limit</th>
-            <td>{{ wsinfo.linkCount }} / {{ wsinfo.linkLimit }}</td>
+            <th>Product Limit</th>
+            <td>{{ wsinfo.productCount }} / {{ wsinfo.productLimit }}</td>
           </tr>
 
           <tr>
