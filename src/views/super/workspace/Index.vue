@@ -75,9 +75,6 @@
                   <template v-if="row.id > 1">
                     <v-divider></v-divider>
 
-                    <v-list-item link :to="{ name: 'sys-workspace-logs', params: { aid: row.id }, query: { name: row.name } }">
-                      <v-list-item-title>ACCESS LOGS</v-list-item-title>
-                    </v-list-item>
                     <v-list-item @click="openCreateVoucherDialog(row.id, row.name)">
                       <v-list-item-title>CREATE VOUCHER</v-list-item-title>
                     </v-list-item>

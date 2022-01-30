@@ -82,11 +82,6 @@ const router = new VueRouter({
           component: () => import('./views/super/workspace/Index.vue')
         },
         {
-          name: 'sys-workspace-logs',
-          path: 'workspace-logs/:aid',
-          component: () => import('./views/super/workspace/AccessLogIndex.vue')
-        },
-        {
           name: 'sys-users',
           path: 'users',
           component: () => import('./views/super/user/Index.vue')
@@ -115,11 +110,6 @@ const router = new VueRouter({
           name: 'sys-platforms',
           path: 'platforms',
           component: () => import('./views/super/platform/Index.vue')
-        },
-        {
-          name: 'sys-user-logs',
-          path: 'user-logs/:uid',
-          component: () => import('./views/super/user/AccessLogIndex.vue')
         },
       ]
     },

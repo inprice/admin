@@ -48,9 +48,6 @@
                   <v-list-item link :to="{ name: 'sys-user-details', params: { uid: row.id } }">
                     <v-list-item-title>DETAILS</v-list-item-title>
                   </v-list-item>
-                  <v-list-item link :to="{ name: 'sys-user-logs', params: { uid: row.id }, query: { email: row.email } }">
-                    <v-list-item-title>ACCESS LOGS</v-list-item-title>
-                  </v-list-item>
 
                   <v-divider></v-divider>
 

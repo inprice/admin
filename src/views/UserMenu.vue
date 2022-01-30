@@ -32,7 +32,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item :href="helpURL" v-if="$store.get('session/isNotSuperUser')">
+      <v-list-item href="https://inprice.io/help-center" v-if="$store.get('session/isNotSuperUser')">
         <v-icon class="mr-3">mdi-help-circle-outline</v-icon>
         <v-list-item-content>
           <v-list-item-title>HELP</v-list-item-title>
@@ -64,9 +64,6 @@ export default {
       }
       return '?';
     },
-    helpURL() {
-      return process.env.VUE_APP_WEB_URL + '/help';
-    }
   },
 }
 </script>
