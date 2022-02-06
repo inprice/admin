@@ -14,6 +14,7 @@
           </th>
           <th class="text-left">Name</th>
           <th width="10%" class="text-right">Price</th>
+          <th width="10%" class="text-center">Change</th>
           <th width="1%"></th>
         </tr>
       </thead>
@@ -42,7 +43,10 @@
                 mdi-bell
               </v-icon>
               <div>
-                <div v-if="row.status == 'AVAILABLE'" class="caption blue--text font-weight-medium">{{ row.seller }}</div>
+                <div v-if="row.status == 'AVAILABLE'" class="caption blue--text font-weight-medium d-flex align-center">
+                  <img :src="findDomainIcon(row.platform.domain)" onerror="this.onerror=null;this.src='/icon/not-found.png';" :title="row.platform.domain" width="16"/>
+                  <span class="ml-1 caption teal--text">{{ row.seller }}</span>
+                </div>
                 <div v-else-if="row.grup == 'ACTIVE' || row.grup == 'WAITING'" class="caption green--text">{{ row.statusDescription }}</div>
                 <div v-else class="caption red--text">{{ row.statusDescription }}</div>
                 <div>{{ row.name || row.url }}</div>
@@ -62,6 +66,15 @@
                 <div>{{ row.price | toPrice }}</div>
               </div>
             </div>
+          </td>
+          <td>
+            <sparkline>
+              <sparklineCurve 
+                :data="row.prices" 
+                :limit="row.prices.length" 
+                :styles="{ stroke: '#54a5ff', fill: '#0f0' }" 
+              />
+            </sparkline>
           </td>
           <td class="my-auto">
             <v-menu offset-y bottom left>
@@ -154,6 +167,8 @@
 </template>
 
 <script>
+import DomainData from '@/data/domains';
+
 export default {
   props: ['links', 'fromLinksPage'],
   data() {
@@ -190,6 +205,9 @@ export default {
     },
     undoStatus(row) {
       console.log('Undo status id: ', row.id);
+    },
+    findDomainIcon(domain) {
+      return DomainData.find(domain).favicon;
     }
   }
 }

@@ -1,6 +1,16 @@
 <template>
   <div class="mt-5">
-    <div class="title mb-2">Prices</div>
+    <div class="d-flex">
+      <div class="title mb-2 mr-2">Prices</div>
+
+      <sparkline>
+        <sparklineCurve 
+          :data="priceSeries" 
+          :limit="priceSeries.length" 
+          :styles="{ stroke: '#54a5ff', fill: '#0f0' }" 
+        />
+      </sparkline>
+    </div>
 
     <v-card tile :loading="loading">
       <table class="info-table" v-if="list && list.length">
@@ -48,7 +58,7 @@
 
 <script>
 export default {
-  props: ['list', 'loading'],
+  props: ['list', 'priceSeries', 'loading'],
   components: {
     BlockMessage: () => import('@/component/simple/BlockMessage.vue'),
   }

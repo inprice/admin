@@ -1,8 +1,5 @@
 <template>
-  <div class="mt-5">
-
-    <div class="title mb-2">History</div>
-
+  <div>
     <v-card tile :loading="loading">
       <table class="info-table" v-if="list && list.length">
         <thead>

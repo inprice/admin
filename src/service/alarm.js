@@ -40,7 +40,7 @@ export default {
   },
 
   async getIdNameList(topic) {
-    const res = await Helper.call('Alarm List', { method: 'get', url: baseURL + '/pairs?topic=' + topic });
+    const res = await Helper.call('Alarm List', { method: 'get', url: baseURL + '/pairs?topic=' + topic }, true);
     if (res.status == true && res.data) return res;
     return null;
   },

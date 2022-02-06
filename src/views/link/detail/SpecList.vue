@@ -1,8 +1,5 @@
 <template>
-  <div class="mt-5">
-
-    <div class="title mb-2">Specs</div>
-
+  <div>
     <v-card :loading="loading" style="max-height: 350px; overflow-y: auto;">
       <table class="specs-table" v-if="list.length">
         <tr v-for="(row, index) in list" :key="index">

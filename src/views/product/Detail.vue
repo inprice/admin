@@ -82,9 +82,16 @@
             <td>{{ data.product.brandName }}</td>
             <th>Min Price</th>
             <td>
-              <span>{{ data.product.minPrice | toPrice }}</span>
-              <span class="caption mx-1" v-if="data.product.minSeller && data.product.minSeller != 'NA'">by {{ data.product.minSeller }}</span>
-              <span class="caption" v-if="data.product.minSeller != data.product.minPlatform && data.product.minSeller != 'You'">on {{ data.product.minPlatform }}</span>
+              <div class="d-flex">
+                <span>{{ data.product.minPrice | toPrice }}</span>
+                <div class="caption mx-1 d-flex align-center" v-if="data.product.minSeller && data.product.minSeller != 'NA'">
+                  <span class="mr-1 caption">
+                    <span class="teal--text"><b>by</b></span> {{ data.product.minSeller }}
+                  </span>
+                  <img :src="findDomainIcon(data.product.minPlatform)" onerror="this.onerror=null;this.src='/icon/not-found.png';" :title="data.product.minPlatform" width="16"/>
+                </div>
+                <span class="caption" v-if="data.product.minSeller != data.product.minPlatform && data.product.minSeller != 'You'">{{ data.product.minPlatform }}</span>
+              </div>
             </td>
           </tr>
 
@@ -101,12 +108,35 @@
             <th>Alarm Cond.</th>
             <td>
               {{ data.product.alarmName || 'NotSet' }}
+              <v-btn
+                small dark
+                color="red"
+                @click="setProductAlarmOff"
+                v-if="data.product.alarmId"
+              >
+                Off
+              </v-btn>
+              <v-btn
+                small dark
+                color="success"
+                @click="openSelectAlarmDialogForProduct"
+                v-else
+              >
+                On
+              </v-btn>
             </td>
             <th>Max Price</th>
             <td>
-              <span>{{ data.product.maxPrice | toPrice }}</span>
-              <span class="caption mx-1" v-if="data.product.maxSeller && data.product.maxSeller != 'NA'">by {{ data.product.maxSeller }}</span>
-              <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform && data.product.maxSeller != 'You'">on {{ data.product.maxPlatform }}</span>
+              <div class="d-flex">
+                <span>{{ data.product.maxPrice | toPrice }}</span>
+                <div class="caption mx-1 d-flex align-center" v-if="data.product.maxSeller && data.product.maxSeller != 'NA'">
+                  <span class="mr-1 caption">
+                    <span class="teal--text"><b>by</b></span> {{ data.product.maxSeller }}
+                  </span>
+                  <img :src="findDomainIcon(data.product.maxPlatform)" onerror="this.onerror=null;this.src='/icon/not-found.png';" :title="data.product.maxPlatform" width="16"/>
+                </div>
+                <span class="caption" v-if="data.product.maxSeller != data.product.maxPlatform && data.product.maxSeller != 'You'">{{ data.product.maxPlatform }}</span>
+              </div>
             </td>
           </tr>
         </table>
@@ -226,6 +256,8 @@
 <script>
 import ProductService from '@/service/product';
 import LinkService from '@/service/link';
+
+import DomainData from '@/data/domains';
 
 export default {
   data() {
@@ -378,6 +410,17 @@ export default {
         });
       }
     },
+    openSelectAlarmDialogForProduct() {
+      this.$refs.alarmSelectDialog.open('PRODUCT').then(async (selectedAlarmId) => {
+        if (selectedAlarmId) {
+          ProductService.setAlarmON({ alarmId: selectedAlarmId, entityIdSet: [ this.data.product.id ] }).then((res) => {
+            if (res && res.status) {
+              this.findProduct(true);
+            }
+          });
+        }
+      });
+    },
     openSelectAlarmDialogForLink(link) {
       this.$refs.alarmSelectDialog.open('LINK').then(async (selectedAlarmId) => {
         if (selectedAlarmId) {
@@ -399,6 +442,20 @@ export default {
           });
         }
       });
+    },
+    setProductAlarmOff() {
+      this.$refs.confirm.open('Set Alarm Off', 'Alarm will be off for this product. Are you sure?').then(async (confirm) => {
+        if (confirm == true) {
+          ProductService.setAlarmOFF({ entityIdSet: [ this.data.product.id ] }).then((res) => {
+            if (res && res.status) {
+              this.findProduct(true);
+            }
+          });
+        }
+      });
+    },
+    findDomainIcon(domain) {
+      return DomainData.find(domain).favicon;
     },
   },
   mounted() {

@@ -39,7 +39,7 @@
       <table class="list-table">
         <thead>
           <tr>
-            <th class="text-left">Whan a</th>
+            <th class="text-left">When a</th>
             <th width="4%"></th>
           </tr>
         </thead>

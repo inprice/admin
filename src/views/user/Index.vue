@@ -57,9 +57,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  .v-tab--active {
-    background-color: #dadada;
-  }
-</style>

@@ -16,6 +16,9 @@ Filters(Vue);
 
 import './assets/css/main.css';
 
+import Sparkline from 'vue-sparklines'
+Vue.use(Sparkline);
+
 import ChartJsPluginDataLabels from 'chartjs-plugin-datalabels';
 
 import Chart from 'chart.js'

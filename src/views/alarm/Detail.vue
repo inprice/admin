@@ -2,7 +2,10 @@
   <div>
     <div class="d-flex justify-space-between my-3">
       <v-btn small @click="$router.go(-1)">Back</v-btn>
-      <span class="title font-weight-light">{{ data.name }}</span>
+      <div>
+        <span class="font-weight-medium">Condition : </span>
+        <span class="title font-weight-light">{{ data.name }}</span>
+      </div>
       <div>
         <v-btn 
           small

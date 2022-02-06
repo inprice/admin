@@ -15,6 +15,10 @@ pre {
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
+.v-main__wrap, .v-window__container {
+  background-color: #fcfcfc;
+}
+
 .password-wo-help input {
   font-family: 'dotsfont';
   letter-spacing: -4px;
@@ -107,4 +111,12 @@ pre {
 .rounded-dialog {
   border-radius: 5px;
   max-width: 500px;
+}
+
+.v-tab--active {
+  background-color: #dadada;
+}
+
+.v-tabs-bar {
+  height: 38px;
 }

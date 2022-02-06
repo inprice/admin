@@ -75,20 +75,49 @@
           <tr>
             <th>Position</th>
             <td>{{ link.info.position }}</td>
-            <th>Seller</th>
-            <td>{{ link.info.seller }}</td>
+            <th>Platform</th>
+            <td v-if="link.info.platform">
+              <div class="d-flex align-center">
+                <img :src="findDomainIcon(link.info.platform.domain)" onerror="this.onerror=null;this.src='/icon/not-found.png';" :title="link.info.platform.domain" width="16"/>
+                <span class="ml-1">{{ link.info.platform.domain }}</span>
+              </div>
+            </td>
           </tr>
 
           <tr>
             <th>Checked</th>
             <td>{{ link.info.checkedAt | formatPlainDate }}</td>
-            <th>Brand</th>
-            <td>{{ link.info.brand }}</td>
+            <th>Seller</th>
+            <td>{{ link.info.seller }}</td>
           </tr>
 
           <tr>
             <th>Updated</th>
             <td>{{ link.info.updatedAt | formatPlainDate }}</td>
+            <th>Brand</th>
+            <td>{{ link.info.brand }}</td>
+          </tr>
+          <tr>
+            <th>Alarm</th>
+            <td>
+              {{ link.info.alarmName || 'NotSet' }}
+              <v-btn
+                small dark
+                color="pink"
+                @click="setAlarmOff"
+                v-if="link.info.alarmId"
+              >
+                Off
+              </v-btn>
+              <v-btn
+                small dark
+                color="success"
+                @click="openSelectAlarmDialog"
+                v-else
+              >
+                On
+              </v-btn>
+            </td>
             <th>Shipment</th>
             <td>{{ link.info.shipment }}</td>
           </tr>
@@ -121,30 +150,23 @@
         </div>
       </v-card>
 
-      <div class="title mt-5 mb-2">Alarm Condition</div>
-      <v-card class="pa-4 pl-3 d-flex justify-space-between">
-        <span>{{ link.info.alarmName || 'NotSet' }}</span>
-        <v-btn
-          small dark
-          color="red"
-          @click="setAlarmOff"
-          v-if="link.info.alarmId"
-        >
-          Set Off
-        </v-btn>
-        <v-btn
-          small
-          color="success"
-          @click="openSelectAlarmDialog"
-          v-else
-        >
-          Set On
-        </v-btn>
-      </v-card>
+      <price-list :list="link.priceList" :priceSeries="link.priceSeries"></price-list>
 
-      <price-list :list="link.priceList"></price-list>
-      <history-list :list="link.historyList"></history-list>
-      <spec-list :list="link.specList"></spec-list>
+      <v-tabs class="mt-5">
+        <v-tab>
+          Specs
+        </v-tab>
+        <v-tab>
+          History
+        </v-tab>
+
+        <v-tab-item>
+          <spec-list :list="link.specList"></spec-list>
+        </v-tab-item>
+        <v-tab-item>
+          <history-list :list="link.historyList"></history-list>
+        </v-tab-item>
+      </v-tabs>
 
       <confirm ref="confirm"></confirm>
       <alarm-select-dialog ref="alarmSelectDialog"></alarm-select-dialog>
@@ -161,6 +183,7 @@
 
 <script>
 import LinkService from '@/service/link';
+import DomainData from '@/data/domains';
 
 export default {
   data() {
@@ -215,6 +238,9 @@ export default {
     copyTheLink(url) {
       this.copyToClipboard(url);
       this.$store.commit('snackbar/setMessage', { text: 'Url copied', centered: true, color: 'cyan', timeout: 1100, closeButton: false });
+    },
+    findDomainIcon(domain) {
+      return DomainData.find(domain).favicon;
     },
   },
   mounted() {

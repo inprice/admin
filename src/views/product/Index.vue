@@ -284,6 +284,7 @@
 import ProductService from '@/service/product';
 import BrandService from '@/service/brand';
 import CategoryService from '@/service/category';
+import SystemService from '@/service/system';
 import SystemConsts from '@/data/system';
 import { get } from 'vuex-pathify'
 
@@ -333,7 +334,24 @@ export default {
   },
   methods: {
     addNew() {
-      this.$refs.editDialog.open();
+      SystemService.getStatistics().then((res) => {
+        if (res && res.status) {
+          const result = res.data;
+          if (result.remainingProduct) {
+            this.$refs.editDialog.open();
+            this.$store.commit('session/SET_PRODUCT_COUNT', result.productCount);
+          } else {
+            this.$store.commit('snackbar/setMessage', 
+              { 
+                text: 'You have reached the product limit of your plan. Please consider to subscribe a broader plan!', 
+                centered: true, 
+                closeButton: false, 
+                timeout: 2000 
+              }
+            );
+          }
+        }
+      });
     },
     edit(id) {
       this.$router.push({ name: 'product', params: { id } });

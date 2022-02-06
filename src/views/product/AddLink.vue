@@ -19,7 +19,7 @@
           <v-textarea
             outlined
             v-model="form.linksText"
-            :label="`${SystemConsts.LIMITS.LINK_ADDING - lines} links can be added.`"
+            :label="`${limit - lines} links can be added.`"
             rows="5"
             :rules="rules.linksText"
             @keyup="checkRowLimit"
@@ -51,7 +51,6 @@
 
 <script>
 import Utility from '@/helpers/utility';
-import SystemService from '@/service/system';
 import SystemConsts from '@/data/system';
 
 export default {
@@ -67,33 +66,17 @@ export default {
         linksText: '',
       },
       textareaLabel: '',
+      limit: SystemConsts.LIMITS.LINK_ADDING
     };
   },
   methods: {
     open() {
       this.form.linksText = '';
-      SystemService.getStatistics().then((res) => {
-        if (res && res.status) {
-          const result = res.data;
-          if (result.remainingLink) {
-            this.show = true;
+      this.show = true;
 
-            let self = this;
-            this.$nextTick(() => {
-              self.$refs.form.resetValidation();
-            });
-            this.$store.commit('session/SET_PRODUCT_COUNT', result.productCount);
-          } else {
-            this.$store.commit('snackbar/setMessage', 
-              { 
-                text: 'You have reached the limit of your plan. Please consider to subscribe a broader plan!', 
-                centered: true, 
-                closeButton: false, 
-                timeout: 2000 
-              }
-            );
-          }
-        }
+      let self = this;
+      this.$nextTick(() => {
+        self.$refs.form.resetValidation();
       });
     },
     async save() {
