@@ -1,24 +1,5 @@
-# admin-panel
+# Welcome to inprice admin project
 
-## Project setup
-```
-npm install
-```
+**admin project** is the only project developed with VueJS and ES6 codes. It is the user interface of inprice. Users can manage their accounts and workspaces with this project.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The project has multi user feature by offering them different panels. Even it has a super user panel in which a system user can manage all the platform users.
